@@ -4,11 +4,6 @@ import { Toaster } from "sonner";
 import { getConfig } from "@/lib/config";
 import "./globals.css";
 
-// App is fully dynamic (auth-gated + DB-driven). Disable static prerender
-// site-wide — also sidesteps Next.js 15 /404 fallback to Pages Router _error
-// which imports <Html> and breaks App Router builds when DB is unreachable.
-export const dynamic = "force-dynamic";
-
 /**
  * Single font system — Inter Variable untuk seluruh UI termasuk angka
  * (tabular-nums diaktifkan via CSS feature-settings). Konsisten & profesional
