@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+
+# Pre-push hook — jalankan TypeScript check + Next.js build dengan dummy DB
+# untuk catch error sebelum CI/Vercel. Ini SAMA persis dengan yang dijalankan
+# GitHub Actions, jadi push gagal = CI juga akan gagal.
+#
+# Kalau urgent dan mau bypass (TIDAK DIREKOMENDASIKAN):
+#   git push --no-verify
+
+echo "→ Pre-push: TypeScript check..."
+npx tsc --noEmit || {
+  echo "✗ TypeScript errors. Fix sebelum push."
+  exit 1
+}
+
+echo "→ Pre-push: Next.js build (dummy DB)..."
+NODE_ENV=production \
+DATABASE_URL="postgres://dummy:dummy@dummy.invalid:5432/dummy" \
+DATABASE_URL_UNPOOLED="postgres://dummy:dummy@dummy.invalid:5432/dummy" \
+REDIS_URL="redis://dummy.invalid:6379" \
+APP_MASTER_KEY="0000000000000000000000000000000000000000000000000000000000000000" \
+NEXT_PUBLIC_APP_URL="https://example.com" \
+npm run build > /tmp/nubuat-prepush-build.log 2>&1 || {
+  echo "✗ Build failed. Log: /tmp/nubuat-prepush-build.log"
+  tail -30 /tmp/nubuat-prepush-build.log
+  exit 1
+}
+
+echo "✓ Pre-push checks passed."

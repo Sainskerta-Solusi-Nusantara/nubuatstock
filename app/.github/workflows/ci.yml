@@ -19,6 +19,28 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
 
+  build:
+    name: Next.js Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Build dengan dummy DB URL — getConfig akan fallback ke defaultValue.
+      # Ini validasi bahwa codebase build-friendly tanpa real DB access
+      # (mirror Vercel build sandbox).
+      - run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: postgres://dummy:dummy@dummy.invalid:5432/dummy
+          DATABASE_URL_UNPOOLED: postgres://dummy:dummy@dummy.invalid:5432/dummy
+          REDIS_URL: redis://dummy.invalid:6379
+          APP_MASTER_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
+          NEXT_PUBLIC_APP_URL: https://example.com
+
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
