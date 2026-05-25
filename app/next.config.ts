@@ -10,8 +10,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  typedRoutes: true,
   experimental: {
+    typedRoutes: true,
     serverActions: {
       bodySizeLimit: "2mb",
     },
