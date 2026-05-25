@@ -33,11 +33,13 @@ function diffLines(before: string, after: string): { type: "ctx" | "add" | "del"
   const out: { type: "ctx" | "add" | "del"; text: string }[] = [];
   const max = Math.max(a.length, b.length);
   for (let i = 0; i < max; i++) {
-    if (a[i] === b[i]) {
-      if (a[i] !== undefined) out.push({ type: "ctx", text: a[i] });
+    const aLine = a[i];
+    const bLine = b[i];
+    if (aLine === bLine) {
+      if (aLine !== undefined) out.push({ type: "ctx", text: aLine });
     } else {
-      if (a[i] !== undefined) out.push({ type: "del", text: a[i] });
-      if (b[i] !== undefined) out.push({ type: "add", text: b[i] });
+      if (aLine !== undefined) out.push({ type: "del", text: aLine });
+      if (bLine !== undefined) out.push({ type: "add", text: bLine });
     }
   }
   return out;
