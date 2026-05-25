@@ -1,4 +1,5 @@
 import { getRequestConfig } from "next-intl/server";
+import type { AbstractIntlMessages } from "next-intl";
 import { cookies, headers } from "next/headers";
 
 import { DEFAULT_LOCALE, LOCALE_COOKIE_NAME, isSupportedLocale, pickLocale, type Locale } from "./config";
@@ -17,7 +18,7 @@ export default getRequestConfig(async () => {
   const messages = await loadMessages(locale);
   return {
     locale,
-    messages,
+    messages: messages as AbstractIntlMessages,
     timeZone: "Asia/Jakarta",
     now: new Date(),
   };

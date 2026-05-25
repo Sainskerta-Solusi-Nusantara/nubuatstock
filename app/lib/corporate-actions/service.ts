@@ -54,7 +54,11 @@ export async function getCorporateActionCalendar(opts: {
       .limit(500);
 
     for (const r of divRows) {
-      const dateStr = r.date instanceof Date ? r.date.toISOString().slice(0, 10) : String(r.date);
+      if (!r.date) continue;
+      const dateStr =
+        (r.date as unknown) instanceof Date
+          ? (r.date as unknown as Date).toISOString().slice(0, 10)
+          : String(r.date);
       events.push({
         date: dateStr,
         type: "dividend",
@@ -103,7 +107,10 @@ export async function getCorporateActionCalendar(opts: {
 
     for (const r of caRows) {
       if (!r.date) continue;
-      const dateStr = r.date instanceof Date ? r.date.toISOString().slice(0, 10) : String(r.date);
+      const dateStr =
+        (r.date as unknown) instanceof Date
+          ? (r.date as unknown as Date).toISOString().slice(0, 10)
+          : String(r.date);
       const mappedType = typeMap[r.actionType] ?? "split";
       if (opts.type && opts.type !== mappedType) continue;
       events.push({

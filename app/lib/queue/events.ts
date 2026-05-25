@@ -206,3 +206,15 @@ export async function subscribeEvent<C extends EventChannel>(
 export function listEventChannels(): readonly EventChannel[] {
   return eventChannels;
 }
+
+/**
+ * Re-export `getQueue` here for convenience — beberapa subscriber lookup
+ * queue setelah menerima event tanpa harus dual-import dari `@/lib/queue`.
+ * Hindari circular import dengan dynamic import.
+ */
+export async function getQueue<DataT = unknown, ReturnT = unknown>(
+  name: string,
+): Promise<import("bullmq").Queue<DataT, ReturnT>> {
+  const { getQueue: getQueueImpl } = await import("./index");
+  return getQueueImpl<DataT, ReturnT>(name);
+}

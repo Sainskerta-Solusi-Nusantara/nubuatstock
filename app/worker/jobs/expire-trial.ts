@@ -69,19 +69,23 @@ export const expireTrialProcessor: Processor = async () => {
           currentPeriodStart: now,
           currentPeriodEnd: new Date(now.getTime() + 365 * 86400_000), // 1 year forward
           cancelAtPeriodEnd: false,
-          provider: "system",
+          provider: "manual",
         })
         .returning();
 
       // Audit log subscription change
+      const newSubId = newSubs[0]?.id ?? sub.id;
       await db
         .insert(subscriptionHistory)
         .values({
           userId: sub.userId,
-          fromTier: sub.tierKode,
-          toTier: fallbackTier,
-          changeType: "trial_expired",
-          changedAt: now,
+          subscriptionId: newSubId,
+          action: "trial_ended",
+          fromTierKode: sub.tierKode,
+          toTierKode: fallbackTier,
+          fromStatus: "trialing",
+          toStatus: "active",
+          occurredAt: now,
           metadata: { previousSubscriptionId: sub.id, newSubscriptionId: newSubs[0]?.id },
         })
         .catch(() => undefined); // subscription_history table optional
@@ -92,9 +96,10 @@ export const expireTrialProcessor: Processor = async () => {
         if (publishEvent) {
           await publishEvent("subscription.changed", {
             userId: sub.userId,
-            fromTier: sub.tierKode,
-            toTier: fallbackTier,
-            changeType: "trial_expired",
+            previousTier: sub.tierKode,
+            newTier: fallbackTier,
+            changedAt: now.toISOString(),
+            reason: "trial_expired",
           });
         }
       } catch {

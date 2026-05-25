@@ -389,12 +389,13 @@ export async function runScreener(filters: ScreenerFilters): Promise<ScreenerRes
   const offset = Math.max(filters.offset ?? 0, 0);
 
   // Total count
-  const [{ total }] = await db
+  const totalRows = await db
     .select({ total: sql<number>`count(*)::int` })
     .from(companies)
     .leftJoin(companyFundamentals, eq(companyFundamentals.companyKode, companies.kode))
     .leftJoin(technicalSnapshots, eq(technicalSnapshots.companyKode, companies.kode))
     .where(where);
+  const total = totalRows[0]?.total ?? 0;
 
   // Page rows
   const rows = await db

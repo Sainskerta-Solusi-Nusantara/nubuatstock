@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import { requireSession } from "@/lib/auth/server";
 import { ok, fail, handleError } from "@/lib/utils/api";
-import { runBacktest } from "@/lib/backtest/engine";
+import { runBacktest, type BacktestInput } from "@/lib/backtest/engine";
 
 const bodySchema = z.object({
   ticker: z.string().regex(/^[A-Z][A-Z0-9]{2,4}$/),
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const result = await runBacktest(input);
+    const result = await runBacktest(input as BacktestInput);
 
     // Truncate equity curve for response payload (full curve > 1000 points bisa berat)
     const sampledCurve = result.equityCurve.length > 250

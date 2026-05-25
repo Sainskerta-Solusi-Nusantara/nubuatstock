@@ -28,7 +28,8 @@ export function ForgotPasswordForm() {
     setSubmitting(true);
     setServerError(null);
     try {
-      const result = await authClient.forgetPassword({
+      // Better-Auth v1.6+: `forgetPassword` di-rename jadi `requestPasswordReset`.
+      const result = await authClient.requestPasswordReset({
         email: values.email,
         redirectTo: "/reset-password",
       });

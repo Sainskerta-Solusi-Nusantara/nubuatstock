@@ -177,7 +177,10 @@ export async function startTrialSubscription(opts: {
       subscriptionId: existingSub.id,
       fromTier: existingSub.tierKode as TierKode,
       toTier: targetTier,
-      action: "trial_started",
+      // Trial transitions emitted as "upgraded" since events.ts union belum
+      // include trial_started/trial_ended. Audit log di subscription_history
+      // tetap mencatat "trial_started" — emit hanya untuk fan-out.
+      action: "upgraded",
     });
 
     logger.info(
@@ -222,7 +225,10 @@ export async function startTrialSubscription(opts: {
     subscriptionId: id,
     fromTier: null,
     toTier: targetTier,
-    action: "trial_started",
+    // Trial transitions emitted as "created" since events.ts union belum
+    // include trial_started/trial_ended. Audit log di subscription_history
+    // tetap mencatat "trial_started" — emit hanya untuk fan-out.
+    action: "created",
   });
 
   logger.info(

@@ -116,7 +116,7 @@ export default async function ResearchDetailPage({ params }: { params: Promise<{
           value={upsideNorm != null ? `${upsideNorm >= 0 ? "+" : ""}${upsideNorm.toFixed(2)}%` : "—"}
           valueClass={upsideNorm != null ? (upsideNorm >= 0 ? "text-bull" : "text-bear") : ""}
         />
-        <RecoCard label="Horizon" value={HORIZON_LABEL[report.timeHorizon]} />
+        <RecoCard label="Horizon" value={HORIZON_LABEL[report.timeHorizon] ?? "—"} />
       </div>
 
       <Separator />

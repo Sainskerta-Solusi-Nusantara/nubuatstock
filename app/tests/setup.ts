@@ -28,7 +28,7 @@ if (!process.env.REDIS_URL) {
 }
 
 if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = "test";
+  (process.env as Record<string, string>).NODE_ENV = "test";
 }
 
 afterEach(() => {

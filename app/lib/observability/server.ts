@@ -18,6 +18,7 @@ export async function initServerObservability(): Promise<void> {
     const hasDsn = await hasSecret("observability.sentry.dsn_server");
     if (!hasDsn) return;
 
+    // @ts-expect-error optional-dep: install `@sentry/node` to enable server-side Sentry.
     const Sentry = await import("@sentry/node").catch(() => null);
     if (!Sentry) {
       logger.warn("@sentry/node not installed — server observability disabled");

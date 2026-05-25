@@ -167,7 +167,7 @@ export async function scheduleRepeatableJob<DataT = unknown>(
     }
   }
 
-  await q.add(jobName, data, {
+  await q.add(jobName as never, data as never, {
     repeat: {
       pattern: cron,
       ...(opts.tz ? { tz: opts.tz } : {}),

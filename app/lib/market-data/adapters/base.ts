@@ -41,7 +41,7 @@ export class VendorError extends Error {
   constructor(
     message: string,
     readonly vendor: string,
-    readonly cause?: unknown,
+    override readonly cause?: unknown,
     readonly status?: number,
   ) {
     super(message);

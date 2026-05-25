@@ -36,9 +36,9 @@ export class UnauthorizedError extends AppError {
 }
 
 export class ForbiddenError extends AppError {
-  override readonly name = "ForbiddenError";
-  override readonly statusCode = 403;
-  override readonly code = "FORBIDDEN";
+  override readonly name: string = "ForbiddenError";
+  override readonly statusCode: number = 403;
+  override readonly code: string = "FORBIDDEN";
   constructor(message = "Access denied", clientMessage = "Anda tidak memiliki izin.") {
     super(message, { clientMessage });
   }

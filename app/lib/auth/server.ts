@@ -11,6 +11,10 @@ import {
   verifications,
   type UserRole,
 } from "@/db/schema/auth";
+// UserRole dari db/schema sengaja sempit ("user" | "admin") supaya kolom DB
+// tetap kompatibel sama migration lama. Untuk app logic 3-tier (termasuk
+// "superadmin"), pakai AppUserRole dari lib/auth/roles.
+import type { UserRole as AppUserRole } from "@/lib/auth/roles";
 import { ForbiddenError, UnauthorizedError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { env } from "@/lib/env";
@@ -325,12 +329,13 @@ export async function requireSession(): Promise<AppSession> {
 
 export async function requireRole(
   session: AppSession,
-  role: UserRole | UserRole[],
+  role: AppUserRole | AppUserRole[],
 ): Promise<AppSession> {
   const allowed = Array.isArray(role) ? role : [role];
-  if (!allowed.includes(session.user.role)) {
+  const actual = session.user.role as AppUserRole;
+  if (!allowed.includes(actual)) {
     throw new ForbiddenError(
-      `User role ${session.user.role} lacks required ${allowed.join("|")}`,
+      `User role ${actual} lacks required ${allowed.join("|")}`,
     );
   }
   return session;

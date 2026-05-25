@@ -64,11 +64,11 @@ const checkAlertsAdapter: Processor = async (job) => {
   try {
     const mod = await import("./check-alerts");
     const m = mod as {
-      runCheckAlerts?: (data: unknown) => Promise<unknown>;
-      checkAlertsJob?: Processor;
+      runCheckAlerts?: (data?: unknown) => Promise<unknown>;
+      checkAlertsJob?: { name: string; handler: (data?: unknown) => Promise<unknown> };
     };
     if (m.runCheckAlerts) return m.runCheckAlerts(job.data);
-    if (m.checkAlertsJob) return m.checkAlertsJob(job, job.token!);
+    if (m.checkAlertsJob) return m.checkAlertsJob.handler(job.data);
     return { skipped: true, reason: "check-alerts processor not exported" };
   } catch (err) {
     return { skipped: true, error: (err as Error).message };

@@ -57,7 +57,11 @@ export async function POST(req: NextRequest) {
       direction: pattern.direction as "bullish" | "bearish",
       status: pattern.status as "forming" | "completed" | "invalidated",
       confidence: Number(pattern.confidence),
-      keyLevels: pattern.keyLevels,
+      keyLevels: {
+        breakout: pattern.keyLevels.breakout,
+        target: pattern.keyLevels.target,
+        stop: pattern.keyLevels.stop,
+      },
       volumeConfirmation: pattern.volumeConfirmation,
       companyName: company?.name ?? null,
       currentPrice: latest ? Number(latest.close) : null,

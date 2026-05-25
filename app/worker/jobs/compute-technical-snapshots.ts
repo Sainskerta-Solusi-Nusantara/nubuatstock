@@ -46,6 +46,7 @@ async function computeOneSnapshot(kode: string): Promise<boolean> {
       low: quotesEod.low,
       close: quotesEod.close,
       volume: quotesEod.volume,
+      valueIdr: quotesEod.valueIdr,
     })
     .from(quotesEod)
     .where(eq(quotesEod.companyKode, kode))
@@ -55,14 +56,20 @@ async function computeOneSnapshot(kode: string): Promise<boolean> {
   if (rows.length < 21) return false; // Too few bars
 
   // Chronological
-  const bars: OhlcvBar[] = rows.slice().reverse().map((r) => ({
-    date: r.date,
-    open: Number(r.open),
-    high: Number(r.high),
-    low: Number(r.low),
-    close: Number(r.close),
-    volume: typeof r.volume === "bigint" ? Number(r.volume) : Number(r.volume),
-  }));
+  const bars: OhlcvBar[] = rows.slice().reverse().map((r) => {
+    const close = Number(r.close);
+    const volume = typeof r.volume === "bigint" ? Number(r.volume) : Number(r.volume);
+    const parsedValueIdr = Number.parseFloat(r.valueIdr);
+    return {
+      date: r.date,
+      open: Number(r.open),
+      high: Number(r.high),
+      low: Number(r.low),
+      close,
+      volume,
+      valueIdr: Number.isFinite(parsedValueIdr) ? parsedValueIdr : close * volume,
+    };
+  });
 
   const closes = bars.map((b) => b.close);
   const lastBar = bars[bars.length - 1]!;

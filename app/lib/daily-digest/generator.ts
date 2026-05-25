@@ -215,18 +215,22 @@ async function gatherUpcomingCalendar(): Promise<DigestCalendarEvent[]> {
     .limit(10);
 
   const events: DigestCalendarEvent[] = [
-    ...divs.map((d) => ({
-      date: typeof d.date === "string" ? d.date : d.date.toISOString().slice(0, 10),
-      ticker: d.ticker,
-      type: "dividend",
-      detail: `Cum dividen ${d.amount ? "Rp " + Number(d.amount).toLocaleString("id-ID") + "/lembar" : ""}${d.period ? " (" + d.period + ")" : ""}`,
-    })),
-    ...actions.map((a) => ({
-      date: typeof a.date === "string" ? a.date : a.date?.toISOString().slice(0, 10) ?? today,
-      ticker: a.ticker,
-      type: a.actionType,
-      detail: a.description ?? a.actionType,
-    })),
+    ...divs
+      .filter((d): d is typeof d & { date: string } => d.date != null)
+      .map((d) => ({
+        date: d.date,
+        ticker: d.ticker,
+        type: "dividend",
+        detail: `Cum dividen ${d.amount ? "Rp " + Number(d.amount).toLocaleString("id-ID") + "/lembar" : ""}${d.period ? " (" + d.period + ")" : ""}`,
+      })),
+    ...actions
+      .filter((a): a is typeof a & { date: string } => a.date != null)
+      .map((a) => ({
+        date: a.date,
+        ticker: a.ticker,
+        type: a.actionType,
+        detail: a.description ?? a.actionType,
+      })),
   ];
   events.sort((a, b) => a.date.localeCompare(b.date));
   return events.slice(0, 8);

@@ -40,6 +40,7 @@ export function aggregateToWeekly(daily: OhlcvBar[]): OhlcvBar[] {
       low: Math.min(...bars.map((b) => b.low)),
       close: bars[bars.length - 1]!.close,
       volume: bars.reduce((acc, b) => acc + b.volume, 0),
+      valueIdr: bars.reduce((acc, b) => acc + b.valueIdr, 0),
     };
   });
 }

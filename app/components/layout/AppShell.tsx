@@ -9,6 +9,7 @@ import { CommandPaletteProvider } from "@/components/navigation/CommandPalettePr
 import { CommandPalette } from "@/components/navigation/CommandPalette";
 import { resolveServerLocale } from "@/lib/i18n/request";
 import type { SessionUser } from "@/lib/types/auth";
+import type { UserRole } from "@/lib/auth/roles";
 
 interface AppShellProps {
   user: SessionUser;
@@ -31,13 +32,17 @@ interface AppShellProps {
  */
 export async function AppShell({ user, tier, children }: AppShellProps) {
   const locale = await resolveServerLocale();
+  // Better-Auth infers user.role sebagai literal "user" (dari defaultValue di
+  // lib/auth/server.ts). Cast ke UserRole 3-tier (lib/auth/roles.ts) supaya
+  // perbandingan dengan "admin"/"superadmin" tidak dianggap no-overlap.
+  const role = user.role as UserRole;
   return (
     <Providers>
       <CommandPaletteProvider>
         <div className="flex min-h-[100dvh] bg-background text-foreground">
           <Sidebar
-            isAdmin={user.role === "admin" || user.role === "superadmin"}
-            isSuperadmin={user.role === "superadmin"}
+            isAdmin={role === "admin" || role === "superadmin"}
+            isSuperadmin={role === "superadmin"}
             tier={tier}
           />
           <div className="flex min-w-0 flex-1 flex-col">

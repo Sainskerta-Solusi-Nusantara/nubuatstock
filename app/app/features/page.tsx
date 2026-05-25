@@ -261,7 +261,13 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      <Footer />
+      <Footer
+        appName="Nubuat"
+        tagline="Sains di balik setiap trade"
+        supportEmail="support@nubuat.id"
+        disclaimer="Informasi edukasi — bukan ajakan jual/beli."
+        imageCredits="Image credits: Unsplash"
+      />
     </main>
   );
 }

@@ -34,6 +34,7 @@ export async function initClientObservability(config: ClientObservabilityConfig)
   // Sentry — soft import; skip kalau dep tidak ada
   if (config.sentryDsn) {
     try {
+      // @ts-expect-error optional-dep: install `@sentry/nextjs` to enable client-side Sentry.
       const Sentry = await import("@sentry/nextjs").catch(() => null);
       if (Sentry) {
         Sentry.init({
@@ -57,6 +58,7 @@ export async function initClientObservability(config: ClientObservabilityConfig)
   // PostHog — soft import
   if (config.posthogKey) {
     try {
+      // @ts-expect-error optional-dep: install `posthog-js` to enable client-side PostHog.
       const ph = await import("posthog-js").catch(() => null);
       if (ph) {
         const posthog = (ph.default ?? ph) as { init: (k: string, opts: unknown) => void; identify: (id: string, props?: unknown) => void };

@@ -18,7 +18,7 @@ const queryClient = postgres(env.DATABASE_URL, {
   // Safety net: kill query yang berjalan > 30s (cegah stuck connection di pool).
   // Worker jobs berat (compute snapshots) punya unpooled connection terpisah via db/migrate.ts.
   connection: {
-    statement_timeout: "30000",
+    statement_timeout: 30000,
   },
 });
 

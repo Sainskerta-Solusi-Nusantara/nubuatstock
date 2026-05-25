@@ -54,6 +54,7 @@ async function analyzeOne(kode: string): Promise<boolean> {
       low: quotesEod.low,
       close: quotesEod.close,
       volume: quotesEod.volume,
+      valueIdr: quotesEod.valueIdr,
     })
     .from(quotesEod)
     .where(eq(quotesEod.companyKode, kode))
@@ -62,14 +63,20 @@ async function analyzeOne(kode: string): Promise<boolean> {
 
   if (rows.length < 30) return false;
 
-  const dailyBars: OhlcvBar[] = rows.slice().reverse().map((r) => ({
-    date: r.date,
-    open: Number(r.open),
-    high: Number(r.high),
-    low: Number(r.low),
-    close: Number(r.close),
-    volume: typeof r.volume === "bigint" ? Number(r.volume) : Number(r.volume),
-  }));
+  const dailyBars: OhlcvBar[] = rows.slice().reverse().map((r) => {
+    const close = Number(r.close);
+    const volume = typeof r.volume === "bigint" ? Number(r.volume) : Number(r.volume);
+    const parsedValueIdr = Number.parseFloat(r.valueIdr);
+    return {
+      date: r.date,
+      open: Number(r.open),
+      high: Number(r.high),
+      low: Number(r.low),
+      close,
+      volume,
+      valueIdr: Number.isFinite(parsedValueIdr) ? parsedValueIdr : close * volume,
+    };
+  });
 
   // 1D analysis
   await upsertSnapshot(kode, "1D", dailyBars);

@@ -315,7 +315,7 @@ export async function* streamChat(
         messageId: toolMsg!.id,
         toolName: job.tc.name,
         arguments: job.parsedArgs,
-        result: resultObj as Record<string, unknown>,
+        result: resultObj as unknown as Record<string, unknown>,
         latencyMs,
         error: toolError ?? undefined,
       });

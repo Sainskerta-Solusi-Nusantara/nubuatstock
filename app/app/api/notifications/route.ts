@@ -59,17 +59,18 @@ export async function GET(req: NextRequest) {
       payload: r.payload ?? {},
     }));
 
-    const [{ count }] = await db
+    const countRows = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(notifications)
       .where(
         and(eq(notifications.userId, session.user.id), eq(notifications.isRead, false)),
       );
+    const count = countRows[0]?.count ?? 0;
 
     const response: NotificationFeedResponse = {
       items,
       nextCursor,
-      unreadCount: count ?? 0,
+      unreadCount: count,
     };
     return ok(response);
   } catch (err) {

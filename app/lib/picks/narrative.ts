@@ -40,7 +40,7 @@ export async function generateAndStoreNarrative(args: GenerateAndStoreArgs): Pro
     tp2: args.tp2,
     tp3: args.tp3,
     rewardRiskRatio: args.rewardRiskRatio,
-    factorBreakdown: args.factorBreakdown,
+    factorBreakdown: { ...args.factorBreakdown } as Record<string, number>,
   });
   if (!result || !result.text || result.text.trim().length === 0) {
     logger.info({ pickId: args.pickId }, "Narrative not generated (AI provider unavailable)");

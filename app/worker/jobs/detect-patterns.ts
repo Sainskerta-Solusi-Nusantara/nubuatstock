@@ -19,6 +19,7 @@ async function detectOne(kode: string): Promise<number> {
       low: quotesEod.low,
       close: quotesEod.close,
       volume: quotesEod.volume,
+      valueIdr: quotesEod.valueIdr,
     })
     .from(quotesEod)
     .where(eq(quotesEod.companyKode, kode))
@@ -27,14 +28,20 @@ async function detectOne(kode: string): Promise<number> {
 
   if (rows.length < 30) return 0;
 
-  const bars: OhlcvBar[] = rows.slice().reverse().map((r) => ({
-    date: r.date,
-    open: Number(r.open),
-    high: Number(r.high),
-    low: Number(r.low),
-    close: Number(r.close),
-    volume: typeof r.volume === "bigint" ? Number(r.volume) : Number(r.volume),
-  }));
+  const bars: OhlcvBar[] = rows.slice().reverse().map((r) => {
+    const close = Number(r.close);
+    const volume = typeof r.volume === "bigint" ? Number(r.volume) : Number(r.volume);
+    const parsedValueIdr = Number.parseFloat(r.valueIdr);
+    return {
+      date: r.date,
+      open: Number(r.open),
+      high: Number(r.high),
+      low: Number(r.low),
+      close,
+      volume,
+      valueIdr: Number.isFinite(parsedValueIdr) ? parsedValueIdr : close * volume,
+    };
+  });
 
   const matches = detectAllPatterns(bars);
   if (matches.length === 0) return 0;

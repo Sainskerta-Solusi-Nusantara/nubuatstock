@@ -12,5 +12,15 @@ export const authClient = createAuthClient({
   // Tidak perlu baseURL untuk same-origin (default).
 });
 
-export const { signIn, signUp, signOut, useSession, getSession, forgetPassword, resetPassword } =
-  authClient;
+// Better-Auth v1.6+: endpoint `forgetPassword` di-rename jadi `requestPasswordReset`
+// (path `/request-password-reset`). Re-export dengan nama baru. Lihat
+// node_modules/better-auth/dist/api/routes/password.mjs.
+export const {
+  signIn,
+  signUp,
+  signOut,
+  useSession,
+  getSession,
+  requestPasswordReset,
+  resetPassword,
+} = authClient;
