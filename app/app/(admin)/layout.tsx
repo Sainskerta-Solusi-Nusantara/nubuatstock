@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 import { getSession } from "@/lib/auth/server";
+import type { UserRole } from "@/lib/auth/roles";
 import { getConfig } from "@/lib/config";
 
 /**
@@ -31,7 +32,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
   // Admin role OR superadmin role boleh akses /(admin)/*.
   // Superadmin = superset dari admin (hierarki: superadmin > admin > user)
-  if (session.user.role !== "admin" && session.user.role !== "superadmin") {
+  const role = session.user.role as UserRole;
+  if (role !== "admin" && role !== "superadmin") {
     redirect("/?error=admin_required");
   }
 
