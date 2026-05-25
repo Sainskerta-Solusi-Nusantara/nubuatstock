@@ -7,6 +7,9 @@ import { hasAcceptedDisclaimer } from "@/lib/legal/acceptance";
 import { getConfig } from "@/lib/config";
 import { AcceptDisclaimerGate } from "@/components/legal/AcceptDisclaimerGate";
 
+// Semua route (app)/* butuh session — tidak boleh statically prerendered.
+export const dynamic = "force-dynamic";
+
 /**
  * Authenticated application shell. Membungkus seluruh route `(app)`.
  *

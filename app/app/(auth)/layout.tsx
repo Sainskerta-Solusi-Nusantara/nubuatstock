@@ -2,6 +2,9 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { getAppName } from "@/lib/auth/config";
 
+// Auth pages (login/signup/mfa) cek session di server — dynamic.
+export const dynamic = "force-dynamic";
+
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   const appName = await getAppName();
   return (

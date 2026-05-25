@@ -54,28 +54,37 @@ export async function getConfig<T extends ConfigValue>(
     return cached.value as T;
   }
 
-  const rows = await db
-    .select()
-    .from(appConfig)
-    .where(
-      and(
-        eq(appConfig.key, key),
-        opts.scope ? eq(appConfig.scope, opts.scope) : eq(appConfig.scope, {}),
-      ),
-    )
-    .limit(1);
+  try {
+    const rows = await db
+      .select()
+      .from(appConfig)
+      .where(
+        and(
+          eq(appConfig.key, key),
+          opts.scope ? eq(appConfig.scope, opts.scope) : eq(appConfig.scope, {}),
+        ),
+      )
+      .limit(1);
 
-  if (rows.length === 0) {
+    if (rows.length === 0) {
+      if (opts.defaultValue !== undefined) {
+        return opts.defaultValue;
+      }
+      logger.error({ key, scope: opts.scope }, "Config key not found and no defaultValue");
+      throw new ConfigNotFoundError(key, opts.scope);
+    }
+
+    const value = rows[0]!.value as T;
+    configCache.set(ck, { value, expiresAt: now + (opts.ttlMs ?? DEFAULT_TTL_MS) });
+    return value;
+  } catch (err) {
+    if (err instanceof ConfigNotFoundError) throw err;
     if (opts.defaultValue !== undefined) {
+      logger.warn({ key, err }, "Config DB unreachable, using defaultValue");
       return opts.defaultValue;
     }
-    logger.error({ key, scope: opts.scope }, "Config key not found and no defaultValue");
-    throw new ConfigNotFoundError(key, opts.scope);
+    throw err;
   }
-
-  const value = rows[0]!.value as T;
-  configCache.set(ck, { value, expiresAt: now + (opts.ttlMs ?? DEFAULT_TTL_MS) });
-  return value;
 }
 
 /**
@@ -120,13 +129,24 @@ export async function getConfigs<
   // Kalau semua sudah dari cache, langsung return
   if (missing.length === 0) return result;
 
-  // Single SQL query untuk seluruh key yang missing
-  const rows = await db
-    .select({ key: appConfig.key, value: appConfig.value })
-    .from(appConfig)
-    .where(and(inArray(appConfig.key, missing), eq(appConfig.scope, {})));
-
-  const dbMap = new Map(rows.map((r) => [r.key, r.value]));
+  // Single SQL query untuk seluruh key yang missing.
+  // Saat build (DB unreachable) atau outage runtime, fall back ke defaults
+  // supaya page tetap render — defaults sudah disediakan oleh caller.
+  let dbMap: Map<string, unknown>;
+  try {
+    const rows = await db
+      .select({ key: appConfig.key, value: appConfig.value })
+      .from(appConfig)
+      .where(and(inArray(appConfig.key, missing), eq(appConfig.scope, {})));
+    dbMap = new Map(rows.map((r) => [r.key, r.value]));
+  } catch (err) {
+    logger.warn({ missing, err }, "Configs DB unreachable, using defaults");
+    for (const propName of Object.keys(spec) as (keyof T)[]) {
+      if (propName in result) continue;
+      result[propName] = spec[propName]!.default;
+    }
+    return result;
+  }
 
   for (const propName of Object.keys(spec) as (keyof T)[]) {
     if (propName in result) continue; // sudah dari cache

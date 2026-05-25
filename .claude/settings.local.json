@@ -151,7 +151,20 @@
       "Bash(npx playwright *)",
       "Bash(bash /tmp/commit-improvements.sh)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(grep -iE \"\\\\.env$|\\\\.DS_Store|credentials|secret|\\\\.key$\")",
+      "Bash(grep -E \"^\\\\.env$|app/\\\\.env$\")",
+      "Bash(git rm *)",
+      "Bash(git -c user.email=\"dobeon.com@gmail.com\" -c user.name=\"Nubuat\" commit -m \"Initial commit: Nubuat stock analysis app\")",
+      "Bash(gh auth *)",
+      "Bash(gh repo *)",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Add .npmrc with legacy-peer-deps for Vercel build\")",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Fix TS noUncheckedIndexedAccess error in config editor diff\")",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Fix TS role narrowing in admin layout \\(cast to UserRole\\)\")",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Fix TS strategy literal narrowing in backtest form\")",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Fix all 68 TypeScript errors across codebase \\(10-agent parallel sweep\\)\")",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Add app/not-found.tsx to fix /404 prerender \\(Html import error\\)\")",
+      "Bash(git -c user.email=\"ifaalif.work@gmail.com\" commit -m \"Fix Vercel build: graceful DB fallback in getConfig + force-dynamic on auth-gated layouts\")"
     ]
   }
 }

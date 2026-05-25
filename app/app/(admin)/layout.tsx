@@ -6,6 +6,9 @@ import { getSession } from "@/lib/auth/server";
 import type { UserRole } from "@/lib/auth/roles";
 import { getConfig } from "@/lib/config";
 
+// Admin pages butuh session + role check — tidak boleh statically prerendered.
+export const dynamic = "force-dynamic";
+
 /**
  * Admin shell — wajib role=admin.
  *
