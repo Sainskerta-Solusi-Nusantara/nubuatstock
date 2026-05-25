@@ -35,7 +35,7 @@ interface BacktestResult {
 export default function BacktestPage() {
   const [form, setForm] = useState({
     ticker: "BBRI",
-    strategy: "sma_crossover" as const,
+    strategy: "sma_crossover" as "sma_crossover" | "rsi_mean_reversion" | "breakout",
     startDate: "2023-01-01",
     endDate: new Date().toISOString().slice(0, 10),
     initialCapital: 100_000_000,
