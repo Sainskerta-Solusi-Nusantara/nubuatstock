@@ -1,0 +1,11 @@
+# CODEOWNERS — Nubuat
+# Format: <path-pattern> <owner>
+
+# Default owner for everything
+*       @ifaalifwork
+
+# Critical paths
+/lib/auth/    @ifaalifwork
+/lib/billing/ @ifaalifwork
+/lib/security/ @ifaalifwork
+/db/schema/    @ifaalifwork

@@ -1,0 +1,389 @@
+import { headers } from "next/headers";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
+
+import { db } from "@/lib/db";
+import {
+  accounts,
+  sessions,
+  users,
+  verifications,
+  type UserRole,
+} from "@/db/schema/auth";
+import { ForbiddenError, UnauthorizedError } from "@/lib/errors";
+import { logger } from "@/lib/logger";
+import { env } from "@/lib/env";
+import type { AppSession, SessionUser } from "@/lib/types/auth";
+
+import {
+  getDefaultLocale,
+  getDefaultTimezone,
+  getGoogleOAuthCreds,
+  getPasswordMinLength,
+  getSessionDurationSeconds,
+} from "./config";
+import { recordAuthEvent } from "./audit";
+
+/**
+ * Better-Auth instance.
+ *
+ * - Drizzle adapter pakai schema kita (lihat db/schema/auth.ts).
+ * - User pertama yang signup dengan email match `ADMIN_BOOTSTRAP_EMAIL` (HANYA
+ *   env var ini yang boleh dibaca di auth context) otomatis dapat role=admin.
+ *   Cek di hook `after` user create. Sisanya tetap role default "user" dari
+ *   column default DB.
+ * - Konfigurasi runtime (session duration, password min length, google OAuth)
+ *   dibaca dari DB. Karena Better-Auth ingin sync config, kita lazy-init &
+ *   cache instance-nya — initial call membaca DB sekali.
+ */
+
+let cachedAuth: ReturnType<typeof buildAuth> | null = null;
+let initPromise: Promise<ReturnType<typeof buildAuth>> | null = null;
+
+async function buildAuthAsync() {
+  const [sessionSec, minPwLen, locale, tz, google] = await Promise.all([
+    getSessionDurationSeconds(),
+    getPasswordMinLength(),
+    getDefaultLocale(),
+    getDefaultTimezone(),
+    getGoogleOAuthCreds(),
+  ]);
+
+  return buildAuth({
+    sessionDurationSec: sessionSec,
+    minPasswordLength: minPwLen,
+    defaultLocale: locale,
+    defaultTimezone: tz,
+    google,
+  });
+}
+
+interface BuildAuthInput {
+  sessionDurationSec: number;
+  minPasswordLength: number;
+  defaultLocale: string;
+  defaultTimezone: string;
+  google: { enabled: boolean; clientId?: string; clientSecret?: string };
+}
+
+function buildAuth(input: BuildAuthInput) {
+  const adminBootstrapEmail = env.ADMIN_BOOTSTRAP_EMAIL?.toLowerCase().trim();
+
+  const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
+  if (input.google.enabled && input.google.clientId && input.google.clientSecret) {
+    socialProviders.google = {
+      clientId: input.google.clientId,
+      clientSecret: input.google.clientSecret,
+    };
+  }
+
+  return betterAuth({
+    appName: "Nubuat",
+    database: drizzleAdapter(db, {
+      provider: "pg",
+      schema: {
+        users: users,
+        sessions: sessions,
+        accounts: accounts,
+        verifications: verifications,
+      },
+      usePlural: true,
+    }),
+    emailAndPassword: {
+      enabled: true,
+      autoSignIn: true,
+      minPasswordLength: input.minPasswordLength,
+      maxPasswordLength: 256,
+      requireEmailVerification: false,
+      // Argon2id adalah default better-auth password hasher (via @node-rs/argon2).
+      // Kalau better-auth v1.1 sudah ganti ke scrypt, override perlu password.hash.
+      // Kita biarkan default — sudah aman per AGENTS.md §7.
+    },
+    session: {
+      expiresIn: input.sessionDurationSec,
+      updateAge: Math.min(input.sessionDurationSec, 60 * 60 * 24),
+      cookieCache: { enabled: true, maxAge: 60 },
+    },
+    advanced: {
+      defaultCookieAttributes: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: env.NODE_ENV === "production",
+      },
+      cookiePrefix: "nubuat",
+      useSecureCookies: env.NODE_ENV === "production",
+    },
+    user: {
+      additionalFields: {
+        role: { type: "string", required: false, defaultValue: "user", input: false },
+        locale: {
+          type: "string",
+          required: false,
+          defaultValue: input.defaultLocale,
+          input: false,
+        },
+        timezone: {
+          type: "string",
+          required: false,
+          defaultValue: input.defaultTimezone,
+          input: false,
+        },
+        phone: { type: "string", required: false, input: false },
+        mfaEnabled: { type: "boolean", required: false, defaultValue: false, input: false },
+        failedLoginCount: {
+          type: "number",
+          required: false,
+          defaultValue: 0,
+          input: false,
+        },
+      },
+    },
+    socialProviders,
+    databaseHooks: {
+      user: {
+        create: {
+          before: async (data) => {
+            const email = (data.email ?? "").toLowerCase().trim();
+            const isBootstrapAdmin =
+              !!adminBootstrapEmail && email === adminBootstrapEmail;
+            // Bootstrap email → SUPERADMIN (bukan sekadar admin). Lihat ROLES.md.
+            return {
+              data: {
+                ...data,
+                email,
+                role: isBootstrapAdmin ? ("superadmin" as UserRole) : ("user" as UserRole),
+                locale: input.defaultLocale,
+                timezone: input.defaultTimezone,
+              },
+            };
+          },
+          after: async (createdUser) => {
+            await recordAuthEvent({
+              actorUserId: createdUser.id,
+              action: "signup",
+              metadata: { email: createdUser.email, role: createdUser.role ?? "user" },
+            });
+
+            // Integration glue — best-effort. Kegagalan di sini TIDAK blokir signup
+            // (user tetap berhasil registrasi). Setiap error di-log untuk monitoring.
+
+            // 1. Auto-create subscription. Default = Free. Kalau cookie
+            //    `nubuat_trial_intent=1` ada (di-set oleh signup-form ketika
+            //    user datang via `/signup?trial=1`), start Trial Pro 7 hari
+            //    via `startTrialSubscription`. Cookie selalu di-clear setelah
+            //    dibaca supaya tidak bocor ke flow lain.
+            let trialIntent = false;
+            try {
+              const { cookies } = await import("next/headers");
+              const store = await cookies();
+              const c = store.get("nubuat_trial_intent");
+              if (c?.value === "1") {
+                trialIntent = true;
+                try {
+                  store.delete("nubuat_trial_intent");
+                } catch {
+                  // cookies().delete() throws di Route Handler context lama —
+                  // tidak fatal, cookie akan expire dalam 5 menit.
+                }
+              }
+            } catch (err) {
+              logger.debug({ err }, "trial intent cookie read skipped (no request context)");
+            }
+
+            try {
+              const billing = await import("@/lib/billing");
+              if (trialIntent) {
+                const fn = (billing as {
+                  startTrialSubscription?: (args: {
+                    userId: string;
+                    metadata?: Record<string, unknown>;
+                  }) => Promise<unknown>;
+                }).startTrialSubscription;
+                if (fn) {
+                  await fn({
+                    userId: createdUser.id,
+                    metadata: { source: "signup_query_trial=1" },
+                  });
+                  logger.info({ userId: createdUser.id }, "trial Pro 7d started at signup");
+                } else {
+                  // fallback safety — kalau export hilang, jangan blokir signup
+                  const free = (billing as {
+                    ensureFreeSubscription?: (args: { userId: string }) => Promise<unknown>;
+                  }).ensureFreeSubscription;
+                  if (free) await free({ userId: createdUser.id });
+                }
+              } else {
+                const fn = (billing as {
+                  ensureFreeSubscription?: (args: { userId: string }) => Promise<unknown>;
+                }).ensureFreeSubscription;
+                if (fn) await fn({ userId: createdUser.id });
+              }
+            } catch (err) {
+              logger.error(
+                { err, userId: createdUser.id, trialIntent },
+                "subscription bootstrap failed at signup",
+              );
+            }
+
+            // 2. Auto-create default watchlist "Utama" (Agent 6 helper).
+            try {
+              const watchlist = await import("@/lib/watchlist");
+              const fn = (watchlist as { ensureDefaultWatchlist?: (userId: string) => Promise<unknown> })
+                .ensureDefaultWatchlist;
+              if (fn) await fn(createdUser.id);
+            } catch (err) {
+              logger.error({ err, userId: createdUser.id }, "ensureDefaultWatchlist failed at signup");
+            }
+
+            // 3. Emit user.created event untuk konsumer lain (notifikasi welcome, dll).
+            try {
+              const queue = await import("@/lib/queue/events");
+              const publishEvent = (queue as { publishEvent?: (channel: string, payload: unknown) => Promise<unknown> })
+                .publishEvent;
+              if (publishEvent) {
+                await publishEvent("user.created", {
+                  userId: createdUser.id,
+                  email: createdUser.email,
+                  role: createdUser.role ?? "user",
+                  createdAt: new Date().toISOString(),
+                });
+              }
+            } catch (err) {
+              logger.error({ err, userId: createdUser.id }, "publishEvent user.created failed");
+            }
+          },
+        },
+      },
+      session: {
+        create: {
+          after: async (session) => {
+            await recordAuthEvent({
+              actorUserId: session.userId,
+              action: "login_success",
+              metadata: { sessionId: session.id },
+              ip: session.ipAddress ?? null,
+              userAgent: session.userAgent ?? null,
+            });
+          },
+        },
+      },
+    },
+    plugins: [nextCookies()],
+  });
+}
+
+export async function getAuth() {
+  if (cachedAuth) return cachedAuth;
+  if (!initPromise) {
+    initPromise = buildAuthAsync()
+      .then((inst) => {
+        cachedAuth = inst;
+        return inst;
+      })
+      .catch((err) => {
+        initPromise = null;
+        logger.error({ err }, "Failed to init better-auth");
+        throw err;
+      });
+  }
+  return initPromise;
+}
+
+/**
+ * `auth` — pakai `await getAuth()` untuk konsumsi tipe-aman. Re-export sebagai
+ * konvensi (better-auth idiom `import { auth } from "@/lib/auth"`).
+ *
+ * Karena instance dibangun async dari DB config, gunakan `getAuth()` di
+ * route handler & Server Component. JANGAN destructure `auth.api.xxx` di
+ * module top-level — selalu await dulu.
+ */
+export { getAuth as auth };
+
+// =================== Session Helpers ===================
+
+export async function getSession(): Promise<AppSession | null> {
+  try {
+    const a = await getAuth();
+    const hdrs = await headers();
+    const result = (await a.api.getSession({ headers: hdrs })) as
+      | { user: Record<string, unknown>; session: Record<string, unknown> }
+      | null;
+    if (!result) return null;
+    return normalizeSession(result);
+  } catch (err) {
+    logger.warn({ err }, "getSession failed");
+    return null;
+  }
+}
+
+export async function requireSession(): Promise<AppSession> {
+  const s = await getSession();
+  if (!s) throw new UnauthorizedError();
+  return s;
+}
+
+export async function requireRole(
+  session: AppSession,
+  role: UserRole | UserRole[],
+): Promise<AppSession> {
+  const allowed = Array.isArray(role) ? role : [role];
+  if (!allowed.includes(session.user.role)) {
+    throw new ForbiddenError(
+      `User role ${session.user.role} lacks required ${allowed.join("|")}`,
+    );
+  }
+  return session;
+}
+
+/**
+ * Allow admin DAN superadmin (hierarchy: superadmin > admin > user).
+ * Semua endpoint /api/admin/* yang pakai requireAdmin() otomatis allow superadmin
+ * setelah perubahan ini. Lihat ROLES.md §"Implementasi Helper".
+ */
+export async function requireAdmin(): Promise<AppSession> {
+  const s = await requireSession();
+  return requireRole(s, ["admin", "superadmin"]);
+}
+
+export async function requireSuperadminStrict(): Promise<AppSession> {
+  const s = await requireSession();
+  return requireRole(s, "superadmin");
+}
+
+// =================== Internal: Normalize session ===================
+
+function normalizeSession(raw: {
+  user: Record<string, unknown>;
+  session: Record<string, unknown>;
+}): AppSession {
+  const u = raw.user;
+  const s = raw.session;
+  const sessionUser: SessionUser = {
+    id: String(u.id ?? ""),
+    email: String(u.email ?? ""),
+    name: String(u.name ?? ""),
+    role: ((u.role as UserRole | undefined) ?? "user") as UserRole,
+    emailVerified: Boolean(u.emailVerified ?? false),
+    image: (u.image as string | null) ?? null,
+    locale: String(u.locale ?? "id-ID"),
+    timezone: String(u.timezone ?? "Asia/Jakarta"),
+    mfaEnabled: Boolean(u.mfaEnabled ?? false),
+  };
+  return {
+    user: sessionUser,
+    session: {
+      id: String(s.id ?? ""),
+      expiresAt: new Date(String(s.expiresAt ?? new Date())),
+      createdAt: new Date(String(s.createdAt ?? new Date())),
+      ipAddress: (s.ipAddress as string | null) ?? null,
+      userAgent: (s.userAgent as string | null) ?? null,
+    },
+    // Flat aliases — Agent 3 expose user.id nested, tapi ratusan endpoint
+    // di Agent 5/6/7/8/10 pakai session.userId / session.role flat. Daripada
+    // edit ratusan baris, expose flat alias di sini.
+    userId: sessionUser.id,
+    role: sessionUser.role,
+    email: sessionUser.email,
+  };
+}

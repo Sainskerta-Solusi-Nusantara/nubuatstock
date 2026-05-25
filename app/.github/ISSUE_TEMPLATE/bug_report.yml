@@ -1,0 +1,99 @@
+name: Laporan Bug
+description: Laporkan bug atau perilaku tidak sesuai pada aplikasi Nubuat
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih sudah meluangkan waktu untuk melaporkan bug.
+        Mohon isi form di bawah selengkap mungkin agar tim bisa memverifikasi dan memperbaiki dengan cepat.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Deskripsi Bug
+      description: Jelaskan secara singkat dan jelas bug yang Anda temui.
+      placeholder: Contoh — Chart Elliott Wave tidak muncul saat membuka detail emiten BBRI.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah Reproduksi
+      description: Berikan langkah-langkah berurutan untuk mereproduksi bug ini.
+      placeholder: |
+        1. Login sebagai user tier Starter
+        2. Buka halaman /stocks/BBRI
+        3. Klik tab "Elliott Wave"
+        4. Lihat error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Hasil yang Diharapkan
+      description: Apa yang seharusnya terjadi?
+      placeholder: Chart Elliott Wave seharusnya muncul lengkap dengan label wave 1-5 dan narasi AI.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Hasil yang Terjadi
+      description: Apa yang sebenarnya terjadi? Sertakan pesan error jika ada.
+      placeholder: Halaman menampilkan "Failed to load chart" tanpa data tambahan.
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Browser apa yang Anda gunakan (termasuk versi)?
+      placeholder: Chrome 120.0.6099.71
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Sistem Operasi
+      description: OS dan versinya
+      placeholder: macOS 14.2 / Windows 11 / Android 14
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier Akun
+      description: Tier subscription Anda saat menemukan bug
+      options:
+        - Free
+        - Starter
+        - Pro
+        - Elite
+        - Tidak yakin / belum login
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot / Rekaman
+      description: Tarik dan lepas gambar atau video ke area ini untuk mengunggah. Sangat membantu untuk bug visual.
+      placeholder: Drag & drop file gambar atau video di sini.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Konteks Tambahan
+      description: Informasi lain yang relevan (log konsol, request gagal, dsb.)
+    validations:
+      required: false

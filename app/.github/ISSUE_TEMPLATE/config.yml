@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Pertanyaan Billing & Subscription
+    url: mailto:support@nubuat.id
+    about: Untuk pertanyaan terkait pembayaran, invoice, refund, atau status langganan, silakan email tim support.
+  - name: Diskusi Umum & Komunitas
+    url: https://t.me/nubuatid
+    about: Bergabung dengan grup Telegram Nubuat untuk diskusi umum, tips trading, dan tanya jawab sesama pengguna.

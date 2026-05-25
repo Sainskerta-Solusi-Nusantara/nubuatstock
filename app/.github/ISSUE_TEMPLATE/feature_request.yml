@@ -1,0 +1,65 @@
+name: Permintaan Fitur
+description: Usulkan fitur baru atau peningkatan untuk aplikasi Nubuat
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih atas ide Anda! Mohon jelaskan kebutuhan dan usulan Anda
+        agar tim bisa mengevaluasi dampaknya bagi trader retail Indonesia.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah yang Ingin Diselesaikan
+      description: Masalah atau pain-point apa yang ingin diselesaikan oleh fitur ini?
+      placeholder: |
+        Sebagai trader retail, saya kesulitan membandingkan performa watchlist saya dengan IHSG
+        dalam satu tampilan ringkas.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solusi yang Diusulkan
+      description: Jelaskan secara detail solusi atau fitur yang Anda usulkan.
+      placeholder: |
+        Tambahkan widget "Watchlist vs IHSG" di dashboard dengan chart line 1D/1W/1M
+        dan delta persentase.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatif yang Sudah Dipertimbangkan
+      description: Solusi atau workaround lain yang sudah Anda pertimbangkan atau coba.
+      placeholder: |
+        Saat ini saya membandingkan manual di Excel. Aplikasi X punya fitur serupa tapi tidak
+        cocok untuk pasar IDX.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Relevansi Tier
+      description: Tier mana yang paling diuntungkan oleh fitur ini?
+      options:
+        - Free
+        - Starter
+        - Pro
+        - Elite
+        - Semua tier (All)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Konteks Tambahan
+      description: Mockup, referensi kompetitor, atau detail lain yang membantu.
+    validations:
+      required: false

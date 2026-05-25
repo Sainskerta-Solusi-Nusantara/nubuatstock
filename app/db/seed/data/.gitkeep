@@ -1,0 +1,6 @@
+# Snapshot data folder
+#
+# Jalankan `npx tsx scripts/fetch-emiten.ts` untuk generate `emiten.json`
+# berisi seluruh ~960 emiten BEI dari KSEI (sumber utama) atau Kontan (fallback).
+#
+# File `emiten.json` akan otomatis ter-commit (data faktual publik IDX/KSEI).
