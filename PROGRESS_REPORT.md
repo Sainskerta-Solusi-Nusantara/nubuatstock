@@ -872,15 +872,17 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 > | Logo emiten self-host | 🔴 hotlink Google | 🟢 LIVE di Vercel Blob (public) — 61 emiten lokal ter-upload; prod tinggal run |
 > | Glossary admin CMS | ⚪ 0% | 🟢 90% (/admin/glossary CRUD + publish + revalidate ISR) |
 > | Data vendor (bandarmology/real-time) | 🔴 20% (placeholder) | 🔴 20% (blokir vendor) |
-> | Test coverage | 🔴 ~10% | 🟢 ~30% (**326 unit test**, +258 sesi ini) |
+> | Test coverage | 🔴 ~10% | 🟢 ~30% (**336 unit test**, +268 sesi ini) |
+> | PWA / archive / search UX | ⚪ — | 🟢 PWA installable, /picks-archive publik, search pg_trgm typo-tolerant |
 
 **Highlights**
 - **Launch-blockers (Jalur A):** email verification gate + better-auth IP rate-limit; verifikasi signature webhook Midtrans/Xendit (timing-safe, 401, 12 test); rate-limit per-IP endpoint publik; **pulih regresi keamanan** (`/api/market/*` tanpa auth pasca middleware dihapus → `requireSession`); UU PDP endpoint export & soft-delete akun (+30 hari); cookie consent banner; audit-log immutability (migration append-only); cron picks-evaluator + worker account-deletion-sweep.
 - **Diferensiator (Jalur B):** Elliott Wave **P0+P1** (pivot ZigZag, 3 hard rules, impulse + corrective A-B-C, multi-TF) lengkap dengan 37 test; pattern recognition tambah pennant + inverse cup&handle; screener technical filters + preset **Mode Swing Santai**; ToS/Privacy versioning re-accept.
 - **UI/UX:** tagline brand → "Nubuat 👍 - Nubie Berbuat Mulanya Nyangkut Menuju Yahud"; nada bahasa semi-formal "kamu" (~46 lokasi: copy, notif, AI prompt, legal); kontras token teks dinaikkan (WCAG AA, light & dark); 404 custom + OpenGraph image.
 - **Konten baru:** halaman **About Us** (visi: ritel trauma → Nubuat teman bertumbuh, SEO + JSON-LD) & **Glossary** (64 istilah, DB + ISR + search + pagination + per-term `/glossary/[slug]` schema.org DefinedTerm).
-- **Logo self-host:** pipeline `npm run logos:sync` (download → WebP 128px → Vercel Blob → simpan URL) + `next.config` remotePatterns/CSP. Menggantikan hotlink Google Favicon (rujukan plan §8.3 #15).
-- **Infra:** commit `87290a8` di branch `feat/launch-blockers-elliott-screener-uiux` (86 file). tsc 0 error, **121 unit test lulus**, production build hijau. DB lokal di-refresh (copy/tagline tampil).
+- **Logo self-host:** pipeline `npm run logos:sync` (download → WebP 128px → Vercel Blob → simpan URL). **LIVE** — 61 emiten lokal ter-upload ke store public, verified HTTP 200 image/webp.
+- **Fitur lanjutan:** Glossary admin CMS (`/admin/glossary` CRUD); dark-mode default ikut OS + toggle 3-state; **PWA installable** (manifest + ikon 192/512 via next/og); **/picks-archive** publik (track record T+1/5/20 + hit-rate, SEO+ISR+disclaimer); AI Copilot render markdown progresif (throttle rAF); **search typo-tolerant** (pg_trgm, "TLKOM"→TLKM); picks outcome-evaluator diekstrak jadi modul murni + 20 test.
+- **Infra:** branch `feat/launch-blockers-elliott-screener-uiux`, **6 commit** (belum push). tsc 0 error, **336 unit test lulus**, build hijau. DB lokal di-refresh (copy/tagline + glossary + logo tampil).
 
 **Lowlights**
 - **Next.js version drift:** `node_modules` = 15.5.18 padahal `package.json` pin 15.1.11 (versi yang dulu dihindari karena regresi `/404 <Html>` di Vercel). Verifikasi build lokal jalan di 15.5.18, bukan versi target Vercel — wajib rekonsiliasi.
@@ -888,8 +890,8 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - Migration belum dijalankan: kolom soft-delete akun, tabel glossary, constraint audit immutability.
 
 **Numbers**
-- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): `87290a8` → `68417e8` → `24cbb1b` → `cba8df3` (4 commit, belum di-push ke GitHub — nunggu perintah founder).
-- Unit test: 68 → **326** (+258 sesi ini: verdict 48, valuation 42, picks 54+20-outcome, billing 41, dll). tsc error: 0. Build: ✅.
+- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): 6 commit `87290a8 → 68417e8 → 24cbb1b → cba8df3 → d54c9f6 → c3422f3` (belum di-push ke GitHub — nunggu perintah founder).
+- Unit test: 68 → **336** (+268 sesi ini: verdict 48, valuation 42, picks 54+20, billing 41, search 10, dll). tsc error: 0. Build: ✅.
 - Versi Next.js: **deploy AMAN** (lockfile pin 15.1.11); hanya `node_modules` lokal drift (non-blocking).
 - Glossary: tabel + **64 istilah** di DB lokal; halaman publik + admin CMS jalan. Prod: perlu push+seed.
 - **Logo self-host LIVE**: 61 emiten lokal ter-upload ke Vercel Blob (public store), URL `*.public.blob.vercel-storage.com`, terverifikasi HTTP 200 image/webp. Prod: run `logos:sync` (punya data website → coverage penuh 980).
