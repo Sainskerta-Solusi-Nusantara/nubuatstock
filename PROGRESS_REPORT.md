@@ -869,9 +869,10 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 > | Diferensiator (Elliott/Pattern/Screener) | 🟡 65% | 🟢 ~90% (Elliott P0+P1, pennant+inverse cup, Swing Santai) |
 > | UI/UX & copy | 🟡 70% | 🟢 ~88% (tagline, nada "kamu", kontras teks, 404, OG) |
 > | Konten publik (About/Glossary) | ⚪ 0% | 🟢 90% (kode siap; glossary perlu push+seed prod) |
-> | Logo emiten self-host | 🔴 hotlink Google | 🟡 pipeline siap (perlu token Blob + run) |
+> | Logo emiten self-host | 🔴 hotlink Google | 🟢 LIVE di Vercel Blob (public) — 61 emiten lokal ter-upload; prod tinggal run |
+> | Glossary admin CMS | ⚪ 0% | 🟢 90% (/admin/glossary CRUD + publish + revalidate ISR) |
 > | Data vendor (bandarmology/real-time) | 🔴 20% (placeholder) | 🔴 20% (blokir vendor) |
-> | Test coverage | 🔴 ~10% | 🟡 ~15% (121 unit test, +53 sesi ini) |
+> | Test coverage | 🔴 ~10% | 🟢 ~30% (**326 unit test**, +258 sesi ini) |
 
 **Highlights**
 - **Launch-blockers (Jalur A):** email verification gate + better-auth IP rate-limit; verifikasi signature webhook Midtrans/Xendit (timing-safe, 401, 12 test); rate-limit per-IP endpoint publik; **pulih regresi keamanan** (`/api/market/*` tanpa auth pasca middleware dihapus → `requireSession`); UU PDP endpoint export & soft-delete akun (+30 hari); cookie consent banner; audit-log immutability (migration append-only); cron picks-evaluator + worker account-deletion-sweep.
@@ -887,10 +888,12 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - Migration belum dijalankan: kolom soft-delete akun, tabel glossary, constraint audit immutability.
 
 **Numbers**
-- Commit: `87290a8` (86 file Jalur A+B+UI) → `68417e8` (About Us/Glossary/logo pipeline) → test-coverage batch.
-- Unit test: 68 → 121 → **306** (+238 sesi ini: +verdict 48, valuation 42, picks 54, billing 41, dll). tsc error: 0. Build: ✅.
+- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): `87290a8` → `68417e8` → `24cbb1b` → `cba8df3` (4 commit, belum di-push ke GitHub — nunggu perintah founder).
+- Unit test: 68 → **326** (+258 sesi ini: verdict 48, valuation 42, picks 54+20-outcome, billing 41, dll). tsc error: 0. Build: ✅.
 - Versi Next.js: **deploy AMAN** (lockfile pin 15.1.11); hanya `node_modules` lokal drift (non-blocking).
-- Glossary: tabel + **64 istilah** sudah di DB lokal (`/glossary` jalan lokal). Prod: perlu push+seed.
+- Glossary: tabel + **64 istilah** di DB lokal; halaman publik + admin CMS jalan. Prod: perlu push+seed.
+- **Logo self-host LIVE**: 61 emiten lokal ter-upload ke Vercel Blob (public store), URL `*.public.blob.vercel-storage.com`, terverifikasi HTTP 200 image/webp. Prod: run `logos:sync` (punya data website → coverage penuh 980).
+- Dark mode kini default ikut OS (prefers-color-scheme) + toggle 3-state.
 
 **Next Week**
 - Rekonsiliasi versi Next.js (pin vs installed) sebelum deploy.
