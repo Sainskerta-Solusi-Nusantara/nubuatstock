@@ -19,6 +19,7 @@ export * from "./elliott"; // Elliott Wave snapshots
 export * from "./embeddings"; // Vector RAG
 export * from "./experiments"; // A/B testing
 export * from "./feature-flags"; // Agent 10
+export * from "./glossary"; // Glossary / kamus istilah saham (DB-driven + ISR)
 export * from "./fundamentals"; // Enrichment (Yahoo Finance)
 // Disambiguate: both `companies` and `fundamentals` export `Dividend`.
 // Explicit re-exports below override the ambiguous `export *` collisions:

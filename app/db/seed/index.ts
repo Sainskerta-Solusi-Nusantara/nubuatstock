@@ -10,6 +10,7 @@ import { seedTiers } from "./tiers";
 import { seedLandingContent } from "./landing";
 import { seedLegalContent } from "./legal";
 import { seedNewsSources } from "./news-sources";
+import { seedGlossary } from "./glossary";
 
 /**
  * Seed orchestrator. Idempotent — aman dijalankan berulang.
@@ -36,6 +37,7 @@ async function main() {
   await seedLandingContent(); // Landing CMS (DB-driven editable by superadmin)
   await seedLegalContent();   // Privacy + ToS + Disclaimer (DB-driven)
   await seedNewsSources();    // RSS feeds: Kontan/Bisnis/CNBC ID/Detik/IQPlus
+  await seedGlossary();       // Glossary / kamus istilah saham (DB-driven + ISR)
 
   logger.info("Seed complete");
   process.exit(0);

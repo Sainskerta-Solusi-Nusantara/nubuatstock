@@ -24,6 +24,8 @@ export function Footer(props: FooterProps) {
             <div className="text-sm font-semibold">Produk</div>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li><Link href="#features" className="hover:text-foreground">Fitur</Link></li>
+              <li><Link href="/about" className="hover:text-foreground">About Us</Link></li>
+              <li><Link href="/glossary" className="hover:text-foreground">Glossary</Link></li>
               <li><Link href="/subscription" className="hover:text-foreground">Harga</Link></li>
               <li><Link href="/signup?trial=starter" className="hover:text-foreground">Trial Gratis 3 Hari</Link></li>
               <li><Link href="/picks" className="hover:text-foreground">Daily Picks</Link></li>

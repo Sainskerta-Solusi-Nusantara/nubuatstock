@@ -41,17 +41,17 @@
 
 | Metric | Value |
 |---|---|
-| **Current phase** | M0 — Discovery & Foundation |
-| **Phase progress** | 5% (kickoff week) |
+| **Current phase** | M0–M3 — MVP build / pre-closed-beta hardening |
+| **Phase progress** | **MVP build ~88%** · **Closed-beta launch-readiness ~85%** (per 29 Mei 2026) |
 | **North Star: Weekly Active Trader (WAT)** | 0 (target M6: 500, M12: 6.000, M24: 32.000) |
 | **MRR** | Rp 0 (target M6: Rp 52 jt, M12: Rp 396 jt, M24: Rp 1,56 Mrd) |
 | **Paid users** | 0 (target M6: 290, M12: 2.180, M24: 7.850) |
 | **Free users** | 0 (target M6: 5.000, M12: 25.000, M24: 80.000) |
 | **Runway** | TBD (pending pre-seed funding) |
 | **Team size** | 1 (Founder solo) — hiring 4 untuk M0 closure |
-| **Biggest win this week** | Strategic discovery document (`ANALISIS_APLIKASI_SAHAM.md`) selesai v0.1; design plan (`PLAN_UIUX_WIREFRAME.md`) selesai v0.1 |
-| **Biggest risk this week** | Funding belum sealed; tim teknis belum hire; lisensi data IDX belum negosiasi |
-| **Next milestone** | M0.1 — close pre-seed; hire co-founder/tech lead, 2 BE, 2 FE, 1 designer (Week 4–8) |
+| **Biggest win this week** | Tutup mayoritas launch-blocker P0/P1 (email-gate, webhook signature, rate-limit, UU PDP export/delete, audit immutability, cookie consent) + diferensiator (Elliott Wave P0+P1, pattern recognition, screener Swing Santai) + UI/UX (tagline, nada "kamu", kontras teks) + halaman About Us & Glossary + pipeline logo self-host (Vercel Blob). Lihat log Minggu 25–31 Mei. |
+| **Biggest risk this week** | (1) Vendor data bandarmology/real-time belum dikontrak (blokir L2). (2) Migration + re-seed copy/tagline ke DB produksi belum dijalankan. (3) Minor: `node_modules` lokal drift ke Next 15.5.18 — **deploy AMAN** (lockfile pin 15.1.11, Vercel pakai itu), cukup `npm ci` lokal agar test lokal = versi deploy. |
+| **Next milestone** | Closed beta 500 user — sisa: jalankan migration + re-seed prod, set `BLOB_READ_WRITE_TOKEN` + run `logos:sync`, keputusan vendor data, naikkan test coverage. |
 
 ---
 
@@ -859,20 +859,45 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 
 ### Week of 25–31 Mei 2026 (Sprint 1, week 2)
 
+> **Snapshot progres (29 Mei 2026):** MVP build **~88%** · Launch-readiness closed-beta **~85%**.
+> Baseline pembanding untuk update berikutnya. Estimasi per-area:
+>
+> | Area | Sebelum sesi | Sesudah sesi |
+> |---|---|---|
+> | Deploy & CI/CD | 🟢 95% (deploy aman, framework preset fixed) | 🟢 95% |
+> | Compliance & security (launch-blocker) | 🟡 60% | 🟢 ~90% (email-gate, webhook sig, rate-limit IP, UU PDP, audit immutability, cookie consent, market-auth regresi) |
+> | Diferensiator (Elliott/Pattern/Screener) | 🟡 65% | 🟢 ~90% (Elliott P0+P1, pennant+inverse cup, Swing Santai) |
+> | UI/UX & copy | 🟡 70% | 🟢 ~88% (tagline, nada "kamu", kontras teks, 404, OG) |
+> | Konten publik (About/Glossary) | ⚪ 0% | 🟢 90% (kode siap; glossary perlu push+seed prod) |
+> | Logo emiten self-host | 🔴 hotlink Google | 🟡 pipeline siap (perlu token Blob + run) |
+> | Data vendor (bandarmology/real-time) | 🔴 20% (placeholder) | 🔴 20% (blokir vendor) |
+> | Test coverage | 🔴 ~10% | 🟡 ~15% (121 unit test, +53 sesi ini) |
+
 **Highlights**
-- *(TBD)*
+- **Launch-blockers (Jalur A):** email verification gate + better-auth IP rate-limit; verifikasi signature webhook Midtrans/Xendit (timing-safe, 401, 12 test); rate-limit per-IP endpoint publik; **pulih regresi keamanan** (`/api/market/*` tanpa auth pasca middleware dihapus → `requireSession`); UU PDP endpoint export & soft-delete akun (+30 hari); cookie consent banner; audit-log immutability (migration append-only); cron picks-evaluator + worker account-deletion-sweep.
+- **Diferensiator (Jalur B):** Elliott Wave **P0+P1** (pivot ZigZag, 3 hard rules, impulse + corrective A-B-C, multi-TF) lengkap dengan 37 test; pattern recognition tambah pennant + inverse cup&handle; screener technical filters + preset **Mode Swing Santai**; ToS/Privacy versioning re-accept.
+- **UI/UX:** tagline brand → "Nubuat 👍 - Nubie Berbuat Mulanya Nyangkut Menuju Yahud"; nada bahasa semi-formal "kamu" (~46 lokasi: copy, notif, AI prompt, legal); kontras token teks dinaikkan (WCAG AA, light & dark); 404 custom + OpenGraph image.
+- **Konten baru:** halaman **About Us** (visi: ritel trauma → Nubuat teman bertumbuh, SEO + JSON-LD) & **Glossary** (64 istilah, DB + ISR + search + pagination + per-term `/glossary/[slug]` schema.org DefinedTerm).
+- **Logo self-host:** pipeline `npm run logos:sync` (download → WebP 128px → Vercel Blob → simpan URL) + `next.config` remotePatterns/CSP. Menggantikan hotlink Google Favicon (rujukan plan §8.3 #15).
+- **Infra:** commit `87290a8` di branch `feat/launch-blockers-elliott-screener-uiux` (86 file). tsc 0 error, **121 unit test lulus**, production build hijau. DB lokal di-refresh (copy/tagline tampil).
 
 **Lowlights**
-- *(TBD)*
+- **Next.js version drift:** `node_modules` = 15.5.18 padahal `package.json` pin 15.1.11 (versi yang dulu dihindari karena regresi `/404 <Html>` di Vercel). Verifikasi build lokal jalan di 15.5.18, bukan versi target Vercel — wajib rekonsiliasi.
+- Copy DB-driven: perubahan tagline/teks hanya tampil setelah **re-seed** (seed pakai `onConflictDoNothing`); prod belum di-re-seed.
+- Migration belum dijalankan: kolom soft-delete akun, tabel glossary, constraint audit immutability.
 
 **Numbers**
-- *(TBD)*
+- File berubah/baru: 86 (commit) + About Us/Glossary/logo pipeline (uncommitted). Unit test: 68 → **121** (+53). tsc error: 0. Build: ✅.
 
 **Next Week**
-- *(TBD)*
+- Rekonsiliasi versi Next.js (pin vs installed) sebelum deploy.
+- Jalankan migration + re-seed copy ke DB produksi (via superadmin atau pipeline).
+- Set `BLOB_READ_WRITE_TOKEN` + `npm run logos:sync` (self-host logo).
+- Commit About Us + Glossary + logo pipeline; keputusan vendor data bandarmology.
 
 **Asks**
-- *(TBD)*
+- Keputusan storage logo (✅ Vercel Blob dipilih) → butuh founder buat Blob store + token.
+- Keputusan kontrak vendor data (Invezgo/OHLC.dev) untuk unlock Bandarmology L2.
 
 ---
 
@@ -944,7 +969,7 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 | Version | Date | Author | Changes |
 |---|---|---|---|
 | v0.1 | 11 Mei 2026 | Founder | Initial draft. Status snapshot, milestone tracker M0–M24, workstream status, feature matrix (96 fitur), KPI tracker, hiring tracker, budget template, risk register (15 risiko), decision log (5 keputusan), weekly status template, sprint schedule. |
-| v0.2 | TBD | TBD | TBD |
+| v0.2 | 29 Mei 2026 | Founder + Claude | Update snapshot: phase → MVP/pre-closed-beta, progress MVP ~88% / launch-readiness ~85% (sebelumnya stale "5%"). Log sesi 29 Mei di Minggu 25–31 Mei: tutup launch-blocker P0/P1 (email-gate, webhook sig, rate-limit, UU PDP, audit immutability, cookie consent, market-auth fix), diferensiator (Elliott P0+P1, pattern, screener Swing Santai), UI/UX (tagline, nada "kamu", kontras teks), About Us + Glossary, pipeline logo Vercel Blob. 121 unit test, tsc 0, build hijau. |
 | v0.3 | TBD | TBD | TBD |
 
 ---

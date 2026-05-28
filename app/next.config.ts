@@ -27,6 +27,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "www.google.com", port: "", pathname: "/s2/**" },
       { protocol: "https", hostname: "**.gstatic.com", port: "", pathname: "/**" },
       { protocol: "https", hostname: "cdn.brandfetch.io", port: "", pathname: "/**" },
+      // Self-hosted logo emiten di Vercel Blob (sumber utama setelah sync-logos).
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com", port: "", pathname: "/**" },
       // News thumbnail sources.
       { protocol: "https", hostname: "awsimages.detik.net.id", port: "", pathname: "/**" },
       { protocol: "https", hostname: "**.cnbcindonesia.com", port: "", pathname: "/**" },
@@ -56,7 +58,7 @@ const nextConfig: NextConfig = {
               // Image domains. Google `/s2/favicons` 301-redirect ke t*.gstatic.com,
               // jadi *.gstatic.com WAJIB di-whitelist juga supaya logo emiten tidak
               // di-block setelah redirect.
-              "img-src 'self' data: blob: https://cdn.brandfetch.io https://www.google.com https://*.gstatic.com https://awsimages.detik.net.id https://images.unsplash.com https://plus.unsplash.com https://*.cnbcindonesia.com",
+              "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://cdn.brandfetch.io https://www.google.com https://*.gstatic.com https://awsimages.detik.net.id https://images.unsplash.com https://plus.unsplash.com https://*.cnbcindonesia.com",
               "font-src 'self' data:",
               // API: Sentry, PostHog, DeepSeek; allow self for streaming
               "connect-src 'self' https://*.sentry.io https://*.posthog.com https://api.deepseek.com wss://*",

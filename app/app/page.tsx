@@ -169,6 +169,8 @@ function TopNav({ appName, ctaText }: { appName: string; ctaText: string }) {
         </a>
         <nav className="hidden items-center gap-6 text-sm sm:flex">
           <a href="#features" className="text-muted-foreground hover:text-foreground transition">Fitur</a>
+          <a href="/about" className="text-muted-foreground hover:text-foreground transition">About Us</a>
+          <a href="/glossary" className="text-muted-foreground hover:text-foreground transition">Glossary</a>
           <a href="/research" className="text-muted-foreground hover:text-foreground transition">Riset</a>
           <a href="/subscription" className="text-muted-foreground hover:text-foreground transition">Harga</a>
           <a href="/login" className="text-muted-foreground hover:text-foreground transition">Login</a>
