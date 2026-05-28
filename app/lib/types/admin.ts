@@ -199,6 +199,10 @@ export const ADMIN_AUDIT_ACTIONS = {
   TIER_ENTITLEMENT_UPDATE: "admin.tier.entitlement.update",
   AI_PROMPT_CREATE: "admin.ai_prompt.create",
   AI_PROMPT_ACTIVATE: "admin.ai_prompt.activate",
+  GLOSSARY_TERM_CREATE: "admin.glossary_term.create",
+  GLOSSARY_TERM_UPDATE: "admin.glossary_term.update",
+  GLOSSARY_TERM_DELETE: "admin.glossary_term.delete",
+  GLOSSARY_TERM_PUBLISH: "admin.glossary_term.publish",
 } as const;
 
 export type AdminAuditAction =

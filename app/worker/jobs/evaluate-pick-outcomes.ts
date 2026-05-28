@@ -4,6 +4,12 @@ import { db } from "@/lib/db";
 import { dailyPicks, pickOutcomes } from "@/db/schema/picks";
 import { quotesEod } from "@/db/schema/market";
 import { logger } from "@/lib/logger";
+import {
+  EVAL_DAYS,
+  addTradingDays,
+  evaluatePickAt as evaluateOutcome,
+  type Evaluation,
+} from "@/lib/picks/outcome";
 
 /**
  * Evaluate Daily Picks outcome di T+1, T+5, dan T+20 trading day setelah publish.
@@ -19,21 +25,6 @@ import { logger } from "@/lib/logger";
  *
  * Idempotent — unique constraint pada (pick_id, evaluation_at).
  */
-
-type Evaluation = "T+1" | "T+5" | "T+20" | "final";
-const EVAL_DAYS: Record<Evaluation, number> = { "T+1": 1, "T+5": 5, "T+20": 20, final: 20 };
-
-function addTradingDays(start: Date, n: number): Date {
-  // Approximate: skip Sat/Sun. Doesn't account for holidays — close enough for MVP.
-  const d = new Date(start);
-  let added = 0;
-  while (added < n) {
-    d.setUTCDate(d.getUTCDate() + 1);
-    const day = d.getUTCDay();
-    if (day !== 0 && day !== 6) added++;
-  }
-  return d;
-}
 
 async function getCloseAt(companyKode: string, on: Date): Promise<number | null> {
   // Find latest close on or before `on` date (handles holidays)
@@ -60,7 +51,6 @@ interface EvalResult {
 }
 
 async function evaluatePickAt(pick: typeof dailyPicks.$inferSelect, evalPoint: Evaluation): Promise<EvalResult | null> {
-  const publishedAt = pick.publishedAt ?? pick.createdAt;
   const tradeStart = new Date(pick.tradeDate);
   const evalDate = addTradingDays(tradeStart, EVAL_DAYS[evalPoint]);
 
@@ -72,12 +62,6 @@ async function evaluatePickAt(pick: typeof dailyPicks.$inferSelect, evalPoint: E
 
   const entry = pick.entryZoneLow != null ? Number(pick.entryZoneLow) : Number(pick.entryZoneHigh ?? 0);
   if (entry === 0) return null;
-
-  const returnPct = (closePrice - entry) / entry;
-  const sl = Number(pick.stopLoss ?? 0);
-  const tp1 = Number(pick.tp1 ?? 0);
-  const tp2 = pick.tp2 != null ? Number(pick.tp2) : null;
-  const tp3 = pick.tp3 != null ? Number(pick.tp3) : null;
 
   // Need intraday high/low untuk akurat — approximated via max/min close di window
   const windowRows = await db
@@ -92,31 +76,22 @@ async function evaluatePickAt(pick: typeof dailyPicks.$inferSelect, evalPoint: E
   const highInWindow = Math.max(...windowRows.map((r) => Number(r.high)), -Infinity);
   const lowInWindow = Math.min(...windowRows.map((r) => Number(r.low)), Infinity);
 
-  const hitTp1 = tp1 > 0 && Number.isFinite(highInWindow) && highInWindow >= tp1;
-  const hitTp2 = tp2 != null && tp2 > 0 && Number.isFinite(highInWindow) && highInWindow >= tp2;
-  const hitTp3 = tp3 != null && tp3 > 0 && Number.isFinite(highInWindow) && highInWindow >= tp3;
-  const hitSl = sl > 0 && Number.isFinite(lowInWindow) && lowInWindow <= sl;
+  // Pure math: hit detection, return %, status resolution.
+  const outcome = evaluateOutcome(
+    closePrice,
+    highInWindow,
+    lowInWindow,
+    {
+      entry,
+      sl: Number(pick.stopLoss ?? 0),
+      tp1: Number(pick.tp1 ?? 0),
+      tp2: pick.tp2 != null ? Number(pick.tp2) : null,
+      tp3: pick.tp3 != null ? Number(pick.tp3) : null,
+    },
+    evalPoint === "T+20",
+  );
 
-  let statusAtEval: EvalResult["statusAtEval"] = "open";
-  // Resolution: SL takes priority kalau hit duluan dalam window (approx — without intraday timestamps we can't tell order)
-  if (hitTp3) statusAtEval = "tp3_hit";
-  else if (hitTp2) statusAtEval = "tp2_hit";
-  else if (hitTp1) statusAtEval = "tp1_hit";
-  else if (hitSl) statusAtEval = "sl_hit";
-
-  if (evalPoint === "T+20" && statusAtEval === "open") statusAtEval = "expired";
-
-  return {
-    pickId: pick.id,
-    evalPoint,
-    priceAtEval: closePrice,
-    returnPct,
-    hitTp1,
-    hitTp2,
-    hitTp3,
-    hitSl,
-    statusAtEval,
-  };
+  return { pickId: pick.id, evalPoint, ...outcome };
 }
 
 export const evaluatePickOutcomesProcessor: Processor = async (job) => {

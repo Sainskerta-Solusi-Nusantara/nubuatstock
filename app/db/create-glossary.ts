@@ -30,8 +30,8 @@ async function main() {
   for (const s of STATEMENTS) await db.execute(sql.raw(s));
   console.log("glossary_terms table + indexes ready");
   await seedGlossary();
-  const [{ c }] = await db.execute<{ c: number }>(sql`SELECT count(*)::int AS c FROM glossary_terms`);
-  console.log(`glossary seeded — total terms: ${c}`);
+  const res = await db.execute<{ c: number }>(sql`SELECT count(*)::int AS c FROM glossary_terms`);
+  console.log(`glossary seeded — total terms: ${res[0]?.c ?? 0}`);
   process.exit(0);
 }
 
