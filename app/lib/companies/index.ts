@@ -9,6 +9,13 @@ import type {
   CompanyListItemDTO,
   CompanySearchHitDTO,
 } from "@/lib/types/companies";
+import {
+  TRGM_KODE_THRESHOLD,
+  TRGM_NAME_THRESHOLD,
+  escapeLikePattern,
+  looksLikeTicker,
+  normalizeSearchQuery,
+} from "@/lib/companies/search-query";
 
 /**
  * Service layer untuk domain Companies. Pure data access — no HTTP, no Zod.
@@ -179,21 +186,27 @@ export async function listCompanies(opts: ListOptions = {}): Promise<ListResult<
 }
 
 /**
- * Fuzzy search untuk command palette / autocomplete.
+ * Fuzzy search untuk command palette / autocomplete dengan TYPO TOLERANCE.
  *
- * Strategi: prefix match di `kode` (skor tertinggi) + contains di nama.
- * Hasil terurut: exact kode first, lalu prefix, lalu name match.
+ * Strategi (IMPROVEMENT_PLAN §8.4 #26, pg_trgm — migration 0001):
+ * - exact kode (rank 0) → prefix kode (rank 1) → contains/trigram (rank 2).
+ * - Fallback trigram similarity untuk typo: "BBR"→BBRI, "TLKOM"→TLKM,
+ *   "bank bca"→BBCA. Di-ORDER BY similarity DESC dalam rank 2.
  */
 export async function searchCompanies(
   query: string,
   opts: { limit?: number } = {},
 ): Promise<CompanySearchHitDTO[]> {
-  const q = query.trim();
+  // Normalisasi pure (trim + collapse whitespace).
+  const q = normalizeSearchQuery(query);
   if (q.length === 0) return [];
   const limit = clampLimit(opts.limit, 50, 20);
   const upper = q.toUpperCase();
-  const wildcardUpper = `${upper}%`;
-  const wildcardLower = `%${q.toLowerCase()}%`;
+  const escaped = escapeLikePattern(q);
+  const escapedUpper = escapeLikePattern(upper);
+  const wildcardUpper = `${escapedUpper}%`;
+  const wildcardLower = `%${escaped.toLowerCase()}%`;
+  const isTicker = looksLikeTicker(q);
 
   const sortExpr = sql<number>`
     CASE
@@ -201,6 +214,13 @@ export async function searchCompanies(
       WHEN ${companies.kode} LIKE ${wildcardUpper} THEN 1
       ELSE 2
     END
+  `;
+  // Best similarity (kode vs nama) untuk tie-break dalam rank 2.
+  const simExpr = sql<number>`
+    GREATEST(
+      similarity(${companies.kode}, ${upper}),
+      similarity(${companies.namaPerusahaan}, ${q})
+    )
   `;
 
   const rows = await db
@@ -216,12 +236,14 @@ export async function searchCompanies(
         isNull(companies.deletedAt),
         eq(companies.isActive, true),
         or(
-          ilike(companies.kode, `%${upper}%`),
+          ilike(companies.kode, `%${escapedUpper}%`),
           ilike(companies.namaPerusahaan, wildcardLower),
+          sql`similarity(${companies.kode}, ${upper}) >= ${isTicker ? TRGM_KODE_THRESHOLD : TRGM_NAME_THRESHOLD}`,
+          sql`similarity(${companies.namaPerusahaan}, ${q}) >= ${TRGM_NAME_THRESHOLD}`,
         ),
       ),
     )
-    .orderBy(sortExpr, asc(companies.kode))
+    .orderBy(sortExpr, desc(simExpr), asc(companies.kode))
     .limit(limit);
 
   return rows.map((r) => ({

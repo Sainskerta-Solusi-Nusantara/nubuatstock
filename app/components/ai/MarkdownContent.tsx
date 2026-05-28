@@ -13,20 +13,71 @@ interface Props {
 }
 
 /**
- * Debounce markdown re-parse selama streaming.
+ * Throttle markdown re-parse selama streaming progresif.
  *
- * Tanpa debounce: setiap delta chunk dari SSE → re-parse full markdown → CPU spike.
- * Dengan debounce 60ms: lebih smooth, tetap responsive (60ms = ~16fps).
+ * Tanpa throttle: setiap delta chunk dari SSE → re-parse full markdown → CPU spike.
  *
- * On final/non-streaming: instant render (delay tetap berlaku tapi user tidak notice).
+ * Kenapa throttle (bukan pure debounce): saat token mengalir cepat & terus-menerus
+ * (gap antar-delta < interval), pure debounce akan terus me-reset timer sehingga
+ * render bisa "macet" sampai stream berhenti. Throttle leading+trailing menjamin UI
+ * ter-update minimal setiap ~interval (≈16fps) sambil tetap menampilkan chunk terakhir.
+ *
+ * - Render pertama (leading): langsung, tanpa delay → tidak ada flash kosong.
+ * - Update berikutnya: di-batch per `interval` ms via rAF (hemat CPU, halus).
+ * - Update terakhir (trailing): dijamin tampil walau datang di tengah window throttle.
  */
-function useDebouncedContent(content: string, delay = 60): string {
-  const [debounced, setDebounced] = React.useState(content);
+function useThrottledContent(content: string, interval = 60): string {
+  const [shown, setShown] = React.useState(content);
+  const lastFlush = React.useRef<number>(0);
+  const latest = React.useRef(content);
+  const rafId = React.useRef<number | null>(null);
+  const timerId = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  latest.current = content;
+
   React.useEffect(() => {
-    const t = setTimeout(() => setDebounced(content), delay);
-    return () => clearTimeout(t);
-  }, [content, delay]);
-  return debounced;
+    // Jika sudah sinkron (mis. pesan historis statis), tidak ada kerja.
+    if (shown === content) return;
+
+    const now = Date.now();
+    const elapsed = now - lastFlush.current;
+
+    const flush = () => {
+      lastFlush.current = Date.now();
+      rafId.current = null;
+      timerId.current = null;
+      setShown(latest.current);
+    };
+
+    const scheduleRaf = () => {
+      if (typeof requestAnimationFrame === "function") {
+        rafId.current = requestAnimationFrame(flush);
+      } else {
+        flush();
+      }
+    };
+
+    if (elapsed >= interval) {
+      // Leading edge / window sudah lewat → render segera (di rAF berikutnya).
+      scheduleRaf();
+    } else if (timerId.current === null) {
+      // Trailing edge → render di akhir window throttle.
+      timerId.current = setTimeout(scheduleRaf, interval - elapsed);
+    }
+
+    return () => {
+      if (rafId.current !== null && typeof cancelAnimationFrame === "function") {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
+      if (timerId.current !== null) {
+        clearTimeout(timerId.current);
+        timerId.current = null;
+      }
+    };
+  }, [content, shown, interval]);
+
+  return shown;
 }
 
 /**
@@ -40,11 +91,12 @@ function useDebouncedContent(content: string, delay = 60): string {
  * - Inline color hint untuk numbers dengan % (bullish/bearish)
  */
 export function MarkdownContent({ content, isUser = false }: Props) {
-  // Debounce 60ms supaya streaming tidak overload CPU (re-parse markdown setiap delta).
-  const debounced = useDebouncedContent(content, 60);
+  // Throttle ~60ms (≈16fps) supaya streaming progresif tidak overload CPU
+  // (re-parse full markdown setiap delta) sambil tetap halus & responsif.
+  const throttled = useThrottledContent(content, 60);
   // Pre-process: auto-link 4-letter UPPERCASE ticker codes
   // Wrap as [BBRI](/ticker/BBRI) BUT only OUTSIDE code blocks / links / tables
-  const preprocessed = React.useMemo(() => autoLinkTickers(debounced), [debounced]);
+  const preprocessed = React.useMemo(() => autoLinkTickers(throttled), [throttled]);
 
   const baseTextClass = isUser ? "text-white/95" : "text-foreground";
   const linkClass = isUser ? "text-white underline underline-offset-2 hover:text-white/80" : "text-primary underline-offset-2 hover:underline";

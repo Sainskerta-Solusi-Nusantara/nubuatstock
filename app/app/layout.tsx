@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { getConfig } from "@/lib/config";
@@ -17,6 +17,13 @@ const inter = Inter({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+// Theme/PWA colors must live in the viewport export in Next 15 (not metadata).
+// Matches the brand dark surface used across the app (see app/globals.css /
+// opengraph-image.tsx).
+export const viewport: Viewport = {
+  themeColor: "#0c1117",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const [name, tagline] = await Promise.all([
@@ -28,6 +35,12 @@ export async function generateMetadata(): Promise<Metadata> {
       description: tagline,
       icons: { icon: "/favicon.ico" },
       metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+      // Enables "Add to Home Screen" as a standalone iOS web app.
+      appleWebApp: {
+        capable: true,
+        title: name,
+        statusBarStyle: "black-translucent",
+      },
       openGraph: {
         title: name,
         description: tagline,

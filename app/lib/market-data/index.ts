@@ -1,6 +1,13 @@
-import { and, asc, desc, eq, gte, ilike, lte, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { companies } from "@/db/schema/companies";
+import {
+  TRGM_KODE_THRESHOLD,
+  TRGM_NAME_THRESHOLD,
+  escapeLikePattern,
+  looksLikeTicker,
+  normalizeSearchQuery,
+} from "@/lib/companies/search-query";
 import {
   brokerSummaryDaily,
   foreignFlowDaily,
@@ -249,23 +256,52 @@ async function backfillEod(code: string, bars: OhlcvBar[]): Promise<void> {
 // ============================== Search ==============================
 
 export async function searchTickers(query: string, limit = 20): Promise<TickerSearchResult[]> {
-  const q = query.trim();
+  // Normalisasi: trim + collapse whitespace (pure, lib/companies/search-query).
+  const q = normalizeSearchQuery(query);
   if (q.length === 0) return [];
 
-  // DB first: search by kode (prefix) atau nama (ilike).
   const upperQ = q.toUpperCase();
+  const escaped = escapeLikePattern(q);
+  const escapedUpper = escapeLikePattern(upperQ);
+  const isTicker = looksLikeTicker(q);
+
+  // Match conditions:
+  //  - exact / prefix / contains pada kode (cepat, presisi)
+  //  - contains pada nama (ILIKE)
+  //  - trigram similarity fallback (typo tolerance): `kode % q`, `nama % q`,
+  //    di-gate threshold via similarity(...). Index GIN trgm (migration 0001).
+  const matchExpr = or(
+    ilike(companies.kode, `${escapedUpper}%`),
+    ilike(companies.kode, `%${escapedUpper}%`),
+    ilike(companies.namaPerusahaan, `%${escaped}%`),
+    sql`similarity(${companies.kode}, ${upperQ}) >= ${isTicker ? TRGM_KODE_THRESHOLD : TRGM_NAME_THRESHOLD}`,
+    sql`similarity(${companies.namaPerusahaan}, ${q}) >= ${TRGM_NAME_THRESHOLD}`,
+  );
+
+  // Ordering: exact kode → prefix kode → sisanya by best trigram similarity DESC
+  // (typo terdekat naik), tie-break alfabetis kode.
+  const rankExpr = sql<number>`
+    CASE
+      WHEN ${companies.kode} = ${upperQ} THEN 0
+      WHEN ${companies.kode} LIKE ${`${escapedUpper}%`} THEN 1
+      ELSE 2
+    END
+  `;
+  const simExpr = sql<number>`
+    GREATEST(
+      similarity(${companies.kode}, ${upperQ}),
+      similarity(${companies.namaPerusahaan}, ${q})
+    )
+  `;
+
   const dbRows = await db
     .select({
       kode: companies.kode,
       nama: companies.namaPerusahaan,
     })
     .from(companies)
-    .where(
-      and(
-        eq(companies.isActive, true),
-        or(ilike(companies.kode, `${upperQ}%`), ilike(companies.namaPerusahaan, `%${q}%`)),
-      ),
-    )
+    .where(and(eq(companies.isActive, true), matchExpr))
+    .orderBy(rankExpr, desc(simExpr), asc(companies.kode))
     .limit(limit);
 
   const fromDb: TickerSearchResult[] = dbRows.map((r) => ({

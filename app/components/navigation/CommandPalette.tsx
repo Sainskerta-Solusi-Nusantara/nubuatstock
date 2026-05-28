@@ -140,7 +140,8 @@ export function CommandPalette() {
     if (open) setRecent(loadRecent());
   }, [open]);
 
-  // Debounced ticker search via /api/companies?q=...
+  // Debounced ticker search via /api/companies/search?q=... (typo-tolerant,
+  // pg_trgm: "BBR"→BBRI, "TLKOM"→TLKM, "bank bca"→BBCA — IMPROVEMENT_PLAN §8.4 #26).
   React.useEffect(() => {
     if (!open) return;
     const q = query.trim();
@@ -152,7 +153,7 @@ export function CommandPalette() {
     const t = window.setTimeout(async () => {
       try {
         setLoadingTickers(true);
-        const url = `/api/companies?q=${encodeURIComponent(q)}&limit=8`;
+        const url = `/api/companies/search?q=${encodeURIComponent(q)}&limit=8`;
         const res = await fetch(url, { signal: ac.signal });
         if (!res.ok) {
           setTickers([]);
