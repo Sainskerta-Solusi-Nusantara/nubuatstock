@@ -887,7 +887,10 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - Migration belum dijalankan: kolom soft-delete akun, tabel glossary, constraint audit immutability.
 
 **Numbers**
-- File berubah/baru: 86 (commit) + About Us/Glossary/logo pipeline (uncommitted). Unit test: 68 → **121** (+53). tsc error: 0. Build: ✅.
+- Commit: `87290a8` (86 file Jalur A+B+UI) → `68417e8` (About Us/Glossary/logo pipeline) → test-coverage batch.
+- Unit test: 68 → 121 → **306** (+238 sesi ini: +verdict 48, valuation 42, picks 54, billing 41, dll). tsc error: 0. Build: ✅.
+- Versi Next.js: **deploy AMAN** (lockfile pin 15.1.11); hanya `node_modules` lokal drift (non-blocking).
+- Glossary: tabel + **64 istilah** sudah di DB lokal (`/glossary` jalan lokal). Prod: perlu push+seed.
 
 **Next Week**
 - Rekonsiliasi versi Next.js (pin vs installed) sebelum deploy.
