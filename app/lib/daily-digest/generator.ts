@@ -267,7 +267,7 @@ HANYA JSON, tanpa markdown wrapper. Bahasa Indonesia.`;
         {
           role: "system",
           content:
-            "Anda adalah analis pasar saham Indonesia. Buat morning brief yang concise, informatif, dan tidak hype. Bahasa profesional tapi tidak kaku.",
+            "Kamu adalah analis pasar saham Indonesia. Buat morning brief yang concise, informatif, dan tidak hype. Sapa pembaca dengan 'kamu' (jangan pakai 'Anda'). Bahasa semi-formal santai tapi tidak kaku.",
         },
         { role: "user", content: userPrompt },
       ],

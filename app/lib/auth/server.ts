@@ -17,6 +17,7 @@ import {
 import type { UserRole as AppUserRole } from "@/lib/auth/roles";
 import { ForbiddenError, UnauthorizedError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
+import { getConfig } from "@/lib/config";
 import { env } from "@/lib/env";
 import type { AppSession, SessionUser } from "@/lib/types/auth";
 
@@ -96,18 +97,87 @@ function buildAuth(input: BuildAuthInput) {
     }),
     emailAndPassword: {
       enabled: true,
+      // autoSignIn tetap true: user langsung punya session setelah signup, TAPI
+      // gate emailVerified di app/(app)/layout.tsx yang blokir akses fitur sampai
+      // email diverifikasi. Pola ini lebih ramah daripada hard-block login
+      // (user bisa lihat halaman "verifikasi dulu" + tombol resend).
       autoSignIn: true,
       minPasswordLength: input.minPasswordLength,
       maxPasswordLength: 256,
+      // requireEmailVerification=false: better-auth tidak mem-block sign-in di
+      // level core. Enforcement verifikasi dilakukan di app shell (layout (app))
+      // supaya UX-nya berupa gate page, bukan error login mentah.
       requireEmailVerification: false,
       // Argon2id adalah default better-auth password hasher (via @node-rs/argon2).
       // Kalau better-auth v1.1 sudah ganti ke scrypt, override perlu password.hash.
       // Kita biarkan default — sudah aman per AGENTS.md §7.
     },
+    emailVerification: {
+      // Kirim email verifikasi otomatis saat signup.
+      sendOnSignUp: true,
+      // Saat user klik link verifikasi, langsung sign-in supaya UX mulus.
+      autoSignInAfterVerification: true,
+      // Link verifikasi berlaku 1 jam (selaras dengan copy di renderVerifyEmail).
+      expiresIn: 60 * 60,
+      sendVerificationEmail: async ({ user, url }) => {
+        try {
+          const [appName, supportEmail] = await Promise.all([
+            getConfig<string>("app.name", { defaultValue: "Nubuat" }),
+            getConfig<string>("app.support_email", { defaultValue: "support@nubuat.id" }),
+          ]);
+          const { sendEmail, renderVerifyEmail } = await import(
+            "@/lib/notifications/email"
+          );
+          const { subject, html, text } = renderVerifyEmail({
+            appName,
+            verifyUrl: url,
+            supportEmail,
+          });
+          const res = await sendEmail({
+            to: user.email,
+            subject,
+            html,
+            text,
+            tags: [{ name: "type", value: "verify_email" }],
+          });
+          if (!res.ok) {
+            // Soft-fail: jangan crash signup kalau email service belum dikonfigurasi.
+            logger.warn(
+              { err: res.error, userId: user.id },
+              "verification email tidak terkirim",
+            );
+          }
+        } catch (err) {
+          logger.error({ err, userId: user.id }, "sendVerificationEmail gagal");
+        }
+      },
+    },
     session: {
       expiresIn: input.sessionDurationSec,
       updateAge: Math.min(input.sessionDurationSec, 60 * 60 * 24),
       cookieCache: { enabled: true, maxAge: 60 },
+    },
+    // Rate-limit bawaan better-auth (berbasis IP) untuk melindungi endpoint auth
+    // dari brute-force & abuse. Default storage = in-memory (cukup untuk single
+    // instance; untuk multi-instance pakai secondaryStorage). Endpoint sensitif
+    // (sign-in/sign-up/reset/verify) di-set lebih ketat lewat customRules.
+    // Catatan: agent lain menangani rate-limit endpoint NON-auth (lib/security).
+    rateLimit: {
+      enabled: true,
+      // Window & max default untuk semua endpoint auth.
+      window: 60, // detik
+      max: 30, // 30 request / IP / menit untuk endpoint auth umum
+      customRules: {
+        // Brute-force login: 5 percobaan / menit / IP.
+        "/sign-in/email": { window: 60, max: 5 },
+        // Signup: cegah pembuatan akun massal.
+        "/sign-up/email": { window: 60, max: 3 },
+        // Reset password request: cegah email bombing.
+        "/request-password-reset": { window: 60 * 5, max: 3 },
+        "/forget-password": { window: 60 * 5, max: 3 },
+        // Resend verifikasi: cegah spam email verifikasi.
+        "/send-verification-email": { window: 60 * 5, max: 3 },
+      },
     },
     advanced: {
       defaultCookieAttributes: {

@@ -48,7 +48,7 @@ export function requireRoleAtLeast(session: SessionLike | null, required: UserRo
   if (!hasMinRole(session.role, required)) {
     throw new ForbiddenError(
       `Required role ${required}, user has ${session.role}`,
-      "Anda tidak memiliki akses ke halaman ini.",
+      "Kamu tidak punya akses ke halaman ini.",
     );
   }
   return session;

@@ -104,7 +104,23 @@ export async function verifyMidtransSignature(payload: {
   grossAmount: string;
   signatureKey: string;
 }): Promise<boolean> {
-  const serverKey = await getSecret("payment.midtrans.server_key");
+  // Reject early if the payload carries no signature at all — never let an
+  // unsigned webhook reach the comparison (defense in depth; route also guards).
+  if (!payload.signatureKey) {
+    return false;
+  }
+
+  // Server key MUST come from the encrypted secret store (never hardcoded).
+  // Treat a missing key as a configuration error (503) rather than a silent
+  // pass/fail, so the misconfiguration is surfaced instead of accepting forged
+  // notifications.
+  const serverKey = await getSecret("payment.midtrans.server_key").catch(() => null);
+  if (!serverKey) {
+    throw new ConfigurationError("payment.midtrans.server_key");
+  }
+
+  // Midtrans spec: signature_key = SHA512(order_id + status_code + gross_amount + server_key)
+  // (lowercase hex). Comparison is timing-safe.
   const expected = createHash("sha512")
     .update(`${payload.orderId}${payload.statusCode}${payload.grossAmount}${serverKey}`)
     .digest("hex");
@@ -121,7 +137,13 @@ export async function verifyXenditSignature(payload: {
   body?: string;
   signature?: string;
 }): Promise<boolean> {
-  // Default Xendit pakai shared token di header.
+  // Reject early if the request arrived without the `x-callback-token` header.
+  if (!payload.callbackToken) {
+    return false;
+  }
+
+  // Default Xendit pakai shared token di header. Token MUST come from the
+  // encrypted secret store (never hardcoded).
   const expected = await getSecret("payment.xendit.webhook_token").catch(() => null);
   if (!expected) {
     throw new ConfigurationError("payment.xendit.webhook_token");

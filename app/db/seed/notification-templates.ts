@@ -37,11 +37,11 @@ const TEMPLATES: TemplateSeed[] = [
     key: "auth.email_verification",
     channel: "email",
     locale: "id-ID",
-    subject: "Verifikasi email Nubuat Anda",
+    subject: "Verifikasi email Nubuat kamu",
     body: `<p>Halo {{name}},</p>
-<p>Terima kasih telah mendaftar di Nubuat. Klik tautan berikut untuk memverifikasi email Anda:</p>
+<p>Terima kasih telah mendaftar di Nubuat. Klik tautan berikut untuk memverifikasi email kamu:</p>
 <p><a href="{{verifyUrl}}">Verifikasi email saya</a></p>
-<p>Tautan ini berlaku selama {{expiresInMinutes}} menit. Jika Anda tidak mendaftar, abaikan email ini.</p>
+<p>Tautan ini berlaku selama {{expiresInMinutes}} menit. Jika kamu tidak mendaftar, abaikan email ini.</p>
 <p>— Tim Nubuat</p>`,
     isHtml: true,
     variables: {
@@ -72,8 +72,8 @@ const TEMPLATES: TemplateSeed[] = [
     key: "auth.email_verification",
     channel: "in_app",
     locale: "id-ID",
-    subject: "Verifikasi email Anda",
-    body: "Verifikasi email Anda untuk mengakses semua fitur Nubuat.",
+    subject: "Verifikasi email kamu",
+    body: "Verifikasi email kamu untuk mengakses semua fitur Nubuat.",
     isHtml: false,
     variables: {},
   },
@@ -92,11 +92,11 @@ const TEMPLATES: TemplateSeed[] = [
     key: "auth.password_reset",
     channel: "email",
     locale: "id-ID",
-    subject: "Atur ulang password Nubuat Anda",
+    subject: "Atur ulang password Nubuat kamu",
     body: `<p>Halo {{name}},</p>
-<p>Kami menerima permintaan untuk mengatur ulang password Anda. Klik tautan di bawah:</p>
+<p>Kami menerima permintaan untuk mengatur ulang password kamu. Klik tautan di bawah:</p>
 <p><a href="{{resetUrl}}">Atur ulang password saya</a></p>
-<p>Tautan berlaku selama {{expiresInMinutes}} menit. Jika Anda tidak meminta reset, abaikan email ini & password Anda tetap aman.</p>
+<p>Tautan berlaku selama {{expiresInMinutes}} menit. Jika kamu tidak meminta reset, abaikan email ini & password kamu tetap aman.</p>
 <p>— Tim Nubuat</p>`,
     isHtml: true,
     variables: {
@@ -130,8 +130,8 @@ const TEMPLATES: TemplateSeed[] = [
     locale: "id-ID",
     subject: "Verifikasi dua langkah berhasil diaktifkan",
     body: `<p>Halo {{name}},</p>
-<p>Verifikasi dua langkah (2FA) telah diaktifkan pada akun Anda pada {{enabledAt}}.</p>
-<p>Jika ini bukan Anda, segera hubungi tim support.</p>`,
+<p>Verifikasi dua langkah (2FA) telah diaktifkan pada akun kamu pada {{enabledAt}}.</p>
+<p>Jika ini bukan kamu, segera hubungi tim support.</p>`,
     isHtml: true,
     variables: { name: required(), enabledAt: required("date") },
   },
@@ -140,7 +140,7 @@ const TEMPLATES: TemplateSeed[] = [
     channel: "in_app",
     locale: "id-ID",
     subject: "2FA aktif",
-    body: "Verifikasi dua langkah telah aktif untuk akun Anda.",
+    body: "Verifikasi dua langkah telah aktif untuk akun kamu.",
     isHtml: false,
     variables: {},
   },
@@ -160,7 +160,7 @@ const TEMPLATES: TemplateSeed[] = [
     channel: "in_app",
     locale: "id-ID",
     subject: "Alert {{ticker}} terpicu",
-    body: "Harga {{ticker}} mencapai {{price}} ({{direction}} dari target Anda).",
+    body: "Harga {{ticker}} mencapai {{price}} ({{direction}} dari target kamu).",
     isHtml: false,
     variables: {
       ticker: required(),
@@ -187,7 +187,7 @@ const TEMPLATES: TemplateSeed[] = [
     locale: "id-ID",
     subject: "Alert harga {{ticker}} terpicu",
     body: `<p>Halo {{name}},</p>
-<p>Harga <strong>{{ticker}}</strong> mencapai <strong>Rp {{price}}</strong> ({{direction}} dari target Anda).</p>
+<p>Harga <strong>{{ticker}}</strong> mencapai <strong>Rp {{price}}</strong> ({{direction}} dari target kamu).</p>
 <p><a href="{{tickerUrl}}">Lihat detail di Nubuat</a></p>`,
     isHtml: true,
     variables: {
@@ -274,7 +274,7 @@ const TEMPLATES: TemplateSeed[] = [
     subject: "Faktur {{invoiceNumber}} telah dibayar",
     body: `<p>Halo {{name}},</p>
 <p>Terima kasih! Pembayaran faktur <strong>{{invoiceNumber}}</strong> sebesar <strong>Rp {{amount}}</strong> telah kami terima.</p>
-<p>Paket Anda diperpanjang hingga <strong>{{nextRenewalDate}}</strong>.</p>
+<p>Paket kamu diperpanjang hingga <strong>{{nextRenewalDate}}</strong>.</p>
 <p><a href="{{invoiceUrl}}">Unduh faktur</a></p>`,
     isHtml: true,
     variables: {
@@ -291,8 +291,8 @@ const TEMPLATES: TemplateSeed[] = [
     key: "billing.subscription_expired",
     channel: "in_app",
     locale: "id-ID",
-    subject: "Langganan Anda telah berakhir",
-    body: "Paket {{tier}} Anda telah berakhir. Perpanjang untuk akses penuh kembali.",
+    subject: "Langganan kamu telah berakhir",
+    body: "Paket {{tier}} kamu telah berakhir. Perpanjang untuk akses penuh kembali.",
     isHtml: false,
     variables: { tier: required() },
   },
@@ -309,9 +309,9 @@ const TEMPLATES: TemplateSeed[] = [
     key: "billing.subscription_expired",
     channel: "email",
     locale: "id-ID",
-    subject: "Langganan Nubuat {{tier}} Anda berakhir",
+    subject: "Langganan Nubuat {{tier}} kamu berakhir",
     body: `<p>Halo {{name}},</p>
-<p>Paket <strong>{{tier}}</strong> Anda telah berakhir pada {{expiredAt}}. Anda kini berada di paket Gratis.</p>
+<p>Paket <strong>{{tier}}</strong> kamu telah berakhir pada {{expiredAt}}. Kamu kini berada di paket Gratis.</p>
 <p><a href="{{renewUrl}}">Perpanjang sekarang</a> untuk akses penuh ke Daily Picks, AI Copilot, dan fitur premium lainnya.</p>`,
     isHtml: true,
     variables: {

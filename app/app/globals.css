@@ -30,7 +30,7 @@
   --color-secondary: oklch(0.96 0.005 250);
   --color-secondary-foreground: oklch(0.2 0.01 250);
   --color-muted: oklch(0.96 0.005 250);
-  --color-muted-foreground: oklch(0.5 0.01 250);
+  --color-muted-foreground: oklch(0.4 0.01 250);      /* darkened for higher contrast (~5.7:1 on white) — selaras "ke hitam" */
   --color-accent: oklch(0.96 0.01 200);
   --color-accent-foreground: oklch(0.2 0.01 250);
   --color-destructive: oklch(0.6 0.22 25);
@@ -91,7 +91,7 @@
   --color-secondary: oklch(0.26 0.015 250);
   --color-secondary-foreground: oklch(0.96 0.005 250);
   --color-muted: oklch(0.26 0.015 250);
-  --color-muted-foreground: oklch(0.68 0.015 250);
+  --color-muted-foreground: oklch(0.75 0.015 250);    /* brightened for higher contrast (~6.5:1 on dark bg) — tidak redup di background gelap */
   --color-accent: oklch(0.28 0.02 200);
   --color-accent-foreground: oklch(0.96 0.005 250);
   --color-destructive: oklch(0.68 0.22 25);

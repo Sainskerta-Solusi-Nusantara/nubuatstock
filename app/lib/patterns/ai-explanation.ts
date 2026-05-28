@@ -63,7 +63,7 @@ Singkat, padat, tidak bertele-tele. ~150 kata total.`;
         {
           role: "system",
           content:
-            "Anda adalah analis teknikal saham Indonesia profesional. Jelaskan pattern dengan netral, informatif, tidak hype. Ingatkan bahwa pattern bisa gagal.",
+            "Kamu adalah analis teknikal saham Indonesia profesional. Jelaskan pattern dengan netral, informatif, tidak hype. Sapa pembaca dengan 'kamu' (jangan pakai 'Anda'). Ingatkan bahwa pattern bisa gagal.",
         },
         { role: "user", content: userPrompt },
       ],

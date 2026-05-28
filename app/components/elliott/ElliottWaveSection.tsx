@@ -12,15 +12,24 @@ interface Props {
 /**
  * Wrapper component dengan timeframe switcher untuk Elliott Wave.
  */
-export function ElliottWaveSection({ analyses }: Props) {
-  if (analyses.length === 0) return null;
+const TF_ORDER = ["1D", "1W", "1M"];
+function tfRank(tf: string): number {
+  const i = TF_ORDER.indexOf(tf);
+  return i === -1 ? TF_ORDER.length : i;
+}
+
+export function ElliottWaveSection({ analyses: rawAnalyses }: Props) {
+  // Urutkan timeframe secara logis: 1D → 1W → 1M (service mengembalikan alfabetis).
+  const analyses = [...rawAnalyses].sort((a, b) => tfRank(a.timeframe) - tfRank(b.timeframe));
 
   // Filter analyses yang memang valid (waveType != unknown atau confidence > 0.4)
   const valid = analyses.filter((a) => a.waveType !== "unknown");
 
   const [activeTimeframe, setActiveTimeframe] = useState<string>(
-    valid[0]?.timeframe ?? analyses[0]!.timeframe,
+    valid[0]?.timeframe ?? analyses[0]?.timeframe ?? "1D",
   );
+
+  if (analyses.length === 0) return null;
 
   // Always show all available timeframes as tabs (even if unknown — user bisa switch)
   const allTfs = analyses.map((a) => a.timeframe);

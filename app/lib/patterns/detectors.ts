@@ -359,6 +359,234 @@ export function detectRectangle(bars: OhlcvBar[]): PatternMatch[] {
   return matches;
 }
 
+// ====================== BULL/BEAR PENNANT ======================
+
+/**
+ * Pennant = small SYMMETRICAL triangle (converging trendlines: lower highs +
+ * higher lows) yang terbentuk SETELAH strong, near-vertical move (the pole).
+ *
+ * Beda dengan flag (paralel channel), pennant punya highs turun & lows naik
+ * sehingga range menyempit (consolidation segitiga). Beda dengan symmetrical
+ * triangle biasa, pennant butuh pole yang tajam & singkat (≤ ~12 bar) tepat
+ * sebelum konsolidasi, dan durasi konsolidasi pendek (≤ ~20 bar).
+ */
+function detectPennant(
+  bars: OhlcvBar[],
+  variant: "bull" | "bear",
+): PatternMatch[] {
+  if (bars.length < 25) return [];
+
+  for (let endIdx = bars.length - 1; endIdx >= 25; endIdx -= 1) {
+    for (const consolDuration of [6, 8, 10, 12, 15]) {
+      const consolStart = endIdx - consolDuration;
+      if (consolStart < 12) continue;
+
+      const consolBars = bars.slice(consolStart, endIdx + 1);
+      const consolHighs = consolBars.map((b, i) => ({ x: i, y: b.high }));
+      const consolLows = consolBars.map((b, i) => ({ x: i, y: b.low }));
+      const highSlope = linearSlope(consolHighs);
+      const lowSlope = linearSlope(consolLows);
+      const baseClose = consolBars[0]!.close;
+      const highSlopePct = (highSlope / baseClose) * 100;
+      const lowSlopePct = (lowSlope / baseClose) * 100;
+
+      // Symmetrical convergence: highs sloping DOWN, lows sloping UP.
+      if (highSlopePct >= -0.05) continue;
+      if (lowSlopePct <= 0.05) continue;
+
+      // Range must be contracting: end range < start range (apex forming).
+      const firstHalf = consolBars.slice(0, Math.ceil(consolBars.length / 2));
+      const secondHalf = consolBars.slice(Math.floor(consolBars.length / 2));
+      const firstRange =
+        Math.max(...firstHalf.map((b) => b.high)) - Math.min(...firstHalf.map((b) => b.low));
+      const secondRange =
+        Math.max(...secondHalf.map((b) => b.high)) - Math.min(...secondHalf.map((b) => b.low));
+      if (firstRange === 0) continue;
+      if (secondRange >= firstRange * 0.85) continue; // Must contract ≥ 15%
+
+      const consolHighest = Math.max(...consolBars.map((b) => b.high));
+      const consolLowest = Math.min(...consolBars.map((b) => b.low));
+
+      // Pole: sharp move 5-12 bars before consolidation.
+      let poleFound = false;
+      let poleStart = consolStart;
+      let poleHeight = 0;
+      let polePct = 0;
+      for (const poleDuration of [4, 5, 7, 10, 12]) {
+        const ps = consolStart - poleDuration;
+        if (ps < 0) continue;
+        const poleBars = bars.slice(ps, consolStart + 1);
+        if (variant === "bull") {
+          const pLow = poleBars[0]!.low;
+          const pHigh = consolHighest;
+          const h = pHigh - pLow;
+          const pct = (h / pLow) * 100;
+          if (pct >= 10) {
+            poleFound = true;
+            poleStart = ps;
+            poleHeight = h;
+            polePct = pct;
+            break;
+          }
+        } else {
+          const pHigh = poleBars[0]!.high;
+          const pLow = consolLowest;
+          const h = pHigh - pLow;
+          const pct = (h / pHigh) * 100;
+          if (pct >= 10) {
+            poleFound = true;
+            poleStart = ps;
+            poleHeight = h;
+            polePct = pct;
+            break;
+          }
+        }
+      }
+      if (!poleFound) continue;
+
+      // Pennant consolidation must be modest vs pole (small flag).
+      const consolRange = consolHighest - consolLowest;
+      if (consolRange > poleHeight * 0.6) continue;
+
+      // Volume taper during consolidation = textbook.
+      const poleBars = bars.slice(poleStart, consolStart + 1);
+      const poleVol = mean(poleBars.map((b) => b.volume));
+      const consolVol = mean(consolBars.map((b) => b.volume));
+      const volTaper = consolVol < poleVol * 0.9;
+
+      const lastClose = bars[endIdx]!.close;
+      const direction = variant === "bull" ? "bullish" : "bearish";
+      const patternType = variant === "bull" ? "bull_pennant" : "bear_pennant";
+
+      let status: "forming" | "completed" = "forming";
+      if (variant === "bull" && lastClose > consolHighest * 1.005) status = "completed";
+      if (variant === "bear" && lastClose < consolLowest * 0.995) status = "completed";
+
+      const breakout = variant === "bull" ? consolHighest : consolLowest;
+      const target = variant === "bull" ? breakout + poleHeight : breakout - poleHeight;
+      const stop = variant === "bull" ? consolLowest : consolHighest;
+
+      let confidence = 0.5;
+      if (polePct > 18) confidence += 0.15;
+      if (volTaper) confidence += 0.15;
+      if (secondRange < firstRange * 0.6) confidence += 0.1; // strong convergence
+      if (status === "completed") confidence += 0.1;
+      confidence = Math.min(confidence, 0.95);
+
+      return [{
+        patternType,
+        category: "continuation",
+        direction,
+        status,
+        startIndex: poleStart,
+        endIndex: endIdx,
+        confidence,
+        keyLevels: { breakout, target, stop, support: consolLowest, resistance: consolHighest },
+        volumeConfirmation: volTaper,
+        narrative: `${variant === "bull" ? "Bullish" : "Bearish"} Pennant: ${variant === "bull" ? "rally" : "drop"} tajam ${polePct.toFixed(1)}% (pole) diikuti konsolidasi segitiga simetris ${consolDuration} bar yang menyempit (range -${(((firstRange - secondRange) / firstRange) * 100).toFixed(0)}%). ${volTaper ? "Volume mengering (konfirmasi). " : ""}Breakout: ${breakout.toFixed(0)}, target proyeksi pole: ${target.toFixed(0)}, stop: ${stop.toFixed(0)}.`,
+      }];
+    }
+  }
+
+  return [];
+}
+
+export function detectBullPennant(bars: OhlcvBar[]): PatternMatch[] {
+  return detectPennant(bars, "bull");
+}
+
+export function detectBearPennant(bars: OhlcvBar[]): PatternMatch[] {
+  return detectPennant(bars, "bear");
+}
+
+// ====================== INVERSE CUP AND HANDLE ======================
+
+/**
+ * Inverse Cup & Handle = mirror dari cup & handle: rounded TOP (cup terbalik)
+ * diikuti small upward "handle" (pullback ke atas), lalu breakdown ke bawah
+ * neckline. Bearish continuation/reversal di downtrend.
+ *
+ * Geometri:
+ *   - Cup: dome shape — kedua "rim" (low di kiri & kanan) kira-kira sama,
+ *     dengan puncak (high) di tengah. Tinggi cup 12-55%.
+ *   - Handle: rebound kecil di dekat right rim, retracement terbatas, masih
+ *     di atas right rim (tidak menembus support cup terlalu jauh).
+ */
+export function detectInverseCupHandle(bars: OhlcvBar[]): PatternMatch[] {
+  if (bars.length < 50) return [];
+
+  for (const cupDuration of [30, 45, 60, 80]) {
+    if (bars.length < cupDuration + 15) continue;
+    for (const handleDuration of [5, 8, 12]) {
+      const handleEnd = bars.length - 1;
+      const handleStart = handleEnd - handleDuration;
+      const cupEnd = handleStart;
+      const cupStart = cupEnd - cupDuration;
+      if (cupStart < 0) continue;
+
+      const cupBars = bars.slice(cupStart, cupEnd + 1);
+      const handleBars = bars.slice(handleStart, handleEnd + 1);
+
+      const leftRim = cupBars[0]!.low;
+      const rightRim = cupBars[cupBars.length - 1]!.low;
+      const cupTop = Math.max(...cupBars.map((b) => b.high));
+      const cupHeight = ((cupTop - leftRim) / leftRim) * 100;
+
+      // Rims roughly equal (lows), dome height in range.
+      const rimDiff = Math.abs(leftRim - rightRim) / leftRim;
+      if (rimDiff > 0.07) continue;
+      if (cupHeight < 12) continue;
+      if (cupHeight > 55) continue;
+
+      // Dome test: top (high) in middle third of cup.
+      const cupTopIdx = cupBars.findIndex((b) => b.high === cupTop);
+      const middleStart = cupDuration * 0.25;
+      const middleEnd = cupDuration * 0.75;
+      if (cupTopIdx < middleStart || cupTopIdx > middleEnd) continue;
+
+      // Handle: small upward pullback near right rim, limited extent, stays above rim.
+      const handleHigh = Math.max(...handleBars.map((b) => b.high));
+      const handleLow = Math.min(...handleBars.map((b) => b.low));
+      const handleRetrace = ((handleHigh - handleLow) / handleLow) * 100;
+      if (handleRetrace > 20) continue; // Handle terlalu besar
+      if (handleLow < rightRim * 0.98) continue; // Handle harus di atas right rim
+
+      const cupAvgVol = mean(cupBars.slice(-Math.min(10, cupBars.length)).map((b) => b.volume));
+      const handleAvgVol = mean(handleBars.map((b) => b.volume));
+      const volTaper = handleAvgVol < cupAvgVol * 0.85;
+
+      let confidence = 0.5;
+      if (rimDiff < 0.03) confidence += 0.15;
+      if (volTaper) confidence += 0.15;
+      if (cupHeight >= 20 && cupHeight <= 40) confidence += 0.15;
+      if (handleDuration >= 7) confidence += 0.05;
+      confidence = Math.min(confidence, 0.95);
+
+      const lastClose = bars[handleEnd]!.close;
+      const breakdown = Math.min(leftRim, rightRim); // neckline support
+      const status = lastClose < breakdown * 0.995 ? "completed" : "forming";
+
+      const target = breakdown - (cupTop - breakdown); // Mirror dome height down
+      const stop = handleHigh;
+
+      return [{
+        patternType: "inverse_cup_handle",
+        category: "continuation",
+        direction: "bearish",
+        status,
+        startIndex: cupStart,
+        endIndex: handleEnd,
+        confidence,
+        keyLevels: { breakout: breakdown, target, stop, support: breakdown, resistance: cupTop, neckline: breakdown },
+        volumeConfirmation: volTaper,
+        narrative: `Inverse Cup and Handle: rounded top (dome) ${cupDuration} bar dengan tinggi ${cupHeight.toFixed(1)}%, diikuti handle ${handleDuration} bar (rebound ${handleRetrace.toFixed(1)}%). ${volTaper ? "Volume taper di handle (konfirmasi). " : ""}Breakdown neckline: ${breakdown.toFixed(0)}, target downside: ${target.toFixed(0)}, stop: ${stop.toFixed(0)}.`,
+      }];
+    }
+  }
+
+  return [];
+}
+
 // ====================== ASCENDING / DESCENDING TRIANGLE ======================
 
 export function detectAscendingTriangle(bars: OhlcvBar[]): PatternMatch[] {
@@ -547,7 +775,10 @@ import { CANDLESTICK_DETECTORS } from "./candlestick";
 const DETECTORS = [
   detectBullFlag,
   detectBearFlag,
+  detectBullPennant,
+  detectBearPennant,
   detectCupHandle,
+  detectInverseCupHandle,
   detectRectangle,
   detectAscendingTriangle,
   detectDescendingTriangle,

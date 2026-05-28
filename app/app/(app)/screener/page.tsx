@@ -54,6 +54,9 @@ function filtersFromQuery(sp: Record<string, string | undefined>): ScreenerFilte
   if (sp.bbSqueeze === "1") base.isBbSqueeze = true;
   if (sp.goldenCross === "1") base.isGoldenCrossRecent = true;
   if (sp.minADX) base.minAdx = parseNum(sp.minADX);
+  if (sp.stochCross === "1") base.stochBullishCross_10_5_5 = true;
+  if (sp.macdUp === "1") base.macdHistogramTurningUp = true;
+  if (sp.minVolRatio) base.minVolumeRatio = parseNum(sp.minVolRatio);
   if (sp.sort) base.sort = sp.sort as SortField;
   if (sp.sortDir) base.sortDir = sp.sortDir as "asc" | "desc";
 
@@ -257,6 +260,23 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
 
             <FilterField label="Min ADX 14 (trend strength)">
               <input type="number" step="1" name="minADX" defaultValue={sp.minADX ?? ""} placeholder="20+" className="filter-input" />
+            </FilterField>
+
+            <FilterField label="Min Volume Ratio (5d/60d)">
+              <input type="number" step="0.1" name="minVolRatio" defaultValue={sp.minVolRatio ?? ""} placeholder="1.0 = avg" className="filter-input" />
+            </FilterField>
+
+            <FilterField label="Momentum">
+              <div className="grid grid-cols-1 gap-1 text-[11px]">
+                <label className="flex items-center gap-1 rounded-md border border-input bg-background px-2 py-1.5">
+                  <input type="checkbox" name="stochCross" value="1" defaultChecked={sp.stochCross === "1"} />
+                  <span>Stoch %K&gt;%D (reversal)</span>
+                </label>
+                <label className="flex items-center gap-1 rounded-md border border-input bg-background px-2 py-1.5">
+                  <input type="checkbox" name="macdUp" value="1" defaultChecked={sp.macdUp === "1"} />
+                  <span>MACD histogram ↑</span>
+                </label>
+              </div>
             </FilterField>
 
             <FilterField label="MA & Trend">

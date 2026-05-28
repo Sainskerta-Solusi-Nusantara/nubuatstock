@@ -103,4 +103,10 @@ export const RATE_LIMITS = {
   search: { limit: 60, windowMs: 60_000 },
   // Generic API
   apiDefault: { limit: 120, windowMs: 60_000 },
+
+  // --- Per-IP limits untuk endpoint PUBLIK non-auth (anti-abuse/scrape) ---
+  // Ticker/company search per-IP — autocomplete bisa burst, tapi batasi scraping.
+  publicSearch: { limit: 30, windowMs: 60_000 },
+  // Listing emiten per-IP — query DB lebih berat, batasi lebih ketat.
+  publicList: { limit: 60, windowMs: 60_000 },
 } as const;

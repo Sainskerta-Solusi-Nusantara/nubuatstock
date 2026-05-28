@@ -50,7 +50,7 @@ export function ForgotPasswordForm() {
     return (
       <FormMessage variant="success">
         Jika email terdaftar, kami telah mengirim instruksi reset password. Periksa
-        inbox Anda.
+        inbox kamu.
       </FormMessage>
     );
   }

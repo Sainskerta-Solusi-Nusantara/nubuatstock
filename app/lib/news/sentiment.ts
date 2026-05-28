@@ -31,7 +31,7 @@ interface SentimentResult {
 
 const BATCH_SIZE = 10;
 
-const SYSTEM_PROMPT = `Anda adalah analis financial news Indonesia yang menilai sentimen artikel terhadap pasar saham IDX.
+const SYSTEM_PROMPT = `Kamu adalah analis financial news Indonesia yang menilai sentimen artikel terhadap pasar saham IDX.
 
 Untuk setiap artikel, output JSON object dengan:
 - id: string (artikel id yang diberikan, copy persis)

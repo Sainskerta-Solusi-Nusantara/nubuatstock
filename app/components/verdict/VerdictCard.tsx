@@ -159,7 +159,7 @@ export function VerdictCard({ verdict }: VerdictCardProps) {
         <p className="rounded-md bg-muted/40 p-2 text-[10px] leading-relaxed text-muted-foreground">
           <strong>Disclaimer:</strong> Verdict score adalah agregat algoritmik 6 faktor
           (Technical 25%, Momentum 15%, Value 15%, Quality 15%, Growth 15%, Sentiment 15%).
-          <strong> Bukan rekomendasi jual/beli</strong> — gunakan sebagai data point untuk research Anda sendiri.
+          <strong> Bukan rekomendasi jual/beli</strong> — gunakan sebagai data point untuk research kamu sendiri.
           Score di-recompute setiap halaman dimuat dari snapshot data terkini.
         </p>
       </CardContent>

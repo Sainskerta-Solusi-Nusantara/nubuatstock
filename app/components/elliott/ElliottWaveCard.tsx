@@ -40,6 +40,14 @@ export function ElliottWaveCard({ analysis }: Props) {
   const Icon = config.Icon;
   const confPct = Math.round(analysis.confidence * 100);
 
+  const isCorrective = analysis.waveType === "corrective";
+  // Detect corrective subtype dari currentWave string (worker menyimpannya di sana).
+  const correctiveSubtype = /zigzag/i.test(analysis.currentWave)
+    ? "Zigzag (5-3-5)"
+    : /flat/i.test(analysis.currentWave)
+      ? "Flat (3-3-5)"
+      : null;
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -79,31 +87,55 @@ export function ElliottWaveCard({ analysis }: Props) {
         {/* Wave Sequence */}
         {analysis.sequence.length > 0 && (
           <div>
-            <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              5-Wave Sequence
+            <div className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {isCorrective ? "Corrective Sequence (A-B-C)" : "5-Wave Sequence"}
+              {correctiveSubtype && (
+                <span className="rounded-full bg-yellow-500/15 px-1.5 py-0.5 text-[9px] font-bold normal-case text-yellow-700 dark:text-yellow-300">
+                  {correctiveSubtype}
+                </span>
+              )}
             </div>
-            <div className="grid grid-cols-5 gap-2">
+            <div
+              className={cn(
+                "grid gap-2",
+                isCorrective ? "grid-cols-3" : "grid-cols-5",
+              )}
+            >
               {analysis.sequence.map((w) => {
-                const isImpulse = ["1", "3", "5"].includes(w.label);
+                // Impulse: 1/3/5 = drive (hijau), 2/4 = corrective (oranye).
+                // Corrective: A/C = drive koreksi (oranye), B = counter (kuning).
+                const isDriveWave = isCorrective
+                  ? ["A", "C"].includes(w.label)
+                  : ["1", "3", "5"].includes(w.label);
                 const direction = w.endPrice > w.startPrice ? "up" : "down";
                 return (
                   <div
                     key={w.label}
                     className={cn(
                       "rounded-md border p-2",
-                      isImpulse
-                        ? "border-bull/40 bg-bull-soft"
-                        : "border-orange-500/40 bg-orange-500/15",
+                      isCorrective
+                        ? isDriveWave
+                          ? "border-orange-500/40 bg-orange-500/15"
+                          : "border-yellow-500/40 bg-yellow-500/15"
+                        : isDriveWave
+                          ? "border-bull/40 bg-bull-soft"
+                          : "border-orange-500/40 bg-orange-500/15",
                     )}
                   >
                     <div className="flex items-center justify-between">
                       <span
                         className={cn(
-                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                          isImpulse ? "bg-bull text-white" : "bg-orange-500 text-white",
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold text-white",
+                          isCorrective
+                            ? isDriveWave
+                              ? "bg-orange-500"
+                              : "bg-yellow-500"
+                            : isDriveWave
+                              ? "bg-bull"
+                              : "bg-orange-500",
                         )}
                       >
-                        W{w.label}
+                        {isCorrective ? w.label : `W${w.label}`}
                       </span>
                       {direction === "up" ? (
                         <TrendingUp className="h-3 w-3 text-bull" />
@@ -122,7 +154,9 @@ export function ElliottWaveCard({ analysis }: Props) {
               })}
             </div>
             <p className="mt-1 text-[10px] text-muted-foreground italic">
-              Hijau = impulse waves (1, 3, 5). Oranye = corrective (2, 4).
+              {isCorrective
+                ? "Oranye = wave A & C (arah koreksi). Kuning = wave B (counter-move)."
+                : "Hijau = impulse waves (1, 3, 5). Oranye = corrective (2, 4)."}
             </p>
           </div>
         )}

@@ -46,7 +46,7 @@ export default async function LandingPage() {
   // TTFB turun signifikan dibanding 40 Promise.all sebelumnya.
   const c = await getConfigs({
     appName: { key: "app.name", default: "Nubuat" },
-    tagline: { key: "app.tagline", default: "Sains di balik setiap trade" },
+    tagline: { key: "app.tagline", default: "Nubuat 👍 - Nubie Berbuat Mulanya Nyangkut Menuju Yahud" },
     supportEmail: { key: "app.support_email", default: "support@nubuat.id" },
     disclaimer: { key: "app.disclaimer_text", default: "Informasi edukasi — bukan ajakan jual/beli." },
 
@@ -72,7 +72,7 @@ export default async function LandingPage() {
     ppItems: { key: "landing.painpoints.items", default: [] as PainpointItem[] },
     ppFootnote: { key: "landing.painpoints.footnote", default: "" },
 
-    ftLead: { key: "landing.features.headline_lead", default: "Semua yang Anda butuhkan untuk" },
+    ftLead: { key: "landing.features.headline_lead", default: "Semua yang kamu butuhkan untuk" },
     ftHighlight: { key: "landing.features.headline_highlight", default: "trading yang disiplin" },
     ftSubtitle: { key: "landing.features.subtitle", default: "" },
     ftItems: { key: "landing.features.items", default: [] as FeatureItem[] },

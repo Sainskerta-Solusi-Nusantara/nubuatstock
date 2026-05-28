@@ -306,7 +306,7 @@ const defaults: ConfigEntry[] = [
   },
   {
     key: "app.tagline",
-    value: "Sains di balik setiap trade",
+    value: "Nubuat 👍 - Nubie Berbuat Mulanya Nyangkut Menuju Yahud",
     type: "string",
     category: "app",
     description: "Tagline yang ditampilkan di landing & email.",

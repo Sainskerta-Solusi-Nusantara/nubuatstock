@@ -1,5 +1,6 @@
 import { getConfig } from "@/lib/config";
 import { PickCard } from "@/components/picks/PickCard";
+import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { getTodayPicks, getLatestRun } from "@/lib/picks/service";
 import { requireSession, resolveDailyVisibleEntitlement } from "@/lib/picks/cross-deps";
 
@@ -33,11 +34,7 @@ export default async function PicksPage() {
           <h1 className="text-2xl font-bold tracking-tight">Daily Picks</h1>
           <span className="text-sm text-muted-foreground">{today}</span>
         </div>
-        {disclaimer ? (
-          <p className="rounded-md border border-yellow-500/30 bg-yellow-500/10 p-3 text-xs leading-relaxed text-yellow-900 dark:text-yellow-100">
-            <strong>Disclaimer:</strong> {disclaimer}
-          </p>
-        ) : null}
+        <PickDisclaimer variant="banner" text={disclaimer} withLink />
       </header>
 
       {visible.length === 0 ? (
@@ -62,8 +59,8 @@ export default async function PicksPage() {
         </>
       )}
 
-      <footer className="border-t pt-4 text-[11px] leading-relaxed text-muted-foreground">
-        {disclaimer ? <p>{disclaimer}</p> : null}
+      <footer className="border-t pt-4">
+        <PickDisclaimer variant="footer" text={disclaimer} withLink />
       </footer>
     </div>
   );

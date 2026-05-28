@@ -13,6 +13,13 @@ import { getActor, getRequestId } from "./request-context";
 /**
  * Audit log writer.
  *
+ * APPEND-ONLY (IMPROVEMENT_PLAN §8.2): modul ini HANYA boleh meng-INSERT ke
+ * `audit_log` / `system_events`. JANGAN PERNAH menambah fungsi update/delete di
+ * sini — integritas forensik bergantung pada sifat append-only. Penegakan keras
+ * ada di level DB (trigger RAISE EXCEPTION + REVOKE) lewat migration
+ * db/migrations/0000_audit_log_immutability.sql; guard di app ini bersifat
+ * dokumentatif/konvensi.
+ *
  * - Auto-inject `requestId`, `actorUserId`, `actorRole` dari AsyncLocalStorage
  *   kalau caller tidak provide (lihat lib/observability/request-context.ts).
  * - Sensitive field di `before`, `after`, `metadata` di-redact (deep clone).

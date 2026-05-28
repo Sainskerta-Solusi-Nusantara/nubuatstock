@@ -6,9 +6,6 @@ import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-const CURRENT_VERSION = "v1";
-const LS_KEY = `nubuat.disclaimer.${CURRENT_VERSION}.accepted`;
-
 /**
  * Gate full-page yang muncul saat first login (atau setelah disclaimer version up).
  * User WAJIB centang dan klik Setuju sebelum bisa pakai dashboard.
@@ -16,16 +13,25 @@ const LS_KEY = `nubuat.disclaimer.${CURRENT_VERSION}.accepted`;
  * Fast path: localStorage cek versi accepted. Audit trail: POST ke
  * /api/legal/accept yang catat ke user_legal_acceptances table.
  *
+ * Versioning: `version` adalah versi legal terkini (diresolusi server-side di
+ * (app)/layout.tsx). `isReAccept` true kalau user sudah pernah accept versi
+ * lebih lama → kebijakan diperbarui, tampilkan copy berbeda.
+ *
  * Strategi server-side check: dilakukan di (app)/layout.tsx via
- * `hasAcceptedDisclaimer(userId)` helper. Komponen ini render kalau belum.
+ * `getLegalGateStatus(userId)` helper. Komponen ini render kalau belum.
  */
 export function AcceptDisclaimerGate({
   appName,
   disclaimer,
+  version = "v1",
+  isReAccept = false,
 }: {
   appName: string;
   disclaimer: string;
+  version?: string;
+  isReAccept?: boolean;
 }) {
+  const LS_KEY = `nubuat.disclaimer.${version}.accepted`;
   const [agree1, setAgree1] = useState(false);
   const [agree2, setAgree2] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -45,7 +51,7 @@ export function AcceptDisclaimerGate({
       const res = await fetch("/api/legal/accept", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ version: CURRENT_VERSION, documents: ["disclaimer", "terms", "privacy"] }),
+        body: JSON.stringify({ version, documents: ["disclaimer", "terms", "privacy"] }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data?.error?.message ?? "Gagal");
@@ -66,10 +72,24 @@ export function AcceptDisclaimerGate({
             <ShieldAlert className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold">Disclaimer & Persetujuan</h2>
-            <p className="text-xs text-muted-foreground">Wajib dibaca sebelum mengakses {appName}</p>
+            <h2 className="text-xl font-bold">
+              {isReAccept ? "Kebijakan Diperbarui" : "Disclaimer & Persetujuan"}
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {isReAccept
+                ? `Kebijakan telah diperbarui, mohon setujui kembali untuk melanjutkan ke ${appName}`
+                : `Wajib dibaca sebelum mengakses ${appName}`}
+            </p>
           </div>
         </div>
+
+        {isReAccept && (
+          <div className="rounded-md border border-bear/40 bg-bear-soft px-4 py-3 text-sm text-foreground/90">
+            Disclaimer, Syarat &amp; Ketentuan, dan/atau Kebijakan Privasi kami telah
+            diperbarui ke versi terbaru. Mohon baca dan setujui kembali untuk
+            melanjutkan menggunakan {appName}.
+          </div>
+        )}
 
         <div className="max-h-72 overflow-y-auto rounded-md border border-border bg-background p-4 text-sm leading-relaxed text-foreground/90">
           <p>{disclaimer}</p>
@@ -119,7 +139,11 @@ export function AcceptDisclaimerGate({
             onClick={handleAccept}
             className="h-10 px-6"
           >
-            {submitting ? "Memproses..." : "Saya Setuju & Lanjut"}
+            {submitting
+              ? "Memproses..."
+              : isReAccept
+                ? "Setujui Versi Baru & Lanjut"
+                : "Saya Setuju & Lanjut"}
           </Button>
         </div>
       </div>

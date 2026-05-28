@@ -7,6 +7,7 @@ import { getPickById } from "@/lib/picks/service";
 import { requireSession } from "@/lib/picks/cross-deps";
 import { FactorBreakdownChart } from "@/components/picks/FactorBreakdown";
 import { PickChartOverlay } from "@/components/picks/PickChartOverlay";
+import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { NotFoundError } from "@/lib/errors";
 import { pickIdParamSchema } from "@/lib/types/picks";
 
@@ -64,11 +65,7 @@ export default async function PickDetailPage({ params }: PageProps) {
             </Badge>
           </div>
         </div>
-        {disclaimer ? (
-          <p className="rounded-md border border-yellow-500/30 bg-yellow-500/10 p-3 text-xs leading-relaxed text-yellow-900 dark:text-yellow-100">
-            <strong>Disclaimer:</strong> {disclaimer}
-          </p>
-        ) : null}
+        <PickDisclaimer variant="banner" text={disclaimer} withLink />
       </header>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -141,6 +138,7 @@ export default async function PickDetailPage({ params }: PageProps) {
               <Row label="R/R">{pick.rewardRiskRatio.toFixed(2)}x</Row>
               <Row label="Score">{pick.score.toFixed(1)} / 100</Row>
               <Row label="Confidence">{pick.confidence}</Row>
+              <PickDisclaimer variant="card" />
             </CardContent>
           </Card>
 
@@ -155,8 +153,8 @@ export default async function PickDetailPage({ params }: PageProps) {
         </aside>
       </div>
 
-      <footer className="border-t pt-4 text-[11px] leading-relaxed text-muted-foreground">
-        {disclaimer ? <p>{disclaimer}</p> : null}
+      <footer className="border-t pt-4">
+        <PickDisclaimer variant="footer" text={disclaimer} withLink />
       </footer>
     </div>
   );

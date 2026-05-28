@@ -39,7 +39,7 @@ export class ForbiddenError extends AppError {
   override readonly name: string = "ForbiddenError";
   override readonly statusCode: number = 403;
   override readonly code: string = "FORBIDDEN";
-  constructor(message = "Access denied", clientMessage = "Anda tidak memiliki izin.") {
+  constructor(message = "Access denied", clientMessage = "Kamu tidak punya izin untuk ini.") {
     super(message, { clientMessage });
   }
 }
@@ -68,7 +68,7 @@ export class QuotaExceededError extends AppError {
   override readonly code = "QUOTA_EXCEEDED";
   constructor(quotaKey: string, limit: number) {
     super(`Quota exceeded for ${quotaKey} (limit ${limit})`, {
-      clientMessage: `Kuota harian Anda telah habis. Upgrade paket untuk kuota lebih besar.`,
+      clientMessage: `Kuota harian kamu sudah habis. Upgrade paket untuk kuota lebih besar.`,
       details: { quotaKey, limit },
     });
   }

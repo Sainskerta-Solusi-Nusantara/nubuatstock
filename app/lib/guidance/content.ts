@@ -34,13 +34,13 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
     icon: "Home",
     summary: "Halaman utama yang merangkum Daily Picks, watchlist, dan alert aktif. Akses cepat ke semua modul.",
     contents: [
-      { type: "paragraph", text: "Setelah login, Anda akan dibawa ke Dashboard. Ini adalah command center harian Anda." },
+      { type: "paragraph", text: "Setelah login, kamu akan dibawa ke Dashboard. Ini adalah command center harian kamu." },
       { type: "heading", level: 3, text: "Apa yang ada di Dashboard" },
       {
         type: "list",
         items: [
           "**Daily Picks** — Top 5 rekomendasi harian dari engine multi-faktor, dengan entry/SL/TP konkrit.",
-          "**Watchlist Snapshot** — Performance ringkasan emiten yang Anda follow.",
+          "**Watchlist Snapshot** — Performance ringkasan emiten yang kamu follow.",
           "**Alerts Aktif** — Trigger alerts yang baru saja terpicu.",
           "**Pintasan menu** — link cepat ke Screener, Compare, Sectors, AI Copilot, dan modul lainnya.",
         ],
@@ -50,7 +50,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
         type: "steps",
         items: [
           { title: "Cek Daily Picks pertama", body: "Lihat 5 saham yang di-rekomendasikan hari ini. Klik salah satu untuk masuk ke halaman ticker." },
-          { title: "Review watchlist", body: "Pantau emiten yang Anda track — perhatikan yang naik/turun signifikan." },
+          { title: "Review watchlist", body: "Pantau emiten yang kamu track — perhatikan yang naik/turun signifikan." },
           { title: "Cek alerts", body: "Kalau ada alert ter-trigger, ambil tindakan (review, sell, atau adjust SL)." },
         ],
       },
@@ -77,7 +77,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           { key: "Reasoning", value: "Faktor-faktor yang mendukung pick ini (mis. 'RSI oversold + breakout MA50 + bandarmology accumulation')." },
         ],
       },
-      { type: "note", tone: "warning", title: "Disclaimer penting", body: "Daily Picks adalah analisis algoritmik, BUKAN saran investasi. Selalu validasi sendiri, sesuaikan dengan risk profile Anda, dan jangan all-in." },
+      { type: "note", tone: "warning", title: "Disclaimer penting", body: "Daily Picks adalah analisis algoritmik, BUKAN saran investasi. Selalu validasi sendiri, sesuaikan dengan risk profile kamu, dan jangan all-in." },
       { type: "heading", level: 3, text: "Workflow rekomendasi" },
       {
         type: "steps",
@@ -85,7 +85,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           { title: "Pilih pick yang cocok dengan style", body: "Trader agresif: pilih confidence > 80%. Konservatif: confidence > 90% + reasoning fundamental kuat." },
           { title: "Validasi via Verdict + Wyckoff", body: "Klik ticker → cek Nubuat Verdict (target ≥ 6.5) dan Wyckoff Phase (Accumulation / Markup = OK)." },
           { title: "Set order di broker", body: "Buy di entry zone (limit order). Set SL otomatis di harga SL. Cek target sesudah profit run." },
-          { title: "Track outcome", body: "Daily Picks Performance dashboard track akurasi tiap pick → adjust expectation Anda." },
+          { title: "Track outcome", body: "Daily Picks Performance dashboard track akurasi tiap pick → adjust expectation kamu." },
         ],
       },
     ],
@@ -97,7 +97,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
     category: "Analisis Inti",
     title: "Nubuat Verdict 0–10",
     icon: "Award",
-    summary: "Score komposit 6-faktor per ticker. Transparent breakdown — Anda tahu KENAPA verdict-nya begitu.",
+    summary: "Score komposit 6-faktor per ticker. Transparent breakdown — kamu tahu KENAPA verdict-nya begitu.",
     contents: [
       { type: "paragraph", text: "Nubuat Verdict adalah konsolidasi 6 faktor analisis ke dalam 1 angka 0-10. Tampil di Overview tab tiap ticker." },
       { type: "heading", level: 3, text: "6 Faktor & Bobot" },
@@ -123,8 +123,8 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           { key: "0.0 - 2.9", value: "🔴 STRONG SELL — hindari" },
         ],
       },
-      { type: "note", tone: "info", title: "Transparency", body: "Setiap faktor di-breakdown dengan signal individu (mis. 'RSI overbought 75.2' atau 'PE rich 35.1'). Anda bisa lihat KENAPA score 6.4 — bukan 'black box AI'." },
-      { type: "note", tone: "warning", title: "Limitations", body: "Verdict adalah snapshot saat ini, bukan prediksi. Score 8 ≠ pasti naik. Score 3 ≠ pasti turun. Gunakan sebagai filter awal — selalu cross-check dengan analisis Anda." },
+      { type: "note", tone: "info", title: "Transparency", body: "Setiap faktor di-breakdown dengan signal individu (mis. 'RSI overbought 75.2' atau 'PE rich 35.1'). Kamu bisa lihat KENAPA score 6.4 — bukan 'black box AI'." },
+      { type: "note", tone: "warning", title: "Limitations", body: "Verdict adalah snapshot saat ini, bukan prediksi. Score 8 ≠ pasti naik. Score 3 ≠ pasti turun. Gunakan sebagai filter awal — selalu cross-check dengan analisis kamu." },
     ],
   },
 
@@ -300,7 +300,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
         ],
       },
       { type: "heading", level: 3, text: "Sensitivity Matrix" },
-      { type: "paragraph", text: "Tabel 5×5 menunjukkan intrinsic value per share di berbagai kombinasi discount rate (rows) × growth rate (cols). Sel hijau = di atas harga sekarang; merah = di bawah; ring biru = asumsi default Anda." },
+      { type: "paragraph", text: "Tabel 5×5 menunjukkan intrinsic value per share di berbagai kombinasi discount rate (rows) × growth rate (cols). Sel hijau = di atas harga sekarang; merah = di bawah; ring biru = asumsi default kamu." },
       { type: "note", tone: "warning", title: "Caveats", body: "DCF SANGAT SENSITIF terhadap input — output adalah RANGE, bukan angka pasti. Banks/insurance: DCF kurang akurat (gunakan DDM). Data CapEx belum lengkap → FCF ≈ Net Income (proxy)." },
     ],
   },
@@ -382,9 +382,9 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
       {
         type: "steps",
         items: [
-          { title: "Mulai dengan preset", body: "Pilih preset yang match philosophy Anda (Value/Growth/Quality/dll)." },
+          { title: "Mulai dengan preset", body: "Pilih preset yang match philosophy kamu (Value/Growth/Quality/dll)." },
           { title: "Tweak filter", body: "Naikkan/turunkan threshold sesuai konteks pasar saat ini." },
-          { title: "Shortlist 5-10 kandidat", body: "Sort by metric paling penting buat Anda (mis. ROE desc untuk quality)." },
+          { title: "Shortlist 5-10 kandidat", body: "Sort by metric paling penting buat kamu (mis. ROE desc untuk quality)." },
           { title: "Deep dive per ticker", body: "Klik ticker → cek Verdict, Wyckoff, DCF, News. Eliminasi yang red flag." },
         ],
       },
@@ -464,7 +464,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
     category: "Tools",
     title: "Watchlist",
     icon: "Star",
-    summary: "Track emiten yang Anda follow dengan note + sort order. Default watchlist 'Utama' otomatis dibuat saat signup.",
+    summary: "Track emiten yang kamu follow dengan note + sort order. Default watchlist 'Utama' otomatis dibuat saat signup.",
     contents: [
       { type: "paragraph", text: "Tiap user bisa buat multiple watchlist (mis. 'Banking', 'Tech', 'Watch Pre-Earnings')." },
       { type: "heading", level: 3, text: "Cara pakai" },
@@ -472,7 +472,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
         type: "steps",
         items: [
           { title: "Tambah ticker", body: "Buka /watchlist, klik 'Add', search/pilih ticker." },
-          { title: "Tambah note (opsional)", body: "Catat alasan kenapa Anda follow ticker ini (mis. 'Tunggu break Rp1500')." },
+          { title: "Tambah note (opsional)", body: "Catat alasan kenapa kamu follow ticker ini (mis. 'Tunggu break Rp1500')." },
           { title: "Reorder", body: "Drag untuk urutkan prioritas." },
           { title: "Buat watchlist baru", body: "Misal pisahkan 'Trade' vs 'Long-term invest'." },
         ],
@@ -751,7 +751,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           { key: "Enterprise", value: "+ API access, white-label, dedicated support" },
         ],
       },
-      { type: "note", tone: "info", title: "Trial auto-expiry", body: "Trial otomatis berakhir setelah 7 hari. Akun di-downgrade ke Free tanpa charge. Anda bisa upgrade kapan saja di /subscription." },
+      { type: "note", tone: "info", title: "Trial auto-expiry", body: "Trial otomatis berakhir setelah 7 hari. Akun di-downgrade ke Free tanpa charge. Kamu bisa upgrade kapan saja di /subscription." },
     ],
   },
 ];

@@ -4,7 +4,7 @@ import { ulid } from "ulid";
 import { z } from "zod";
 import { handleError, ok } from "@/lib/utils/api";
 import { logger } from "@/lib/logger";
-import { ValidationError } from "@/lib/errors";
+import { UnauthorizedError, ValidationError } from "@/lib/errors";
 import { db } from "@/lib/db";
 import { invoices as invoicesTable, payments } from "@/db/schema/billing";
 import {
@@ -54,8 +54,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       signatureKey: parsed.signature_key,
     });
     if (!validSig) {
-      logger.warn({ orderId: parsed.order_id }, "Midtrans webhook signature invalid");
-      throw new ValidationError("Invalid signature");
+      logger.warn(
+        { orderId: parsed.order_id, provider: "midtrans" },
+        "Rejected Midtrans webhook: invalid signature_key",
+      );
+      // 401 — reject forged/unsigned notifications BEFORE any business logic.
+      throw new UnauthorizedError("Invalid signature");
     }
 
     const status = mapMidtransStatus(parsed.transaction_status);

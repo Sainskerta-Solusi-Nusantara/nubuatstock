@@ -9,6 +9,7 @@ import { detectPatternsProcessor } from "./detect-patterns";
 import { analyzeElliottProcessor } from "./analyze-elliott";
 import { generateDailyDigestProcessor } from "./generate-daily-digest";
 import { computeAnalysisSnapshotsProcessor } from "./compute-analysis-snapshots";
+import { accountDeletionSweepProcessor } from "./account-deletion-sweep";
 
 /**
  * Worker Job Registry.
@@ -128,6 +129,9 @@ export const jobRegistry: Partial<Record<QueueName | string, JobRegistration>> =
   "elliott.analyze": { processor: analyzeElliottProcessor, concurrency: 1 },
   "digest.daily": { processor: generateDailyDigestProcessor, concurrency: 1 },
   "analysis.snapshots": { processor: computeAnalysisSnapshotsProcessor, concurrency: 1 },
+  // Custom queue (di luar queueNames) — worker/index.ts spawn worker untuk
+  // semua key jobRegistry di luar queueNames juga.
+  "account.deletion.sweep": { processor: accountDeletionSweepProcessor, concurrency: 1 },
 };
 
 export function registerJobProcessor(

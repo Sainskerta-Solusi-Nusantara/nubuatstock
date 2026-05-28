@@ -23,6 +23,24 @@ const legalContent: Array<{
   description: string;
 }> = [
   {
+    key: "legal.privacy.version",
+    value: "v1",
+    description:
+      "Versi Privacy Policy terkini. BUMP (mis. v1 → v2) saat ada perubahan material → semua user wajib re-accept.",
+  },
+  {
+    key: "legal.terms.version",
+    value: "v1",
+    description:
+      "Versi Terms of Service terkini. BUMP saat ada perubahan material → semua user wajib re-accept.",
+  },
+  {
+    key: "legal.disclaimer.version",
+    value: "v1",
+    description:
+      "Versi Disclaimer terkini. BUMP saat ada perubahan material → semua user wajib re-accept.",
+  },
+  {
     key: "legal.privacy.last_updated",
     value: "2026-05-11",
     description: "Tanggal update terakhir Privacy Policy (format YYYY-MM-DD).",
@@ -34,11 +52,11 @@ const legalContent: Array<{
 
 **Berlaku sejak:** 11 Mei 2026
 
-Kebijakan Privasi ini menjelaskan bagaimana **Nubuat** ("kami", "platform") mengumpulkan, menggunakan, menyimpan, dan melindungi data pribadi Anda sesuai dengan **Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP)**.
+Kebijakan Privasi ini menjelaskan bagaimana **Nubuat** ("kami", "platform") mengumpulkan, menggunakan, menyimpan, dan melindungi data pribadi kamu sesuai dengan **Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP)**.
 
 ## 1. Data yang Kami Kumpulkan
 
-### 1.1 Data yang Anda berikan langsung
+### 1.1 Data yang kamu berikan langsung
 - Email, nama lengkap, nomor telepon (saat registrasi)
 - Password (disimpan terhenkripsi Argon2id, tidak pernah dalam bentuk plain text)
 - Preferensi: bahasa, timezone, watchlist, alerts, riwayat AI chat
@@ -51,7 +69,7 @@ Kebijakan Privasi ini menjelaskan bagaimana **Nubuat** ("kami", "platform") meng
 
 ### 1.3 Data dari pihak ketiga
 - Data harga & fundamental emiten dari Yahoo Finance, IDX, KSEI (data publik, bukan data pribadi)
-- Email verifikasi dari penyedia OAuth (Google) kalau Anda login pakai Google
+- Email verifikasi dari penyedia OAuth (Google) kalau kamu login pakai Google
 
 ## 2. Dasar Hukum & Tujuan Pemrosesan
 
@@ -59,7 +77,7 @@ Kebijakan Privasi ini menjelaskan bagaimana **Nubuat** ("kami", "platform") meng
 |---|---|
 | Penyediaan layanan analisa saham | Pelaksanaan perjanjian (Pasal 20 ayat 2 huruf b) |
 | Pengiriman email/push notification kritis | Pelaksanaan perjanjian |
-| Marketing email & analytics produk | Persetujuan eksplisit (Anda bisa opt-out) |
+| Marketing email & analytics produk | Persetujuan eksplisit (kamu bisa opt-out) |
 | Keamanan, deteksi fraud, audit | Kepentingan sah pengendali data (Pasal 20 ayat 2 huruf f) |
 | Kepatuhan regulasi (OJK, AML/PPATK) | Pelaksanaan kewajiban hukum |
 
@@ -72,17 +90,17 @@ Kebijakan Privasi ini menjelaskan bagaimana **Nubuat** ("kami", "platform") meng
 
 ## 4. Pembagian Data ke Pihak Ketiga
 
-Kami **TIDAK menjual** data pribadi Anda. Data hanya dibagikan ke:
+Kami **TIDAK menjual** data pribadi kamu. Data hanya dibagikan ke:
 
 - **Penyedia layanan pembayaran** (Midtrans, Xendit) — hanya saat transaksi
 - **Penyedia infrastruktur cloud** (AWS, Neon, Upstash, Cloudflare) — dengan Data Processing Agreement
-- **Penyedia AI** (DeepSeek, Anthropic, OpenAI) — query AI Anda dikirim untuk diproses. **PII Anda di-redact** sebelum dikirim. Penyedia diwajibkan tidak menyimpan/melatih ulang model dari query.
+- **Penyedia AI** (DeepSeek, Anthropic, OpenAI) — query AI kamu dikirim untuk diproses. **PII kamu di-redact** sebelum dikirim. Penyedia diwajibkan tidak menyimpan/melatih ulang model dari query.
 - **Regulator** (OJK, PPATK, Kepolisian) — kalau ada permintaan resmi sesuai hukum
 
-## 5. Hak Anda sebagai Subjek Data (UU PDP Ps. 5-12)
+## 5. Hak kamu sebagai Subjek Data (UU PDP Ps. 5-12)
 
-Anda berhak untuk:
-1. **Akses** seluruh data pribadi Anda di akun
+Kamu berhak untuk:
+1. **Akses** seluruh data pribadi kamu di akun
 2. **Mengubah** data yang tidak akurat
 3. **Menghapus** akun & seluruh data terkait
 4. **Portabilitas** — export data dalam format JSON
@@ -118,7 +136,7 @@ Kalau terjadi pelanggaran data yang berisiko tinggi terhadap subjek data, kami a
 
 ## 9. Anak di Bawah Umur
 
-Layanan ini **tidak diperuntukkan untuk anak di bawah 17 tahun**. Kami tidak sengaja mengumpulkan data anak. Jika Anda mengetahui adanya akun anak, hubungi support@nubuat.id.
+Layanan ini **tidak diperuntukkan untuk anak di bawah 17 tahun**. Kami tidak sengaja mengumpulkan data anak. Jika kamu mengetahui adanya akun anak, hubungi support@nubuat.id.
 
 ## 10. Perubahan Kebijakan
 
@@ -144,26 +162,26 @@ Perubahan material akan diberitahukan via email 14 hari sebelum berlaku. Versi t
 
 **Berlaku sejak:** 11 Mei 2026
 
-Dokumen ini ("Syarat") mengatur hubungan antara Anda ("Pengguna") dengan **Nubuat** ("Platform", "Kami") dalam penggunaan layanan analisa saham berbasis subscription.
+Dokumen ini ("Syarat") mengatur hubungan antara kamu ("Pengguna") dengan **Nubuat** ("Platform", "Kami") dalam penggunaan layanan analisa saham berbasis subscription.
 
-Dengan menggunakan Platform, Anda setuju terikat oleh Syarat ini. Jika tidak setuju, jangan gunakan Platform.
+Dengan menggunakan Platform, kamu setuju terikat oleh Syarat ini. Jika tidak setuju, jangan gunakan Platform.
 
 ## 1. Sifat Layanan
 
-1.1 Nubuat adalah **platform analytics & informasi**, **BUKAN perusahaan efek**. Kami tidak melakukan eksekusi transaksi efek atas nama Anda.
+1.1 Nubuat adalah **platform analytics & informasi**, **BUKAN perusahaan efek**. Kami tidak melakukan eksekusi transaksi efek atas nama kamu.
 
-1.2 Seluruh analisa, daily picks, rekomendasi, riset, dan konten AI bersifat **informatif dan edukatif**. **Bukan saran investasi yang disesuaikan untuk situasi finansial pribadi Anda**.
+1.2 Seluruh analisa, daily picks, rekomendasi, riset, dan konten AI bersifat **informatif dan edukatif**. **Bukan saran investasi yang disesuaikan untuk situasi finansial pribadi kamu**.
 
-1.3 Anda tetap eksekusi order di broker pilihan Anda yang berizin OJK. Nubuat tidak menerima komisi dari broker manapun (no kickback).
+1.3 kamu tetap eksekusi order di broker pilihan kamu yang berizin OJK. Nubuat tidak menerima komisi dari broker manapun (no kickback).
 
 ## 2. Pendaftaran & Akun
 
-2.1 Anda wajib berusia ≥17 tahun dan punya KTP/identitas valid.
+2.1 kamu wajib berusia ≥17 tahun dan punya KTP/identitas valid.
 
-2.2 Anda bertanggung jawab penuh atas:
+2.2 kamu bertanggung jawab penuh atas:
 - Keamanan kredensial (password, MFA, session)
-- Akurasi data yang Anda berikan
-- Aktivitas yang terjadi di akun Anda
+- Akurasi data yang kamu berikan
+- Aktivitas yang terjadi di akun kamu
 
 2.3 Satu orang = satu akun. Akun tidak boleh disewakan, dipinjamkan, atau dishare.
 
@@ -171,7 +189,7 @@ Dengan menggunakan Platform, Anda setuju terikat oleh Syarat ini. Jika tidak set
 
 3.1 Tier subscription: Free (selamanya gratis), Starter, Pro, Elite. Detail fitur & harga di https://nubuat.id/subscription.
 
-3.2 Pembayaran via Midtrans/Xendit (penyedia berizin OJK). Auto-renewal aktif kecuali Anda nonaktifkan minimal 24 jam sebelum tanggal renewal.
+3.2 Pembayaran via Midtrans/Xendit (penyedia berizin OJK). Auto-renewal aktif kecuali kamu nonaktifkan minimal 24 jam sebelum tanggal renewal.
 
 3.3 Refund hanya untuk kasus error sistem yang kami akui. Tidak ada refund pro-rata untuk perubahan keputusan.
 
@@ -179,23 +197,23 @@ Dengan menggunakan Platform, Anda setuju terikat oleh Syarat ini. Jika tidak set
 
 ## 4. Penggunaan yang Diizinkan
 
-Anda BOLEH:
-- Menggunakan analisa untuk keputusan investasi pribadi Anda
+Kamu BOLEH:
+- Menggunakan analisa untuk keputusan investasi pribadi kamu
 - Download laporan riset untuk referensi pribadi
 - Share insight di media sosial dengan atribusi
 
-Anda TIDAK BOLEH:
+Kamu TIDAK BOLEH:
 - Scrape, reverse-engineer, atau replikasi platform
 - Pakai bot otomatis terhadap API kami tanpa izin
-- Jual ulang akses atau konten berbayar Anda
+- Jual ulang akses atau konten berbayar kamu
 - Publikasi pump-and-dump menggunakan data kami
 - Manipulasi pasar (front-running rekomendasi, dll)
 
 ## 5. Konten Pengguna
 
-5.1 Konten yang Anda buat (catatan watchlist, AI chat, dll) tetap milik Anda.
+5.1 Konten yang kamu buat (catatan watchlist, AI chat, dll) tetap milik kamu.
 
-5.2 Anda memberikan kami lisensi non-eksklusif untuk menyimpan, memproses, dan menampilkan konten Anda untuk operasional Platform.
+5.2 kamu memberikan kami lisensi non-eksklusif untuk menyimpan, memproses, dan menampilkan konten kamu untuk operasional Platform.
 
 5.3 Konten yang berpotensi pump-dump, fitnah emiten, atau melanggar hukum akan dihapus tanpa pemberitahuan.
 
@@ -209,7 +227,7 @@ Anda TIDAK BOLEH:
 
 ## 7. Disclaimer Pasar Modal
 
-LIHAT HALAMAN DISCLAIMER LENGKAP DI **/disclaimer**. Singkat: semua informasi di Platform untuk edukasi, **bukan ajakan jual/beli efek tertentu**. Risiko investasi sepenuhnya tanggung jawab Anda.
+LIHAT HALAMAN DISCLAIMER LENGKAP DI **/disclaimer**. Singkat: semua informasi di Platform untuk edukasi, **bukan ajakan jual/beli efek tertentu**. Risiko investasi sepenuhnya tanggung jawab kamu.
 
 ## 8. Pembatasan Tanggung Jawab
 
@@ -218,17 +236,17 @@ LIHAT HALAMAN DISCLAIMER LENGKAP DI **/disclaimer**. Singkat: semua informasi di
 - Hit-rate Daily Picks (track record historis ≠ jaminan masa depan)
 - Ketersediaan 100% (target SLA 99.9% jam bursa, tidak garansi)
 
-8.2 Tanggung jawab maksimum kami terhadap Anda adalah **total yang Anda bayar selama 12 bulan terakhir** atau **Rp 5.000.000**, mana yang lebih kecil. Kerugian investasi pasar saham tidak masuk klaim.
+8.2 Tanggung jawab maksimum kami terhadap kamu adalah **total yang kamu bayar selama 12 bulan terakhir** atau **Rp 5.000.000**, mana yang lebih kecil. Kerugian investasi pasar saham tidak masuk klaim.
 
 ## 9. Penangguhan & Penghentian Akun
 
-Kami berhak suspend/terminate akun tanpa refund jika Anda:
+Kami berhak suspend/terminate akun tanpa refund jika kamu:
 - Melanggar Syarat ini
 - Pump-and-dump, fraud, atau manipulasi
 - Pembayaran chargeback berulang
 - Tidak aktif >12 bulan (dengan notifikasi)
 
-Anda boleh tutup akun kapan saja dari Settings. Data dihapus permanen setelah 30 hari (kecuali audit log retention 7 tahun untuk compliance).
+Kamu boleh tutup akun kapan saja dari Settings. Data dihapus permanen setelah 30 hari (kecuali audit log retention 7 tahun untuk compliance).
 
 ## 10. Hukum yang Berlaku
 
@@ -266,11 +284,11 @@ Kami dapat update Syarat ini. Perubahan material akan diumumkan via email 14 har
 
 Seluruh informasi, analisa, daily picks, rekomendasi, riset, dan output AI di platform **Nubuat** disediakan untuk **tujuan edukasi dan informasi semata**.
 
-**Bukan ajakan, undangan, saran, atau rekomendasi** untuk membeli, menjual, atau menahan efek tertentu yang disesuaikan dengan profil finansial atau situasi personal Anda.
+**Bukan ajakan, undangan, saran, atau rekomendasi** untuk membeli, menjual, atau menahan efek tertentu yang disesuaikan dengan profil finansial atau situasi personal kamu.
 
 ## 1. Status Regulasi
 
-1.1 Nubuat **BUKAN Perusahaan Efek** dan tidak melakukan eksekusi order saham atas nama Anda.
+1.1 Nubuat **BUKAN Perusahaan Efek** dan tidak melakukan eksekusi order saham atas nama kamu.
 
 1.2 Nubuat saat ini positioning sebagai **platform analytics & edukasi**. Izin Penasihat Investasi OJK (jika diperlukan untuk fitur tertentu) sedang dalam proses pengajuan sesuai Bapepam V.C.1 dan SEOJK 7/SEOJK.04/2017.
 
@@ -297,16 +315,16 @@ Investasi saham mengandung risiko:
 - **Risiko sistemik** — krisis ekonomi global/lokal
 - **Risiko regulatori** — aturan OJK/pajak bisa berubah
 
-**Hanya investasikan dana yang Anda mampu rugi sepenuhnya.**
+**Hanya investasikan dana yang kamu mampu rugi sepenuhnya.**
 
 ## 4. Tanggung Jawab Pribadi
 
-Keputusan investasi sepenuhnya **tanggung jawab Anda pribadi**:
+Keputusan investasi sepenuhnya **tanggung jawab kamu pribadi**:
 - Lakukan due diligence sendiri
-- Pahami profil risiko & horizon Anda
+- Pahami profil risiko & horizon kamu
 - Konsultasi penasihat investasi berlisensi OJK untuk advice personal
-- Diversifikasi portfolio Anda
-- Catat semua entry/exit Anda untuk learning
+- Diversifikasi portfolio kamu
+- Catat semua entry/exit kamu untuk learning
 
 ## 5. Bukan Saran Pajak / Hukum
 
@@ -363,7 +381,7 @@ Akun terlibat = banned permanent + laporan otoritas.
 
 ---
 
-**Dengan menggunakan layanan Nubuat, Anda menyatakan TELAH MEMBACA, MEMAHAMI, dan SETUJU dengan Disclaimer di atas.**
+**Dengan menggunakan layanan Nubuat, kamu menyatakan TELAH MEMBACA, MEMAHAMI, dan SETUJU dengan Disclaimer di atas.**
 
 > ⚠️ *Dokumen ini template starter. Final akan disesuaikan setelah review legal counsel pasar modal Indonesia.*`,
   },

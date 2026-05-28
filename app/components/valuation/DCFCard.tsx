@@ -117,7 +117,7 @@ export function DCFCard({ result }: DCFCardProps) {
             </table>
           </div>
           <p className="mt-1 text-[10px] text-muted-foreground italic">
-            Sel hijau = intrinsic value &gt; harga sekarang. Sel merah = di bawah. Ring biru = assumption Anda.
+            Sel hijau = intrinsic value &gt; harga sekarang. Sel merah = di bawah. Ring biru = assumption kamu.
           </p>
         </div>
 

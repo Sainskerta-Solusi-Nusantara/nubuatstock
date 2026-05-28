@@ -48,7 +48,7 @@ export const DEMO_SCENES: DemoScene[] = [
     index: 0,
     title: "Welcome ke Nubuat",
     narration:
-      "Selamat datang di Nubuat — platform analisis saham Indonesia berbasis AI. Dalam 3 menit ke depan, Anda akan lihat bagaimana retail trader Indonesia memakai Nubuat dari pagi sampai eksekusi posisi, lengkap dengan technical analysis, fundamental valuation, dan AI copilot.",
+      "Selamat datang di Nubuat — platform analisis saham Indonesia berbasis AI. Dalam 3 menit ke depan, kamu akan lihat bagaimana retail trader Indonesia memakai Nubuat dari pagi sampai eksekusi posisi, lengkap dengan technical analysis, fundamental valuation, dan AI copilot.",
     durationMs: 15000,
     visual: "intro",
     keyActions: [
@@ -63,7 +63,7 @@ export const DEMO_SCENES: DemoScene[] = [
     index: 1,
     title: "Morning Brief & Dashboard",
     narration:
-      "Setiap pagi jam 7, Nubuat generate Morning Brief otomatis — ringkasan kondisi IHSG, top 5 daily picks, berita penting 24 jam terakhir, dan kalender aksi korporasi. Anda tahu apa yang penting sebelum market buka.",
+      "Setiap pagi jam 7, Nubuat generate Morning Brief otomatis — ringkasan kondisi IHSG, top 5 daily picks, berita penting 24 jam terakhir, dan kalender aksi korporasi. Kamu tahu apa yang penting sebelum market buka.",
     durationMs: 16000,
     visual: "dashboard",
     keyActions: [
@@ -79,7 +79,7 @@ export const DEMO_SCENES: DemoScene[] = [
     index: 2,
     title: "Daily Picks dengan SL/TP Konkrit",
     narration:
-      "Setiap pick datang dengan entry zone, stop loss, dan target profit yang spesifik — bukan cuma rekomendasi BUY tanpa konteks. Reward-to-risk minimum 1.5x. Confidence 0 sampai 100 persen bantu Anda prioritas mana yang high conviction.",
+      "Setiap pick datang dengan entry zone, stop loss, dan target profit yang spesifik — bukan cuma rekomendasi BUY tanpa konteks. Reward-to-risk minimum 1.5x. Confidence 0 sampai 100 persen bantu kamu prioritas mana yang high conviction.",
     durationMs: 17000,
     visual: "daily_picks",
     keyActions: [
@@ -96,7 +96,7 @@ export const DEMO_SCENES: DemoScene[] = [
     index: 3,
     title: "Nubuat Verdict 0-10",
     narration:
-      "Setiap emiten dapat skor konsensus 0 sampai 10 dari 6 faktor: Technical, Momentum, Value, Quality, Growth, dan News Sentiment. Berbeda dari rating black-box — Anda bisa lihat KENAPA skornya begitu dengan factor-level breakdown.",
+      "Setiap emiten dapat skor konsensus 0 sampai 10 dari 6 faktor: Technical, Momentum, Value, Quality, Growth, dan News Sentiment. Berbeda dari rating black-box — kamu bisa lihat KENAPA skornya begitu dengan factor-level breakdown.",
     durationMs: 16000,
     visual: "verdict",
     keyActions: [
@@ -128,7 +128,7 @@ export const DEMO_SCENES: DemoScene[] = [
     index: 5,
     title: "Screener dengan Mode Strategy",
     narration:
-      "Filter 980 emiten dengan 26 kriteria — fundamental dan technical. Pakai preset strategy seperti Mode Swing Santai untuk Stochastic 10,5,5 oversold, Value Hunter untuk low PE PBV, atau Mode Breakout Hunter untuk Bollinger squeeze. Save filter favorit Anda.",
+      "Filter 980 emiten dengan 26 kriteria — fundamental dan technical. Pakai preset strategy seperti Mode Swing Santai untuk Stochastic 10,5,5 oversold, Value Hunter untuk low PE PBV, atau Mode Breakout Hunter untuk Bollinger squeeze. Save filter favorit kamu.",
     durationMs: 17000,
     visual: "screener",
     keyActions: [

@@ -27,6 +27,8 @@ export type SortField =
   | "roe"
   | "dividend_yield"
   | "revenue_growth"
+  | "stoch_k"
+  | "rsi"
   | "kode";
 
 export interface ScreenerFilters {
@@ -94,6 +96,8 @@ export interface ScreenerFilters {
   isDeathCrossRecent?: boolean;
   // Volatility
   isBbSqueeze?: boolean;
+  minAtr14?: number;
+  maxAtr14?: number;
   // Volume
   minVolumeRatio?: number; // volume_ratio_5d_vs_60d
   // ADX trend strength
@@ -326,6 +330,14 @@ export async function runScreener(filters: ScreenerFilters): Promise<ScreenerRes
     conds.push(eq(technicalSnapshots.isBbSqueeze, true));
     filtersApplied += 1;
   }
+  if (filters.minAtr14 != null) {
+    conds.push(gte(technicalSnapshots.atr14, String(filters.minAtr14)));
+    filtersApplied += 1;
+  }
+  if (filters.maxAtr14 != null) {
+    conds.push(lte(technicalSnapshots.atr14, String(filters.maxAtr14)));
+    filtersApplied += 1;
+  }
   if (filters.minVolumeRatio != null) {
     conds.push(gte(technicalSnapshots.volumeRatio5dVs60d, String(filters.minVolumeRatio)));
     filtersApplied += 1;
@@ -347,7 +359,8 @@ export async function runScreener(filters: ScreenerFilters): Promise<ScreenerRes
 
   // Sort mapping
   const sortField = filters.sort ?? "market_cap";
-  const sortDir = filters.sortDir ?? "desc";
+  // Normalize sortDir defensively — value originates from query string.
+  const sortDir: "asc" | "desc" = filters.sortDir === "asc" ? "asc" : "desc";
   const dir = sortDir === "asc" ? asc : desc;
   const orderBy = (() => {
     switch (sortField) {
@@ -361,6 +374,11 @@ export async function runScreener(filters: ScreenerFilters): Promise<ScreenerRes
         return dir(companyFundamentals.dividendYield);
       case "revenue_growth":
         return dir(companyFundamentals.revenueGrowthYoy);
+      case "stoch_k":
+        // NULLS LAST so emiten tanpa snapshot tidak menyumbat top hasil
+        return sql`${technicalSnapshots.stochK_10_5_5} ${sql.raw(sortDir)} NULLS LAST`;
+      case "rsi":
+        return sql`${technicalSnapshots.rsi14} ${sql.raw(sortDir)} NULLS LAST`;
       case "kode":
         return dir(companies.kode);
       case "market_cap":

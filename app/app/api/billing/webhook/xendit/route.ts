@@ -4,7 +4,7 @@ import { ulid } from "ulid";
 import { z } from "zod";
 import { handleError, ok } from "@/lib/utils/api";
 import { logger } from "@/lib/logger";
-import { ValidationError } from "@/lib/errors";
+import { UnauthorizedError, ValidationError } from "@/lib/errors";
 import { db } from "@/lib/db";
 import { invoices as invoicesTable, payments } from "@/db/schema/billing";
 import {
@@ -50,11 +50,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       signature,
     });
     if (!valid) {
-      logger.warn("Xendit webhook signature invalid");
-      throw new ValidationError("Invalid callback token");
+      logger.warn({ provider: "xendit" }, "Rejected Xendit webhook: invalid x-callback-token");
+      // 401 — reject forged/untokened callbacks BEFORE any business logic.
+      throw new UnauthorizedError("Invalid callback token");
     }
 
-    const body = JSON.parse(rawBody);
+    let body: unknown;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      throw new ValidationError("Malformed JSON body");
+    }
     const parsed = xenditSchema.parse(body);
 
     const status = mapXenditStatus(parsed.status);

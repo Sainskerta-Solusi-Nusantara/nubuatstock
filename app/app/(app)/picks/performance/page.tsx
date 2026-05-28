@@ -1,6 +1,7 @@
 import { TrendingUp, TrendingDown, Target, AlertTriangle } from "lucide-react";
 import { getPerformanceSnapshot } from "@/lib/picks/performance";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 
 export const dynamic = "force-dynamic";
 
@@ -148,6 +149,10 @@ export default async function PicksPerformancePage({
         Hit TP/SL berdasarkan high/low EoD di window — tidak akurat untuk intraday wick.
         Untuk MVP: approximation OK; akan migrate ke evaluasi intraday-tick saat data L1 tersedia.
       </p>
+
+      <footer className="border-t pt-4">
+        <PickDisclaimer variant="footer" withLink />
+      </footer>
     </div>
   );
 }

@@ -47,6 +47,19 @@ export const users = pgTable(
     lockedUntil: timestamp("locked_until", { withTimezone: true, mode: "date" }),
     lastLoginAt: timestamp("last_login_at", { withTimezone: true, mode: "date" }),
     lastLoginIp: text("last_login_ip"),
+    // UU PDP — account deletion (soft delete + 30-day grace period).
+    // `deletionRequestedAt`  = kapan user minta hapus akun.
+    // `scheduledDeletionAt`  = waktu eksekusi hard-delete permanen (request + 30 hari).
+    //                          Worker/cron akan men-sweep baris dengan
+    //                          scheduledDeletionAt <= now() untuk purge permanen.
+    deletionRequestedAt: timestamp("deletion_requested_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
+    scheduledDeletionAt: timestamp("scheduled_deletion_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
     ...withTimestamps,
     ...softDelete,
   },
@@ -54,6 +67,7 @@ export const users = pgTable(
     uniqueIndex("users_email_lower_uq").on(sql`lower(${t.email})`),
     index("users_role_idx").on(t.role),
     index("users_deleted_at_idx").on(t.deletedAt),
+    index("users_scheduled_deletion_at_idx").on(t.scheduledDeletionAt),
   ],
 );
 

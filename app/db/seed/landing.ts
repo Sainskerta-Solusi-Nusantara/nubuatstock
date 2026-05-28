@@ -59,7 +59,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.hero.subheadline",
-    value: "menganalisa setiap entry sebelum Anda klik beli — multi-lensa Technical, Fundamental, Bandarmology, dan AI yang menjelaskan keputusannya dalam Bahasa Indonesia.",
+    value: "menganalisa setiap entry sebelum kamu klik beli — multi-lensa Technical, Fundamental, Bandarmology, dan AI yang menjelaskan keputusannya dalam Bahasa Indonesia.",
     type: "string",
     description: "Subheadline di bawah headline. Akan di-prefix nama app + suffix tagline.",
   },
@@ -123,7 +123,7 @@ const landingDefaults: LandingConfigEntry[] = [
     value: [
       { id: "fomo", title: "Beli di puncak karena FOMO", body: "Lihat trending di grup Telegram, klik beli — besoknya minus 8%. Tidak ada konteks: tren beneran atau pump terkoordinasi?" },
       { id: "sl", title: "Stop loss tebakan, modal habis", body: "Set SL di angka random. Sering kena wick lalu langsung rally — atau SL terlalu jauh, modal habis sebelum reversal." },
-      { id: "cutloss", title: "Cut loss telat, makin dalam", body: "Pingin tunggu balik modal. Akhirnya nyangkut di -30%. Modal beku, peluang lain terlewat." },
+      { id: "cutloss", title: "Cut loss telat, makin dalam", body: "Ingin menunggu balik modal. Akhirnya nyangkut di -30%. Modal beku, peluang lain terlewat." },
       { id: "noplan", title: "Hold tanpa data, hanya harap", body: "Tidak tahu kapan jual. Tidak ada thesis. Tidak ada level. Setiap candle bikin deg-degan tanpa kerangka berpikir." },
     ],
     type: "json",
@@ -139,7 +139,7 @@ const landingDefaults: LandingConfigEntry[] = [
   // ===== FEATURES =====
   {
     key: "landing.features.headline_lead",
-    value: "Semua yang Anda butuhkan untuk",
+    value: "Semua yang kamu butuhkan untuk",
     type: "string",
     description: "Bagian pembuka headline features.",
   },
@@ -180,7 +180,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.emiten.subtitle",
-    value: "Saham yang sering Anda pantau (atau nyangkut) sudah masuk universe analisa. Total 960+ emiten BEI, dari LQ45 sampai papan akselerasi.",
+    value: "Saham yang sering kamu pantau (atau nyangkut) sudah masuk universe analisa. Total 960+ emiten BEI, dari LQ45 sampai papan akselerasi.",
     type: "string",
     description: "Subtitle emiten showcase.",
   },
@@ -227,7 +227,7 @@ const landingDefaults: LandingConfigEntry[] = [
     key: "landing.how.steps",
     value: [
       { n: "01", title: "Daftar 30 detik, gratis 3 hari", body: "Hanya email + password. Tanpa kartu kredit. Akses penuh tier Starter selama 3 hari untuk test semua fitur." },
-      { n: "02", title: "Set watchlist & alert", body: "Tambah saham yang Anda pantau. Set alert harga, volume spike, MA cross. Notifikasi di app + email." },
+      { n: "02", title: "Set watchlist & alert", body: "Tambah saham yang kamu pantau. Set alert harga, volume spike, MA cross. Notifikasi di app + email." },
       { n: "03", title: "Lihat Daily Picks pagi & tanya AI", body: "Setiap pagi sebelum bursa buka, dapat 3–10 pick dengan SR/SL/TP. Tanya AI: kenapa pilih ini, apa risikonya." },
       { n: "04", title: "Entry sesuai zona, exit sesuai plan", body: "Tidak lagi tebak-tebakan. Setiap entry punya alasan, setiap exit punya level. Catat di journal, evaluasi." },
     ],
@@ -280,9 +280,9 @@ const landingDefaults: LandingConfigEntry[] = [
   {
     key: "landing.faq.items",
     value: [
-      { q: "Apakah saya butuh akun broker untuk pakai Nubuat?", a: "Tidak. Nubuat adalah platform analisis & informasi — bukan broker. Anda tetap eksekusi order di broker pilihan Anda. Nubuat memberikan analisa, level entry/SL/TP, dan insight; eksekusi tetap di tangan Anda." },
-      { q: "Apakah Nubuat memberikan saran investasi personal?", a: "Tidak. Semua analisa & Daily Picks bersifat informasi & edukasi berbasis data. Bukan ajakan jual/beli efek tertentu untuk Anda secara pribadi. Keputusan investasi selalu jadi tanggung jawab Anda. Lihat disclaimer di bawah." },
-      { q: "Berapa biaya setelah trial 3 hari habis?", a: "Tier Free tetap gratis selamanya — Anda bisa lanjut pakai dengan fitur dasar (watchlist 10 emiten, quote delayed 15m, 5 AI query/hari). Mau lanjut tier Starter? Rp 99rb/bulan. Pro Rp 299rb/bulan, Elite Rp 899rb/bulan. Tidak ada auto-charge — Anda harus aktif upgrade." },
+      { q: "Apakah saya butuh akun broker untuk pakai Nubuat?", a: "Tidak. Nubuat adalah platform analisis & informasi — bukan broker. Kamu tetap eksekusi order di broker pilihan kamu. Nubuat memberikan analisa, level entry/SL/TP, dan insight; eksekusi tetap di tangan kamu." },
+      { q: "Apakah Nubuat memberikan saran investasi personal?", a: "Tidak. Semua analisa & Daily Picks bersifat informasi & edukasi berbasis data. Bukan ajakan jual/beli efek tertentu untuk kamu secara pribadi. Keputusan investasi selalu jadi tanggung jawab kamu. Lihat disclaimer di bawah." },
+      { q: "Berapa biaya setelah trial 3 hari habis?", a: "Tier Free tetap gratis selamanya — kamu bisa lanjut pakai dengan fitur dasar (watchlist 10 emiten, quote delayed 15m, 5 AI query/hari). Mau lanjut tier Starter? Rp 99rb/bulan. Pro Rp 299rb/bulan, Elite Rp 899rb/bulan. Tidak ada auto-charge — kamu harus aktif upgrade." },
       { q: "AI Nubuat pakai model apa?", a: "Default DeepSeek (deepseek-v4-flash). Pengganti dapat di-swap admin ke Anthropic Claude atau OpenAI GPT lewat config — tidak ada vendor lock-in. Setiap response menyertakan disclaimer & sumber data." },
       { q: "Bandarmology — itu bukan teori konspirasi?", a: "Bukan. Bandarmology dalam Nubuat adalah analisis statistik aliran dana: broker mana net-buy/net-sell, foreign flow harian/intraday, volume spike, accumulation/distribution line. Semua data publik dari BEI/KSEI. Bukan tebakan." },
       { q: "Data emiten lengkap berapa?", a: "960+ emiten BEI (semua papan: Utama, Pengembangan, Akselerasi, Ekonomi Baru, Pemantauan Khusus). Daftar di-sync periodik dari KSEI." },

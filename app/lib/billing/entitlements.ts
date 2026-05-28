@@ -177,19 +177,19 @@ export async function requireEntitlement<T = unknown>(
   if (value === null || value === undefined) {
     throw new ForbiddenError(
       `Entitlement ${key} not granted`,
-      "Fitur ini tidak tersedia di paket Anda. Upgrade untuk mengaktifkan.",
+      "Fitur ini tidak tersedia di paket kamu. Upgrade untuk mengaktifkan.",
     );
   }
   if (typeof value === "boolean" && value === false) {
     throw new ForbiddenError(
       `Entitlement ${key} disabled`,
-      "Fitur ini tidak tersedia di paket Anda. Upgrade untuk mengaktifkan.",
+      "Fitur ini tidak tersedia di paket kamu. Upgrade untuk mengaktifkan.",
     );
   }
   if (predicate && !predicate(value)) {
     throw new ForbiddenError(
       `Entitlement ${key} predicate failed`,
-      "Batas fitur Anda terlampaui untuk paket ini.",
+      "Batas fitur kamu sudah terlampaui untuk paket ini.",
     );
   }
   return value;

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
+import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import type { PickListItemDTO } from "@/lib/types/picks";
 
 /**
@@ -81,6 +82,7 @@ export function PickCard({ pick }: PickCardProps) {
             Bukan ajakan jual/beli
           </Badge>
         </div>
+        <PickDisclaimer variant="card" />
       </CardContent>
     </Card>
   );

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { ThemeScript } from "@/components/layout/ThemeScript";
-import { hasAcceptedDisclaimer } from "@/lib/legal/acceptance";
+import { getLegalGateStatus } from "@/lib/legal/acceptance";
 import { getConfig } from "@/lib/config";
 import { AcceptDisclaimerGate } from "@/components/legal/AcceptDisclaimerGate";
 
@@ -28,22 +28,35 @@ export default async function AppLayout({
     redirect("/login");
   }
 
+  // Email verification gate (IMPROVEMENT_PLAN §8.1 #2): user yang belum verifikasi
+  // email tidak boleh akses fitur app. Redirect ke /verify-email yang menyediakan
+  // status + tombol kirim ulang. Dilakukan SEBELUM gate disclaimer.
+  if (!session.user.emailVerified) {
+    redirect("/verify-email");
+  }
+
   const userId = (session as { userId?: string; user?: { id?: string } }).userId
     ?? (session as { user?: { id?: string } }).user?.id;
 
-  // Legal gate
+  // Legal gate — versioning aware: gate muncul untuk first-accept ATAU kalau
+  // versi dokumen legal di-bump (user wajib re-accept). `isReAccept` membedakan
+  // copy "selamat datang" vs "kebijakan diperbarui".
   let needsAcceptance = false;
+  let isReAccept = false;
+  let acceptVersion = "v1";
   let appName = "Nubuat";
   let disclaimerText = "";
   if (userId) {
-    const [accepted, name, disclaimer] = await Promise.all([
-      hasAcceptedDisclaimer(userId),
+    const [gate, name, disclaimer] = await Promise.all([
+      getLegalGateStatus(userId),
       getConfig<string>("app.name", { defaultValue: "Nubuat" }),
       getConfig<string>("app.disclaimer_text", {
         defaultValue: "Informasi edukasi semata, bukan ajakan jual/beli efek. Risiko investasi tanggung jawab pribadi.",
       }),
     ]);
-    needsAcceptance = !accepted;
+    needsAcceptance = gate.needsAcceptance;
+    isReAccept = gate.isReAccept;
+    acceptVersion = gate.currentVersion;
     appName = name;
     disclaimerText = disclaimer;
   }
@@ -55,7 +68,12 @@ export default async function AppLayout({
         {children}
       </AppShell>
       {needsAcceptance && (
-        <AcceptDisclaimerGate appName={appName} disclaimer={disclaimerText} />
+        <AcceptDisclaimerGate
+          appName={appName}
+          disclaimer={disclaimerText}
+          version={acceptVersion}
+          isReAccept={isReAccept}
+        />
       )}
     </>
   );

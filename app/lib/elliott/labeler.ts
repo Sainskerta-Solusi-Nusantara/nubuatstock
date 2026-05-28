@@ -1,5 +1,7 @@
 import type { OhlcvBar } from "@/lib/types/picks";
-import { findPivots, type Pivot } from "@/lib/patterns/utils";
+import { detectPivots, type ElliottPivot } from "@/lib/elliott/pivots";
+import { validateImpulse, type ImpulsePrices } from "@/lib/elliott/rules";
+import { detectCorrective } from "@/lib/elliott/corrective";
 import type { FibonacciLevels, WavePivot, WaveSegment } from "@/db/schema/elliott";
 
 /**
@@ -35,6 +37,8 @@ export interface WaveAnalysis {
   fibonacciLevels: FibonacciLevels | null;
   confidence: number;
   reasoning: string[];
+  /** Subtipe koreksi bila waveType === "corrective" (zigzag | flat). */
+  correctiveSubtype?: "zigzag" | "flat";
 }
 
 const PIVOT_THRESHOLD_PCT = 3;
@@ -45,10 +49,8 @@ export function analyzeElliottWave(bars: OhlcvBar[]): WaveAnalysis {
     return emptyAnalysis(bars, "Data insufficient (need ≥30 bars)");
   }
 
-  const pivots = findPivots(bars, PIVOT_THRESHOLD_PCT);
+  const pivots = detectPivots(bars, { thresholdPct: PIVOT_THRESHOLD_PCT });
 
-  // For pattern recognition, last bar acts as terminal pivot kalau belum tertangkap
-  const lastBar = bars[bars.length - 1]!;
   const wavePivots: WavePivot[] = pivots.map((p) => ({
     date: p.date,
     price: p.price,
@@ -56,6 +58,9 @@ export function analyzeElliottWave(bars: OhlcvBar[]): WaveAnalysis {
   }));
 
   if (pivots.length < MIN_PIVOTS_FOR_IMPULSE) {
+    // Tidak cukup pivot untuk impulse 5-gelombang — coba koreksi A-B-C (butuh 4 pivot).
+    const corrective = tryLabelCorrective(pivots, bars, wavePivots);
+    if (corrective) return corrective;
     return {
       waveType: "unknown",
       currentWave: "Not enough pivots",
@@ -72,11 +77,19 @@ export function analyzeElliottWave(bars: OhlcvBar[]): WaveAnalysis {
   const recent = pivots.slice(-Math.max(7, MIN_PIVOTS_FOR_IMPULSE));
   const result = tryLabelImpulse(recent, bars);
 
-  if (result) {
+  if (result && result.confidence > 0.4) {
     return result;
   }
 
-  // Fallback: report partial pattern
+  // Fallback 1: koreksi A-B-C (zigzag / flat) dari pivot terkini.
+  const corrective = tryLabelCorrective(pivots, bars, wavePivots);
+  if (corrective) {
+    // Pilih impulse low-confidence vs corrective — utamakan yang lebih tinggi.
+    if (!result || corrective.confidence >= result.confidence) return corrective;
+  }
+  if (result) return result;
+
+  // Fallback 2: report partial pattern
   return {
     waveType: "unknown",
     currentWave: "Pattern unclear",
@@ -88,7 +101,61 @@ export function analyzeElliottWave(bars: OhlcvBar[]): WaveAnalysis {
   };
 }
 
-function tryLabelImpulse(pivots: Pivot[], bars: OhlcvBar[]): WaveAnalysis | null {
+/**
+ * Coba label koreksi A-B-C (P1) dari pivot terkini. Mengembalikan WaveAnalysis
+ * dengan waveType "corrective" bila pola valid, jika tidak null.
+ */
+function tryLabelCorrective(
+  pivots: ElliottPivot[],
+  bars: OhlcvBar[],
+  wavePivots: WavePivot[],
+): WaveAnalysis | null {
+  const corr = detectCorrective(pivots);
+  if (!corr) return null;
+
+  const sequence: WaveSegment[] = corr.segments.map((s) => ({
+    label: s.label,
+    startDate: s.startDate,
+    endDate: s.endDate,
+    startPrice: s.startPrice,
+    endPrice: s.endPrice,
+  }));
+
+  // Current wave: di mana harga sekarang relatif ujung Wave C.
+  const lastBar = bars[bars.length - 1]!;
+  const cEnd = corr.prices.pC;
+  const subtypeLabel = corr.subtype === "zigzag" ? "Zigzag" : "Flat";
+  const dirLabel = corr.direction === "down" ? "Corrective Down" : "Corrective Up";
+  let currentWave: string;
+  if (corr.direction === "down") {
+    currentWave =
+      lastBar.close <= cEnd * 1.01
+        ? `Wave C of A-B-C (${subtypeLabel} ${dirLabel}) — koreksi mungkin selesai`
+        : `Post Wave C → kemungkinan impulse baru / akhir koreksi (${subtypeLabel})`;
+  } else {
+    currentWave =
+      lastBar.close >= cEnd * 0.99
+        ? `Wave C of A-B-C (${subtypeLabel} ${dirLabel}) — koreksi mungkin selesai`
+        : `Post Wave C → kemungkinan impulse baru / akhir koreksi (${subtypeLabel})`;
+  }
+
+  // Fibonacci dari rentang A (p0 → pA) untuk proyeksi target C / next move.
+  const fibDir = corr.direction === "down" ? "down" : "up";
+  const fib = computeFibLevels(corr.prices.p0, corr.prices.pC, fibDir);
+
+  return {
+    waveType: "corrective",
+    currentWave,
+    sequence,
+    pivots: wavePivots,
+    fibonacciLevels: fib,
+    confidence: corr.confidence,
+    reasoning: corr.reasoning,
+    correctiveSubtype: corr.subtype,
+  };
+}
+
+function tryLabelImpulse(pivots: ElliottPivot[], bars: OhlcvBar[]): WaveAnalysis | null {
   // Try uptrend impulse: L-H-L-H-L-H
   // 6 pivots define 5 waves
   // pivots[0]=start L, pivots[1]=W1 top H, pivots[2]=W2 bottom L,
@@ -110,7 +177,7 @@ function tryLabelImpulse(pivots: Pivot[], bars: OhlcvBar[]): WaveAnalysis | null
 }
 
 function tryDirectedImpulse(
-  pivots: Pivot[],
+  pivots: ElliottPivot[],
   direction: "up" | "down",
   bars: OhlcvBar[],
 ): WaveAnalysis | null {
@@ -146,50 +213,26 @@ function tryDirectedImpulse(
     const w4 = candidate[4]!;
     const w5 = candidate[5]!;
 
-    const wave1Length = Math.abs(w1.price - w0.price);
-    const wave2Length = Math.abs(w2.price - w1.price);
-    const wave3Length = Math.abs(w3.price - w2.price);
-    const wave4Length = Math.abs(w4.price - w3.price);
-    const wave5Length = Math.abs(w5.price - w4.price);
+    // Validate Elliott's 3 hard rules via dedicated rules module.
+    const prices: ImpulsePrices = {
+      p0: w0.price,
+      p1: w1.price,
+      p2: w2.price,
+      p3: w3.price,
+      p4: w4.price,
+      p5: w5.price,
+    };
+    const validation = validateImpulse(prices, direction);
+    const { wave1Length, wave2Length, wave3Length, wave4Length } = validation;
 
-    // Validate Elliott's 3 hard rules
-    const reasoning: string[] = [];
-    let valid = true;
+    // Salah satu hard rule dilanggar → coba subsequence lain.
+    if (!validation.valid) continue;
 
-    // Rule 1: Wave 2 < 100% Wave 1
-    if (wave2Length >= wave1Length) {
-      valid = false;
-      reasoning.push("❌ Rule 1 failed: Wave 2 retraced > 100% Wave 1");
-      continue;
-    }
-    reasoning.push("✓ Rule 1: Wave 2 retraced < 100% Wave 1");
-
-    // Rule 2: Wave 3 not shortest among 1, 3, 5
-    if (wave3Length < wave1Length && wave3Length < wave5Length) {
-      valid = false;
-      reasoning.push("❌ Rule 2 failed: Wave 3 is shortest");
-      continue;
-    }
-    reasoning.push("✓ Rule 2: Wave 3 not shortest among impulse waves");
-
-    // Rule 3: Wave 4 doesn't overlap Wave 1
-    // For uptrend: W4 low must be > W1 top? No, W4 low must be > W1 high (top of W1)
-    // Wait: W4 should not overlap with W1 territory.
-    // For uptrend impulse: W1 territory is [W0 low, W1 high]. W4 low must stay above W1 high.
-    let overlap = false;
-    if (direction === "up") {
-      if (w4.price <= w1.price) overlap = true;
-    } else {
-      if (w4.price >= w1.price) overlap = true;
-    }
-    if (overlap) {
-      valid = false;
-      reasoning.push("❌ Rule 3 failed: Wave 4 overlaps Wave 1 territory");
-      continue;
-    }
-    reasoning.push("✓ Rule 3: Wave 4 doesn't overlap Wave 1");
-
-    if (!valid) continue;
+    const reasoning: string[] = [
+      `✓ ${validation.rule1.message}`,
+      `✓ ${validation.rule2.message}`,
+      `✓ ${validation.rule3.message}`,
+    ];
 
     // Compute soft confidence boosters
     let confidence = 0.5;

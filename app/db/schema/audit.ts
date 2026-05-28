@@ -18,6 +18,12 @@ import { jsonbT, ulid, withTimestamps } from "./_base";
  * Catatan IP:
  * - Kolom `ip` pakai `text` (bukan `inet`) supaya kompatibel dengan IPv6 mapping dari
  *   reverse-proxy header dan tidak gagal saat IP unknown. Validasi format di app layer.
+ *
+ * APPEND-ONLY (IMPROVEMENT_PLAN §8.2):
+ * - Kedua tabel di file ini bersifat append-only untuk integritas forensik.
+ *   UPDATE / DELETE / TRUNCATE ditolak di level DB lewat trigger + REVOKE
+ *   (lihat db/migrations/0000_audit_log_immutability.sql). Drizzle/app HANYA
+ *   melakukan insert + select (lihat lib/observability/audit.ts).
  */
 
 // =================== audit_log ===================

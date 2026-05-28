@@ -2,6 +2,9 @@ import type { NextRequest } from "next/server";
 import { handleError, ok } from "@/lib/utils/api";
 import { companyListQuerySchema } from "@/lib/types/companies";
 import { listCompanies } from "@/lib/companies";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/security/rate-limit";
+import { getClientIp } from "@/lib/security/ip";
+import { rateLimited } from "@/lib/security/response";
 
 /**
  * GET /api/companies
@@ -15,9 +18,16 @@ import { listCompanies } from "@/lib/companies";
  *   active  — "true" | "false" (default: all)
  *   limit   — int 1-200 (default 50)
  *   offset  — int >= 0
+ *
+ * Public (no auth) → rate limit per-IP untuk cegah scraping listing emiten.
  */
 export async function GET(req: NextRequest) {
   try {
+    // SECURITY: per-IP rate limit (endpoint publik, listing DB-heavy, anti-scrape).
+    const ip = getClientIp(req);
+    const rl = checkRateLimit({ key: `public-list:${ip}`, ...RATE_LIMITS.publicList });
+    if (!rl.allowed) return rateLimited(rl.retryAfterMs);
+
     const { searchParams } = new URL(req.url);
     const parsed = companyListQuerySchema.parse({
       q: searchParams.get("q") ?? undefined,
