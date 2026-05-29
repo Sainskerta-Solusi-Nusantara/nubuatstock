@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 
 export function LegalLayout({
@@ -65,17 +66,29 @@ function SimpleMarkdown({ content }: { content: string }) {
       {blocks.map((block, i) => {
         const trimmed = block.trim();
         if (!trimmed) return null;
-        // Heading 1
-        if (trimmed.startsWith("# ")) {
-          return <h1 key={i} className="mt-8 text-2xl font-bold">{stripMd(trimmed.slice(2))}</h1>;
-        }
-        // Heading 2
-        if (trimmed.startsWith("## ")) {
-          return <h2 key={i} className="mt-8 border-b border-border pb-2 text-xl font-bold text-primary">{stripMd(trimmed.slice(3))}</h2>;
-        }
-        // Heading 3
-        if (trimmed.startsWith("### ")) {
-          return <h3 key={i} className="mt-6 text-base font-semibold">{stripMd(trimmed.slice(4))}</h3>;
+        // Heading (#/##/###) — ambil HANYA baris pertama sebagai judul; sisa baris
+        // (kalau penulis lupa beri baris kosong) dirender sebagai paragraf di bawahnya,
+        // supaya judul tidak pernah "menelan" penjelasannya.
+        const headingMatch = trimmed.match(/^(#{1,3})\s+/);
+        if (headingMatch) {
+          const level = headingMatch[1]!.length;
+          const nl = trimmed.indexOf("\n");
+          const headText = stripMd((nl === -1 ? trimmed : trimmed.slice(0, nl)).slice(level + 1));
+          const rest = nl === -1 ? "" : trimmed.slice(nl + 1).trim();
+          const heading =
+            level === 1 ? (
+              <h1 className="mt-8 text-2xl font-bold">{headText}</h1>
+            ) : level === 2 ? (
+              <h2 className="mt-8 border-b border-border pb-2 text-xl font-bold text-primary">{headText}</h2>
+            ) : (
+              <h3 className="mt-6 text-base font-semibold">{headText}</h3>
+            );
+          return (
+            <Fragment key={i}>
+              {heading}
+              {rest ? <p className="mt-2">{renderInline(rest)}</p> : null}
+            </Fragment>
+          );
         }
         // Blockquote / warning
         if (trimmed.startsWith("> ")) {
