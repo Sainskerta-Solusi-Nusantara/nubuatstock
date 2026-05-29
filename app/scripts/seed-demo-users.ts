@@ -74,7 +74,7 @@ async function main() {
       });
 
       // Set role setelah signup (signup default = "user" atau "superadmin" kalau email match bootstrap)
-      await db.execute(sql`UPDATE users SET role = ${u.role}, email_verified_at = NOW(), updated_at = NOW() WHERE lower(email) = lower(${u.email})`);
+      await db.execute(sql`UPDATE users SET role = ${u.role}, email_verified = true, email_verified_at = NOW(), updated_at = NOW() WHERE lower(email) = lower(${u.email})`);
 
       logger.info({ email: u.email, role: u.role }, "Demo user created");
     } catch (err) {

@@ -15,11 +15,10 @@ function systemPrefersDark(): boolean {
 }
 
 function readStored(): Mode {
-  if (typeof window === "undefined") return "system";
+  if (typeof window === "undefined") return "dark";
   const v = window.localStorage.getItem(STORAGE_KEY);
-  // Hanya 'light'/'dark' yang dianggap pilihan eksplisit tersimpan;
-  // selain itu (null / 'system') berarti ikut sistem.
-  return v === "light" || v === "dark" ? v : "system";
+  // Default brand = dark saat belum ada pilihan. 'system' disimpan eksplisit.
+  return v === "light" || v === "dark" || v === "system" ? v : "dark";
 }
 
 function resolve(mode: Mode): Resolved {
@@ -27,7 +26,7 @@ function resolve(mode: Mode): Resolved {
   return mode;
 }
 
-/** Terapkan tema ke <html>. Persist hanya bila bukan 'system' (default = bersih). */
+/** Terapkan tema ke <html> & persist pilihan (termasuk 'system' eksplisit). */
 function apply(mode: Mode) {
   if (typeof document === "undefined") return;
   const resolved = resolve(mode);
@@ -35,16 +34,12 @@ function apply(mode: Mode) {
   root.classList.remove("light", "dark");
   root.classList.add(resolved);
   root.style.colorScheme = resolved;
-  if (mode === "system") {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } else {
-    window.localStorage.setItem(STORAGE_KEY, mode);
-  }
+  window.localStorage.setItem(STORAGE_KEY, mode);
 }
 
 export function ThemeToggle() {
-  // Mulai dari 'system' agar konsisten dengan ThemeScript saat belum ada pilihan.
-  const [mode, setMode] = React.useState<Mode>("system");
+  // Mulai dari 'dark' (default brand) agar konsisten dengan ThemeScript.
+  const [mode, setMode] = React.useState<Mode>("dark");
 
   React.useEffect(() => {
     setMode(readStored());
