@@ -20,6 +20,7 @@ const NAV = [
   { href: "/admin", label: "Overview", icon: "•" },
   { href: "/admin/config", label: "Config", icon: "•" },
   { href: "/admin/secrets", label: "Secrets", icon: "•" },
+  { href: "/admin/integrations", label: "Integrations", icon: "•" },
   { href: "/admin/feature-flags", label: "Feature Flags", icon: "•" },
   { href: "/admin/users", label: "Users", icon: "•" },
   { href: "/admin/audit", label: "Audit Log", icon: "•" },

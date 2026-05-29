@@ -11,7 +11,7 @@ const ITEMS = [
   { href: "/", label: "Home", icon: Home, match: (p: string) => p === "/" },
   { href: "/picks", label: "Picks", icon: ListChecks },
   { href: "/watchlist", label: "Watch", icon: Star },
-  { href: "/copilot", label: "AI", icon: Bot },
+  { href: "/copilot", label: "Buddy", icon: Bot },
   { href: "/account", label: "More", icon: MoreHorizontal },
 ];
 

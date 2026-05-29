@@ -6,6 +6,7 @@ import { hasSecret, getConfig } from "@/lib/config";
 import { ConversationListServer } from "./_ConversationListServer";
 import { ChatPanel } from "@/components/ai/ChatPanel";
 import { NotConfigured } from "@/components/ai/NotConfigured";
+import { MobileConversationDrawer } from "@/components/ai/MobileConversationDrawer";
 import { Pagination } from "@/components/ui/pagination";
 import { CopilotDisclaimerFooter } from "./_DisclaimerFooter";
 
@@ -54,8 +55,8 @@ export default async function CopilotPage({ searchParams }: PageProps) {
   const disclaimer = await getConfig<string>("app.disclaimer_text", { defaultValue: "" });
 
   return (
-    <div className="flex h-[calc(100vh-3rem)]">
-      <div className="flex flex-col">
+    <div className="-mx-4 -mt-4 flex h-[calc(100dvh-9.5rem)] min-w-0 md:mx-0 md:mt-0 md:h-[calc(100dvh-5.5rem)]">
+      <div className="hidden w-64 shrink-0 flex-col md:flex">
         <ConversationListServer items={recent} activeId={null} />
         <div className="border-t border-border p-2">
           <Pagination
@@ -66,7 +67,13 @@ export default async function CopilotPage({ searchParams }: PageProps) {
           />
         </div>
       </div>
-      <main className="flex flex-1 flex-col">
+      <main className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-center gap-2 border-b border-border px-3 py-2 md:hidden">
+          <MobileConversationDrawer>
+            <ConversationListServer items={recent} activeId={null} />
+          </MobileConversationDrawer>
+          <span className="truncate text-sm font-semibold">AI Buddy</span>
+        </div>
         {!configured ? (
           <NotConfigured providerKey={`ai.${provider}.api_key`} />
         ) : (

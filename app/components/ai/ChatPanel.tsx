@@ -240,8 +240,8 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
   }, [sendMessage]);
 
   return (
-    <div className="flex h-full flex-1 flex-col">
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
+    <div className="flex h-full min-h-0 flex-1 flex-col">
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 md:px-4">
         {messages.length === 0 && (
           <EmptyState contextKode={contextKode ?? null} onPick={(q) => sendMessage(q, { deepResearch: false })} />
         )}
@@ -368,7 +368,7 @@ function EmptyState({
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
           <span className="text-2xl">🤖</span>
         </div>
-        <h2 className="text-xl font-bold tracking-tight">Nubuat AI Copilot</h2>
+        <h2 className="text-xl font-bold tracking-tight">Nubuat AI Buddy</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           Asisten analisis saham Indonesia dengan 9 tools: harga, fundamental, news, backtest,
           screener, dan lainnya. Tanya apa saja tentang IDX.

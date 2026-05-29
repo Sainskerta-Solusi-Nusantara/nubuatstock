@@ -7,6 +7,7 @@ import { hasSecret, getConfig } from "@/lib/config";
 import { ConversationListServer } from "../_ConversationListServer";
 import { ChatPanel } from "@/components/ai/ChatPanel";
 import { NotConfigured } from "@/components/ai/NotConfigured";
+import { MobileConversationDrawer } from "@/components/ai/MobileConversationDrawer";
 import { CopilotDisclaimerFooter } from "../_DisclaimerFooter";
 import type { AiMessageDTO } from "@/lib/types/ai";
 
@@ -64,15 +65,22 @@ export default async function CopilotConversationPage({ params }: PageProps) {
   const disclaimer = await getConfig<string>("app.disclaimer_text", { defaultValue: "" });
 
   return (
-    <div className="flex h-[calc(100vh-3rem)]">
-      <ConversationListServer items={recent} activeId={conv.id} />
-      <main className="flex flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-950">
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+    <div className="-mx-4 -mt-4 flex h-[calc(100dvh-9.5rem)] min-w-0 md:mx-0 md:mt-0 md:h-[calc(100dvh-5.5rem)]">
+      <div className="hidden w-64 shrink-0 md:flex">
+        <ConversationListServer items={recent} activeId={conv.id} />
+      </div>
+      <main className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center gap-2 border-b border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="md:hidden">
+            <MobileConversationDrawer>
+              <ConversationListServer items={recent} activeId={conv.id} />
+            </MobileConversationDrawer>
+          </div>
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               {conv.title}
             </span>
-            <span className="text-[10px] uppercase tracking-wide text-zinc-500">
+            <span className="truncate text-[10px] uppercase tracking-wide text-zinc-500">
               {conv.provider} · {conv.modelUsed}
               {conv.contextKode && <> · konteks {conv.contextKode}</>}
             </span>

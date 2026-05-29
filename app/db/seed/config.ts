@@ -287,6 +287,15 @@ const defaults: ConfigEntry[] = [
     description: "Bobot multi-factor scoring (harus total = 1).",
   },
 
+  // ===== EMAIL =====
+  {
+    key: "email.from_address",
+    value: "Nubuat <noreply@nubuat.id>",
+    type: "string",
+    category: "email",
+    description: "From address untuk email transactional (Resend). Format: \"Nama <email@domain>\". Domain harus sudah diverifikasi di Resend.",
+  },
+
   // ===== NOTIFICATION =====
   {
     key: "notifications.default_channels",
@@ -344,6 +353,7 @@ const secretSlots: SecretSlot[] = [
   { key: "payment.midtrans.client_key", description: "Client key Midtrans.", bootstrapEnv: "BOOTSTRAP_PAYMENT_MIDTRANS_CLIENT_KEY" },
   { key: "payment.xendit.api_key", description: "Secret key Xendit.", bootstrapEnv: "BOOTSTRAP_PAYMENT_XENDIT_API_KEY" },
   { key: "smtp.password", description: "Password SMTP untuk pengiriman email transactional.", bootstrapEnv: "BOOTSTRAP_SMTP_PASSWORD" },
+  { key: "email.resend.api_key", description: "API key Resend untuk pengiriman email transactional.", bootstrapEnv: "BOOTSTRAP_EMAIL_RESEND_API_KEY" },
   { key: "oauth.google.client_id", description: "OAuth Google Client ID untuk social login.", bootstrapEnv: "BOOTSTRAP_OAUTH_GOOGLE_CLIENT_ID" },
   { key: "oauth.google.client_secret", description: "OAuth Google Client Secret untuk social login.", bootstrapEnv: "BOOTSTRAP_OAUTH_GOOGLE_CLIENT_SECRET" },
 ];

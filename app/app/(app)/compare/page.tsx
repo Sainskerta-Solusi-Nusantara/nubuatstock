@@ -27,8 +27,8 @@ export default async function ComparePage({ searchParams }: PageProps) {
     <div className="space-y-6">
       <header>
         <div className="flex items-center gap-2">
-          <GitCompareArrows className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">Compare Tickers</h1>
+          <GitCompareArrows className="h-6 w-6 shrink-0 text-primary" />
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Compare Tickers</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Bandingkan 2-4 emiten IDX side-by-side: harga performance, fundamental, Nubuat Verdict,
@@ -100,11 +100,16 @@ export default async function ComparePage({ searchParams }: PageProps) {
             </CardContent>
           </Card>
 
-          {/* Header row with ticker info */}
-          <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}>
-            {data.map((d) => (
-              <TickerHeader key={d.kode} data={d} />
-            ))}
+          {/* Header row with ticker info — scroll horizontally on small screens so each card stays readable */}
+          <div className="-mx-1 overflow-x-auto px-1">
+            <div
+              className="grid gap-3"
+              style={{ gridTemplateColumns: `repeat(${data.length}, minmax(150px, 1fr))` }}
+            >
+              {data.map((d) => (
+                <TickerHeader key={d.kode} data={d} />
+              ))}
+            </div>
           </div>
 
           {/* Fundamentals comparison */}
@@ -257,8 +262,8 @@ function VerdictComparison({ data }: { data: CompareTickerData[] }) {
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Nubuat Verdict Comparison</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}>
+      <CardContent className="space-y-3 overflow-x-auto">
+        <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(160px, 1fr))` }}>
           {data.map((d) => {
             if (!d.verdict) {
               return (
@@ -313,7 +318,7 @@ function VerdictComparison({ data }: { data: CompareTickerData[] }) {
         </div>
 
         {/* News coverage */}
-        <div className="grid gap-2 pt-3 border-t border-border" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(0, 1fr))` }}>
+        <div className="grid gap-2 pt-3 border-t border-border" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(120px, 1fr))` }}>
           {data.map((d) => (
             <div key={d.kode} className="rounded-md bg-card/40 p-2 text-center">
               <div className="text-[9px] uppercase tracking-wider text-muted-foreground">News 30d</div>

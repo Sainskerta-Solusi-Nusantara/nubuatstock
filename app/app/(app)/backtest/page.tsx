@@ -82,7 +82,7 @@ export default function BacktestPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Backtest Strategi</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Backtest Strategi</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Test strategi trading di data historis sebelum risk uang asli. Educational baseline — no slippage model,
           no overnight gap risk, single position 100% equity.
@@ -203,20 +203,20 @@ export default function BacktestPage() {
                   <CardTitle className="text-base">vs Buy &amp; Hold</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
                     <div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground">Strategi</div>
-                      <div className="mt-1 font-mono text-xl font-bold">{fmtIdr(result.finalEquity)}</div>
+                      <div className="mt-1 font-mono text-lg font-bold sm:text-xl">{fmtIdr(result.finalEquity)}</div>
                       <div className={result.totalReturnPct >= 0 ? "text-bull" : "text-bear"}>{fmtPct(result.totalReturnPct)}</div>
                     </div>
                     <div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground">Buy &amp; Hold</div>
-                      <div className="mt-1 font-mono text-xl font-bold">{fmtIdr(result.benchmarkBuyHold.finalEquity)}</div>
+                      <div className="mt-1 font-mono text-lg font-bold sm:text-xl">{fmtIdr(result.benchmarkBuyHold.finalEquity)}</div>
                       <div className={result.benchmarkBuyHold.returnPct >= 0 ? "text-bull" : "text-bear"}>{fmtPct(result.benchmarkBuyHold.returnPct)}</div>
                     </div>
                     <div>
                       <div className="text-xs uppercase tracking-wider text-muted-foreground">Outperformance</div>
-                      <div className={`mt-1 font-mono text-xl font-bold ${(result.totalReturnPct - result.benchmarkBuyHold.returnPct) >= 0 ? "text-bull" : "text-bear"}`}>
+                      <div className={`mt-1 font-mono text-lg font-bold sm:text-xl ${(result.totalReturnPct - result.benchmarkBuyHold.returnPct) >= 0 ? "text-bull" : "text-bear"}`}>
                         {fmtPct(result.totalReturnPct - result.benchmarkBuyHold.returnPct)}
                       </div>
                     </div>
@@ -258,8 +258,8 @@ export default function BacktestPage() {
                 <Card>
                   <CardHeader><CardTitle className="text-base">Trade History ({result.trades.length})</CardTitle></CardHeader>
                   <CardContent className="p-0">
-                    <div className="max-h-96 overflow-y-auto">
-                      <table className="w-full text-xs">
+                    <div className="max-h-96 overflow-auto">
+                      <table className="w-full min-w-[480px] text-xs">
                         <thead className="sticky top-0 border-b border-border bg-secondary/50 text-left uppercase tracking-wider text-muted-foreground">
                           <tr>
                             <th className="px-3 py-1.5">Entry</th>

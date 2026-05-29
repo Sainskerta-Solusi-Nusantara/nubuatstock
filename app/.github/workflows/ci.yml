@@ -19,6 +19,22 @@ jobs:
       - run: npm ci
       - run: npx tsc --noEmit
 
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    # Warn-only saat ini: masih ada error lint warisan (react/no-unescaped-entities,
+    # @next/next/no-html-link-for-pages) yang akan dibereskan bertahap.
+    # continue-on-error mencegah lint memblok merge sampai backlog dibersihkan.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
   build:
     name: Next.js Build
     runs-on: ubuntu-latest

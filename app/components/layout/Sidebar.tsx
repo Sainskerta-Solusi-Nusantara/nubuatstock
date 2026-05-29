@@ -58,7 +58,7 @@ const SECONDARY: SidebarItem[] = [
   { href: "/compare", label: "Compare", icon: GitCompareArrows, badge: "NEW" },
   { href: "/sectors", label: "Sectors", icon: Layers },
   { href: "/rotation", label: "Rotation (RRG)", icon: LineChart, badge: "NEW" },
-  { href: "/copilot", label: "AI Copilot", icon: Bot },
+  { href: "/copilot", label: "AI Buddy", icon: Bot },
   { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
   { href: "/guidance", label: "Guidance", icon: BookOpen },
   { href: "/subscription", label: "Subscription", icon: CreditCard },

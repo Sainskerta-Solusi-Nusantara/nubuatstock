@@ -92,8 +92,8 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <Search className="h-6 w-6 text-primary" />
-            <h1 className="text-3xl font-bold tracking-tight">Stock Screener</h1>
+            <Search className="h-6 w-6 shrink-0 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Stock Screener</h1>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
             Filter universe 980+ emiten IDX berdasarkan PE, PBV, ROE, dividend yield, dan kriteria

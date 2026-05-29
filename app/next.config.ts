@@ -10,6 +10,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Lint jalan terpisah (`npm run lint` + job CI), JANGAN blokir `next build`/deploy.
+  // (Ada lint error warisan: no-unescaped-entities, no-html-link-for-pages.)
+  eslint: { ignoreDuringBuilds: true },
   experimental: {
     // typedRoutes tidak didukung Turbopack (next dev --turbo) di Next 15.1.x,
     // tapi WAJIB untuk type-check `next build`. Jadi: aktif saat build (webpack,
