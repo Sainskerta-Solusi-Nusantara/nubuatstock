@@ -182,14 +182,14 @@
 - [ ] ⚪ Universe ALL listed (±945)
 - [ ] ⚪ Papan Pemantauan Khusus risk flagging
 - [ ] ⚪ Pro tier features bundle
-- [ ] ⚪ Multi-chart workspace (drag-resize panes)
-- [ ] ⚪ Workspace save/share via URL
+- [x] 🟢 Multi-chart workspace (Terminal Pro, grid 1/2/4)
+- [x] 🟢 Workspace save/share via URL (?ws=base64)
 - [ ] ⚪ Command palette `Cmd+K`
-- [ ] ⚪ Bloomberg-style function codes (DES, GIP, FA, BMAP, EQS, RV)
+- [x] 🟢 Bloomberg-style function codes (DES/FA/GIP/EQS/RV/BMAP)
 - [ ] ⚪ Desktop app (Tauri 2.0 — Win/Mac/Linux)
 - [ ] ⚪ Strategy marketplace beta (read-only browse)
-- [ ] ⚪ Backtest advanced (walk-forward, Monte Carlo)
-- [ ] ⚪ AI Copilot v1.5 (tool use, structured output, citation)
+- [x] 🟢 Backtest advanced (walk-forward + Monte Carlo)
+- [x] 🟢 AI Buddy v1.5 (tool use + inline citations)
 - [ ] ⚪ Research Aggregator expand (10 sekuritas + 6 media + IDX filing)
 - [ ] ⚪ Penasihat Investasi license application submitted
 - [ ] ⚪ Compliance audit (UU PDP, POJK 32/2025)
@@ -230,13 +230,13 @@
 - [ ] ⚪ Migrate from vendor to direct feed (parallel run 4 weeks)
 - [ ] ⚪ L2 depth feed integration
 - [ ] ⚪ Intraday foreign flow 5m
-- [ ] ⚪ AI Copilot v2 (Opus mode for deep research, multi-step agentic)
-- [ ] ⚪ Paper Trading (virtual Rp 100jt, slippage model)
+- [x] 🟢 AI Buddy v2 (Deep Mode: multi-step agentic, Elite-gated)
+- [x] 🟢 Paper Trading (virtual Rp 100jt + slippage 15bps)
 - [ ] ⚪ Strategy Marketplace v1 (publish, ratings)
 - [ ] ⚪ API access (read-only, rate-limited per tier)
 - [ ] ⚪ Concierge onboarding (Elite white-glove)
 - [ ] ⚪ Akademi Nubuat launch (3 kursus initial)
-- [ ] ⚪ Hall of Fame leaderboard
+- [x] 🟢 Hall of Fame leaderboard (/leaderboard + snapshot harian)
 - [ ] ⚪ WhatsApp Business API alerts (Pro+)
 - [ ] ⚪ Multi-monitor support (Tauri detach pane)
 - [ ] ⚪ Backtest scriptable (Python/Pine-like DSL)
