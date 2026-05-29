@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Play, TrendingUp, TrendingDown, Sparkles, AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Play, Sparkles, AlertCircle, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AdvancedPanel, type AdvancedConfig } from "@/components/backtest/advanced-panel";
 
 interface EquityPoint { date: string; equity: number; drawdownPct: number; position: "in" | "out" }
 interface Trade { entryDate: string; entryPrice: number; exitDate: string; exitPrice: number; shares: number; returnPct: number; holdingDays: number }
@@ -50,15 +51,47 @@ export default function BacktestPage() {
   const [result, setResult] = useState<BacktestResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/billing/me");
+        const data = await res.json();
+        if (cancelled) return;
+        const rank = String(data?.data?.tier?.kode ?? "free");
+        setIsPro(rank === "pro" || rank === "elite");
+      } catch {
+        // diam — default non-Pro, upsell akan tampil.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  function buildParams(): Record<string, number> {
+    return form.strategy === "sma_crossover" ? { fastPeriod: form.fastPeriod, slowPeriod: form.slowPeriod }
+      : form.strategy === "rsi_mean_reversion" ? { period: form.rsiPeriod, oversold: form.oversold, overbought: form.overbought }
+      : form.strategy === "breakout" ? { lookback: form.lookback }
+      : {};
+  }
+
+  function advancedConfig(): AdvancedConfig {
+    return {
+      ticker: form.ticker,
+      strategy: form.strategy,
+      startDate: form.startDate,
+      endDate: form.endDate,
+      initialCapital: form.initialCapital,
+      params: buildParams(),
+      commissionPct: form.commissionPct,
+    };
+  }
 
   async function run() {
     setLoading(true); setError(null); setResult(null);
     try {
-      const params: Record<string, number> =
-        form.strategy === "sma_crossover" ? { fastPeriod: form.fastPeriod, slowPeriod: form.slowPeriod }
-        : form.strategy === "rsi_mean_reversion" ? { period: form.rsiPeriod, oversold: form.oversold, overbought: form.overbought }
-        : form.strategy === "breakout" ? { lookback: form.lookback }
-        : {};
+      const params = buildParams();
 
       const res = await fetch("/api/backtest/run", {
         method: "POST",
@@ -174,7 +207,18 @@ export default function BacktestPage() {
         </Card>
 
         {/* Results */}
-        <div className="space-y-6">
+        <Tabs defaultValue="standard" className="min-w-0">
+          <TabsList className="mb-2 flex-wrap">
+            <TabsTrigger value="standard">Standard</TabsTrigger>
+            <TabsTrigger value="walk_forward">
+              Walk-Forward {!isPro && <Lock className="ml-1 h-3 w-3" />}
+            </TabsTrigger>
+            <TabsTrigger value="monte_carlo">
+              Monte Carlo {!isPro && <Lock className="ml-1 h-3 w-3" />}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="standard" className="space-y-6">
           {!result && !loading && (
             <Card>
               <CardContent className="p-12 text-center">
@@ -295,7 +339,16 @@ export default function BacktestPage() {
               </p>
             </>
           )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="walk_forward">
+            <AdvancedPanel mode="walk_forward" isPro={isPro} getConfig={advancedConfig} />
+          </TabsContent>
+
+          <TabsContent value="monte_carlo">
+            <AdvancedPanel mode="monte_carlo" isPro={isPro} getConfig={advancedConfig} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

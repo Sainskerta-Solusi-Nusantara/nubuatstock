@@ -26,8 +26,12 @@ interface MTFChartProps {
   defaultActive?: IndicatorId[];
   /** Optional callback ketika user mengubah timeframe (parent fetch ulang). */
   onTimeframeChange?: (tf: ChartTimeframe) => void;
+  /** Optional callback ketika user toggle indikator (untuk persist state, mis. workspace URL). */
+  onIndicatorsChange?: (indicators: IndicatorId[]) => void;
   /** Overlays: horizontal price lines untuk pattern breakout/target/stop levels. */
   overlays?: ChartOverlay[];
+  /** Override tinggi price chart (default 400). Untuk grid multi-pane yang padat. */
+  chartHeight?: number;
 }
 
 const TIMEFRAMES: ChartTimeframe[] = ["1D", "5D", "1M", "3M", "1Y", "5Y"];
@@ -57,7 +61,9 @@ export function MTFChart({
   availableIndicators = ["sma20", "sma50", "sma200", "bollinger", "rsi14", "macd"],
   defaultActive = ["sma20", "sma50"],
   onTimeframeChange,
+  onIndicatorsChange,
   overlays = [],
+  chartHeight = 400,
 }: MTFChartProps) {
   const [tf, setTf] = React.useState<ChartTimeframe>(defaultTimeframe);
   const [active, setActive] = React.useState<Set<IndicatorId>>(
@@ -82,6 +88,7 @@ export function MTFChart({
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
+      onIndicatorsChange?.([...next]);
       return next;
     });
   };
@@ -131,7 +138,7 @@ export function MTFChart({
         indicators={overlayIndicators}
         overlays={overlays}
         theme={theme}
-        height={400}
+        height={chartHeight}
         ariaLabel={`Grafik harga ${ticker} timeframe ${tf}`}
       />
 

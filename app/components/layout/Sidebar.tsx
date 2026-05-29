@@ -13,6 +13,7 @@ import {
   GraduationCap,
   Home,
   Layers,
+  LayoutGrid,
   LineChart,
   ListChecks,
   Newspaper,
@@ -21,6 +22,7 @@ import {
   Shield,
   ShieldCheck,
   Star,
+  Trophy,
   Wallet,
 } from "lucide-react";
 
@@ -48,6 +50,7 @@ const PRIMARY: SidebarItem[] = [
   { href: "/", label: "Dashboard", icon: Home, match: (p) => p === "/" },
   { href: "/picks", label: "Daily Picks", icon: ListChecks },
   { href: "/portfolio", label: "Paper Trade", icon: Wallet, badge: "NEW" },
+  { href: "/leaderboard", label: "Hall of Fame", icon: Trophy, badge: "NEW" },
   { href: "/news", label: "News", icon: Newspaper },
   { href: "/watchlist", label: "Watchlist", icon: Star },
   { href: "/alerts", label: "Alerts", icon: Bell },
@@ -56,6 +59,7 @@ const PRIMARY: SidebarItem[] = [
 const SECONDARY: SidebarItem[] = [
   { href: "/screener", label: "Screener", icon: Search, badge: "NEW" },
   { href: "/compare", label: "Compare", icon: GitCompareArrows, badge: "NEW" },
+  { href: "/workspace", label: "Terminal Pro", icon: LayoutGrid, badge: "NEW" },
   { href: "/sectors", label: "Sectors", icon: Layers },
   { href: "/rotation", label: "Rotation (RRG)", icon: LineChart, badge: "NEW" },
   { href: "/copilot", label: "AI Buddy", icon: Bot },

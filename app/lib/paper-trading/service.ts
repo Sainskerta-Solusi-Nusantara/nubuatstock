@@ -20,8 +20,20 @@ import { logger } from "@/lib/logger";
  *
  * Fee: dihitung dari portfolio settings (default 0.15% buy + 0.25% sell).
  *
+ * Slippage: model sederhana — fill di-geser SLIPPAGE_BPS dari last close
+ * (buy lebih mahal, sell lebih murah) supaya simulasi lebih realistis. Bisa
+ * di-bypass via `overridePrice` (mis. fill yang sudah dihitung di luar).
+ *
  * Pricing source: last close di quotes_eod (real-time intraday di P3).
  */
+
+/** Slippage model: 15 bps dari last close. Buy +, sell −. */
+const SLIPPAGE_BPS = 15;
+
+function applySlippage(lastClose: number, side: "buy" | "sell"): number {
+  const factor = side === "buy" ? 1 + SLIPPAGE_BPS / 10_000 : 1 - SLIPPAGE_BPS / 10_000;
+  return Math.round(lastClose * factor);
+}
 
 export interface PaperPortfolioSummary {
   id: string;
@@ -122,6 +134,8 @@ export async function executeBuy(opts: {
   quantity: number;
   source?: string;
   note?: string;
+  /** Override harga fill (mis. slippage-adjusted dari engine). Default = last close. */
+  overridePrice?: number;
 }): Promise<{ trade: PaperTradeRow; portfolio: PaperPortfolioSummary }> {
   const kode = opts.kode.toUpperCase();
 
@@ -142,10 +156,11 @@ export async function executeBuy(opts: {
 
   if (!portfolio) throw new PaperTradingError("Portfolio tidak ditemukan", "NOT_FOUND");
 
-  const price = await getLastClose(kode);
-  if (!price || price <= 0) {
+  const lastClose = await getLastClose(kode);
+  if (!lastClose || lastClose <= 0) {
     throw new PaperTradingError(`Harga ${kode} tidak tersedia`, "PRICE_UNAVAILABLE");
   }
+  const price = opts.overridePrice ?? applySlippage(lastClose, "buy");
 
   const totalValue = price * opts.quantity;
   const fee = totalValue * Number(portfolio.buyFeePct);
@@ -234,6 +249,8 @@ export async function executeSell(opts: {
   quantity: number;
   source?: string;
   note?: string;
+  /** Override harga fill (mis. slippage-adjusted dari engine). Default = last close. */
+  overridePrice?: number;
 }): Promise<{ trade: PaperTradeRow; portfolio: PaperPortfolioSummary }> {
   const kode = opts.kode.toUpperCase();
 
@@ -269,10 +286,11 @@ export async function executeSell(opts: {
     );
   }
 
-  const price = await getLastClose(kode);
-  if (!price || price <= 0) {
+  const lastClose = await getLastClose(kode);
+  if (!lastClose || lastClose <= 0) {
     throw new PaperTradingError(`Harga ${kode} tidak tersedia`, "PRICE_UNAVAILABLE");
   }
+  const price = opts.overridePrice ?? applySlippage(lastClose, "sell");
 
   const totalValue = price * opts.quantity;
   const fee = totalValue * Number(portfolio.sellFeePct);

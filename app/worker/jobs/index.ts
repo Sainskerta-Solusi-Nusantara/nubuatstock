@@ -10,6 +10,7 @@ import { analyzeElliottProcessor } from "./analyze-elliott";
 import { generateDailyDigestProcessor } from "./generate-daily-digest";
 import { computeAnalysisSnapshotsProcessor } from "./compute-analysis-snapshots";
 import { accountDeletionSweepProcessor } from "./account-deletion-sweep";
+import { paperLeaderboardProcessor } from "./paper-leaderboard";
 
 /**
  * Worker Job Registry.
@@ -136,6 +137,7 @@ export const jobRegistry: Partial<Record<QueueName | string, JobRegistration>> =
   // Custom queue (di luar queueNames) — worker/index.ts spawn worker untuk
   // semua key jobRegistry di luar queueNames juga.
   "account.deletion.sweep": { processor: accountDeletionSweepProcessor, concurrency: 1 },
+  "paper.leaderboard": { processor: paperLeaderboardProcessor, concurrency: 1 },
 };
 
 export function registerJobProcessor(

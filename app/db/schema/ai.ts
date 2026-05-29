@@ -12,6 +12,24 @@ import {
 import { jsonbT, softDelete, ulid, ulidRef, withTimestamps } from "./_base";
 
 /**
+ * `AiCitation` — satu sumber yang dipakai assistant untuk grounding jawaban.
+ *
+ * Dikumpulkan dari tool call selama tool-use loop (lib/ai/chat.ts) lalu disimpan
+ * di kolom `ai_messages.citations` (jsonb). UI render sebagai chip "Sumber:".
+ *
+ * - `tool` — nama tool sumber (get_quote, get_recent_news, search_research, dll).
+ * - `label` — teks ringkas untuk ditampilkan (judul berita, "Harga BBRI", dst).
+ * - `url` — opsional, link sumber (berita / halaman riset / detail emiten).
+ * - `kode` — opsional, ticker IDX terkait.
+ */
+export interface AiCitation {
+  tool: string;
+  label: string;
+  url?: string;
+  kode?: string;
+}
+
+/**
  * Schema AI Copilot (Agent 7).
  *
  * Catatan desain:
@@ -59,6 +77,8 @@ export const aiConversations = pgTable(
  *
  * - `role`: user|assistant|system|tool (validasi via Zod di lib/types/ai.ts)
  * - `toolCallId` & `toolName` populated kalau role=tool (jawaban tool call).
+ * - `citations` (assistant only) — daftar sumber tool yang dipakai untuk grounding
+ *   jawaban (inline citations v2). Default `[]`. Lihat db/migrations/0004_ai_citations.sql.
  * - Token & latency untuk usage analytics.
  */
 export const aiMessages = pgTable(
@@ -71,6 +91,7 @@ export const aiMessages = pgTable(
     contentFormat: text("content_format").notNull().default("markdown"),
     toolCallId: text("tool_call_id"),
     toolName: text("tool_name"),
+    citations: jsonbT<AiCitation[]>("citations").notNull().default([]),
     tokenInput: integer("token_input").notNull().default(0),
     tokenOutput: integer("token_output").notNull().default(0),
     tokenCached: integer("token_cached").notNull().default(0),

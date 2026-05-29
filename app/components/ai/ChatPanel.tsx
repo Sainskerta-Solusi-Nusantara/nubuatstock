@@ -6,12 +6,14 @@ import { useRouter } from "next/navigation";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ToolCallCard } from "./ToolCallCard";
-import type { AiMessageDTO, ChatStreamChunk } from "@/lib/types/ai";
+import type { AiCitation, AiMessageDTO, ChatStreamChunk } from "@/lib/types/ai";
 
 interface ChatPanelProps {
   conversationId: string | null;
   initialMessages: AiMessageDTO[];
   contextKode?: string | null;
+  /** Apakah user punya entitlement `feature.ai_deep_mode` (Elite). */
+  deepModeAvailable?: boolean;
 }
 
 interface UiMessage {
@@ -24,6 +26,7 @@ interface UiMessage {
   tokensInput?: number | null;
   tokensOutput?: number | null;
   tokensCached?: number | null;
+  citations?: AiCitation[];
 }
 
 interface UiToolCall {
@@ -34,7 +37,12 @@ interface UiToolCall {
   latencyMs?: number;
 }
 
-export function ChatPanel({ conversationId, initialMessages, contextKode }: ChatPanelProps) {
+export function ChatPanel({
+  conversationId,
+  initialMessages,
+  contextKode,
+  deepModeAvailable = false,
+}: ChatPanelProps) {
   const router = useRouter();
   const [messages, setMessages] = useState<UiMessage[]>(() =>
     initialMessages.map((m) => ({
@@ -43,6 +51,7 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
       content: m.content,
       toolName: m.toolName,
       contentFormat: m.contentFormat,
+      citations: m.citations,
     })),
   );
   const [activeToolCalls, setActiveToolCalls] = useState<UiToolCall[]>([]);
@@ -69,13 +78,13 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
       const trimmed = prev.slice(0, actualIdx);
       // Defer the actual sendMessage call
       setTimeout(() => {
-        sendMessageRef.current?.(lastUserMsg.content, { deepResearch: false });
+        sendMessageRef.current?.(lastUserMsg.content, { deepMode: false });
       }, 50);
       return trimmed;
     });
   }, []);
 
-  const sendMessageRef = useRef<((text: string, opts: { deepResearch: boolean }) => void) | null>(null);
+  const sendMessageRef = useRef<((text: string, opts: { deepMode: boolean }) => void) | null>(null);
 
   // Auto-scroll only kalau user sudah dekat bottom (avoid jerking scrol kalau user scroll up to read)
   useEffect(() => {
@@ -88,7 +97,7 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
   }, [messages, activeToolCalls]);
 
   const sendMessage = useCallback(
-    async (text: string, opts: { deepResearch: boolean }) => {
+    async (text: string, opts: { deepMode: boolean }) => {
       setError(null);
       setStreaming(true);
 
@@ -118,7 +127,7 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
             conversationId: activeConvId ?? undefined,
             message: text,
             contextKode: contextKode ?? undefined,
-            deepResearch: opts.deepResearch,
+            deepMode: opts.deepMode,
           }),
           signal: controller.signal,
         });
@@ -195,6 +204,12 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
                       : m,
                   ),
                 );
+              } else if (chunk.type === "citations") {
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === assistantTempId ? { ...m, citations: chunk.citations } : m,
+                  ),
+                );
               } else if (chunk.type === "done") {
                 setMessages((prev) =>
                   prev.map((m) => (m.id === assistantTempId ? { ...m, pending: false } : m)),
@@ -243,7 +258,7 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
     <div className="flex h-full min-h-0 flex-1 flex-col">
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 md:px-4">
         {messages.length === 0 && (
-          <EmptyState contextKode={contextKode ?? null} onPick={(q) => sendMessage(q, { deepResearch: false })} />
+          <EmptyState contextKode={contextKode ?? null} onPick={(q) => sendMessage(q, { deepMode: false })} />
         )}
         {messages.map((m, i) => {
           // Find last assistant message that's not pending
@@ -262,6 +277,7 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
               tokensInput={m.tokensInput}
               tokensOutput={m.tokensOutput}
               tokensCached={m.tokensCached}
+              citations={m.citations}
               onRegenerate={isLastAssistant && !streaming ? regenerate : undefined}
             />
           );
@@ -297,6 +313,7 @@ export function ChatPanel({ conversationId, initialMessages, contextKode }: Chat
         onStop={stopStreaming}
         streaming={streaming}
         disabled={streaming}
+        deepModeAvailable={deepModeAvailable}
         placeholder={
           contextKode
             ? `Tanyakan tentang ${contextKode}…`

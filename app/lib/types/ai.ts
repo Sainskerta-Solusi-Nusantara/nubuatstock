@@ -12,6 +12,7 @@ import {
  * Re-export DB row types (single source of truth).
  */
 export type {
+  AiCitation,
   AiConversation,
   AiMessage,
   AiPrompt,
@@ -23,6 +24,8 @@ export type {
   NewAiToolCall,
   NewAiUsageLog,
 } from "@/db/schema/ai";
+
+import type { AiCitation } from "@/db/schema/ai";
 
 // =================== Drizzle-derived Zod schemas ===================
 
@@ -71,6 +74,9 @@ export const chatRequestSchema = z.object({
     .max(6)
     .regex(/^[A-Z0-9]+$/u)
     .optional(),
+  // Deep/Agentic Mode (v2). `deepResearch` dipertahankan sebagai alias back-compat
+  // dari klien lama; keduanya memetakan ke flag yang sama di server.
+  deepMode: z.boolean().optional(),
   deepResearch: z.boolean().optional(),
 });
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
@@ -112,6 +118,7 @@ export type ChatStreamChunk =
   | { type: "tool_call"; toolName: string; arguments: Record<string, unknown>; toolCallId: string }
   | { type: "tool_result"; toolCallId: string; ok: boolean; latencyMs: number }
   | { type: "usage"; tokensInput: number; tokensOutput: number; tokensCached: number }
+  | { type: "citations"; citations: AiCitation[] }
   | { type: "done"; finishReason: string; messageId: string }
   | { type: "error"; code: string; message: string };
 
@@ -142,6 +149,7 @@ export interface AiMessageDTO {
   contentFormat: string;
   toolName: string | null;
   toolCallId: string | null;
+  citations?: AiCitation[];
   createdAt: string;
 }
 

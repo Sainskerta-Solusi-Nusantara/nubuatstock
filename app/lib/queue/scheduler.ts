@@ -126,6 +126,14 @@ const CRON_DEFINITIONS: CronJobDefinition[] = [
     defaultCron: "0 3 * * *", // 03:00 WIB tiap hari (low traffic)
     data: { source: "scheduler" },
   },
+  {
+    // Paper Trading Hall of Fame — snapshot ranking harian.
+    queueName: "paper.leaderboard",
+    jobName: "scheduled.snapshot",
+    configKey: "paper.leaderboard_cron",
+    defaultCron: "45 16 * * 1-5", // 16:45 WIB hari bursa, setelah EOD ingest (mark-to-market pakai close terbaru)
+    data: { source: "scheduler" },
+  },
 ];
 
 export async function bootstrapSchedules(): Promise<void> {

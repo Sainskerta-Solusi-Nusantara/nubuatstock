@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * POST /api/ai/chat
- * Body: ChatRequest (conversationId?, message, contextKode?, deepResearch?)
+ * Body: ChatRequest (conversationId?, message, contextKode?, deepMode? | deepResearch?)
  * Response: Server-Sent Events stream of ChatStreamChunk.
  *
  * Quota di-consume SEBELUM SSE dibuka — kalau 429, return JSON error normal.
@@ -65,6 +65,19 @@ export async function POST(req: NextRequest) {
     return handleError(err);
   }
 
+  // Deep/Agentic Mode — gated by entitlement `feature.ai_deep_mode` (Elite).
+  // Klien lama mengirim `deepResearch`; v2 mengirim `deepMode`. Keduanya dipetakan.
+  let deepMode = parsed.deepMode ?? parsed.deepResearch ?? false;
+  if (deepMode) {
+    const { getEntitlement } = await import("@/lib/billing/entitlements");
+    const allowed = await getEntitlement<boolean>(userId, "feature.ai_deep_mode");
+    if (allowed !== true) {
+      // Defensive: kalau klien mengirim deepMode tanpa entitlement, fallback ke
+      // mode biasa (tidak error) supaya pesan tetap terjawab.
+      deepMode = false;
+    }
+  }
+
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -78,7 +91,7 @@ export async function POST(req: NextRequest) {
           userId,
           username: session.user.name || session.user.email,
           contextKode: parsed.contextKode ?? null,
-          deepResearch: parsed.deepResearch ?? false,
+          deepMode,
         })) {
           send(chunk);
         }

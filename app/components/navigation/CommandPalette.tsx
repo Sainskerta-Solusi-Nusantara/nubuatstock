@@ -11,6 +11,7 @@ import {
   CreditCard,
   FileText,
   Home,
+  LayoutGrid,
   LineChart,
   ListChecks,
   Newspaper,
@@ -19,6 +20,8 @@ import {
   Sparkles,
   TrendingDown,
   TrendingUp,
+  Trophy,
+  Wallet,
   Minus,
 } from "lucide-react";
 
@@ -49,6 +52,9 @@ const STATIC_NAV = [
   { id: "nav-research", label: "Riset", href: "/research", icon: FileText },
   { id: "nav-backtest", label: "Backtest", href: "/backtest", icon: LineChart },
   { id: "nav-compare", label: "Compare Tickers", href: "/compare", icon: LineChart },
+  { id: "nav-workspace", label: "Terminal Pro (Workspace)", href: "/workspace", icon: LayoutGrid },
+  { id: "nav-portfolio", label: "Paper Trade", href: "/portfolio", icon: Wallet },
+  { id: "nav-leaderboard", label: "Hall of Fame (Leaderboard)", href: "/leaderboard", icon: Trophy },
   { id: "nav-sectors", label: "Sector Heatmap", href: "/sectors", icon: LineChart },
   { id: "nav-copilot", label: "AI Buddy", href: "/copilot", icon: Bot },
   { id: "nav-guidance", label: "Guidance / Cara Pakai", href: "/guidance", icon: FileText },
@@ -73,6 +79,9 @@ const FUNCTIONS = [
   { id: "fn-bt", code: "BT", label: "Backtest Engine", href: "/backtest" },
   { id: "fn-rsh", code: "RSH", label: "Riset Reports", href: "/research" },
   { id: "fn-ai", code: "AI", label: "AI Buddy", href: "/copilot" },
+  { id: "fn-ws", code: "WS", label: "Terminal Pro Workspace", href: "/workspace" },
+  { id: "fn-rv", code: "RV", label: "Relative Valuation / Compare", href: "/compare" },
+  { id: "fn-n", code: "N", label: "News Feed", href: "/news" },
 ];
 
 /** Screener strategy preset shortcuts. */

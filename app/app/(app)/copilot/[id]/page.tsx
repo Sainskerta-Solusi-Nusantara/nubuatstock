@@ -3,6 +3,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { aiConversations, aiMessages } from "@/db/schema/ai";
 import { requireSession } from "@/lib/auth";
+import { getEntitlement } from "@/lib/billing/entitlements";
 import { hasSecret, getConfig } from "@/lib/config";
 import { ConversationListServer } from "../_ConversationListServer";
 import { ChatPanel } from "@/components/ai/ChatPanel";
@@ -59,10 +60,13 @@ export default async function CopilotConversationPage({ params }: PageProps) {
     contentFormat: m.contentFormat,
     toolName: m.toolName,
     toolCallId: m.toolCallId,
+    citations: m.citations ?? [],
     createdAt: m.createdAt.toISOString(),
   }));
 
   const disclaimer = await getConfig<string>("app.disclaimer_text", { defaultValue: "" });
+  const deepModeAvailable =
+    (await getEntitlement<boolean>(session.user.id, "feature.ai_deep_mode")) === true;
 
   return (
     <div className="-mx-4 -mt-4 flex h-[calc(100dvh-9.5rem)] min-w-0 md:mx-0 md:mt-0 md:h-[calc(100dvh-5.5rem)]">
@@ -93,6 +97,7 @@ export default async function CopilotConversationPage({ params }: PageProps) {
             conversationId={conv.id}
             initialMessages={initialMessages}
             contextKode={conv.contextKode}
+            deepModeAvailable={deepModeAvailable}
           />
         )}
         <CopilotDisclaimerFooter disclaimer={disclaimer} />

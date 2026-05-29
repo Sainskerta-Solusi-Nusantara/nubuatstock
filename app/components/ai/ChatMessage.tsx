@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronDown, Copy, RefreshCw, Sparkles, User, Wrench, Zap } from "lucide-react";
+import { Check, ChevronDown, Copy, ExternalLink, RefreshCw, Sparkles, User, Wrench, Zap } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { MarkdownContent } from "./MarkdownContent";
+import type { AiCitation } from "@/lib/types/ai";
 
 interface ChatMessageProps {
   role: string;
@@ -14,6 +15,7 @@ interface ChatMessageProps {
   tokensInput?: number | null;
   tokensOutput?: number | null;
   tokensCached?: number | null;
+  citations?: AiCitation[];
   onRegenerate?: () => void;
 }
 
@@ -44,6 +46,7 @@ export function ChatMessage({
   tokensInput,
   tokensOutput,
   tokensCached,
+  citations,
   onRegenerate,
 }: ChatMessageProps) {
   if (role === "tool") return <ToolMessage toolName={toolName} content={content} />;
@@ -78,6 +81,11 @@ export function ChatMessage({
             <span className="ml-1 inline-block h-2 w-2 animate-pulse rounded-full bg-current opacity-60" />
           )}
         </div>
+
+        {/* Inline citations (v2) — sumber tool yang dipakai untuk grounding jawaban */}
+        {isAssistant && !pending && citations && citations.length > 0 && (
+          <CitationList citations={citations} />
+        )}
 
         {/* Assistant message actions — visible on hover */}
         {isAssistant && !pending && (
@@ -147,6 +155,51 @@ function TokenBadge({ input, output, cached }: { input?: number | null; output?:
         </span>
       )}
     </span>
+  );
+}
+
+/**
+ * Daftar chip "Sumber:" di bawah jawaban assistant (inline citations v2).
+ * Citation dengan `url` jadi link; tanpa url jadi chip statis.
+ */
+function CitationList({ citations }: { citations: AiCitation[] }) {
+  return (
+    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        Sumber:
+      </span>
+      {citations.map((c, i) => {
+        const label = c.kode && !c.label.includes(c.kode) ? `${c.label} (${c.kode})` : c.label;
+        const inner = (
+          <>
+            <span className="rounded bg-primary/10 px-1 py-px font-mono text-[9px] font-bold text-primary">
+              {TOOL_LABELS[c.tool] ?? c.tool}
+            </span>
+            <span className="max-w-[16rem] truncate">{label}</span>
+            {c.url && <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-60" />}
+          </>
+        );
+        const className =
+          "inline-flex items-center gap-1 rounded-full border border-border bg-card px-2 py-0.5 text-[10px] text-muted-foreground";
+        const isExternal = c.url?.startsWith("http");
+        return c.url ? (
+          <a
+            key={`${c.tool}-${i}`}
+            href={c.url}
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noopener noreferrer" : undefined}
+            title={label}
+            className={cn(className, "transition hover:border-primary/40 hover:text-foreground")}
+          >
+            {inner}
+          </a>
+        ) : (
+          <span key={`${c.tool}-${i}`} title={label} className={className}>
+            {inner}
+          </span>
+        );
+      })}
+    </div>
   );
 }
 

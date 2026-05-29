@@ -47,6 +47,7 @@ export async function GET(
       contentFormat: m.contentFormat,
       toolName: m.toolName,
       toolCallId: m.toolCallId,
+      citations: m.citations ?? [],
       createdAt: m.createdAt.toISOString(),
     }));
 

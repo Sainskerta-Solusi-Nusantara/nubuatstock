@@ -5,8 +5,9 @@ import { getConfig } from "@/lib/config";
 import { logger } from "@/lib/logger";
 import { ConfigurationError, NotFoundError } from "@/lib/errors";
 import { aiConversations, aiMessages, aiToolCalls } from "@/db/schema/ai";
-import type { ChatStreamChunk } from "@/lib/types/ai";
+import type { AiCitation, ChatStreamChunk } from "@/lib/types/ai";
 import { getAiClient } from "./client";
+import { citationsFromTool, dedupeCitations } from "./citations";
 import { applyVariables, loadActivePrompt } from "./prompts";
 import { getTool, listOpenAiTools } from "./tools";
 import { recordUsage } from "./usage";
@@ -35,6 +36,38 @@ type ChatCompletionMessageToolCall = OpenAI.Chat.Completions.ChatCompletionMessa
 
 const HISTORY_LIMIT_DEFAULT = 20;
 const MAX_TOOL_ITERATIONS = 6;
+// Deep/Agentic Mode (v2, Elite-only): budget tool-call lebih besar untuk
+// planning-first multi-step research, plus max tokens lebih tinggi.
+const MAX_TOOL_ITERATIONS_DEEP = 12;
+const MAX_TOKENS_DEEP_MULTIPLIER = 2;
+
+/**
+ * Grounding directive (v2 inline citations) — di-append ke system prompt aktif.
+ *
+ * Catatan: prompt utama tetap berasal dari DB (ai_prompts). Ini hanya rider singkat
+ * yang menegaskan aturan grounding & sumber, supaya konsisten tanpa harus migrasi
+ * row prompt baru. UI yang menampilkan "Sumber:" mengambil dari tool call (server),
+ * jadi model TIDAK perlu menulis bracket sitasi manual.
+ */
+const GROUNDING_GUIDANCE = `
+
+## Aturan grounding (WAJIB)
+- Dasarkan setiap angka, fakta, dan klaim pada output tool yang kamu panggil. JANGAN mengarang harga, rasio, berita, atau target price.
+- Kalau tool gagal atau datanya tidak ada, katakan terus terang — jangan menebak.
+- Saat menyebut data dari tool, rujuk sumbernya secara natural di teks (mis. "menurut berita CNBC...", "berdasarkan harga terkini..."). Sistem otomatis menampilkan daftar "Sumber" di bawah jawaban, jadi kamu tidak perlu menulis tautan mentah.`;
+
+/**
+ * Deep/Agentic Mode guidance — planning-first, multi-step. Di-append menggantikan
+ * GROUNDING_GUIDANCE saat deep mode aktif (sudah mencakup aturan grounding).
+ */
+const DEEP_MODE_GUIDANCE =
+  GROUNDING_GUIDANCE +
+  `
+
+## Mode Deep (agentic)
+- Mulai dengan menyusun rencana singkat (2-5 langkah) sebelum eksekusi: data apa yang kamu butuhkan dan tool mana yang dipakai.
+- Eksekusi rencana lintas beberapa langkah: panggil tool, evaluasi hasilnya, lalu panggil tool lanjutan bila perlu sebelum menyimpulkan.
+- Sintesis temuan jadi jawaban yang menyeluruh dan terstruktur. Lebih teliti dari mode biasa, tapi tetap ringkas dan tidak bertele-tele.`;
 
 export interface StreamChatOptions {
   conversationId?: string;
@@ -42,7 +75,11 @@ export interface StreamChatOptions {
   userId: string;
   username?: string;
   contextKode?: string | null;
-  deepResearch?: boolean;
+  /**
+   * Deep/Agentic Mode. Server WAJIB sudah memverifikasi entitlement
+   * `feature.ai_deep_mode` (Elite) sebelum men-set true (lihat API route).
+   */
+  deepMode?: boolean;
 }
 
 export async function* streamChat(
@@ -50,8 +87,13 @@ export async function* streamChat(
 ): AsyncGenerator<ChatStreamChunk, void, void> {
   const startTs = Date.now();
   const { client, config } = await getAiClient();
-  const model = opts.deepResearch ? config.deepModel : config.defaultModel;
-  const promptKey = opts.deepResearch ? "system.copilot.deep_research" : "system.copilot.default";
+  const deepMode = opts.deepMode ?? false;
+  const model = deepMode ? config.deepModel : config.defaultModel;
+  const promptKey = deepMode ? "system.copilot.deep_research" : "system.copilot.default";
+  const maxToolIterations = deepMode ? MAX_TOOL_ITERATIONS_DEEP : MAX_TOOL_ITERATIONS;
+  const maxTokens = deepMode
+    ? config.maxTokens * MAX_TOKENS_DEEP_MULTIPLIER
+    : config.maxTokens;
 
   // 1. Load atau buat conversation.
   let conversation = opts.conversationId
@@ -81,12 +123,13 @@ export async function* streamChat(
     defaultValue: "",
   });
   const today = new Date().toISOString().slice(0, 10);
-  const resolvedPrompt = applyVariables(rawPrompt, {
-    username: opts.username ?? "(pengguna)",
-    context_kode: opts.contextKode ?? conversation.contextKode ?? "(tidak ada)",
-    today,
-    disclaimer,
-  });
+  const resolvedPrompt =
+    applyVariables(rawPrompt, {
+      username: opts.username ?? "(pengguna)",
+      context_kode: opts.contextKode ?? conversation.contextKode ?? "(tidak ada)",
+      today,
+      disclaimer,
+    }) + (deepMode ? DEEP_MODE_GUIDANCE : GROUNDING_GUIDANCE);
 
   // 3. Load history.
   const historyLimit = await getConfig<number>("ai.history_message_limit", {
@@ -150,17 +193,20 @@ export async function* streamChat(
   // guidance untuk "factual/analytical tasks"). Narrative/creative bisa naik 0.4-0.6.
   //
   // Override per-request kalau perlu (deep research naik ke 0.3-0.4 untuk synthesis luas).
-  const effectiveTemperature = opts.deepResearch
+  const effectiveTemperature = deepMode
     ? Math.min(config.temperature + 0.1, 0.4) // Deep mode: slight bump untuk synthesis
     : Math.min(config.temperature, 0.2); // Default: cap di 0.2 untuk tool-faithful
 
-  for (let iter = 0; iter < MAX_TOOL_ITERATIONS; iter++) {
+  // Citations terkumpul lintas iterasi (dari tool call yang sukses).
+  const citations: AiCitation[] = [];
+
+  for (let iter = 0; iter < maxToolIterations; iter++) {
     const stream = await client.chat.completions.create({
       model,
       messages,
       tools,
       stream: true,
-      max_tokens: config.maxTokens,
+      max_tokens: maxTokens,
       temperature: effectiveTemperature,
       stream_options: { include_usage: true },
     });
@@ -297,6 +343,11 @@ export async function* streamChat(
       const { job, resultObj, toolError, latencyMs } = r.value;
       const resultStr = JSON.stringify(resultObj);
 
+      // Kumpulkan citations dari tool call yang sukses (inline citations v2).
+      if (!toolError) {
+        citations.push(...citationsFromTool(job.tc.name, job.parsedArgs, resultObj));
+      }
+
       // Persist (sequentially OK karena ini DB write, biar konsisten)
       const [toolMsg] = await db
         .insert(aiMessages)
@@ -348,6 +399,12 @@ export async function* streamChat(
   }
 
   const totalLatency = Date.now() - startTs;
+  const finalCitations = dedupeCitations(citations);
+
+  // Emit citations ke client SEBELUM done supaya UI bisa render chip "Sumber:".
+  if (finalCitations.length > 0) {
+    yield { type: "citations", citations: finalCitations };
+  }
 
   // 8. Persist final assistant message.
   const [assistantMsg] = await db
@@ -357,6 +414,7 @@ export async function* streamChat(
       role: "assistant",
       content: finalAssistant,
       contentFormat: "markdown",
+      citations: finalCitations,
       tokenInput: totalInput,
       tokenOutput: totalOutput,
       tokenCached: totalCached,

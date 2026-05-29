@@ -15,6 +15,12 @@ interface RunBacktestArgs {
   startDate?: string;
   endDate?: string;
   initialCapital?: number;
+  /**
+   * Mode lanjutan (opsional). Default (kosong) = backtest standar — behavior
+   * tidak berubah. "walk_forward" = uji robustness rolling OOS. "monte_carlo"
+   * = distribusi outcome dari resample trade.
+   */
+  mode?: "walk_forward" | "monte_carlo";
 }
 
 /**
@@ -70,6 +76,12 @@ export const runBacktestTool: ToolDefinition<RunBacktestArgs> = {
         type: "number",
         description: "Initial capital IDR. Default Rp 100juta.",
       },
+      mode: {
+        type: "string",
+        enum: ["walk_forward", "monte_carlo"],
+        description:
+          "Opsional. Kosong = backtest standar. 'walk_forward' = uji robustness lewat rolling out-of-sample window (deteksi overfit). 'monte_carlo' = resample urutan trade untuk dapat distribusi outcome (probability of profit, sebaran drawdown/return).",
+      },
     },
     required: ["ticker", "strategy"],
     additionalProperties: false,
@@ -102,7 +114,7 @@ export const runBacktestTool: ToolDefinition<RunBacktestArgs> = {
       const startDate = args.startDate ?? new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10);
       const endDate = args.endDate ?? new Date().toISOString().slice(0, 10);
 
-      const result = await runBacktest({
+      const baseInput = {
         ticker,
         strategy: args.strategy,
         params: params as never,
@@ -110,7 +122,86 @@ export const runBacktestTool: ToolDefinition<RunBacktestArgs> = {
         endDate,
         initialCapital: args.initialCapital ?? 100_000_000,
         commissionPct: 0.0015,
-      });
+      };
+
+      // Mode lanjutan (additive) — default behavior di bawah tidak terpengaruh.
+      if (args.mode === "walk_forward") {
+        const { runWalkForward } = await import("@/lib/backtest/walk-forward");
+        const wf = await runWalkForward(baseInput);
+        return {
+          ok: true,
+          data: {
+            mode: "walk_forward",
+            ticker: wf.ticker,
+            strategy: wf.strategy,
+            period: `${wf.startDate} → ${wf.endDate}`,
+            windows: wf.windows,
+            trainRatio: wf.trainRatio,
+            oos: {
+              totalReturnPct: Number((wf.combinedOos.totalReturnPct * 100).toFixed(2)),
+              annualizedReturnPct: Number((wf.combinedOos.annualizedReturnPct * 100).toFixed(2)),
+              sharpeRatio: Number(wf.combinedOos.sharpeRatio.toFixed(2)),
+              maxDrawdownPct: Number((wf.combinedOos.maxDrawdownPct * 100).toFixed(2)),
+              winRate: Number((wf.combinedOos.winRate * 100).toFixed(1)),
+              totalTrades: wf.combinedOos.totalTrades,
+            },
+            robustness: {
+              verdict: wf.robustness.verdict,
+              profitableWindows: wf.robustness.profitableWindows,
+              consistencyPct: Number((wf.robustness.consistencyPct * 100).toFixed(0)),
+              avgDegradationPct: Number((wf.robustness.avgDegradationPct * 100).toFixed(2)),
+            },
+            perWindow: wf.perWindow.map((w) => ({
+              window: w.index,
+              test: `${w.testStart} → ${w.testEnd}`,
+              oosReturnPct: Number((w.test.totalReturnPct * 100).toFixed(2)),
+              oosSharpe: Number(w.test.sharpeRatio.toFixed(2)),
+              oosTrades: w.test.totalTrades,
+            })),
+            interpretation:
+              wf.robustness.verdict === "robust"
+                ? `Strategi ROBUST — profit konsisten di ${wf.robustness.profitableWindows}/${wf.windows} window out-of-sample. Indikasi tidak overfit.`
+                : wf.robustness.verdict === "mixed"
+                  ? `Hasil MIXED — cuma ${wf.robustness.profitableWindows}/${wf.windows} window OOS yang profit. Strategi belum tentu stabil.`
+                  : `Strategi FRAGILE — mayoritas window OOS rugi (${wf.robustness.profitableWindows}/${wf.windows} profit). Indikasi overfit, hati-hati.`,
+          },
+        };
+      }
+
+      if (args.mode === "monte_carlo") {
+        const { runMonteCarlo } = await import("@/lib/backtest/monte-carlo");
+        const bt = await runBacktest(baseInput);
+        const mc = runMonteCarlo(bt, { iterations: 1000 });
+        return {
+          ok: true,
+          data: {
+            mode: "monte_carlo",
+            ticker: mc.ticker,
+            strategy: mc.strategy,
+            iterations: mc.iterations,
+            tradesPerIteration: mc.tradesPerIteration,
+            probabilityOfProfit: Number((mc.probabilityOfProfit * 100).toFixed(0)),
+            probabilityDrawdownOver20: Number((mc.probabilityDrawdownOver20 * 100).toFixed(0)),
+            finalReturnPct: {
+              p5: Number((mc.finalReturnPct.p5 * 100).toFixed(2)),
+              median: Number((mc.finalReturnPct.p50 * 100).toFixed(2)),
+              p95: Number((mc.finalReturnPct.p95 * 100).toFixed(2)),
+            },
+            maxDrawdownPct: {
+              p5: Number((mc.maxDrawdownPct.p5 * 100).toFixed(2)),
+              median: Number((mc.maxDrawdownPct.p50 * 100).toFixed(2)),
+              p95: Number((mc.maxDrawdownPct.p95 * 100).toFixed(2)),
+            },
+            observed: {
+              totalReturnPct: Number((mc.observed.totalReturnPct * 100).toFixed(2)),
+              maxDrawdownPct: Number((mc.observed.maxDrawdownPct * 100).toFixed(2)),
+            },
+            interpretation: `Dari ${mc.iterations.toLocaleString("id-ID")} simulasi resample ${mc.tradesPerIteration} trade: probability of profit ${(mc.probabilityOfProfit * 100).toFixed(0)}%, median return ${(mc.finalReturnPct.p50 * 100).toFixed(1)}%, sebaran p5..p95 ${(mc.finalReturnPct.p5 * 100).toFixed(1)}%..${(mc.finalReturnPct.p95 * 100).toFixed(1)}%. Spread lebar = hasil sensitif ke urutan trade.`,
+          },
+        };
+      }
+
+      const result = await runBacktest(baseInput);
 
       return {
         ok: true,
