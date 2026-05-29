@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import * as React from "react";
-import { Bell, LineChart, LogOut, Settings, Shield, User } from "lucide-react";
+import { Bell, LineChart, LogOut, Search, Settings, Shield, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { TickerSearch } from "@/components/navigation/TickerSearch";
+import { useCommandPalette } from "@/components/navigation/CommandPaletteProvider";
 import { ChangelogBell } from "@/components/changelog/ChangelogBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { LocaleSwitcher } from "./LocaleSwitcher";
@@ -40,6 +41,7 @@ function initials(name: string): string {
 }
 
 export function Header({ user, locale = "id" }: HeaderProps) {
+  const { setOpen } = useCommandPalette();
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
       <Link
@@ -55,6 +57,23 @@ export function Header({ user, locale = "id" }: HeaderProps) {
           <TickerSearch />
         </div>
       </div>
+
+      {/* Mobile: TickerSearch di-hidden (<sm), jadi sediakan tombol cari yang
+          membuka CommandPalette (ticker search = analisis utama). */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="sm:hidden"
+            aria-label="Cari saham / ticker"
+            onClick={() => setOpen(true)}
+          >
+            <Search className="size-4" aria-hidden />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Cari saham</TooltipContent>
+      </Tooltip>
 
       <Tooltip>
         <TooltipTrigger asChild>

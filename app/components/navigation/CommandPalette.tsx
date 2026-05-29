@@ -50,7 +50,7 @@ const STATIC_NAV = [
   { id: "nav-backtest", label: "Backtest", href: "/backtest", icon: LineChart },
   { id: "nav-compare", label: "Compare Tickers", href: "/compare", icon: LineChart },
   { id: "nav-sectors", label: "Sector Heatmap", href: "/sectors", icon: LineChart },
-  { id: "nav-copilot", label: "AI Copilot", href: "/copilot", icon: Bot },
+  { id: "nav-copilot", label: "AI Buddy", href: "/copilot", icon: Bot },
   { id: "nav-guidance", label: "Guidance / Cara Pakai", href: "/guidance", icon: FileText },
   {
     id: "nav-subscription",
@@ -72,7 +72,7 @@ const FUNCTIONS = [
   { id: "fn-pick", code: "PICK", label: "Daily Picks", href: "/picks" },
   { id: "fn-bt", code: "BT", label: "Backtest Engine", href: "/backtest" },
   { id: "fn-rsh", code: "RSH", label: "Riset Reports", href: "/research" },
-  { id: "fn-ai", code: "AI", label: "AI Copilot", href: "/copilot" },
+  { id: "fn-ai", code: "AI", label: "AI Buddy", href: "/copilot" },
 ];
 
 /** Screener strategy preset shortcuts. */
