@@ -1,8 +1,10 @@
 import { Banknote, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCapitalFlowSummary } from "@/lib/capital-flow/service";
+import { getSectorFlow } from "@/lib/bandarmology/sector-flow-service";
 import { formatCompactIDR } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
+import { SectorFlowHeatmap } from "./SectorFlowHeatmap";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +29,10 @@ const BUCKET_COLORS = {
 } as const;
 
 export default async function CapitalFlowPage() {
-  const summary = await getCapitalFlowSummary(30);
+  const [summary, sectorFlow] = await Promise.all([
+    getCapitalFlowSummary(30),
+    getSectorFlow([5, 20]),
+  ]);
   const trendMeta = TREND_META[summary.trend];
 
   return (
@@ -90,6 +95,9 @@ export default async function CapitalFlowPage() {
           );
         })}
       </div>
+
+      {/* Sector x Tier heatmap — aliran dana antar sektor & market-cap (NeoBDM Sector Activity) */}
+      <SectorFlowHeatmap byWindow={sectorFlow.byWindow} windows={sectorFlow.windows} />
 
       {/* Stacked area / column chart untuk daily flow */}
       <Card>
