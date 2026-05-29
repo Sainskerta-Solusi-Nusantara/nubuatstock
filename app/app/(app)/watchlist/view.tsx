@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AddTickerCombobox } from "@/components/watchlist/AddTickerCombobox";
 import { WatchlistTable } from "@/components/watchlist/WatchlistTable";
@@ -45,6 +46,17 @@ async function apiSend<T>(url: string, method: string, body?: unknown): Promise<
 
 export function WatchlistView() {
   const qc = useQueryClient();
+  const router = useRouter();
+  // Hindari prefetch berulang untuk kode yang sama selama sesi.
+  const prefetchedRef = useRef<Set<string>>(new Set());
+  const prefetchTicker = useCallback(
+    (code: string) => {
+      if (!code || prefetchedRef.current.has(code)) return;
+      prefetchedRef.current.add(code);
+      router.prefetch(`/ticker/${code}`);
+    },
+    [router],
+  );
   const [activeId, setActiveId] = useState<string | null>(null);
   const [newWatchlistName, setNewWatchlistName] = useState("");
   const [showCreate, setShowCreate] = useState(false);
@@ -207,6 +219,7 @@ export function WatchlistView() {
               onOpenTicker={(code) => {
                 window.location.href = `/ticker/${code}`;
               }}
+              onPrefetchTicker={prefetchTicker}
             />
           ) : null}
         </>

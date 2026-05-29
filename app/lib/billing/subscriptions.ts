@@ -109,7 +109,7 @@ export async function ensureFreeSubscription(opts: EnsureFreeOptions): Promise<U
 }
 
 /**
- * Start trial subscription untuk user — tier "pro" by default, 7 hari.
+ * Start trial subscription untuk user — tier "pro" by default, 7 hari (Trial Pro 7 hari).
  *
  * Idempotent: kalau user sudah punya active/trialing subscription, return existing.
  * Worker `expire-trial` akan auto-downgrade ke Free setelah trial_ends_at.
@@ -168,7 +168,7 @@ export async function startTrialSubscription(opts: {
       fromStatus: existingSub.status,
       toStatus: "trialing",
       actorUserId: null,
-      reason: `Trial ${durationDays} hari dimulai`,
+      reason: `Trial Pro ${durationDays} hari dimulai`,
     });
 
     invalidateUserCache(opts.userId);
@@ -216,7 +216,7 @@ export async function startTrialSubscription(opts: {
     toTierKode: targetTier,
     toStatus: "trialing",
     actorUserId: null,
-    reason: `Trial ${durationDays} hari dimulai pada signup`,
+    reason: `Trial Pro ${durationDays} hari dimulai pada signup`,
   });
 
   invalidateUserCache(opts.userId);

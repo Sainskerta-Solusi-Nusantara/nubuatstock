@@ -280,7 +280,7 @@ export default function AboutPage() {
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Link
-              href="/signup?trial=starter"
+              href="/signup?trial=pro"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
             >
               Mulai Tumbuh Bareng <ArrowRight className="h-4 w-4" />

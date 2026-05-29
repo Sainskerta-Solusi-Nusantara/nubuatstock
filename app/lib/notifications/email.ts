@@ -133,7 +133,7 @@ export function renderWelcomeEmail(p: WelcomeEmailParams): { subject: string; ht
   const trialBlock = p.trialActive && p.trialEndsAt
     ? `<div style="background:#dcfce7;border-left:4px solid #16a34a;padding:12px 16px;margin:20px 0;border-radius:4px;">
         <strong>Trial kamu aktif!</strong><br>
-        Akses penuh tier Starter sampai <strong>${p.trialEndsAt.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</strong>.
+        Akses penuh tier Pro sampai <strong>${p.trialEndsAt.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</strong>.
         Tidak ada charge mendadak — auto turun ke Free kalau tidak upgrade.
        </div>`
     : "";

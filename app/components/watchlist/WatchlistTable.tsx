@@ -14,6 +14,8 @@ interface WatchlistTableProps {
   items: WatchlistItemView[];
   onRemove?: (itemId: string) => void;
   onOpenTicker?: (companyKode: string) => void;
+  /** Dipanggil saat hover/focus baris — untuk prefetch route ticker (UX instan). */
+  onPrefetchTicker?: (companyKode: string) => void;
 }
 
 const numberFmt = new Intl.NumberFormat("id-ID", {
@@ -26,7 +28,12 @@ const pctFmt = new Intl.NumberFormat("id-ID", {
 
 const columnHelper = createColumnHelper<WatchlistItemView>();
 
-export function WatchlistTable({ items, onRemove, onOpenTicker }: WatchlistTableProps) {
+export function WatchlistTable({
+  items,
+  onRemove,
+  onOpenTicker,
+  onPrefetchTicker,
+}: WatchlistTableProps) {
   const columns = useMemo(
     () => [
       columnHelper.accessor("companyKode", {
@@ -38,6 +45,8 @@ export function WatchlistTable({ items, onRemove, onOpenTicker }: WatchlistTable
             <button
               type="button"
               onClick={() => onOpenTicker?.(code)}
+              onMouseEnter={() => onPrefetchTicker?.(code)}
+              onFocus={() => onPrefetchTicker?.(code)}
               className="text-left hover:underline"
             >
               <div className="font-mono font-semibold">{code}</div>
@@ -97,7 +106,7 @@ export function WatchlistTable({ items, onRemove, onOpenTicker }: WatchlistTable
         ),
       }),
     ],
-    [onOpenTicker, onRemove],
+    [onOpenTicker, onPrefetchTicker, onRemove],
   );
 
   const table = useReactTable({

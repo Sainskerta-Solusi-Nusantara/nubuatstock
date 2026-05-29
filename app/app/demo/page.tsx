@@ -190,7 +190,7 @@ export default function DemoPage() {
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-2xl font-bold">Siap mulai analisis IDX yang lebih cerdas?</h2>
           <p className="mt-2 text-muted-foreground">
-            Trial 7 hari untuk semua Pro features. Tanpa kartu kredit, tanpa komitmen.
+            Trial 7 hari untuk semua fitur tier Pro. Tanpa kartu kredit, tanpa komitmen.
           </p>
           <div className="mt-5 flex justify-center gap-3">
             <Link

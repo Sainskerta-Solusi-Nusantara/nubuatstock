@@ -342,7 +342,7 @@ function OutroVisual() {
       <div className="animate-pulse text-7xl">🎯</div>
       <h2 className="text-3xl font-bold tracking-tight">Trial 7 Hari Gratis</h2>
       <ul className="space-y-2 text-sm text-muted-foreground">
-        <li>✅ Semua fitur Pro</li>
+        <li>✅ Semua fitur tier Starter</li>
         <li>✅ Tanpa kartu kredit</li>
         <li>✅ Auto-downgrade ke Free setelah 7 hari</li>
         <li>✅ Cancel kapan saja, no hidden fees</li>

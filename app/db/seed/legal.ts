@@ -193,7 +193,7 @@ Dengan menggunakan Platform, kamu setuju terikat oleh Syarat ini. Jika tidak set
 
 3.3 Refund hanya untuk kasus error sistem yang kami akui. Tidak ada refund pro-rata untuk perubahan keputusan.
 
-3.4 Trial 7 hari tier Starter — tanpa kartu kredit, otomatis turun ke Free setelah trial habis kalau tidak upgrade.
+3.4 Trial 7 hari tier Pro — tanpa kartu kredit, otomatis turun ke Free setelah trial habis kalau tidak upgrade.
 
 ## 4. Penggunaan yang Diizinkan
 

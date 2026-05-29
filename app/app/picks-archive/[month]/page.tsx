@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Archive } from "lucide-react";
 import { Footer } from "@/components/landing/Footer";
+import { PublicNav } from "@/components/landing/PublicNav";
 import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { getArchiveMonth, listArchiveMonths } from "@/lib/picks/archive";
 import { MonthBlock } from "../_components";
@@ -59,6 +60,7 @@ export default async function ArchiveMonthPage({ params }: PageProps) {
 
   return (
     <main className="bg-background text-foreground">
+      <PublicNav />
       <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent py-12">
         <div className="mx-auto max-w-4xl px-4">
           <Link

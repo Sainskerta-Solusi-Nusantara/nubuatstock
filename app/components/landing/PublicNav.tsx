@@ -27,17 +27,17 @@ export function PublicNav({
           <a href="/#features" className="text-muted-foreground hover:text-foreground transition">Fitur</a>
           <a href="/glossary" className="text-muted-foreground hover:text-foreground transition">Glossary</a>
           <a href="/research" className="text-muted-foreground hover:text-foreground transition">Riset</a>
-          <a href="/subscription" className="text-muted-foreground hover:text-foreground transition">Harga</a>
+          <a href="/pricing" className="text-muted-foreground hover:text-foreground transition">Harga</a>
           <a href="/login" className="text-muted-foreground hover:text-foreground transition">Login</a>
           <a
-            href="/signup?trial=starter"
+            href="/signup?trial=pro"
             className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
           >
             {ctaText}
           </a>
         </nav>
         <a
-          href="/signup?trial=starter"
+          href="/signup?trial=pro"
           className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground sm:hidden"
         >
           Daftar

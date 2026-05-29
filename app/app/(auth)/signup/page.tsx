@@ -16,8 +16,8 @@ export default async function SignupPage({
   searchParams: Promise<{ callbackUrl?: string; trial?: string }>;
 }) {
   const { callbackUrl, trial } = await searchParams;
-  // Terima `trial=1`, `trial=true`, `trial=starter`, `trial=pro` — semua
-  // value non-empty dianggap niat trial. Tier default Pro 7 hari di server.
+  // Terima `trial=1`, `trial=true`, `trial=pro` — semua value non-empty
+  // dianggap niat trial. Tier default Pro 7 hari di server.
   const trialIntent = typeof trial === "string" && trial.length > 0 && trial !== "0" && trial !== "false";
   const [minLen, google] = await Promise.all([
     getPasswordMinLength(),

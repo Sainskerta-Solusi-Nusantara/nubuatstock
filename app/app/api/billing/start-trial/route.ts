@@ -15,7 +15,7 @@ import { logger } from "@/lib/logger";
  * sudah punya trial atau paid subscription, return existing tanpa override.
  *
  * Trial config dari `app_config`:
- *   - trial.default_tier (default "starter")
+ *   - trial.default_tier (default "pro")
  *   - trial.duration_days (default 3)
  *   - trial.fallback_tier (default "free")
  *
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const { tierKode: overrideTier } = bodySchema.parse(body);
 
     const [defaultTier, durationDays, fallbackTier] = await Promise.all([
-      getConfig<string>("trial.default_tier", { defaultValue: "starter" }),
+      getConfig<string>("trial.default_tier", { defaultValue: "pro" }),
       getConfig<number>("trial.duration_days", { defaultValue: 3 }),
       getConfig<string>("trial.fallback_tier", { defaultValue: "free" }),
     ]);

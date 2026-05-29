@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Archive } from "lucide-react";
 import { Footer } from "@/components/landing/Footer";
+import { PublicNav } from "@/components/landing/PublicNav";
 import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { getArchivePage } from "@/lib/picks/archive";
 import { MonthBlock } from "./_components";
@@ -66,6 +67,7 @@ export default async function PicksArchivePage({ searchParams }: PageProps) {
 
   return (
     <main className="bg-background text-foreground">
+      <PublicNav />
       <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent py-14">
         <div className="mx-auto max-w-4xl px-4">
           <Link href="/" className="text-xs text-muted-foreground hover:underline">

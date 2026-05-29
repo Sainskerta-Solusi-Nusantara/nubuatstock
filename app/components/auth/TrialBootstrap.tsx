@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 /**
  * Client component yang otomatis call /api/billing/start-trial setelah signup
- * sukses jika URL param `trial=starter` ada (atau tier lain).
+ * sukses jika URL param `trial=pro` ada (atau tier lain).
  *
  * Dipasang di signup success page (atau onboarding) untuk activate trial 3 hari.
  * Idempotent di backend — aman kalau dipanggil 2x.

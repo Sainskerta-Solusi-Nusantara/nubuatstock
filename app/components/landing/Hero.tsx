@@ -57,7 +57,7 @@ export function Hero(props: HeroProps) {
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
             <Link
-              href="/signup?trial=starter"
+              href="/signup?trial=pro"
               className={cn(
                 "group inline-flex items-center justify-center gap-2",
                 "h-12 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground",

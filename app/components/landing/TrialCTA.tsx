@@ -19,7 +19,7 @@ export function TrialCTA(props: TrialCTAProps) {
               <p className="mt-4 text-muted-foreground">{props.description}</p>
 
               <Link
-                href="/signup?trial=starter"
+                href="/signup?trial=pro"
                 className="group mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-md transition hover:shadow-lg hover:brightness-110"
               >
                 {props.cta}

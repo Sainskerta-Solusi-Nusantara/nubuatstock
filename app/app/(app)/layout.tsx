@@ -6,6 +6,7 @@ import { ThemeScript } from "@/components/layout/ThemeScript";
 import { getLegalGateStatus } from "@/lib/legal/acceptance";
 import { getConfig } from "@/lib/config";
 import { AcceptDisclaimerGate } from "@/components/legal/AcceptDisclaimerGate";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 
 // Semua route (app)/* butuh session — tidak boleh statically prerendered.
 export const dynamic = "force-dynamic";
@@ -67,13 +68,17 @@ export default async function AppLayout({
       <AppShell user={session.user} tier={null}>
         {children}
       </AppShell>
-      {needsAcceptance && (
+      {needsAcceptance ? (
         <AcceptDisclaimerGate
           appName={appName}
           disclaimer={disclaimerText}
           version={acceptVersion}
           isReAccept={isReAccept}
         />
+      ) : (
+        // Onboarding tour first-time user — hanya saat gate legal sudah lewat
+        // supaya tidak menutupi disclaimer wajib. Tampil sekali via localStorage.
+        <OnboardingTour />
       )}
     </>
   );

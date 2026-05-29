@@ -737,7 +737,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
     category: "Account",
     title: "Subscription & Tier",
     icon: "CreditCard",
-    summary: "Free / Starter / Pro / Enterprise. Trial 7 hari Pro features gratis. Auto-downgrade ke Free setelah trial.",
+    summary: "Free / Starter / Pro / Elite / Institutional. Trial 7 hari tier Pro gratis. Auto-downgrade ke Free setelah trial.",
     contents: [
       { type: "paragraph", text: "Tier menentukan akses fitur. Lihat halaman /subscription untuk detail tier comparison." },
       { type: "heading", level: 3, text: "Tier breakdown (high level)" },
@@ -745,10 +745,11 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
         type: "kv",
         rows: [
           { key: "Free", value: "Dashboard, watchlist (1), news basic, ticker page basic" },
-          { key: "Trial 7 hari", value: "All Pro features (auto-downgrade ke Free setelahnya)" },
+          { key: "Trial 7 hari", value: "Semua fitur tier Pro (auto-downgrade ke Free setelahnya)" },
           { key: "Starter", value: "+ alerts, screener, daily picks, multiple watchlist" },
           { key: "Pro", value: "+ AI Copilot, DCF, Verdict, Wyckoff, Bandarmology, backtest, research" },
-          { key: "Enterprise", value: "+ API access, white-label, dedicated support" },
+          { key: "Elite", value: "+ L2 depth, paper trading, API access, AI Deep Mode" },
+          { key: "Institutional", value: "+ multi-seat, white-label, dedicated support & SLA" },
         ],
       },
       { type: "note", tone: "info", title: "Trial auto-expiry", body: "Trial otomatis berakhir setelah 7 hari. Akun di-downgrade ke Free tanpa charge. Kamu bisa upgrade kapan saja di /subscription." },

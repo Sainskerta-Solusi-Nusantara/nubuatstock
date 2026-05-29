@@ -2,6 +2,7 @@ import { getConfig } from "@/lib/config";
 import { ConfigurationError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { vendorNameSchema, type VendorName } from "@/lib/types/market";
+import { FailoverMarketDataAdapter } from "../failover";
 import { InvezgoAdapter } from "./invezgo";
 import { OhlcDevAdapter } from "./ohlc-dev";
 import { YahooFinanceAdapter } from "./yahoo-finance";
@@ -19,7 +20,10 @@ const adapterCache = new Map<VendorName, MarketDataAdapter>();
 function createAdapter(vendor: VendorName): MarketDataAdapter {
   switch (vendor) {
     case "yahoo_finance":
-      return new YahooFinanceAdapter();
+      // Default vendor: bungkus dengan failover ke Alpha Vantage (§8.5 #37).
+      // Yahoo tetap sumber primer; AV hanya emergency saat Yahoo benar-benar down.
+      // Failover adapter sendiri yang instantiate YahooFinanceAdapter internal.
+      return new FailoverMarketDataAdapter();
     case "invezgo":
       return new InvezgoAdapter();
     case "ohlc_dev":

@@ -65,7 +65,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.hero.cta_primary",
-    value: "Coba Gratis 3 Hari",
+    value: "Coba Gratis 7 Hari",
     type: "string",
     description: "CTA primary di hero.",
   },
@@ -77,7 +77,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.hero.cta_note",
-    value: "Tanpa kartu kredit · Tier Starter penuh selama 3 hari · Auto turun ke Free, tidak ada charge mendadak",
+    value: "Tanpa kartu kredit · Tier Pro penuh selama 7 hari · Auto turun ke Free, tidak ada charge mendadak",
     type: "string",
     description: "Catatan kecil di bawah CTA.",
   },
@@ -226,7 +226,7 @@ const landingDefaults: LandingConfigEntry[] = [
   {
     key: "landing.how.steps",
     value: [
-      { n: "01", title: "Daftar 30 detik, gratis 3 hari", body: "Hanya email + password. Tanpa kartu kredit. Akses penuh tier Starter selama 3 hari untuk test semua fitur." },
+      { n: "01", title: "Daftar 30 detik, gratis 7 hari", body: "Hanya email + password. Tanpa kartu kredit. Akses penuh tier Pro selama 7 hari untuk test semua fitur." },
       { n: "02", title: "Set watchlist & alert", body: "Tambah saham yang kamu pantau. Set alert harga, volume spike, MA cross. Notifikasi di app + email." },
       { n: "03", title: "Lihat Daily Picks pagi & tanya AI", body: "Setiap pagi sebelum bursa buka, dapat 3–10 pick dengan SR/SL/TP. Tanya AI: kenapa pilih ini, apa risikonya." },
       { n: "04", title: "Entry sesuai zona, exit sesuai plan", body: "Tidak lagi tebak-tebakan. Setiap entry punya alasan, setiap exit punya level. Catat di journal, evaluasi." },
@@ -238,13 +238,13 @@ const landingDefaults: LandingConfigEntry[] = [
   // ===== TRIAL CTA =====
   {
     key: "landing.trial.headline",
-    value: "Coba 3 hari, gratis penuh — tanpa kartu kredit",
+    value: "Coba 7 hari, gratis penuh — tanpa kartu kredit",
     type: "string",
     description: "Headline trial CTA section.",
   },
   {
     key: "landing.trial.description",
-    value: "Trial penuh tier Starter (senilai Rp 99rb/bulan). Tidak ada lock-in. Tidak ada charge mendadak. Kalau cocok, lanjut. Kalau tidak, auto turun ke Free.",
+    value: "Trial penuh tier Pro (senilai Rp 299rb/bulan). Tidak ada lock-in. Tidak ada charge mendadak. Kalau cocok, lanjut. Kalau tidak, auto turun ke Free.",
     type: "string",
     description: "Deskripsi trial CTA.",
   },
@@ -257,14 +257,14 @@ const landingDefaults: LandingConfigEntry[] = [
   {
     key: "landing.trial.inclusions",
     value: [
-      "Akses semua fitur tier Starter selama 3 hari",
+      "Akses semua fitur tier Pro selama 7 hari",
       "Real-time quote semua emiten BEI",
       "Daily Picks dengan SR/SL/TP konkrit",
       "AI Copilot DeepSeek — 50 query/hari",
       "Bandarmology basic + foreign flow harian",
       "Watchlist unlimited + alerts unlimited",
       "Tanpa kartu kredit, tanpa charge mendadak",
-      "Auto turun ke tier Free setelah 3 hari kalau tidak upgrade",
+      "Auto turun ke tier Free setelah 7 hari kalau tidak upgrade",
     ],
     type: "json",
     description: "Daftar checklist trial CTA.",
@@ -282,7 +282,7 @@ const landingDefaults: LandingConfigEntry[] = [
     value: [
       { q: "Apakah saya butuh akun broker untuk pakai Nubuat?", a: "Tidak. Nubuat adalah platform analisis & informasi — bukan broker. Kamu tetap eksekusi order di broker pilihan kamu. Nubuat memberikan analisa, level entry/SL/TP, dan insight; eksekusi tetap di tangan kamu." },
       { q: "Apakah Nubuat memberikan saran investasi personal?", a: "Tidak. Semua analisa & Daily Picks bersifat informasi & edukasi berbasis data. Bukan ajakan jual/beli efek tertentu untuk kamu secara pribadi. Keputusan investasi selalu jadi tanggung jawab kamu. Lihat disclaimer di bawah." },
-      { q: "Berapa biaya setelah trial 3 hari habis?", a: "Tier Free tetap gratis selamanya — kamu bisa lanjut pakai dengan fitur dasar (watchlist 10 emiten, quote delayed 15m, 5 AI query/hari). Mau lanjut tier Starter? Rp 99rb/bulan. Pro Rp 299rb/bulan, Elite Rp 899rb/bulan. Tidak ada auto-charge — kamu harus aktif upgrade." },
+      { q: "Berapa biaya setelah trial 7 hari habis?", a: "Tier Free tetap gratis selamanya — kamu bisa lanjut pakai dengan fitur dasar (watchlist 10 emiten, quote delayed 15m, 5 AI query/hari). Mau lanjut tier Starter? Rp 99rb/bulan. Pro Rp 299rb/bulan, Elite Rp 899rb/bulan. Tidak ada auto-charge — kamu harus aktif upgrade." },
       { q: "AI Nubuat pakai model apa?", a: "Default DeepSeek (deepseek-v4-flash). Pengganti dapat di-swap admin ke Anthropic Claude atau OpenAI GPT lewat config — tidak ada vendor lock-in. Setiap response menyertakan disclaimer & sumber data." },
       { q: "Bandarmology — itu bukan teori konspirasi?", a: "Bukan. Bandarmology dalam Nubuat adalah analisis statistik aliran dana: broker mana net-buy/net-sell, foreign flow harian/intraday, volume spike, accumulation/distribution line. Semua data publik dari BEI/KSEI. Bukan tebakan." },
       { q: "Data emiten lengkap berapa?", a: "960+ emiten BEI (semua papan: Utama, Pengembangan, Akselerasi, Ekonomi Baru, Pemantauan Khusus). Daftar di-sync periodik dari KSEI." },
@@ -310,13 +310,13 @@ const landingDefaults: LandingConfigEntry[] = [
   // ===== TRIAL ENGINE CONFIG =====
   {
     key: "trial.duration_days",
-    value: 3,
+    value: 7,
     type: "number",
-    description: "Durasi trial dalam hari saat user signup dengan ?trial=starter.",
+    description: "Durasi trial dalam hari saat user signup dengan ?trial=pro.",
   },
   {
     key: "trial.default_tier",
-    value: "starter",
+    value: "pro",
     type: "string",
     description: "Tier default untuk trial baru.",
   },

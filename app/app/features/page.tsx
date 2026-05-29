@@ -19,6 +19,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Footer } from "@/components/landing/Footer";
+import { PublicNav } from "@/components/landing/PublicNav";
 
 export const metadata = {
   title: "Fitur — Nubuat",
@@ -158,6 +159,7 @@ export default function FeaturesPage() {
 
   return (
     <main className="bg-background">
+      <PublicNav />
       {/* Header */}
       <section className="border-b border-border bg-gradient-to-b from-primary/5 to-transparent py-16">
         <div className="mx-auto max-w-7xl px-4">
@@ -172,7 +174,7 @@ export default function FeaturesPage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/signup"
+              href="/signup?trial=pro"
               className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
             >
               Coba Gratis 7 Hari <ArrowRight className="h-4 w-4" />
@@ -242,11 +244,11 @@ export default function FeaturesPage() {
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Mulai analisis IDX yang lebih cerdas</h2>
           <p className="mt-3 text-muted-foreground">
-            Trial 7 hari gratis untuk semua Pro features. Tanpa kartu kredit, tanpa komitmen.
+            Trial 7 hari gratis untuk semua fitur tier Pro. Tanpa kartu kredit, tanpa komitmen.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
-              href="/signup"
+              href="/signup?trial=pro"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground hover:brightness-110"
             >
               Mulai Trial Gratis <ArrowRight className="h-4 w-4" />
