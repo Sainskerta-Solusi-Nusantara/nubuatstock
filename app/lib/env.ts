@@ -18,7 +18,22 @@ const envSchema = z.object({
   ADMIN_BOOTSTRAP_EMAIL: z.string().email().optional(),
 });
 
-const parsed = envSchema.safeParse(process.env);
+/**
+ * Fallback ke nama env bawaan integrasi Vercel:
+ * - Neon–Vercel Integration menyetel `POSTGRES_URL` / `POSTGRES_URL_NON_POOLING`
+ *   (BUKAN `DATABASE_URL`) → tanpa fallback ini build/runtime gagal "DATABASE_URL Required".
+ * - Upstash–Vercel Integration menyetel `KV_URL` (rediss://) selain/sebagai `REDIS_URL`.
+ * Var eksplisit (DATABASE_URL/REDIS_URL) tetap diutamakan bila ada.
+ */
+const normalizedEnv = {
+  ...process.env,
+  DATABASE_URL: process.env.DATABASE_URL ?? process.env.POSTGRES_URL,
+  DATABASE_URL_UNPOOLED:
+    process.env.DATABASE_URL_UNPOOLED ?? process.env.POSTGRES_URL_NON_POOLING,
+  REDIS_URL: process.env.REDIS_URL ?? process.env.KV_URL,
+};
+
+const parsed = envSchema.safeParse(normalizedEnv);
 if (!parsed.success) {
   console.error("❌ Invalid environment variables:", parsed.error.flatten().fieldErrors);
   throw new Error("Invalid environment. See AGENTS.md §4 for the env contract.");
