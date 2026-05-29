@@ -1,41 +1,29 @@
-import { desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { companies } from "@/db/schema/companies";
 import { companyFundamentals } from "@/db/schema/fundamentals";
 import { quotesEod } from "@/db/schema/market";
 import { sectors } from "@/db/schema/reference";
 import { cached, CACHE_TAGS, CACHE_TTL } from "@/lib/cache";
+import {
+  buildWeightedIndex,
+  computeTrail,
+  type Quadrant,
+  type RotationPoint,
+} from "@/lib/rotation/rrg";
 
 /**
- * Relative Rotation Graph (RRG) — 4-quadrant rotation chart.
+ * Relative Rotation Graph (RRG) — data service untuk 4-quadrant rotation chart.
  *
- * Setiap entity (sektor atau emiten) di-plot:
- *   x-axis: JdK RS-Ratio (relative strength vs benchmark, normalized 100)
- *   y-axis: JdK RS-Momentum (rate of change of RS-Ratio, normalized 100)
+ * Perhitungan RRG murni (RS-Ratio, RS-Momentum, klasifikasi kuadran, weighted
+ * index) ada di `@/lib/rotation/rrg`. Modul ini hanya meng-orchestrate pengambilan
+ * data EOD dari Postgres lalu memanggil fungsi murni tersebut.
  *
- * Quadrants:
- *   Leading (upper-right):     RS > 100 AND momentum > 100 — outperforming + still accelerating
- *   Weakening (lower-right):   RS > 100 AND momentum < 100 — outperforming but losing momentum
- *   Lagging (lower-left):      RS < 100 AND momentum < 100 — underperforming + decelerating
- *   Improving (upper-left):    RS < 100 AND momentum > 100 — underperforming but gaining momentum
- *
- * Typical rotation flow (clockwise): Improving → Leading → Weakening → Lagging → Improving
- *
- * Benchmark: weighted-average market return (IHSG proxy via mcap-weighted sectors)
- *
- * Implementation notes:
- *   - Simplified JdK formula: use 14-bar relative strength + 5-bar momentum
- *   - Output trail: last 6 weeks (3 weekly points by default — visualize rotation)
+ * Benchmark: synthetic IHSG proxy = weighted-average (mcap) top 30 emiten.
  */
 
-export type Quadrant = "Leading" | "Weakening" | "Lagging" | "Improving";
-
-export interface RotationPoint {
-  date: string;
-  rsRatio: number; // normalized 100
-  rsMomentum: number; // normalized 100
-  quadrant: Quadrant;
-}
+// Re-export type publik agar konsumen lama (page / komponen) tidak perlu berubah.
+export type { Quadrant, RotationPoint };
 
 export interface RotationEntity {
   kode: string;
@@ -46,84 +34,6 @@ export interface RotationEntity {
   currentQuadrant: Quadrant;
   currentRs: number;
   currentMomentum: number;
-}
-
-/** Compute % returns array dari close prices. */
-function returnsArray(closes: number[]): number[] {
-  const out: number[] = [];
-  for (let i = 1; i < closes.length; i += 1) {
-    out.push((closes[i]! - closes[i - 1]!) / closes[i - 1]!);
-  }
-  return out;
-}
-
-/** Cumulative return over last N bars. */
-function cumReturn(closes: number[], lookback: number): number {
-  if (closes.length < lookback + 1) return 0;
-  const start = closes[closes.length - 1 - lookback]!;
-  const end = closes[closes.length - 1]!;
-  return (end - start) / start;
-}
-
-function classify(rs: number, mom: number): Quadrant {
-  if (rs >= 100 && mom >= 100) return "Leading";
-  if (rs >= 100 && mom < 100) return "Weakening";
-  if (rs < 100 && mom < 100) return "Lagging";
-  return "Improving";
-}
-
-/**
- * Compute RRG-style metrics untuk entity vs benchmark.
- *
- * @param entityCloses chronological close array
- * @param benchmarkCloses chronological close array (same dates aligned)
- * @returns trail of N points (last N weeks)
- */
-function computeTrail(
-  entityCloses: number[],
-  benchmarkCloses: number[],
-  pointsBack = 5,
-  stepBars = 5,
-): RotationPoint[] {
-  const trail: RotationPoint[] = [];
-  if (entityCloses.length !== benchmarkCloses.length || entityCloses.length < 30) return trail;
-
-  // RS-Ratio: cumulative relative return normalized to 100 at start of window
-  // Compute at each step
-  const minBars = 25; // need enough for momentum
-  const end = entityCloses.length - 1;
-  const points: number[] = [];
-  for (let i = pointsBack; i >= 0; i -= 1) {
-    points.push(end - i * stepBars);
-  }
-  // Compute RS ratio at each point relative to start-of-trail
-  const startIdx = points[0]!;
-  if (startIdx < minBars) return trail;
-
-  for (const idx of points) {
-    if (idx < minBars) continue;
-    // RS-Ratio: weighted cum return of entity vs benchmark over lookback 14
-    const entRet = (entityCloses[idx]! - entityCloses[idx - 14]!) / entityCloses[idx - 14]!;
-    const benRet = (benchmarkCloses[idx]! - benchmarkCloses[idx - 14]!) / benchmarkCloses[idx - 14]!;
-    const rsRatio = 100 * (1 + (entRet - benRet));
-
-    // RS-Momentum: change in RS-Ratio over last 5 bars
-    let rsMomentum = 100;
-    if (idx >= minBars + 5) {
-      const entRetPrev = (entityCloses[idx - 5]! - entityCloses[idx - 19]!) / entityCloses[idx - 19]!;
-      const benRetPrev = (benchmarkCloses[idx - 5]! - benchmarkCloses[idx - 19]!) / benchmarkCloses[idx - 19]!;
-      const rsPrev = 100 * (1 + (entRetPrev - benRetPrev));
-      rsMomentum = 100 * (1 + (rsRatio - rsPrev) / 100);
-    }
-
-    trail.push({
-      date: `bar-${idx}`, // Simplified; could map to actual date if needed
-      rsRatio,
-      rsMomentum,
-      quadrant: classify(rsRatio, rsMomentum),
-    });
-  }
-  return trail;
 }
 
 interface Bar {
@@ -200,26 +110,12 @@ async function getBenchmarkCloses(days = 60): Promise<Bar[]> {
   // BULK fetch — 1 query instead of 30
   const closesByKode = await getBulkEntityCloses(topCompanies.map((c) => c.kode), days);
 
-  const dateMap = new Map<string, { totalWeighted: number; totalWeight: number }>();
-  for (const c of topCompanies) {
-    const bars = closesByKode.get(c.kode);
-    if (!bars || bars.length === 0) continue;
-    const weight = Number(c.marketCap ?? 0) / totalMC;
-    const base = bars[0]!.close;
-    for (const b of bars) {
-      const normVal = (b.close / base) * 100;
-      const cur = dateMap.get(b.date) ?? { totalWeighted: 0, totalWeight: 0 };
-      cur.totalWeighted += normVal * weight;
-      cur.totalWeight += weight;
-      dateMap.set(b.date, cur);
-    }
-  }
-
-  const sorted = Array.from(dateMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-  return sorted.map(([date, v]) => ({
-    date,
-    close: v.totalWeight > 0 ? v.totalWeighted / v.totalWeight : 100,
-  }));
+  return buildWeightedIndex(
+    topCompanies.map((c) => ({
+      bars: closesByKode.get(c.kode) ?? [],
+      weight: Number(c.marketCap ?? 0) / totalMC,
+    })),
+  );
 }
 
 /** Get rotation chart untuk semua sektor (data per sektor di-aggregate dari emitennya). */
@@ -267,33 +163,27 @@ async function getSectorRotationRaw(): Promise<RotationEntity[]> {
     const totalMC = topInSector.reduce((acc, c) => acc + c.marketCap, 0);
     if (totalMC === 0) continue;
 
-    const dateMap = new Map<string, { totalWeighted: number; totalWeight: number }>();
-    for (const c of topInSector) {
-      const bars = closesByKode.get(c.kode);
-      if (!bars || bars.length === 0) continue;
-      const weight = c.marketCap / totalMC;
-      const base = bars[0]!.close;
-      for (const b of bars) {
-        const normVal = (b.close / base) * 100;
-        const cur = dateMap.get(b.date) ?? { totalWeighted: 0, totalWeight: 0 };
-        cur.totalWeighted += normVal * weight;
-        cur.totalWeight += weight;
-        dateMap.set(b.date, cur);
-      }
-    }
-    const sectorBars = Array.from(dateMap.entries())
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([date, v]) => ({ date, close: v.totalWeight > 0 ? v.totalWeighted / v.totalWeight : 100 }));
+    const sectorBars = buildWeightedIndex(
+      topInSector.map((c) => ({
+        bars: closesByKode.get(c.kode) ?? [],
+        weight: c.marketCap / totalMC,
+      })),
+    );
     if (sectorBars.length < 30) continue;
 
-    const aligned: Array<{ ent: number; ben: number }> = [];
+    const aligned: Array<{ date: string; ent: number; ben: number }> = [];
     for (const b of sectorBars) {
       const benClose = benchMap.get(b.date);
-      if (benClose != null) aligned.push({ ent: b.close, ben: benClose });
+      if (benClose != null) aligned.push({ date: b.date, ent: b.close, ben: benClose });
     }
     if (aligned.length < 30) continue;
 
-    const trail = computeTrail(aligned.map((a) => a.ent), aligned.map((a) => a.ben));
+    const trail = computeTrail(
+      aligned.map((a) => a.ent),
+      aligned.map((a) => a.ben),
+      {},
+      aligned.map((a) => a.date),
+    );
     if (trail.length === 0) continue;
     const last = trail[trail.length - 1]!;
     out.push({
@@ -345,13 +235,18 @@ async function getEmittenRotationRaw(sectorKode?: string, limit = 30): Promise<R
   for (const c of candidates) {
     const bars = closesByKode.get(c.kode);
     if (!bars || bars.length < 30) continue;
-    const aligned: Array<{ ent: number; ben: number }> = [];
+    const aligned: Array<{ date: string; ent: number; ben: number }> = [];
     for (const b of bars) {
       const ben = benchMap.get(b.date);
-      if (ben != null) aligned.push({ ent: b.close, ben });
+      if (ben != null) aligned.push({ date: b.date, ent: b.close, ben });
     }
     if (aligned.length < 30) continue;
-    const trail = computeTrail(aligned.map((a) => a.ent), aligned.map((a) => a.ben));
+    const trail = computeTrail(
+      aligned.map((a) => a.ent),
+      aligned.map((a) => a.ben),
+      {},
+      aligned.map((a) => a.date),
+    );
     if (trail.length === 0) continue;
     const last = trail[trail.length - 1]!;
     out.push({

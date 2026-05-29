@@ -35,6 +35,21 @@ const MAX_TOP_NEWS = 5;
 const MAX_SECTOR_MOVERS = 6;
 const UPCOMING_CALENDAR_DAYS = 7;
 
+/**
+ * Disclaimer wajib di setiap "Ringkasan Pasar Hari Ini".
+ * Ringkasan bersifat informasi/edukasi, BUKAN ajakan jual/beli.
+ * Dipakai untuk AI path (memastikan ada walau LLM lupa) maupun fallback rule-based.
+ */
+export const DIGEST_DISCLAIMER =
+  "Ringkasan ini bersifat informasi, bukan ajakan jual/beli — keputusan investasi tetap di tanganmu.";
+
+export interface SummaryPromptInput {
+  context: MarketContext;
+  sectorMovers: DigestSectorMover[];
+  topPicksCount: number;
+  topNewsCount: number;
+}
+
 interface MarketContext {
   ihsgReturn1d: number | null;
   bullishSectors: number;
@@ -236,41 +251,108 @@ async function gatherUpcomingCalendar(): Promise<DigestCalendarEvent[]> {
   return events.slice(0, 8);
 }
 
-async function generateAINarrative(opts: {
-  context: MarketContext;
-  sectorMovers: DigestSectorMover[];
-  topPicksCount: number;
-  topNewsCount: number;
-}): Promise<{ headline: string; outlook: string }> {
+/**
+ * System prompt untuk "Ringkasan Pasar Hari Ini".
+ * Pure constant — di-export agar bisa di-assert di unit test.
+ */
+export const SUMMARY_SYSTEM_PROMPT =
+  "Kamu adalah analis pasar saham Indonesia. Buat 'Ringkasan Pasar Hari Ini' yang concise, " +
+  "informatif, dan tidak hype. Sapa pembaca dengan 'kamu' (JANGAN pakai 'Anda'). " +
+  "Bahasa semi-formal santai tapi tidak kaku. Ringkasan WAJIB 3-5 kalimat. " +
+  "JANGAN memberi ajakan jual/beli atau rekomendasi pasti.";
+
+/**
+ * Susun messages untuk LLM dari context pasar. Pure & deterministik → testable
+ * tanpa memanggil jaringan. Output langsung dipakai sebagai `messages` ke client.
+ */
+export function buildSummaryPrompt(
+  opts: SummaryPromptInput,
+): { role: "system" | "user"; content: string }[] {
+  const c = opts.context;
+  const userPrompt = `Berdasarkan data pasar IDX hari ini, buat:
+1. "headline": headline catchy (max 100 char) yang mencerminkan kondisi pasar.
+2. "summary": Ringkasan Pasar Hari Ini, 3-5 kalimat (~80 kata), nada "kamu", merangkum:
+   tren IHSG, sektor leader/laggard, highlight Daily Picks baru, dan sentimen news flow.
+   JANGAN menulis disclaimer di dalam summary (sistem akan menambahkannya otomatis).
+
+Data:
+- IHSG return 1d (proxy weighted by market cap): ${c.ihsgReturn1d != null ? c.ihsgReturn1d.toFixed(2) + "%" : "—"}
+- Sektor bullish: ${c.bullishSectors}, bearish: ${c.bearishSectors}
+- Top sektor gainer: ${c.topGainerSector ?? "—"}
+- Top sektor loser: ${c.topLoserSector ?? "—"}
+- News 24h: ${c.bullishNewsCount} bullish, ${c.bearishNewsCount} bearish
+- Daily Picks aktif: ${opts.topPicksCount}
+- Berita penting terpilih: ${opts.topNewsCount}
+
+Output HANYA JSON valid: { "headline": "...", "summary": "..." }
+Tanpa markdown wrapper. Bahasa Indonesia.`;
+
+  return [
+    { role: "system", content: SUMMARY_SYSTEM_PROMPT },
+    { role: "user", content: userPrompt },
+  ];
+}
+
+/**
+ * Pastikan disclaimer wajib selalu ada di akhir ringkasan (tanpa duplikasi).
+ * Dipakai baik di AI path maupun fallback.
+ */
+export function ensureDisclaimer(summary: string): string {
+  const trimmed = summary.trim();
+  if (trimmed.includes(DIGEST_DISCLAIMER)) return trimmed;
+  const sep = trimmed.length === 0 || /[.!?…]$/.test(trimmed) ? " " : ". ";
+  return `${trimmed}${trimmed.length ? sep : ""}${DIGEST_DISCLAIMER}`;
+}
+
+/**
+ * Ringkasan rule-based (tanpa AI) — fallback saat LLM gagal/tidak dikonfigurasi.
+ * Deterministik & selalu menyertakan disclaimer → tidak pernah kosong.
+ */
+export function ruleBasedSummary(
+  opts: SummaryPromptInput,
+): { headline: string; summary: string } {
+  const c = opts.context;
+  const ret = c.ihsgReturn1d;
+  const direction = ret != null ? (ret > 0 ? "menguat" : ret < 0 ? "melemah" : "flat") : "bergerak campuran";
+  const retStr = ret != null ? `${ret >= 0 ? "+" : ""}${ret.toFixed(2)}%` : "";
+
+  const headline = `Pasar IDX ${direction}${retStr ? " " + retStr : ""}`.trim();
+
+  const sectorLine =
+    c.topGainerSector || c.topLoserSector
+      ? `Sektor ${c.topGainerSector ?? "—"} memimpin, sementara ${c.topLoserSector ?? "—"} tertekan.`
+      : "";
+  const picksLine =
+    opts.topPicksCount > 0
+      ? `Ada ${opts.topPicksCount} Daily Picks baru yang bisa kamu pantau.`
+      : "Belum ada Daily Picks baru hari ini.";
+  const newsLine = `Sentimen berita 24 jam terakhir: ${c.bullishNewsCount} bullish vs ${c.bearishNewsCount} bearish.`;
+
+  const summaryBody = [
+    `Hari ini IHSG ${direction}${retStr ? " sekitar " + retStr : ""}, dengan ${c.bullishSectors} sektor positif dan ${c.bearishSectors} sektor negatif.`,
+    sectorLine,
+    picksLine,
+    newsLine,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return { headline, summary: ensureDisclaimer(summaryBody) };
+}
+
+/**
+ * Generate "Ringkasan Pasar Hari Ini" via LLM, dengan fallback rule-based.
+ * Hasil disimpan ke kolom existing `marketOutlook` (lihat persist di generateDailyDigest).
+ */
+async function generateAINarrative(
+  opts: SummaryPromptInput,
+): Promise<{ headline: string; outlook: string }> {
   try {
     const { client, config } = await getAiClient();
 
-    const userPrompt = `Berdasarkan context pasar IDX hari ini, buat:
-1. Headline catchy (max 100 char) yang mencerminkan kondisi pasar
-2. Market outlook 1 paragraf (~80 kata) yang merangkum: trend IHSG, sektor leader/laggard, sentimen news flow
-
-Context:
-- IHSG return 1d (proxy weighted by market cap): ${opts.context.ihsgReturn1d != null ? opts.context.ihsgReturn1d.toFixed(2) + "%" : "—"}
-- Sektor bullish: ${opts.context.bullishSectors}, bearish: ${opts.context.bearishSectors}
-- Top sektor gainer: ${opts.context.topGainerSector ?? "—"}
-- Top sektor loser: ${opts.context.topLoserSector ?? "—"}
-- News 24h: ${opts.context.bullishNewsCount} bullish, ${opts.context.bearishNewsCount} bearish
-- Daily Picks aktif: ${opts.topPicksCount}
-- Major news terpilih: ${opts.topNewsCount}
-
-Output JSON: { "headline": "...", "outlook": "..." }
-HANYA JSON, tanpa markdown wrapper. Bahasa Indonesia.`;
-
     const completion = await client.chat.completions.create({
       model: config.defaultModel,
-      messages: [
-        {
-          role: "system",
-          content:
-            "Kamu adalah analis pasar saham Indonesia. Buat morning brief yang concise, informatif, dan tidak hype. Sapa pembaca dengan 'kamu' (jangan pakai 'Anda'). Bahasa semi-formal santai tapi tidak kaku.",
-        },
-        { role: "user", content: userPrompt },
-      ],
+      messages: buildSummaryPrompt(opts),
       temperature: 0.4,
       max_tokens: 500,
       response_format: { type: "json_object" },
@@ -278,18 +360,26 @@ HANYA JSON, tanpa markdown wrapper. Bahasa Indonesia.`;
 
     const content = completion.choices[0]?.message.content ?? "{}";
     const parsed = JSON.parse(content);
+    const headlineRaw = String(parsed.headline ?? "").trim();
+    const summaryRaw = String(parsed.summary ?? parsed.outlook ?? "").trim();
+
+    // Kalau LLM mengembalikan summary kosong → anggap gagal, jatuh ke fallback.
+    if (!summaryRaw) {
+      throw new Error("LLM returned empty summary");
+    }
+
+    const fallback = ruleBasedSummary(opts);
     return {
-      headline: String(parsed.headline ?? "Market Update").slice(0, 200),
-      outlook: String(parsed.outlook ?? "—").slice(0, 1000),
+      headline: (headlineRaw || fallback.headline).slice(0, 200),
+      outlook: ensureDisclaimer(summaryRaw.slice(0, 900)),
     };
   } catch (err) {
-    logger.warn({ err: (err as Error).message }, "Daily digest AI narrative failed, using fallback");
-    // Fallback template
-    const ret = opts.context.ihsgReturn1d;
-    const direction = ret != null ? (ret > 0 ? "menguat" : "melemah") : "campuran";
-    const headline = `Pasar IDX ${direction} ${ret != null ? ret.toFixed(2) + "%" : ""}`.trim();
-    const outlook = `Pasar saham Indonesia hari ini bergerak ${direction}, dengan ${opts.context.bullishSectors} sektor positif dan ${opts.context.bearishSectors} negatif. Sektor terdepan: ${opts.context.topGainerSector ?? "—"}, tertekan: ${opts.context.topLoserSector ?? "—"}. Sentimen berita 24 jam: ${opts.context.bullishNewsCount} bullish vs ${opts.context.bearishNewsCount} bearish.`;
-    return { headline, outlook };
+    logger.warn(
+      { err: (err as Error).message },
+      "Daily digest AI summary failed, using rule-based fallback",
+    );
+    const fb = ruleBasedSummary(opts);
+    return { headline: fb.headline, outlook: fb.summary };
   }
 }
 
