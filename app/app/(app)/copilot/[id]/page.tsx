@@ -85,7 +85,7 @@ export default async function CopilotConversationPage({ params }: PageProps) {
               {conv.title}
             </span>
             <span className="truncate text-[10px] uppercase tracking-wide text-zinc-500">
-              {conv.provider} · {conv.modelUsed}
+              AI Buddy
               {conv.contextKode && <> · konteks {conv.contextKode}</>}
             </span>
           </div>

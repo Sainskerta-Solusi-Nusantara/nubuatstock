@@ -54,7 +54,13 @@ const GROUNDING_GUIDANCE = `
 ## Aturan grounding (WAJIB)
 - Dasarkan setiap angka, fakta, dan klaim pada output tool yang kamu panggil. JANGAN mengarang harga, rasio, berita, atau target price.
 - Kalau tool gagal atau datanya tidak ada, katakan terus terang — jangan menebak.
-- Saat menyebut data dari tool, rujuk sumbernya secara natural di teks (mis. "menurut berita CNBC...", "berdasarkan harga terkini..."). Sistem otomatis menampilkan daftar "Sumber" di bawah jawaban, jadi kamu tidak perlu menulis tautan mentah.`;
+- Saat menyebut data dari tool, rujuk sumbernya secara natural di teks (mis. "menurut berita CNBC...", "berdasarkan harga terkini..."). Sistem otomatis menampilkan daftar "Sumber" di bawah jawaban, jadi kamu tidak perlu menulis tautan mentah.
+
+## Format jawaban (WAJIB)
+- JANGAN membuat diagram atau "gambar" dari karakter ASCII / seni teks (mis. pohon gelombang Elliott pakai garis / \\ dan angka, candlestick dari karakter, grafik dari titik). Hasilnya SELALU berantakan dan menyesatkan di chat. Jangan pernah memakai blok kode untuk menggambar grafik.
+- Untuk konsep visual (Elliott Wave, pola chart, struktur tren, Wyckoff), jelaskan dengan KATA-KATA, poin berurutan, atau TABEL. Contoh Elliott: jelaskan urutan "impuls 1-2-3-4-5 searah tren, lalu koreksi A-B-C" beserta sifat tiap gelombang — tanpa menggambar.
+- Kalau pengguna butuh melihat grafik sungguhan, arahkan ke fitur chart / Elliott Wave Nubuat di halaman emiten (tab analisis), bukan menggambar sendiri.
+- Pakai Markdown rapi (judul, poin, tabel) dan ringkas.`;
 
 /**
  * SCOPE_GUARD — pagar keamanan & ruang lingkup. SELALU di-append ke system prompt
