@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UsersRoleEditor } from "@/components/superadmin/UsersRoleEditor";
 import { UserTierEditor } from "@/components/superadmin/UserTierEditor";
+import { UserRowActions } from "@/components/superadmin/UserRowActions";
+import { getSession } from "@/lib/auth/server";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +16,8 @@ interface UserRow {
   role: string;
   tier: string | null;
   status: string | null;
+  phone: string | null;
+  telegram: string | null;
   createdAt: Date;
   lastLoginAt: Date | null;
 }
@@ -22,12 +26,14 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const q = sp.q?.trim() ?? "";
   const roleFilter = sp.role?.trim() ?? "";
+  const session = await getSession();
+  const selfId = (session as { user?: { id?: string } } | null)?.user?.id ?? null;
 
   // Best-effort query — kalau tabel users belum ada (DB kosong), tampilkan empty state
   let users: UserRow[] = [];
   try {
     const rows = await db.execute(sql`
-      SELECT u.id, u.email, u.name, u.role, u.created_at, u.last_login_at,
+      SELECT u.id, u.email, u.name, u.role, u.phone, u.telegram, u.created_at, u.last_login_at,
              us.tier_kode AS tier, us.status AS status
       FROM users u
       LEFT JOIN user_subscriptions us ON us.user_id = u.id AND us.status IN ('active','trialing')
@@ -44,6 +50,8 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
       role: String(r.role ?? "user"),
       tier: r.tier as string | null,
       status: r.status as string | null,
+      phone: (r.phone as string | null) ?? null,
+      telegram: (r.telegram as string | null) ?? null,
       createdAt: new Date(String(r.created_at)),
       lastLoginAt: r.last_login_at ? new Date(String(r.last_login_at)) : null,
     }));
@@ -130,7 +138,17 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
                         {u.lastLoginAt ? u.lastLoginAt.toLocaleDateString("id-ID") : "—"}
                       </td>
                       <td className="px-4 py-2 text-right">
-                        <UsersRoleEditor userId={u.id} email={u.email} currentRole={u.role} />
+                        <div className="inline-flex items-center gap-1">
+                          <UsersRoleEditor userId={u.id} email={u.email} currentRole={u.role} />
+                          <UserRowActions
+                            userId={u.id}
+                            email={u.email}
+                            name={u.name}
+                            whatsapp={u.phone}
+                            telegram={u.telegram}
+                            isSelf={u.id === selfId}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))}
