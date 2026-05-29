@@ -33,7 +33,7 @@ export default async function CorporateActionCalendarPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Calendar Aksi Korporasi</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Calendar Aksi Korporasi</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Cum dividen, stock split, rights issue, dan aksi korporasi lainnya. Sumber data: IDX e-Reporting + Yahoo dividend history.
         </p>
@@ -117,7 +117,7 @@ export default async function CorporateActionCalendarPage({
 
       <p className="rounded-md border border-border bg-card/40 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong>Catatan:</strong> Tanggal di sini adalah <strong>ex-date</strong> (cum date = 1 trading day sebelumnya).
-        Untuk membeli & dapat dividen, Anda harus pegang saham pada cum date — beli di ex-date sudah tidak dapat dividen.
+        Untuk membeli & dapat dividen, kamu harus pegang saham pada cum date — beli di ex-date sudah tidak dapat dividen.
         Data dapat berubah; selalu verify di prospektus emiten atau idx.co.id.
       </p>
     </div>

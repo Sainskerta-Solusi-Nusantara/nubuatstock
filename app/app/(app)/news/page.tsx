@@ -49,7 +49,7 @@ export default async function NewsFeedPage({ searchParams }: PageProps) {
       <header>
         <div className="flex items-center gap-2">
           <Newspaper className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">News Feed</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">News Feed</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Berita keuangan terbaru dari sumber publik Indonesia, dengan analisis sentimen otomatis

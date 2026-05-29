@@ -216,7 +216,7 @@ export const PITCHDECK_FEATURES: PitchdeckFeature[] = [
     category: "Workflow",
     path: "/alerts",
     pitch:
-      "Pusat notifikasi semua trigger Anda — price alerts, breakout, verdict change, news sentiment, dan corporate action. Inbox-style dengan filter dan mark-as-read.",
+      "Pusat notifikasi semua trigger kamu — price alerts, breakout, verdict change, news sentiment, dan corporate action. Inbox-style dengan filter dan mark-as-read.",
     highlights: [
       "Multi-trigger: price, %, volume, verdict, pattern, news",
       "Inbox-style dengan filter unread/category",

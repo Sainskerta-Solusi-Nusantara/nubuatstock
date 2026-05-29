@@ -77,9 +77,9 @@ export default async function ManageSubscriptionPage() {
   const isFree = !tier || tier.kode === DEFAULT_FREE_TIER_KODE;
 
   return (
-    <div className="container mx-auto max-w-5xl px-4 py-10 space-y-8">
+    <div className="container mx-auto max-w-5xl px-4 py-8 space-y-8 sm:py-10">
       <header>
-        <h1 className="text-3xl font-bold">Kelola Paket</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Kelola Paket</h1>
         <p className="text-muted-foreground">Status langganan, kuota, dan riwayat tagihan.</p>
       </header>
 

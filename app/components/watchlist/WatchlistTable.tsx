@@ -126,8 +126,8 @@ export function WatchlistTable({
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
-      <table className="w-full text-sm">
+    <div className="rounded-lg border border-border overflow-x-auto">
+      <table className="w-full min-w-[480px] text-sm">
         <thead className="bg-muted/40">
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id}>

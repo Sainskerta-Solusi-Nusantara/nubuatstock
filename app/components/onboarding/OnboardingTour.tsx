@@ -40,8 +40,8 @@ interface TourStep {
 const STEPS: TourStep[] = [
   {
     icon: <Star className="h-6 w-6" />,
-    title: "Watchlist Anda",
-    body: "Pantau ticker favorit dengan harga & perubahan real-time. Tambahkan saham yang sedang Anda amati supaya tetap di radar setiap hari.",
+    title: "Watchlist Kamu",
+    body: "Pantau ticker favorit dengan harga & perubahan real-time. Tambahkan saham yang sedang kamu amati supaya tetap di radar setiap hari.",
   },
   {
     icon: <LineChart className="h-6 w-6" />,
@@ -51,17 +51,17 @@ const STEPS: TourStep[] = [
   {
     icon: <Bot className="h-6 w-6" />,
     title: "AI Copilot",
-    body: "Tanya apa saja soal saham Anda. Copilot memberi analisa cepat berbasis data pasar IDX — tetap sebagai edukasi, bukan ajakan jual/beli.",
+    body: "Tanya apa saja soal saham kamu. Copilot memberi analisa cepat berbasis data pasar IDX — tetap sebagai edukasi, bukan ajakan jual/beli.",
   },
   {
     icon: <ListChecks className="h-6 w-6" />,
     title: "Daily Picks",
-    body: "Top rekomendasi harian berbasis skor multi-faktor lengkap dengan setup, time horizon, dan reward/risk ratio untuk mempercepat riset Anda.",
+    body: "Top rekomendasi harian berbasis skor multi-faktor lengkap dengan setup, time horizon, dan reward/risk ratio untuk mempercepat riset kamu.",
   },
   {
     icon: <CreditCard className="h-6 w-6" />,
     title: "Trial & Langganan",
-    body: "Selama trial Anda bisa mencoba fitur premium. Cek halaman Langganan untuk membuka akses penuh ke seluruh alat analisa Nubuat.",
+    body: "Selama trial kamu bisa mencoba fitur premium. Cek halaman Langganan untuk membuka akses penuh ke seluruh alat analisa Nubuat.",
   },
 ];
 

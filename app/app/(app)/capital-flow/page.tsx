@@ -40,7 +40,7 @@ export default async function CapitalFlowPage() {
       <header>
         <div className="flex items-center gap-2">
           <Banknote className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">Capital Flow Heatmap</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Capital Flow Heatmap</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Track flow modal antar bucket market cap (Mega / Large / Mid / Small) untuk deteksi rotasi gaya

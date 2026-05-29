@@ -90,7 +90,7 @@ export function AlertsView() {
   const alerts = useMemo(() => listQuery.data?.items ?? [], [listQuery.data]);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 sm:p-6">
       <header className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Alerts</h1>
@@ -187,7 +187,7 @@ function CreateAlertForm({ error, onSubmit, onCancel, submitting }: CreateAlertF
 
   return (
     <div className="rounded-lg border border-border bg-card p-4 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-sm font-medium mb-1">Kode emiten</label>
           <input

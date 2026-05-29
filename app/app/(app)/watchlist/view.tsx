@@ -116,7 +116,7 @@ export function WatchlistView() {
   const items = useMemo(() => listQuery.data?.items ?? [], [listQuery.data]);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 sm:p-6">
       <header className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Watchlist</h1>

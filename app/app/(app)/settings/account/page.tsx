@@ -30,11 +30,11 @@ export default async function AccountSettingsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-10 space-y-8">
+    <div className="container mx-auto max-w-3xl px-4 py-8 space-y-8 sm:py-10">
       <header>
-        <h1 className="text-3xl font-bold">Akun &amp; Privasi</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Akun &amp; Privasi</h1>
         <p className="text-muted-foreground">
-          Kelola data pribadi Anda sesuai UU Perlindungan Data Pribadi.
+          Kelola data pribadi kamu sesuai UU Perlindungan Data Pribadi.
         </p>
       </header>
 
@@ -42,7 +42,7 @@ export default async function AccountSettingsPage() {
         <CardHeader>
           <CardTitle>Ekspor data saya</CardTitle>
           <CardDescription>
-            Unduh salinan seluruh data Anda (profil, watchlist, portofolio,
+            Unduh salinan seluruh data kamu (profil, watchlist, portofolio,
             langganan, percakapan AI, dan lainnya) dalam format JSON.
           </CardDescription>
         </CardHeader>
@@ -56,7 +56,7 @@ export default async function AccountSettingsPage() {
           <CardTitle className="text-destructive">Hapus akun</CardTitle>
           <CardDescription>
             Akun akan dinonaktifkan dan dijadwalkan untuk dihapus permanen setelah{" "}
-            {DELETION_GRACE_DAYS} hari. Anda dapat membatalkan dengan login kembali
+            {DELETION_GRACE_DAYS} hari. Kamu dapat membatalkan dengan login kembali
             selama masa tenggang.
           </CardDescription>
         </CardHeader>

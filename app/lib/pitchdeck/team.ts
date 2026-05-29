@@ -1,6 +1,6 @@
 export const TEAM_PLAN = [
   {
-    role: "Founder / CEO (Anda)",
+    role: "Founder / CEO (kamu)",
     headcount: 1,
     timing: "M0",
     stage: "✅ Active",

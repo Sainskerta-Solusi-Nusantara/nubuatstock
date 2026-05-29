@@ -67,7 +67,7 @@ export default async function RotationPage({ searchParams }: PageProps) {
       <header>
         <div className="flex items-center gap-2">
           <Compass className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">Rotation Chart (RRG)</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Rotation Chart (RRG)</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Relative Rotation Graph 4-kuadran: Leading (perform + akselerasi), Weakening (perform tapi melambat),

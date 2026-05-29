@@ -89,7 +89,7 @@ export function DeleteAccountButton() {
       }
       toast.success(
         json?.data?.message ??
-          "Akun dijadwalkan untuk dihapus. Anda akan keluar otomatis.",
+          "Akun dijadwalkan untuk dihapus. Kamu akan keluar otomatis.",
       );
       // Sesi sudah dicabut server-side; arahkan ke halaman publik.
       router.push("/");
@@ -115,11 +115,11 @@ export function DeleteAccountButton() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Hapus akun Anda?</AlertDialogTitle>
+          <AlertDialogTitle>Hapus akun kamu?</AlertDialogTitle>
           <AlertDialogDescription>
             Akun akan dinonaktifkan sekarang dan dihapus permanen setelah 30 hari
-            (masa tenggang). Selama masa tenggang, Anda bisa membatalkan dengan
-            login kembali. Setelah 30 hari, seluruh data Anda akan dihapus dan
+            (masa tenggang). Selama masa tenggang, kamu bisa membatalkan dengan
+            login kembali. Setelah 30 hari, seluruh data kamu akan dihapus dan
             tidak dapat dipulihkan.
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -28,7 +28,7 @@ export default async function PicksPage() {
   const hiddenCount = Math.max(0, picks.length - visible.length);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 sm:p-6">
       <header className="space-y-2">
         <div className="flex items-baseline justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Daily Picks</h1>

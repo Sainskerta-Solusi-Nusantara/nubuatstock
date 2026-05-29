@@ -40,7 +40,7 @@ export default async function PortfolioPage() {
       <header>
         <div className="flex items-center gap-2">
           <Wallet className="h-6 w-6 text-primary" />
-          <h1 className="text-3xl font-bold tracking-tight">Paper Trading</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Paper Trading</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
           Virtual portfolio Rp 100 juta untuk simulasi trading. Eksekusi pakai harga last close + fee

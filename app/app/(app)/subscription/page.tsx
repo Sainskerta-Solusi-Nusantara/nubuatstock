@@ -25,9 +25,9 @@ export default async function SubscriptionPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-12">
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">Pilih Paket Nubuat</h1>
+    <div className="container mx-auto max-w-7xl px-4 py-8 sm:py-12">
+      <header className="mb-8 text-center sm:mb-12">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">Pilih Paket Nubuat</h1>
         <p className="mt-4 text-muted-foreground">
           Mulai gratis, upgrade kapan saja. Semua paket dapat dibatalkan kapan saja.
         </p>

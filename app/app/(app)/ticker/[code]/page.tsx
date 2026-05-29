@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Building2 } from "lucide-react";
 
@@ -41,12 +42,70 @@ interface PageProps {
   params: Promise<{ code: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { code } = await params;
-  const normalized = code.toUpperCase();
+  const parsed = tickerSchema.safeParse(code.toUpperCase());
+  const normalized = parsed.success ? parsed.data : code.toUpperCase();
+
+  // Ambil data emiten secara graceful — metadata harus tetap terbentuk walau DB kosong.
+  const company = parsed.success ? await loadCompany(normalized) : null;
+
+  if (!company) {
+    const title = `${normalized} — Analisis Saham`;
+    const description = `Analisa saham ${normalized} di IDX: harga, teknikal, fundamental, bandarmologi & ringkasan AI. Hanya di Nubuat.`;
+    const url = `/ticker/${normalized}`;
+    return {
+      title,
+      description,
+      keywords: [normalized, `saham ${normalized}`, "analisis saham", "IDX", "BEI", "Nubuat"],
+      alternates: { canonical: url },
+      openGraph: { title: `${title} | Nubuat`, description, url, type: "website", locale: "id_ID" },
+      twitter: { card: "summary_large_image", title: `${title} | Nubuat`, description },
+    };
+  }
+
+  const sektor = company.sectorNamaId ?? company.sectorKode;
+  const title = `${company.kode} ${company.namaPerusahaan} — Analisis Saham`;
+  const descParts = [
+    `Analisa lengkap saham ${company.kode} (${company.namaPerusahaan})`,
+    sektor ? `sektor ${sektor}` : null,
+    "di Bursa Efek Indonesia.",
+    "Harga real-time, analisis teknikal, fundamental, bandarmologi, dan ringkasan AI.",
+  ].filter(Boolean);
+  const description = descParts.join(" ");
+  const url = `/ticker/${company.kode}`;
+
+  const keywords = [
+    company.kode,
+    `saham ${company.kode}`,
+    company.namaPerusahaan,
+    `analisis saham ${company.kode}`,
+    sektor ? `saham ${sektor}` : null,
+    company.isSyariah ? `saham syariah ${company.kode}` : null,
+    "analisis saham",
+    "IDX",
+    "BEI",
+    "Nubuat",
+  ].filter((k): k is string => Boolean(k));
+
   return {
-    title: `${normalized}`,
-    description: `Analisa saham ${normalized} di Nubuat`,
+    title,
+    description,
+    keywords,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${title} | Nubuat`,
+      description,
+      url,
+      type: "website",
+      locale: "id_ID",
+      siteName: "Nubuat",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Nubuat`,
+      description,
+    },
   };
 }
 
@@ -61,8 +120,39 @@ export default async function TickerPage({ params }: PageProps) {
   const company = await loadCompany(ticker);
   if (!company) notFound();
 
+  const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const tickerUrl = `${siteUrl}/ticker/${company.kode}`;
+  const sektor = company.sectorNamaId ?? company.sectorKode;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Corporation",
+        name: company.namaPerusahaan,
+        tickerSymbol: company.kode,
+        url: tickerUrl,
+        ...(company.website ? { sameAs: company.website } : {}),
+        ...(company.logoUrl ? { logo: company.logoUrl } : {}),
+        ...(company.deskripsi ? { description: company.deskripsi } : {}),
+        ...(sektor ? { industry: sektor } : {}),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Dashboard", item: siteUrl },
+          { "@type": "ListItem", position: 2, name: "Saham", item: `${siteUrl}/picks` },
+          { "@type": "ListItem", position: 3, name: company.kode, item: tickerUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="space-y-4">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Breadcrumb
         items={[
           { href: "/", label: "Dashboard" },

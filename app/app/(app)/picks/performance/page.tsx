@@ -19,7 +19,7 @@ export default async function PicksPerformancePage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Track Record Daily Picks</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Track Record Daily Picks</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Hit rate, return realized, dan breakdown per setup type — dievaluasi otomatis di T+1, T+5, dan T+20 trading day setelah publish.
         </p>
@@ -118,7 +118,8 @@ export default async function PicksPerformancePage({
               Belum cukup data untuk breakdown. Tunggu picks pertama selesai evaluasi.
             </div>
           ) : (
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full min-w-[480px] text-sm">
               <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-2">Setup</th>
@@ -140,6 +141,7 @@ export default async function PicksPerformancePage({
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </CardContent>
       </Card>

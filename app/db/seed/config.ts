@@ -407,7 +407,7 @@ export async function seedConfig() {
 
   if (bootstrapCount > 0) {
     logger.warn(
-      "⚠️  Bootstrap env vars detected. HAPUS env BOOTSTRAP_* dari .env Anda setelah seed berhasil — nilai sudah aman di DB (terenkripsi).",
+      "⚠️  Bootstrap env vars detected. HAPUS env BOOTSTRAP_* dari .env kamu setelah seed berhasil — nilai sudah aman di DB (terenkripsi).",
     );
   }
 }

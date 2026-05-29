@@ -162,7 +162,7 @@ function renderFields(type: AlertConditionType, control: Control<FormValues>) {
       );
     case "pct_change":
       return (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <SelectField
             control={control}
             name="pctWindow"
@@ -194,7 +194,7 @@ function renderFields(type: AlertConditionType, control: Control<FormValues>) {
       );
     case "ma_cross":
       return (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <NumberField control={control} name="maFast" label="MA cepat" min={2} />
           <NumberField control={control} name="maSlow" label="MA lambat" min={3} />
           <SelectField
@@ -210,7 +210,7 @@ function renderFields(type: AlertConditionType, control: Control<FormValues>) {
       );
     case "rsi_threshold":
       return (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <NumberField control={control} name="rsiPeriod" label="Period" min={2} />
           <NumberField control={control} name="rsiThreshold" label="Threshold" min={0} step={1} />
           <SelectField

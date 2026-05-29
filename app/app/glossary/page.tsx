@@ -35,13 +35,38 @@ export const metadata: Metadata = {
     url: "/glossary",
     type: "website",
     locale: "id_ID",
+    siteName: "Nubuat",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Glossary Saham — Kamus Istilah Trading & Investasi | Nubuat",
     description:
       "Kamus istilah saham Indonesia, dijelaskan singkat dan ramah pemula.",
   },
+};
+
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+// JSON-LD: DefinedTermSet (kamus istilah) + BreadcrumbList untuk konteks.
+const GLOSSARY_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "DefinedTermSet",
+      name: "Glossary Saham Nubuat",
+      description:
+        "Kamus istilah trading & investasi saham Indonesia: IHSG, ARA, ARB, bandarmologi, analisis teknikal, dan ratusan istilah lain.",
+      url: `${SITE_URL}/glossary`,
+      inLanguage: "id-ID",
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Beranda", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Glossary", item: `${SITE_URL}/glossary` },
+      ],
+    },
+  ],
 };
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -80,6 +105,10 @@ export default async function GlossaryPage({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(GLOSSARY_JSON_LD) }}
+      />
       <PublicNav />
       <div className="mx-auto max-w-5xl px-6 py-12 sm:py-16">
         {/* Header */}

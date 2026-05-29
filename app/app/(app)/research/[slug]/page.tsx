@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,72 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
+
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+/** Ringkas teks jadi meta description (≤ ~160 char, potong di batas kata). */
+function toMetaDescription(text: string): string {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (clean.length <= 160) return clean;
+  const cut = clean.slice(0, 157);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${cut.slice(0, lastSpace > 0 ? lastSpace : 157)}…`;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getResearchBySlug(slug);
+  if (!data) {
+    return { title: "Riset tidak ditemukan", robots: "noindex,follow" };
+  }
+  const { report, companyName } = data;
+  const ratingLabel = RATING_DISPLAY[report.rating]?.label ?? null;
+  const description = toMetaDescription(
+    report.metaDescription ??
+      [report.companyKode && companyName ? `${report.companyKode} (${companyName}).` : null, report.summary]
+        .filter(Boolean)
+        .join(" "),
+  );
+  const url = `/research/${report.slug}`;
+  const title = report.title;
+  const keywords = [
+    report.companyKode,
+    companyName,
+    ratingLabel ? `rekomendasi ${ratingLabel}` : null,
+    REPORT_TYPE_LABEL[report.reportType] ?? null,
+    "riset saham",
+    "analisis saham",
+    "IDX",
+    "Nubuat",
+    ...(report.tags ?? []),
+  ].filter((k): k is string => Boolean(k));
+
+  return {
+    title,
+    description,
+    keywords,
+    authors: report.authorName ? [{ name: report.authorName }] : undefined,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${title} | Nubuat`,
+      description,
+      url,
+      type: "article",
+      locale: "id_ID",
+      siteName: "Nubuat",
+      publishedTime: report.publishedAt ? new Date(report.publishedAt).toISOString() : undefined,
+      modifiedTime: report.updatedAt ? new Date(report.updatedAt).toISOString() : undefined,
+      authors: report.authorName ? [report.authorName] : undefined,
+      tags: report.tags ?? undefined,
+      ...(report.coverImageUrl ? { images: [{ url: report.coverImageUrl }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Nubuat`,
+      description,
+    },
+  };
+}
 
 export default async function ResearchDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -33,12 +100,39 @@ export default async function ResearchDetailPage({ params }: { params: Promise<{
     defaultValue: "Informasi edukasi semata, bukan ajakan jual/beli.",
   });
   const rating = RATING_DISPLAY[report.rating] ?? RATING_DISPLAY.not_rated!;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: report.title,
+    description: toMetaDescription(report.metaDescription ?? report.summary),
+    url: `${SITE_URL}/research/${report.slug}`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/research/${report.slug}` },
+    author: report.authorName ? { "@type": "Person", name: report.authorName } : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: "Nubuat",
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/icon` },
+    },
+    datePublished: report.publishedAt ? new Date(report.publishedAt).toISOString() : undefined,
+    dateModified: report.updatedAt ? new Date(report.updatedAt).toISOString() : undefined,
+    ...(report.coverImageUrl ? { image: [report.coverImageUrl] } : {}),
+    ...(report.tags && report.tags.length > 0 ? { keywords: report.tags.join(", ") } : {}),
+    ...(report.companyKode
+      ? { about: { "@type": "Corporation", name: companyName ?? report.companyKode, tickerSymbol: report.companyKode } }
+      : {}),
+  };
+
   const upsidePct = report.upsideDownsidePct != null ? Number(report.upsideDownsidePct) : null;
   const upsideNorm = upsidePct != null ? (Math.abs(upsidePct) < 5 ? upsidePct * 100 : upsidePct) : null;
   const targetUp = upsideNorm != null && upsideNorm >= 0;
 
   return (
     <article className="mx-auto max-w-4xl space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div>
         <Link
           href="/research"
