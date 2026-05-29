@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { SignupForm } from "@/components/auth/signup-form";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { AuthHeading } from "@/components/auth/auth-heading";
+import { RefCapture } from "@/components/referral/ref-capture";
 import { getGoogleOAuthCreds, getPasswordMinLength } from "@/lib/auth/config";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default async function SignupPage({
   ]);
   return (
     <>
+      <RefCapture />
       <AuthHeading
         title={trialIntent ? "Mulai trial Pro 7 hari" : "Buat akun baru"}
         description={

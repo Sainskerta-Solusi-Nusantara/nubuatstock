@@ -238,7 +238,7 @@ function DashboardGreeting({
           {greeting}, {firstName}.
         </h1>
         <p className="text-sm text-muted-foreground">
-          Ringkasan pasar &amp; alat analisa Anda untuk hari ini.
+          Ringkasan pasar &amp; alat analisa kamu untuk hari ini.
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -305,8 +305,9 @@ function DailyPicksPreview({ picks }: { picks: PickListItemDTO[] }) {
       <EmptyState
         icon={<ListChecks className="size-5" />}
         title="Belum ada Daily Picks"
-        description="Engine picks akan menghasilkan rekomendasi setelah data EoD pertama masuk."
-        action={{ href: "/picks", label: "Lihat halaman Picks" }}
+        description="Picks harian muncul setelah data EoD terbaru masuk. Sambil menunggu, kamu bisa cari saham sendiri lewat Screener."
+        action={{ href: "/picks", label: "Buka Daily Picks" }}
+        secondaryAction={{ href: "/screener", label: "Cari saham" }}
       />
     );
   }
@@ -353,8 +354,9 @@ function WatchlistPreview({ items }: { items: WatchlistItemView[] }) {
       <EmptyState
         icon={<Star className="size-5" />}
         title="Watchlist masih kosong"
-        description="Tambahkan ticker favorit untuk memantau harga real-time."
-        action={{ href: "/watchlist", label: "Buka Watchlist" }}
+        description="Tambahkan ticker favorit biar harganya tetap di radar kamu setiap hari."
+        action={{ href: "/watchlist", label: "Tambah ke watchlist" }}
+        secondaryAction={{ href: "/screener", label: "Cari saham" }}
       />
     );
   }
@@ -410,8 +412,8 @@ function MarketOverview({ sectors }: { sectors: RotationEntity[] }) {
       <EmptyState
         icon={<TrendingUp className="size-5" />}
         title="Data pasar belum tersedia"
-        description="Endpoint ringkasan indeks & sektor sedang disiapkan oleh Market Data service."
-        action={{ href: "/admin/market", label: "Setup vendor data" }}
+        description="Ringkasan indeks & rotasi sektor muncul setelah data pasar terbaru masuk. Cek lagi nanti."
+        action={{ href: "/sectors", label: "Lihat Sektor" }}
       />
     );
   }
@@ -461,8 +463,8 @@ function RecentConversations({
       <EmptyState
         icon={<Bot className="size-5" />}
         title="Belum ada percakapan"
-        description="Mulai diskusi dengan AI Copilot untuk analisa cepat."
-        action={{ href: "/copilot", label: "Buka Copilot" }}
+        description="Tanya AI Buddy apa saja soal saham kamu — analisa cepat berbasis data IDX."
+        action={{ href: "/copilot", label: "Tanya AI Buddy" }}
       />
     );
   }
@@ -510,8 +512,8 @@ function QuickActions() {
       <ActionTile
         icon={<CommandIcon className="size-4" aria-hidden />}
         title="Cari ticker"
-        description="Tekan ⌘K untuk membuka palette."
-        href="/picks"
+        description="Tekan ⌘K atau buka Screener."
+        href="/screener"
       />
       <ActionTile
         icon={<Sparkles className="size-4" aria-hidden />}
@@ -527,8 +529,8 @@ function QuickActions() {
       />
       <ActionTile
         icon={<Bot className="size-4" aria-hidden />}
-        title="AI Copilot"
-        description="Tanya soal saham Anda."
+        title="AI Buddy"
+        description="Tanya soal saham kamu."
         href="/copilot"
       />
     </section>

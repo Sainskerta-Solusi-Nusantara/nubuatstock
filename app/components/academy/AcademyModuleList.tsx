@@ -7,6 +7,8 @@ import {
   ChevronRight,
   Circle,
   Clock,
+  Compass,
+  FileText,
   GraduationCap,
   LineChart,
   ShieldCheck,
@@ -30,6 +32,8 @@ const ICONS: Record<string, LucideIcon> = {
   LineChart,
   Users,
   ShieldCheck,
+  FileText,
+  Compass,
 };
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);

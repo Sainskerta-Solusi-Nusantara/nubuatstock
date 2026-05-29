@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import {
   Bot,
-  CreditCard,
   LineChart,
-  ListChecks,
+  Search,
   Sparkles,
   Star,
+  Wallet,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,8 +16,8 @@ import { Button } from "@/components/ui/button";
  * Onboarding tour ringan untuk first-time user (IMPROVEMENT_PLAN §8.4 #24).
  *
  * Tujuan: walkthrough singkat 5 langkah saat pertama masuk app → memandu user
- * ke fitur inti (Watchlist → Ticker Detail → AI Copilot → Daily Picks →
- * Subscription/Trial) untuk menaikkan konversi trial.
+ * menelusuri core flow (Cari saham → Analisis emiten → Watchlist → Paper Trade
+ * → AI Buddy) untuk menaikkan aktivasi & konversi trial.
  *
  * Desain sengaja TANPA dependency baru (no intro.js dll) — modal multi-step
  * yang ringan, dark-mode aware, mobile-friendly, pakai design tokens.
@@ -39,29 +39,29 @@ interface TourStep {
 
 const STEPS: TourStep[] = [
   {
-    icon: <Star className="h-6 w-6" />,
-    title: "Watchlist Kamu",
-    body: "Pantau ticker favorit dengan harga & perubahan real-time. Tambahkan saham yang sedang kamu amati supaya tetap di radar setiap hari.",
+    icon: <Search className="h-6 w-6" />,
+    title: "1. Cari saham",
+    body: "Tekan ⌘K (atau Ctrl+K) kapan saja untuk membuka pencarian cepat. Ketik kode emiten seperti BBRI atau pakai Screener untuk menyaring ratusan saham IDX sesuai kriteria kamu.",
   },
   {
     icon: <LineChart className="h-6 w-6" />,
-    title: "Detail Ticker",
-    body: "Klik ticker mana pun untuk membuka halaman analisa: harga, indikator teknikal, fundamental, dan ringkasan terstruktur per emiten.",
+    title: "2. Analisis emiten",
+    body: "Buka halaman ticker untuk lihat Nubuat Verdict, teknikal, fundamental, dan bandarmology dalam satu tempat. Semua disusun rapi biar kamu paham kondisi sahamnya cepat.",
+  },
+  {
+    icon: <Star className="h-6 w-6" />,
+    title: "3. Simpan ke Watchlist",
+    body: "Suka sama satu saham? Tambahkan ke Watchlist supaya harga & perubahannya tetap di radar kamu tiap hari, plus pasang Alert biar dapat notifikasi otomatis.",
+  },
+  {
+    icon: <Wallet className="h-6 w-6" />,
+    title: "4. Latihan Paper Trade",
+    body: "Paper Trading GRATIS untuk semua. Latih strategi pakai modal virtual Rp 100 juta tanpa risiko uang asli — cara teraman membangun jam terbang sebelum trading sungguhan.",
   },
   {
     icon: <Bot className="h-6 w-6" />,
-    title: "AI Copilot",
-    body: "Tanya apa saja soal saham kamu. Copilot memberi analisa cepat berbasis data pasar IDX — tetap sebagai edukasi, bukan ajakan jual/beli.",
-  },
-  {
-    icon: <ListChecks className="h-6 w-6" />,
-    title: "Daily Picks",
-    body: "Top rekomendasi harian berbasis skor multi-faktor lengkap dengan setup, time horizon, dan reward/risk ratio untuk mempercepat riset kamu.",
-  },
-  {
-    icon: <CreditCard className="h-6 w-6" />,
-    title: "Trial & Langganan",
-    body: "Selama trial kamu bisa mencoba fitur premium. Cek halaman Langganan untuk membuka akses penuh ke seluruh alat analisa Nubuat.",
+    title: "5. Tanya AI Buddy",
+    body: "Bingung soal suatu saham? Tanya AI Buddy — dia kasih analisa cepat berbasis data pasar IDX. Anggap sebagai edukasi & teman riset, bukan ajakan jual/beli.",
   },
 ];
 

@@ -35,6 +35,7 @@ export * from "./paper-trading"; // Paper trading system
 export * from "./patterns"; // Pattern recognition
 export * from "./picks"; // Agent 8
 export * from "./reference"; // Agent 1
+export * from "./referral"; // Referral program v1
 export * from "./research"; // Research module
 export * from "./saved-screens"; // Saved custom screens
 export * from "./shareholders"; // Major shareholders + insider trades

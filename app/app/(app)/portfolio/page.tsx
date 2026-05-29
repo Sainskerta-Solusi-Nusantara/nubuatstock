@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Wallet, TrendingUp, TrendingDown, Trophy, History } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { requireSession } from "@/lib/auth/server";
 import {
   ensureDefaultPortfolio,
@@ -102,9 +103,14 @@ export default async function PortfolioPage() {
         </CardHeader>
         <CardContent className="p-0">
           {positions.length === 0 ? (
-            <div className="p-8 text-center text-sm text-muted-foreground">
-              Belum ada posisi. Mulai dari halaman ticker → klik &quot;Paper Buy&quot;, atau buka <Link href="/picks" className="text-primary underline">Daily Picks</Link>.
-            </div>
+            <EmptyState
+              className="border-0 bg-transparent py-8"
+              icon={<Wallet className="size-5" />}
+              title="Belum ada posisi"
+              description="Paper trading GRATIS untuk semua. Latih strategi pakai modal virtual Rp 100 juta tanpa risiko uang asli — mulai dari Daily Picks atau cari saham sendiri."
+              action={{ href: "/picks", label: "Mulai dari Daily Picks" }}
+              secondaryAction={{ href: "/screener", label: "Cari saham" }}
+            />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -176,7 +182,7 @@ export default async function PortfolioPage() {
         </CardHeader>
         <CardContent className="p-0">
           {trades.length === 0 ? (
-            <div className="p-6 text-center text-sm text-muted-foreground">Belum ada trade.</div>
+            <div className="p-6 text-center text-sm text-muted-foreground">Belum ada trade. Eksekusi paper buy pertama kamu untuk mulai mengisi riwayat ini.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-xs">

@@ -74,22 +74,88 @@ export async function createTransaction(
     throw new ConfigurationError(secretKey);
   }
 
-  // STUB: di sini akan ada HTTP call. Untuk MVP return placeholder.
-  // Server key tetap dibaca supaya tidak ada warning unused & memastikan
-  // decryption path bekerja.
-  await getSecret(secretKey);
+  const secret = await getSecret(secretKey);
 
+  if (provider === "xendit") {
+    return createXenditInvoice(secret, input);
+  }
+
+  // Midtrans: belum diimplementasikan (butuh Snap/Core API). Tetap stub supaya
+  // tidak crash — UI tampilkan empty state. Ganti saat server key Midtrans siap.
   logger.info(
     { provider, invoiceId: input.invoice.id },
-    "createTransaction STUB — replace with real Midtrans/Xendit HTTP call",
+    "createTransaction Midtrans STUB — belum diimplementasikan",
   );
-
   return {
     provider,
     paymentToken: null,
     redirectUrl: null,
     providerInvoiceId: null,
     raw: { stub: true, provider, invoiceId: input.invoice.id },
+  };
+}
+
+/**
+ * Xendit Invoice API — POST /v2/invoices (hosted checkout / Invoice URL).
+ * Auth: HTTP Basic, username = API key, password kosong → base64("<key>:").
+ * `external_id` = invoiceNumber kita (dipakai webhook xendit untuk match).
+ * Spec: https://docs.xendit.co/api-reference/#create-invoice
+ */
+async function createXenditInvoice(
+  apiKey: string,
+  input: CreateTransactionInput,
+): Promise<CreateTransactionResult> {
+  const baseUrl = (
+    await getConfig<string>("payment.xendit.base_url", { defaultValue: "https://api.xendit.co" })
+  ).replace(/\/$/, "");
+  const { success, failure } = await getPaymentRedirectUrls();
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://nubuat.sainskerta.net").replace(/\/$/, "");
+  const abs = (u: string) => (u.startsWith("http") ? u : appUrl + (u.startsWith("/") ? u : `/${u}`));
+
+  const externalId = input.invoice.invoiceNumber ?? input.invoice.id;
+  const body = {
+    external_id: externalId,
+    amount: input.invoice.amountIdr,
+    currency: "IDR",
+    payer_email: input.customer.email,
+    description: `Nubuat ${String(input.invoice.tierKode ?? "").toUpperCase()} — ${input.invoice.billingCycle ?? "monthly"}`.trim(),
+    success_redirect_url: abs(success),
+    failure_redirect_url: abs(failure),
+    customer: {
+      given_names: input.customer.name || input.customer.email,
+      email: input.customer.email,
+    },
+  };
+
+  const auth = Buffer.from(`${apiKey}:`).toString("base64");
+  let res: Response;
+  try {
+    res = await fetch(`${baseUrl}/v2/invoices`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Basic ${auth}` },
+      body: JSON.stringify(body),
+    });
+  } catch (err) {
+    logger.error({ err, invoiceId: input.invoice.id }, "Xendit createInvoice network error");
+    throw new ValidationError("Gagal menghubungi Xendit. Coba lagi sebentar lagi.");
+  }
+
+  const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+  if (!res.ok) {
+    logger.error(
+      { status: res.status, errorCode: json?.error_code, message: json?.message, invoiceId: input.invoice.id },
+      "Xendit createInvoice failed",
+    );
+    throw new ValidationError(`Xendit gagal membuat invoice: ${String(json?.message ?? res.status)}`);
+  }
+
+  logger.info({ invoiceId: input.invoice.id, xenditId: json.id }, "Xendit invoice created");
+  return {
+    provider: "xendit",
+    paymentToken: null,
+    redirectUrl: typeof json.invoice_url === "string" ? json.invoice_url : null,
+    providerInvoiceId: typeof json.id === "string" ? json.id : null,
+    raw: json,
   };
 }
 

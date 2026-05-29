@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Star } from "lucide-react";
 import { AddTickerCombobox } from "@/components/watchlist/AddTickerCombobox";
 import { WatchlistTable } from "@/components/watchlist/WatchlistTable";
 import { WatchlistTabs } from "@/components/watchlist/WatchlistTabs";
+import { EmptyState } from "@/components/ui/empty-state";
 import type {
   WatchlistDetail,
   WatchlistView as WatchlistViewType,
@@ -139,15 +141,18 @@ export function WatchlistView() {
         <div className="text-sm text-muted-foreground">Memuat watchlist...</div>
       ) : listQuery.error ? (
         <EmptyState
+          icon={<Star className="size-5" />}
           title="Gagal memuat watchlist"
           description={listQuery.error.message}
           action={{ label: "Coba lagi", onClick: () => listQuery.refetch() }}
         />
       ) : items.length === 0 ? (
         <EmptyState
+          icon={<Star className="size-5" />}
           title="Belum ada watchlist"
-          description="Watchlist default akan dibuat otomatis. Refresh kalau belum muncul."
-          action={{ label: "Refresh", onClick: () => listQuery.refetch() }}
+          description="Watchlist default biasanya dibuat otomatis. Cari saham favorit kamu untuk mulai memantaunya, atau refresh kalau belum muncul."
+          action={{ href: "/screener", label: "Cari saham" }}
+          secondaryAction={{ label: "Refresh", onClick: () => listQuery.refetch() }}
         />
       ) : (
         <>
@@ -207,8 +212,18 @@ export function WatchlistView() {
             <div className="text-sm text-muted-foreground">Memuat data...</div>
           ) : detailQuery.error ? (
             <EmptyState
+              icon={<Star className="size-5" />}
               title="Gagal memuat watchlist"
               description={detailQuery.error.message}
+              action={{ label: "Coba lagi", onClick: () => detailQuery.refetch() }}
+            />
+          ) : detailQuery.data && detailQuery.data.items.length === 0 ? (
+            <EmptyState
+              icon={<Star className="size-5" />}
+              title="Watchlist ini masih kosong"
+              description="Tambahkan ticker lewat kotak pencarian di atas, atau jelajahi ide dari Daily Picks & Screener."
+              action={{ href: "/picks", label: "Lihat Daily Picks" }}
+              secondaryAction={{ href: "/screener", label: "Cari saham" }}
             />
           ) : detailQuery.data ? (
             <WatchlistTable
@@ -224,30 +239,6 @@ export function WatchlistView() {
           ) : null}
         </>
       )}
-    </div>
-  );
-}
-
-interface EmptyStateProps {
-  title: string;
-  description: string;
-  action?: { label: string; onClick: () => void };
-}
-
-function EmptyState({ title, description, action }: EmptyStateProps) {
-  return (
-    <div className="rounded-lg border border-dashed border-border p-10 text-center space-y-3">
-      <h3 className="text-base font-medium">{title}</h3>
-      <p className="text-sm text-muted-foreground">{description}</p>
-      {action ? (
-        <button
-          type="button"
-          onClick={action.onClick}
-          className="px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground"
-        >
-          {action.label}
-        </button>
-      ) : null}
     </div>
   );
 }

@@ -1,4 +1,6 @@
+import { ListChecks } from "lucide-react";
 import { getConfig } from "@/lib/config";
+import { EmptyState } from "@/components/ui/empty-state";
 import { PickCard } from "@/components/picks/PickCard";
 import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { getTodayPicks, getLatestRun } from "@/lib/picks/service";
@@ -38,7 +40,7 @@ export default async function PicksPage() {
       </header>
 
       {visible.length === 0 ? (
-        <EmptyState latestRun={latestRun} today={today} />
+        <PicksEmptyState latestRun={latestRun} today={today} />
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -66,7 +68,7 @@ export default async function PicksPage() {
   );
 }
 
-function EmptyState({
+function PicksEmptyState({
   latestRun,
   today,
 }: {
@@ -75,25 +77,28 @@ function EmptyState({
 }) {
   let title = "Belum ada Daily Picks";
   let body =
-    "Worker akan generate Daily Picks setelah ingest EOD pertama berhasil. Cek kembali nanti.";
+    "Picks harian muncul otomatis setelah ingest EOD pertama berhasil. Cek kembali nanti — sementara itu kamu bisa cari saham sendiri lewat Screener.";
   if (latestRun) {
     if (latestRun.status === "failed") {
       title = "Run terakhir gagal";
-      body = `Run terakhir (${latestRun.runDate}) status: failed. Admin perlu cek log worker.`;
+      body = `Run terakhir (${latestRun.runDate}) statusnya gagal. Tim kami sedang menanganinya — coba lagi nanti.`;
     } else if (latestRun.runDate !== today) {
       title = `Belum ada pick untuk ${today}`;
-      body = `Run terakhir: ${latestRun.runDate} dengan ${latestRun.picksGenerated} pick. Worker hari ini belum berjalan.`;
+      body = `Run terakhir: ${latestRun.runDate} dengan ${latestRun.picksGenerated} pick. Picks hari ini belum keluar — cek lagi nanti.`;
     } else if (latestRun.picksGenerated === 0) {
-      title = "Universe kosong";
+      title = "Tidak ada kandidat hari ini";
       body =
-        "Universe filter (likuiditas + active) tidak menghasilkan kandidat untuk hari ini. Pastikan data EOD sudah ter-ingest.";
+        "Filter universe (likuiditas + saham aktif) belum menghasilkan kandidat untuk hari ini. Coba cari ide sendiri lewat Screener.";
     }
   }
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed bg-muted/30 p-12 text-center">
-      <p className="text-base font-semibold">{title}</p>
-      <p className="max-w-md text-sm text-muted-foreground">{body}</p>
-    </div>
+    <EmptyState
+      icon={<ListChecks className="size-5" />}
+      title={title}
+      description={body}
+      action={{ href: "/screener", label: "Cari saham" }}
+      secondaryAction={{ href: "/academy", label: "Belajar dulu di Academy" }}
+    />
   );
 }
 

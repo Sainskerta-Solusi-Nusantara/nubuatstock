@@ -537,6 +537,224 @@ Konsistensi mengalahkan keberuntungan. Trader yang bertahan bukan yang paling pi
       },
     ],
   },
+
+  // ============================ MODUL 5 ============================
+  {
+    slug: "baca-laporan-keuangan",
+    title: "Baca Laporan Keuangan IDX",
+    icon: "FileText",
+    level: "Menengah",
+    description:
+      "Bedah laporan keuangan emiten: laba rugi, neraca, arus kas, dan rasio penting biar kamu tahu kondisi asli perusahaan.",
+    lessons: [
+      {
+        slug: "tiga-laporan-utama",
+        title: "Tiga Laporan Utama",
+        readMinutes: 5,
+        summary: "Laba rugi, neraca, dan arus kas — apa beda & fungsinya.",
+        body: `## Tiga Laporan Utama
+
+Sebelum beli saham, kamu sebaiknya tahu kondisi keuangan perusahaannya. Tiga laporan ini adalah "rapor" emiten yang wajib dipahami. Semuanya bisa kamu unduh dari situs **IDX** atau halaman resmi emiten.
+
+### 1. Laporan Laba Rugi (Income Statement)
+
+Menjawab: **"Perusahaan ini untung atau rugi selama periode tertentu?"**
+
+Alurnya sederhana:
+
+\`\`\`
+Pendapatan (Revenue)
+−  Beban Pokok Penjualan (COGS)
+=  Laba Kotor (Gross Profit)
+−  Beban Operasional
+=  Laba Operasi (Operating Profit)
+−  Beban Bunga & Pajak
+=  Laba Bersih (Net Income)
+\`\`\`
+
+### 2. Neraca (Balance Sheet)
+
+Foto kondisi keuangan pada **satu titik waktu**. Rumus emasnya:
+
+> **Aset = Liabilitas (Utang) + Ekuitas (Modal)**
+
+- **Aset** — apa yang dimiliki (kas, piutang, persediaan, pabrik).
+- **Liabilitas** — apa yang menjadi kewajiban/utang.
+- **Ekuitas** — sisa hak pemilik setelah utang dilunasi.
+
+### 3. Laporan Arus Kas (Cash Flow)
+
+Melacak **uang tunai** yang benar-benar masuk & keluar — dibagi 3: Operasi, Investasi, Pendanaan.
+
+> Laba bisa "di-make up" lewat akuntansi, tapi **kas susah dibohongi**. Perusahaan bisa untung di atas kertas tapi kehabisan kas. Karena itu arus kas operasi yang positif & sehat sangat penting.`,
+      },
+      {
+        slug: "rasio-keuangan-penting",
+        title: "Rasio Keuangan Penting",
+        readMinutes: 6,
+        summary: "ROE, PER, PBV, DER, margin — angka kunci yang dipakai analis.",
+        body: `## Rasio Keuangan Penting
+
+Angka mentah di laporan jadi lebih bermakna setelah diubah jadi **rasio**. Ini yang sering kamu lihat di halaman ticker Nubuat.
+
+### Rasio profitabilitas
+
+| Rasio | Arti | Patokan kasar |
+| --- | --- | --- |
+| **ROE** | Laba bersih ÷ ekuitas. Seberapa efisien modal menghasilkan laba. | > 15% = bagus |
+| **Net Profit Margin** | Laba bersih ÷ pendapatan. | Makin tinggi makin baik |
+
+### Rasio valuasi
+
+| Rasio | Arti | Patokan kasar |
+| --- | --- | --- |
+| **PER (P/E)** | Harga ÷ laba per saham. Berapa "tahun" laba untuk balik modal. | < 15 relatif murah |
+| **PBV (P/BV)** | Harga ÷ nilai buku per saham. | < 1 = di bawah nilai buku |
+
+### Rasio kesehatan utang
+
+- **DER (Debt to Equity)** — total utang ÷ ekuitas. Di atas 2 perlu hati-hati (kecuali sektor seperti bank yang wajar tinggi).
+- **Current Ratio** — aset lancar ÷ utang lancar. > 1 berarti mampu bayar kewajiban jangka pendek.
+
+> **Selalu bandingkan dengan sektor sejenis.** PER 25 bisa mahal untuk bank, tapi wajar untuk saham teknologi bertumbuh. Rasio tanpa konteks menyesatkan.`,
+      },
+      {
+        slug: "red-flag-laporan-keuangan",
+        title: "Red Flag yang Harus Diwaspadai",
+        readMinutes: 5,
+        summary: "Tanda bahaya di laporan keuangan sebelum kamu nyangkut.",
+        body: `## Red Flag yang Harus Diwaspadai
+
+Membaca laporan bukan cuma cari yang bagus, tapi juga menghindari jebakan. Ini sinyal bahaya yang sering muncul.
+
+### Daftar red flag
+
+1. **Laba naik tapi arus kas operasi negatif** — labanya mungkin cuma "di atas kertas" (banyak piutang yang belum jadi uang).
+2. **Utang tumbuh jauh lebih cepat dari pendapatan** — beban bunga bisa menggerus laba dan menambah risiko.
+3. **Piutang & persediaan menumpuk** — produk tidak laku atau pelanggan telat bayar.
+4. **Opini auditor selain "Wajar Tanpa Pengecualian (WTP)"** — perhatikan baik-baik kalau auditor memberi catatan.
+5. **Sering ganti auditor atau direktur keuangan** — bisa jadi ada yang ditutupi.
+6. **Laba "luar biasa" dari pos non-operasional** — mis. untung sekali dari jual aset, bukan dari bisnis inti.
+
+### Cara praktis
+
+- Bandingkan minimal **3 tahun** untuk lihat tren, bukan cuma 1 kuartal bagus.
+- Baca **Catatan atas Laporan Keuangan** (CALK) — detail penting sering "disembunyikan" di sana.
+
+> Di Nubuat, faktor **Quality** & **Value** pada Nubuat Verdict sudah merangkum sebagian rasio ini otomatis. Tapi memahami sumbernya membuat kamu tidak buta saat angkanya terlihat aneh.`,
+      },
+    ],
+  },
+
+  // ============================ MODUL 6 ============================
+  {
+    slug: "strategi-investasi",
+    title: "Strategi & Style Investasi",
+    icon: "Compass",
+    level: "Pemula",
+    description:
+      "Kenali gaya investasi yang cocok untuk kamu: value, growth, dividen, DCA, dan beda trading vs investing.",
+    lessons: [
+      {
+        slug: "trading-vs-investing",
+        title: "Trading vs Investing",
+        readMinutes: 4,
+        summary: "Dua pendekatan berbeda — kenali mana yang cocok untuk kamu.",
+        body: `## Trading vs Investing
+
+Banyak pemula bingung karena mencampur dua hal yang berbeda. Tentukan dulu kamu mau jadi yang mana.
+
+### Investing (jangka panjang)
+
+- **Horizon:** tahunan.
+- **Fokus:** kualitas bisnis & pertumbuhan jangka panjang (fundamental).
+- **Aktivitas:** jarang transaksi; beli lalu tahan ("buy and hold").
+- **Cocok untuk:** kamu yang sibuk, sabar, dan tak mau pantau layar tiap hari.
+
+### Trading (jangka pendek)
+
+- **Horizon:** harian sampai mingguan/bulanan.
+- **Fokus:** pergerakan harga & momentum (teknikal).
+- **Aktivitas:** sering transaksi; butuh disiplin & manajemen risiko ketat.
+- **Cocok untuk:** kamu yang punya waktu memantau dan tahan tekanan.
+
+| Aspek | Investing | Trading |
+| --- | --- | --- |
+| Waktu dibutuhkan | Sedikit | Banyak |
+| Andalan analisis | Fundamental | Teknikal |
+| Frekuensi | Rendah | Tinggi |
+| Stres | Rendah | Tinggi |
+
+> Tidak ada yang lebih superior — yang penting **konsisten dengan satu gaya** dan tidak loncat-loncat saat panik. Banyak kerugian pemula berasal dari "beli niat investasi, jual karena panik harian".`,
+      },
+      {
+        slug: "value-growth-dividen",
+        title: "Value, Growth & Dividen",
+        readMinutes: 5,
+        summary: "Tiga aliran investasi populer dan filosofi di baliknya.",
+        body: `## Value, Growth & Dividen
+
+Tiga gaya investing yang paling umum. Kamu bisa mengombinasikannya, tapi pahami dulu masing-masing.
+
+### Value Investing
+
+Cari saham bagus yang **dihargai murah** oleh pasar (di bawah nilai wajarnya). Diusung Benjamin Graham & Warren Buffett.
+
+- Lihat: PER & PBV rendah, tapi bisnis tetap sehat.
+- Butuh kesabaran sampai pasar "sadar" dan menaikkan harganya.
+
+### Growth Investing
+
+Cari perusahaan dengan **pertumbuhan tinggi** (pendapatan & laba naik kencang). Diusung Peter Lynch.
+
+- Lihat: revenue & earnings growth tinggi (> 20%).
+- Valuasi sering "mahal" — kamu membayar untuk masa depan.
+
+### Dividend Investing
+
+Cari perusahaan yang rutin **membagikan dividen** besar & stabil. Untuk arus kas pasif.
+
+- Lihat: dividend yield tinggi + payout berkelanjutan.
+- Cocok untuk tujuan passive income jangka panjang.
+
+> Di **Screener** Nubuat ada preset "Value Hunter", "Growth Story", dan "Dividend Aristocrat" yang langsung menyaring saham sesuai gaya ini. Pakai sebagai titik awal riset.`,
+      },
+      {
+        slug: "dca-strategi-nabung",
+        title: "Dollar-Cost Averaging (Nabung Saham)",
+        readMinutes: 4,
+        summary: "Strategi paling ramah pemula: cicil beli rutin tanpa menebak waktu.",
+        body: `## Dollar-Cost Averaging (Nabung Saham)
+
+**DCA** adalah strategi membeli saham dengan **nominal tetap secara rutin** (mis. tiap bulan), tanpa peduli harga sedang naik atau turun.
+
+### Kenapa ampuh untuk pemula
+
+- **Tidak perlu menebak waktu pasar (timing).** Menebak titik terendah hampir mustahil, bahkan untuk profesional.
+- Saat harga turun, nominal yang sama dapat **lebih banyak lembar**; saat naik, dapat lebih sedikit. Rata-rata harga belimu jadi lebih halus.
+- Membangun **disiplin & kebiasaan** — investasi jadi otomatis, bukan emosional.
+
+### Contoh sederhana
+
+Kamu beli Rp1.000.000 saham X tiap bulan:
+
+| Bulan | Harga | Lembar didapat |
+| --- | --- | --- |
+| 1 | Rp1.000 | 1.000 |
+| 2 | Rp800 | 1.250 |
+| 3 | Rp1.250 | 800 |
+
+Total Rp3.000.000 → 3.050 lembar, harga rata-rata ≈ Rp984 — lebih rendah dari rata-rata sederhana ketiga harga.
+
+### Catatan penting
+
+- DCA cocok untuk saham/indeks **berkualitas & bertumbuh jangka panjang**, bukan saham gorengan.
+- Tetap evaluasi berkala: kalau fundamental perusahaan rusak permanen, DCA hanya memperdalam kerugian.
+
+> Latih ritme beli bertahap ini dulu lewat **Paper Trade** di Nubuat — gratis dan tanpa risiko uang asli.`,
+      },
+    ],
+  },
 ];
 
 // ---------------------------------------------------------------------------

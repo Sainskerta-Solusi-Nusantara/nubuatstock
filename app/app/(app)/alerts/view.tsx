@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Bell } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCard } from "@/components/alerts/AlertCard";
 import { AlertConditionBuilder } from "@/components/alerts/AlertConditionBuilder";
+import { EmptyState } from "@/components/ui/empty-state";
 import type {
   Alert,
   AlertCondition,
@@ -139,19 +141,16 @@ export function AlertsView() {
       {listQuery.isLoading ? (
         <p className="text-sm text-muted-foreground">Memuat alert...</p>
       ) : alerts.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border p-10 text-center space-y-3">
-          <h3 className="text-base font-medium">Belum ada alert</h3>
-          <p className="text-sm text-muted-foreground">
-            Buat alert pertama untuk dapat notifikasi otomatis saat kondisi pasar terpenuhi.
-          </p>
-          <button
-            type="button"
-            onClick={() => setShowCreate(true)}
-            className="px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground"
-          >
-            Buat alert
-          </button>
-        </div>
+        <EmptyState
+          icon={<Bell className="size-5" />}
+          title={filter === "all" ? "Belum ada alert" : "Tidak ada alert di filter ini"}
+          description={
+            filter === "all"
+              ? "Buat alert pertama biar kamu dapat notifikasi otomatis saat harga atau indikator menyentuh target — tanpa harus pelototin layar."
+              : "Coba ganti filter status, atau buat alert baru."
+          }
+          action={{ label: "Buat alert", onClick: () => setShowCreate(true) }}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {alerts.map((a) => (
