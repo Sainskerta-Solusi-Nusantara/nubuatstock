@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LandingEditor } from "@/components/superadmin/LandingEditor";
 import { db } from "@/lib/db";
 import { appConfig } from "@/db/schema/config";
@@ -35,7 +36,7 @@ export default async function LandingCMSPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           Edit semua text, headline, painpoint, fitur, dan FAQ landing page.
           Perubahan tersimpan ke <code className="rounded bg-secondary px-1 text-xs">app_config</code> dan tampil di
-          {" "}<a href="/" className="underline">/</a> dalam ≤60 detik (ISR revalidate).
+          {" "}<Link href="/" className="underline">/</Link> dalam ≤60 detik (ISR revalidate).
         </p>
       </div>
 

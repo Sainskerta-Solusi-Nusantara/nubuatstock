@@ -344,7 +344,7 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
       <p className="rounded-md border border-border bg-card/40 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong>Catatan:</strong> Data fundamental dari Yahoo Finance snapshot (update periodik).
         Beberapa emiten mungkin missing data karena Yahoo tidak punya coverage — emiten tersebut
-        tetap muncul tapi value akan tampil "—". Filter hanya bekerja kalau emiten punya data
+        tetap muncul tapi value akan tampil &quot;—&quot;. Filter hanya bekerja kalau emiten punya data
         relevan (mis. min ROE 15% akan eksklusi emiten yang ROE-nya null).
       </p>
 

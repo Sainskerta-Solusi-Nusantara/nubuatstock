@@ -23,7 +23,7 @@ export default async function AdminSecretsPage() {
         <h1 className="text-2xl font-semibold">Secrets</h1>
         <p className="text-sm text-neutral-500">
           API keys & credentials yang dienkripsi (AES-256-GCM). Nilai TIDAK pernah ditampilkan
-          — hanya status "configured" atau "not set". Setiap aksi tercatat di audit log.
+          — hanya status &quot;configured&quot; atau &quot;not set&quot;. Setiap aksi tercatat di audit log.
         </p>
       </header>
 

@@ -42,7 +42,7 @@ export function AcceptDisclaimerGate({
       // Sudah accept di browser ini — refresh untuk hilangkan gate (server-side cookie check akan resolve)
       // Server tetap re-prompt kalau DB belum punya record — pattern fail-safe.
     }
-  }, []);
+  }, [LS_KEY]);
 
   async function handleAccept() {
     if (!agree1 || !agree2) return;
