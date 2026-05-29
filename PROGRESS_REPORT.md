@@ -890,12 +890,13 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - Migration belum dijalankan: kolom soft-delete akun, tabel glossary, constraint audit immutability.
 
 **Numbers**
-- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): 6 commit `87290a8 → 68417e8 → 24cbb1b → cba8df3 → d54c9f6 → c3422f3` (belum di-push ke GitHub — nunggu perintah founder).
-- Unit test: 68 → **336** (+268 sesi ini: verdict 48, valuation 42, picks 54+20, billing 41, search 10, dll). tsc error: 0. Build: ✅.
-- Versi Next.js: **deploy AMAN** (lockfile pin 15.1.11); hanya `node_modules` lokal drift (non-blocking).
-- Glossary: tabel + **64 istilah** di DB lokal; halaman publik + admin CMS jalan. Prod: perlu push+seed.
-- **Logo self-host LIVE**: 61 emiten lokal ter-upload ke Vercel Blob (public store), URL `*.public.blob.vercel-storage.com`, terverifikasi HTTP 200 image/webp. Prod: run `logos:sync` (punya data website → coverage penuh 980).
-- Dark mode kini default ikut OS (prefers-color-scheme) + toggle 3-state.
+- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): **18 commit**, belum di-push ke GitHub — nunggu perintah founder.
+- Unit test: 68 → **374** (+306 sesi ini: verdict 48, valuation 42, picks 54+20, billing 41, search 10, drip 14, reversal patterns 14, dll). tsc error: 0. Build: ✅.
+- Versi Next.js: **deploy AMAN** (pin exact 15.1.11). Dev pakai **Turbopack** (typedRoutes kondisional: off di turbo, on di build) — CSS Tailwind v4 jalan.
+- **Trial = Pro 7 hari** distandarkan; `/pricing` baca DB (Starter 99k/Pro 299k/Elite 899k), publik (nav "Harga" tak perlu login).
+- **Login fixed**: DB lokal kosong → seed 3 akun demo + grandfather emailVerified. Tema balik **dark default**.
+- **Logo self-host LIVE** (61 emiten Vercel Blob public). Glossary + admin CMS. PWA, /picks-archive, /status, search pg_trgm, vendor failover Yahoo→AlphaVantage, onboarding tour, email drip trial→Pro, Lighthouse CI, changelog notifier, reversal+continuation patterns lengkap.
+- Prod TODO: migration (akun/glossary/audit/pg_trgm) + re-seed copy + `logos:sync` + `grandfather-verify`.
 
 **Next Week**
 - Rekonsiliasi versi Next.js (pin vs installed) sebelum deploy.
