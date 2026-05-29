@@ -13,6 +13,13 @@ const nextConfig: NextConfig = {
   // Lint jalan terpisah (`npm run lint` + job CI), JANGAN blokir `next build`/deploy.
   // (Ada lint error warisan: no-unescaped-entities, no-html-link-for-pages.)
   eslint: { ignoreDuringBuilds: true },
+  // Build info untuk ditampilkan di dashboard (versi + waktu deploy + commit).
+  // NEXT_PUBLIC_* di-inline saat build → BUILD_TIME = waktu build/deploy.
+  env: {
+    NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version ?? "0.1.0",
+    NEXT_PUBLIC_BUILD_TIME: new Date().toISOString(),
+    NEXT_PUBLIC_COMMIT_SHA: (process.env.VERCEL_GIT_COMMIT_SHA ?? "").slice(0, 7),
+  },
   experimental: {
     // typedRoutes tidak didukung Turbopack (next dev --turbo) di Next 15.1.x,
     // tapi WAJIB untuk type-check `next build`. Jadi: aktif saat build (webpack,

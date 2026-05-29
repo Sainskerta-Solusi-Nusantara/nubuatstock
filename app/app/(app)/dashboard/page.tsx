@@ -25,6 +25,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MorningBrief } from "@/components/dashboard/MorningBrief";
+import { BuildInfo } from "@/components/layout/BuildInfo";
 import { getActiveSubscription } from "@/lib/billing";
 import { getTodayPicks, listPicksHistory } from "@/lib/picks/service";
 import {
@@ -88,7 +89,7 @@ export default async function DashboardPage() {
               <Star className="size-4 text-primary" aria-hidden />
               Watchlist
             </CardTitle>
-            <CardDescription>5 ticker teratas pantauan Anda.</CardDescription>
+            <CardDescription>5 ticker teratas pantauan kamu.</CardDescription>
           </CardHeader>
           <CardContent>
             <WatchlistPreview items={watchlistItems} />
@@ -114,9 +115,9 @@ export default async function DashboardPage() {
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2">
               <Bot className="size-4 text-primary" aria-hidden />
-              AI Copilot
+              AI Buddy
             </CardTitle>
-            <CardDescription>Percakapan terbaru Anda.</CardDescription>
+            <CardDescription>Percakapan terbaru kamu.</CardDescription>
           </CardHeader>
           <CardContent>
             <RecentConversations conversations={recentChats} />
@@ -125,6 +126,8 @@ export default async function DashboardPage() {
       </section>
 
       <QuickActions />
+
+      <BuildInfo className="pt-2" />
     </div>
   );
 }
