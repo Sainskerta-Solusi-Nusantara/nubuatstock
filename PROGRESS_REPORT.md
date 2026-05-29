@@ -8,8 +8,8 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v0.1 |
-| **Last updated** | 11 Mei 2026 |
+| **Version** | v0.2 |
+| **Last updated** | 30 Mei 2026 |
 | **Owner** | dobeon.com@gmail.com (Founder/CEO/PM) |
 | **Cadence** | Weekly update (setiap Jumat 17:00 WIB) |
 | **Sumber** | `ANALISIS_APLIKASI_SAHAM.md`, `PLAN_UIUX_WIREFRAME.md` |
@@ -42,16 +42,16 @@
 | Metric | Value |
 |---|---|
 | **Current phase** | M0–M3 — MVP build / pre-closed-beta hardening |
-| **Phase progress** | **MVP build ~88%** · **Closed-beta launch-readiness ~85%** (per 29 Mei 2026) |
+| **Phase progress** | **MVP build ~93%** · **Closed-beta launch-readiness ~89%** (per 30 Mei 2026) |
 | **North Star: Weekly Active Trader (WAT)** | 0 (target M6: 500, M12: 6.000, M24: 32.000) |
 | **MRR** | Rp 0 (target M6: Rp 52 jt, M12: Rp 396 jt, M24: Rp 1,56 Mrd) |
 | **Paid users** | 0 (target M6: 290, M12: 2.180, M24: 7.850) |
 | **Free users** | 0 (target M6: 5.000, M12: 25.000, M24: 80.000) |
 | **Runway** | TBD (pending pre-seed funding) |
 | **Team size** | 1 (Founder solo) — hiring 4 untuk M0 closure |
-| **Biggest win this week** | Tutup mayoritas launch-blocker P0/P1 (email-gate, webhook signature, rate-limit, UU PDP export/delete, audit immutability, cookie consent) + diferensiator (Elliott Wave P0+P1, pattern recognition, screener Swing Santai) + UI/UX (tagline, nada "kamu", kontras teks) + halaman About Us & Glossary + pipeline logo self-host (Vercel Blob). Lihat log Minggu 25–31 Mei. |
-| **Biggest risk this week** | (1) Vendor data bandarmology/real-time belum dikontrak (blokir L2). (2) Migration + re-seed copy/tagline ke DB produksi belum dijalankan. (3) Minor: `node_modules` lokal drift ke Next 15.5.18 — **deploy AMAN** (lockfile pin 15.1.11, Vercel pakai itu), cukup `npm ci` lokal agar test lokal = versi deploy. |
-| **Next milestone** | Closed beta 500 user — sisa: jalankan migration + re-seed prod, set `BLOB_READ_WRITE_TOKEN` + run `logos:sync`, keputusan vendor data, naikkan test coverage. |
+| **Biggest win this week** | Prod LIVE (login/glossary/about 200, env-fallback Neon-Vercel + better-auth secret fixed). DB prod ter-migrate + seed penuh: **fundamentals 965/980** (db:enrich), **798 logo self-host** di Vercel Blob (logos:sync), glossary, tiers, copy/tagline. **220 berita** + sentiment. Search ticker menonjol di menu utama mobile (analisis utama). SEO per-halaman (generateMetadata + OG + JSON-LD), mobile responsive 13 halaman, nada "kamu" full-sweep, BuildInfo (versi+waktu deploy) di dashboard. |
+| **Biggest risk this week** | (1) **Worker BullMQ belum di-deploy** ke Railway/Render → cron prod (EOD, news, picks, sentiment) belum auto-jalan; data terisi tapi belum self-refresh. (2) Vendor data bandarmology/real-time belum dikontrak (blokir L2 — broker/foreign flow). (3) Resend API key + Google OAuth belum di-set di prod (signup jalan tanpa email-verify gate; Google login nonaktif sampai creds di-set). (4) Test coverage masih rendah. |
+| **Next milestone** | Closed beta 500 user — sisa (aksi founder): deploy worker (`WORKER_DEPLOY.md`), set Resend + Google OAuth via `/admin/integrations`, keputusan vendor data, naikkan test coverage. Build & data prod sudah siap. |
 
 ---
 
