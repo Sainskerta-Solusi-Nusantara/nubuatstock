@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -166,15 +167,15 @@ export function SignupForm({
             type={showPassword ? "text" : "password"}
             autoComplete="new-password"
             {...register("password")}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 pr-16 text-sm focus:border-neutral-900 focus:outline-none"
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 pr-10 text-sm focus:border-neutral-900 focus:outline-none"
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-neutral-600 hover:text-neutral-900"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-900"
             aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
           >
-            {showPassword ? "Sembunyikan" : "Tampilkan"}
+            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         </div>
         <p className="text-xs text-neutral-500">
