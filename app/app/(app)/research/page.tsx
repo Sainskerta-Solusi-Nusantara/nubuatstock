@@ -183,8 +183,6 @@ function EmptyState() {
       <h3 className="font-semibold">Belum ada laporan riset terbit</h3>
       <p className="mt-2 text-sm text-muted-foreground">
         Tim analis Nubuat sedang menyiapkan laporan pertama.
-        <br />
-        Admin/superadmin dapat membuat laporan di <code className="rounded bg-secondary px-1">/admin/research</code>.
       </p>
     </div>
   );
