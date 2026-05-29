@@ -3,12 +3,13 @@
     "collect": {
       "url": [
         "http://localhost:3000/",
-        "http://localhost:3000/features",
         "http://localhost:3000/pricing",
+        "http://localhost:3000/about",
+        "http://localhost:3000/features",
         "http://localhost:3000/demo"
       ],
       "startServerCommand": "npm run start",
-      "startServerReadyPattern": "ready started server",
+      "startServerReadyPattern": "Ready in|- Local:|started server on",
       "startServerReadyTimeout": 60000,
       "numberOfRuns": 3,
       "settings": {

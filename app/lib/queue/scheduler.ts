@@ -65,6 +65,17 @@ const CRON_DEFINITIONS: CronJobDefinition[] = [
     data: { source: "scheduler" },
   },
   {
+    // Trial → paid drip campaign (IMPROVEMENT_PLAN §8.5 #35).
+    // Routed oleh generatePicksAdapter ke trialDripProcessor.
+    // Jalan pagi sebelum expire-trial (01:00) supaya email "besok turun ke Free"
+    // di hari ke-6 dikirim sebelum trial benar-benar berakhir di hari ke-7.
+    queueName: "picks.generate",
+    jobName: "trial-drip",
+    configKey: "billing.trial_drip_cron",
+    defaultCron: "0 9 * * *", // 09:00 WIB tiap hari
+    data: { source: "scheduler" },
+  },
+  {
     queueName: "alerts.check",
     jobName: "scheduled.check",
     configKey: "alerts.check_cron",

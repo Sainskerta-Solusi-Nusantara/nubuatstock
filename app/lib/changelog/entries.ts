@@ -1,0 +1,78 @@
+/**
+ * Sumber data changelog "Apa yang baru" yang tampil di bell navbar.
+ *
+ * Aturan:
+ * - Urut TERBARU di paling atas (index 0).
+ * - `version` dipakai sebagai penanda "seen" di localStorage; bandingkan
+ *   secara semver-ish via `compareVersions` di helper bawah.
+ * - Tulis `items` ringkas & ramah ("kamu"), fokus ke manfaat buat user.
+ */
+export interface ChangelogEntry {
+  /** Versi rilis, mis. "1.4.0". Dipakai untuk tracking "sudah dilihat". */
+  version: string;
+  /** Tanggal rilis dalam format ISO (YYYY-MM-DD). */
+  date: string;
+  /** Judul singkat rilis. */
+  title: string;
+  /** Daftar perubahan/fitur, ditulis ramah dan ringkas. */
+  items: string[];
+}
+
+/** Entry changelog, urut terbaru dulu. */
+export const changelogEntries: ChangelogEntry[] = [
+  {
+    version: "1.4.0",
+    date: "2026-05-29",
+    title: "Elliott Wave & teman-temannya",
+    items: [
+      "Analisis Elliott Wave per emiten: kamu bisa lihat hitungan wave langsung di chart, lengkap dengan narasi AI yang menjelaskan posisi gelombang saat ini.",
+      "Glossary istilah: bingung sama istilah teknikal? Buka kamus singkat di dalam app.",
+      "Halaman About Us biar kamu makin kenal siapa di balik Nubuat.",
+    ],
+  },
+  {
+    version: "1.3.0",
+    date: "2026-05-20",
+    title: "Tampil lebih rapi & cepat dikenali",
+    items: [
+      "Logo emiten kini muncul di daftar dan halaman detail, jadi lebih gampang kamu kenali.",
+      "Screener \"Swing Santai\" baru: preset siap pakai buat kamu yang trading tanpa harus melototin chart seharian.",
+    ],
+  },
+  {
+    version: "1.2.0",
+    date: "2026-05-10",
+    title: "Nyaman dipakai kapan pun",
+    items: [
+      "Dark mode hadir! Mata kamu aman walau analisis sampai larut malam.",
+      "Nubuat sekarang bisa di-install sebagai aplikasi (PWA) di HP maupun desktop kamu.",
+    ],
+  },
+  {
+    version: "1.1.0",
+    date: "2026-04-28",
+    title: "Jejak rekomendasi yang transparan",
+    items: [
+      "Arsip picks: kamu bisa menengok kembali semua rekomendasi sebelumnya beserta hasilnya.",
+    ],
+  },
+];
+
+/** Versi terbaru (entry paling atas). */
+export const latestChangelogVersion: string =
+  changelogEntries[0]?.version ?? "0.0.0";
+
+/**
+ * Bandingkan dua versi bergaya semver ("1.4.0" vs "1.3.10").
+ * @returns angka < 0 jika a < b, 0 jika sama, > 0 jika a > b.
+ */
+export function compareVersions(a: string, b: string): number {
+  const pa = a.split(".").map((n) => Number.parseInt(n, 10) || 0);
+  const pb = b.split(".").map((n) => Number.parseInt(n, 10) || 0);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i += 1) {
+    const diff = (pa[i] ?? 0) - (pb[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}

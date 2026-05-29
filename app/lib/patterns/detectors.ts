@@ -768,6 +768,311 @@ export function detectDoubleBottom(bars: OhlcvBar[]): PatternMatch[] {
   return [];
 }
 
+// ====================== HEAD & SHOULDERS / INVERSE H&S ======================
+
+/**
+ * Head & Shoulders (bearish reversal):
+ *   - 3 swing highs: left shoulder (LS), head (H), right shoulder (RS).
+ *   - Head harus tertinggi; kedua bahu lebih rendah & kira-kira sejajar (within ~5%).
+ *   - 2 swing low di antaranya membentuk neckline; breakdown di bawah neckline = konfirmasi.
+ *
+ * Inverse H&S (bullish reversal) = mirror: 3 swing lows, head terendah, neckline
+ * dari 2 swing high; breakout di atas neckline = konfirmasi.
+ */
+function detectHeadShouldersImpl(
+  bars: OhlcvBar[],
+  variant: "normal" | "inverse",
+): PatternMatch[] {
+  if (bars.length < 30) return [];
+  const pivots = findPivots(bars, 3);
+  if (pivots.length < 5) return [];
+
+  // Extremes that form the shoulders/head are "high" for normal, "low" for inverse.
+  const peakType = variant === "normal" ? "high" : "low";
+  const valleyType = variant === "normal" ? "low" : "high";
+
+  // Scan most recent qualifying sequence: peak - valley - peak(extreme) - valley - peak.
+  for (let i = pivots.length - 1; i >= 4; i -= 1) {
+    const rs = pivots[i]!; // right shoulder
+    const v2 = pivots[i - 1]!; // right neckline pivot
+    const head = pivots[i - 2]!;
+    const v1 = pivots[i - 3]!; // left neckline pivot
+    const ls = pivots[i - 4]!; // left shoulder
+
+    if (rs.type !== peakType || head.type !== peakType || ls.type !== peakType) continue;
+    if (v1.type !== valleyType || v2.type !== valleyType) continue;
+
+    if (variant === "normal") {
+      // Head must be the tallest peak.
+      if (head.price <= ls.price || head.price <= rs.price) continue;
+    } else {
+      // Head must be the lowest trough.
+      if (head.price >= ls.price || head.price >= rs.price) continue;
+    }
+
+    // Shoulders roughly symmetric (within 6%).
+    const shoulderDiff = Math.abs(ls.price - rs.price) / Math.max(ls.price, rs.price);
+    if (shoulderDiff > 0.06) continue;
+
+    // Head should stand out vs the higher shoulder by >= 3%.
+    const refShoulder = variant === "normal" ? Math.max(ls.price, rs.price) : Math.min(ls.price, rs.price);
+    const headProminence = Math.abs(head.price - refShoulder) / refShoulder;
+    if (headProminence < 0.03) continue;
+
+    // Neckline = line through the two interior valley pivots. Use sloped neckline
+    // evaluated at the end index for the breakout level.
+    const necklineSlope = (v2.price - v1.price) / (v2.index - v1.index || 1);
+    const lastIdx = bars.length - 1;
+    const necklineAtEnd = v2.price + necklineSlope * (lastIdx - v2.index);
+    const necklineMid = (v1.price + v2.price) / 2;
+
+    const lastClose = bars[lastIdx]!.close;
+    const direction = variant === "normal" ? "bearish" : "bullish";
+    const patternType = variant === "normal" ? "head_shoulders" : "inverse_head_shoulders";
+
+    let status: "forming" | "completed" = "forming";
+    if (variant === "normal" && lastClose < necklineAtEnd * 0.99) status = "completed";
+    if (variant === "inverse" && lastClose > necklineAtEnd * 1.01) status = "completed";
+
+    // Target = neckline projected by head-to-neckline height.
+    const height = Math.abs(head.price - necklineMid);
+    const target = variant === "normal" ? necklineAtEnd - height : necklineAtEnd + height;
+    const stop = variant === "normal" ? Math.max(ls.price, rs.price) : Math.min(ls.price, rs.price);
+
+    let confidence = 0.5;
+    if (shoulderDiff < 0.03) confidence += 0.15;
+    if (headProminence > 0.06) confidence += 0.1;
+    if (Math.abs(necklineSlope) < (necklineMid * 0.002)) confidence += 0.1; // flat neckline
+    if (status === "completed") confidence += 0.15;
+    confidence = Math.min(confidence, 0.95);
+
+    return [{
+      patternType,
+      category: "reversal",
+      direction,
+      status,
+      startIndex: ls.index,
+      endIndex: lastIdx,
+      confidence,
+      keyLevels: {
+        breakout: necklineAtEnd,
+        target,
+        stop,
+        neckline: necklineAtEnd,
+        support: variant === "normal" ? necklineMid : head.price,
+        resistance: variant === "normal" ? head.price : necklineMid,
+      },
+      volumeConfirmation: false,
+      narrative: variant === "normal"
+        ? `Head & Shoulders: bahu kiri ${ls.price.toFixed(0)} (${ls.date}), kepala ${head.price.toFixed(0)} (${head.date}), bahu kanan ${rs.price.toFixed(0)} (${rs.date}). Neckline ${necklineAtEnd.toFixed(0)} — breakdown = bearish reversal. Target downside: ${target.toFixed(0)}, stop: ${stop.toFixed(0)}.`
+        : `Inverse Head & Shoulders: bahu kiri ${ls.price.toFixed(0)} (${ls.date}), kepala ${head.price.toFixed(0)} (${head.date}), bahu kanan ${rs.price.toFixed(0)} (${rs.date}). Neckline ${necklineAtEnd.toFixed(0)} — breakout = bullish reversal. Target upside: ${target.toFixed(0)}, stop: ${stop.toFixed(0)}.`,
+    }];
+  }
+
+  return [];
+}
+
+export function detectHeadShoulders(bars: OhlcvBar[]): PatternMatch[] {
+  return detectHeadShouldersImpl(bars, "normal");
+}
+
+export function detectInverseHeadShoulders(bars: OhlcvBar[]): PatternMatch[] {
+  return detectHeadShouldersImpl(bars, "inverse");
+}
+
+// ====================== WEDGES (RISING / FALLING) ======================
+
+/**
+ * Wedge = dua trendline yang sama-sama miring ke arah yang sama tapi konvergen.
+ *   - Rising Wedge: highs naik + lows naik, tapi lows naik LEBIH CURAM dari highs
+ *     (range menyempit). Bearish reversal — breakdown ke bawah.
+ *   - Falling Wedge: highs turun + lows turun, tapi highs turun LEBIH CURAM dari
+ *     lows (range menyempit). Bullish reversal — breakout ke atas.
+ *
+ * Beda dengan symmetrical triangle (satu garis naik, satu turun) & channel
+ * (paralel, range konstan).
+ */
+function detectWedge(
+  bars: OhlcvBar[],
+  variant: "rising" | "falling",
+): PatternMatch[] {
+  if (bars.length < 20) return [];
+
+  for (const duration of [20, 30, 40]) {
+    if (bars.length < duration) continue;
+    const startIdx = bars.length - duration;
+    const window = bars.slice(startIdx, bars.length);
+
+    const highSlope = linearSlope(window.map((b, i) => ({ x: i, y: b.high })));
+    const lowSlope = linearSlope(window.map((b, i) => ({ x: i, y: b.low })));
+    const baseClose = window[0]!.close;
+    const highSlopePct = (highSlope / baseClose) * 100;
+    const lowSlopePct = (lowSlope / baseClose) * 100;
+
+    if (variant === "rising") {
+      // Both lines slope up; lows steeper than highs => converging.
+      if (highSlopePct <= 0.02) continue;
+      if (lowSlopePct <= 0.02) continue;
+      if (lowSlope <= highSlope) continue; // lows must rise faster (converge)
+    } else {
+      // Both lines slope down; highs steeper (more negative) than lows => converging.
+      if (highSlopePct >= -0.02) continue;
+      if (lowSlopePct >= -0.02) continue;
+      if (highSlope >= lowSlope) continue; // highs must fall faster (converge)
+    }
+
+    // Range must actually contract from first half to second half.
+    const firstHalf = window.slice(0, Math.ceil(window.length / 2));
+    const secondHalf = window.slice(Math.floor(window.length / 2));
+    const firstRange =
+      Math.max(...firstHalf.map((b) => b.high)) - Math.min(...firstHalf.map((b) => b.low));
+    const secondRange =
+      Math.max(...secondHalf.map((b) => b.high)) - Math.min(...secondHalf.map((b) => b.low));
+    if (firstRange === 0) continue;
+    if (secondRange >= firstRange * 0.9) continue; // need >= 10% contraction
+
+    const top = Math.max(...window.map((b) => b.high));
+    const bottom = Math.min(...window.map((b) => b.low));
+    const range = top - bottom;
+
+    const lastClose = bars[bars.length - 1]!.close;
+    const direction = variant === "rising" ? "bearish" : "bullish";
+    const patternType = variant === "rising" ? "rising_wedge" : "falling_wedge";
+
+    let status: "forming" | "completed" = "forming";
+    if (variant === "rising" && lastClose < bottom * 1.005) status = "completed";
+    if (variant === "falling" && lastClose > top * 0.995) status = "completed";
+
+    // Breakout level = lower trendline (rising) / upper trendline (falling) near apex.
+    const breakout = variant === "rising" ? bottom : top;
+    // Target = wedge height projected from breakout.
+    const target = variant === "rising" ? bottom - range : top + range;
+    const stop = variant === "rising" ? top : bottom;
+
+    let confidence = 0.5;
+    if (secondRange < firstRange * 0.6) confidence += 0.15; // strong convergence
+    if (duration >= 30) confidence += 0.1;
+    if (status === "completed") confidence += 0.15;
+    confidence = Math.min(confidence, 0.95);
+
+    return [{
+      patternType,
+      category: "reversal",
+      direction,
+      status,
+      startIndex: startIdx,
+      endIndex: bars.length - 1,
+      confidence,
+      keyLevels: { breakout, target, stop, support: bottom, resistance: top },
+      volumeConfirmation: false,
+      narrative: variant === "rising"
+        ? `Rising Wedge ${duration} bar: highs & lows sama-sama naik tapi konvergen (range -${(((firstRange - secondRange) / firstRange) * 100).toFixed(0)}%). Bearish reversal — breakdown di ${breakout.toFixed(0)}, target downside ${target.toFixed(0)}, stop ${stop.toFixed(0)}. ${status === "completed" ? "Breakdown sudah terjadi." : "Menunggu breakdown."}`
+        : `Falling Wedge ${duration} bar: highs & lows sama-sama turun tapi konvergen (range -${(((firstRange - secondRange) / firstRange) * 100).toFixed(0)}%). Bullish reversal — breakout di ${breakout.toFixed(0)}, target upside ${target.toFixed(0)}, stop ${stop.toFixed(0)}. ${status === "completed" ? "Breakout sudah terjadi." : "Menunggu breakout."}`,
+    }];
+  }
+
+  return [];
+}
+
+export function detectRisingWedge(bars: OhlcvBar[]): PatternMatch[] {
+  return detectWedge(bars, "rising");
+}
+
+export function detectFallingWedge(bars: OhlcvBar[]): PatternMatch[] {
+  return detectWedge(bars, "falling");
+}
+
+// ====================== SYMMETRICAL TRIANGLE ======================
+
+/**
+ * Symmetrical Triangle = lower highs + higher lows yang konvergen (highs turun,
+ * lows naik). Netral / indecision — arah bias mengikuti trend sebelum pola.
+ * Breakout aktual menentukan arah final.
+ */
+export function detectSymmetricalTriangle(bars: OhlcvBar[]): PatternMatch[] {
+  if (bars.length < 20) return [];
+
+  for (const duration of [20, 30, 40]) {
+    if (bars.length < duration) continue;
+    const startIdx = bars.length - duration;
+    const window = bars.slice(startIdx, bars.length);
+
+    const highSlope = linearSlope(window.map((b, i) => ({ x: i, y: b.high })));
+    const lowSlope = linearSlope(window.map((b, i) => ({ x: i, y: b.low })));
+    const baseClose = window[0]!.close;
+    const highSlopePct = (highSlope / baseClose) * 100;
+    const lowSlopePct = (lowSlope / baseClose) * 100;
+
+    // Highs descend, lows ascend (the defining symmetry).
+    if (highSlopePct >= -0.05) continue;
+    if (lowSlopePct <= 0.05) continue;
+
+    // Roughly symmetric: the two slopes should be comparable in magnitude
+    // (otherwise it's an ascending/descending triangle or wedge).
+    const ratio = Math.abs(highSlopePct) / Math.abs(lowSlopePct);
+    if (ratio < 0.4 || ratio > 2.5) continue;
+
+    // Range must contract.
+    const firstHalf = window.slice(0, Math.ceil(window.length / 2));
+    const secondHalf = window.slice(Math.floor(window.length / 2));
+    const firstRange =
+      Math.max(...firstHalf.map((b) => b.high)) - Math.min(...firstHalf.map((b) => b.low));
+    const secondRange =
+      Math.max(...secondHalf.map((b) => b.high)) - Math.min(...secondHalf.map((b) => b.low));
+    if (firstRange === 0) continue;
+    if (secondRange >= firstRange * 0.9) continue;
+
+    const top = Math.max(...window.map((b) => b.high));
+    const bottom = Math.min(...window.map((b) => b.low));
+    const range = top - bottom;
+
+    // Bias: prior trend before the triangle.
+    const priorWindow = bars.slice(Math.max(0, startIdx - 15), startIdx);
+    let direction: "bullish" | "bearish" = "bullish";
+    if (priorWindow.length > 3) {
+      const firstClose = priorWindow[0]!.close;
+      const lastPriorClose = priorWindow[priorWindow.length - 1]!.close;
+      direction = lastPriorClose >= firstClose ? "bullish" : "bearish";
+    }
+
+    const lastClose = bars[bars.length - 1]!.close;
+    let status: "forming" | "completed" = "forming";
+    if (lastClose > top * 1.005) {
+      direction = "bullish";
+      status = "completed";
+    } else if (lastClose < bottom * 0.995) {
+      direction = "bearish";
+      status = "completed";
+    }
+
+    const breakout = direction === "bullish" ? top : bottom;
+    const target = direction === "bullish" ? top + range : bottom - range;
+    const stop = direction === "bullish" ? bottom : top;
+
+    let confidence = 0.5;
+    if (ratio > 0.7 && ratio < 1.4) confidence += 0.1; // well-balanced
+    if (secondRange < firstRange * 0.6) confidence += 0.1;
+    if (duration >= 30) confidence += 0.05;
+    if (status === "completed") confidence += 0.2;
+    confidence = Math.min(confidence, 0.95);
+
+    return [{
+      patternType: "symmetrical_triangle",
+      category: "indecision",
+      direction,
+      status,
+      startIndex: startIdx,
+      endIndex: bars.length - 1,
+      confidence,
+      keyLevels: { breakout, target, stop, support: bottom, resistance: top },
+      volumeConfirmation: false,
+      narrative: `Symmetrical Triangle ${duration} bar: lower highs + higher lows konvergen (range -${(((firstRange - secondRange) / firstRange) * 100).toFixed(0)}%). Netral — bias ${direction === "bullish" ? "bullish" : "bearish"} mengikuti trend sebelumnya. ${status === "completed" ? `Breakout ${direction === "bullish" ? "atas" : "bawah"} sudah terjadi.` : "Menunggu breakout."} Target: ${target.toFixed(0)}, stop: ${stop.toFixed(0)}.`,
+    }];
+  }
+
+  return [];
+}
+
 // ====================== RUNNER ======================
 
 import { CANDLESTICK_DETECTORS } from "./candlestick";
@@ -784,6 +1089,11 @@ const DETECTORS = [
   detectDescendingTriangle,
   detectDoubleTop,
   detectDoubleBottom,
+  detectHeadShoulders,
+  detectInverseHeadShoulders,
+  detectRisingWedge,
+  detectFallingWedge,
+  detectSymmetricalTriangle,
   ...CANDLESTICK_DETECTORS,
 ];
 

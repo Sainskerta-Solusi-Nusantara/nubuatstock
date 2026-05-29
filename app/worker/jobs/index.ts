@@ -87,6 +87,10 @@ const generatePicksAdapter: Processor = async (job) => {
       const mod = await import("./expire-trial");
       return mod.expireTrialProcessor(job, job.token!);
     }
+    if (job.name === "trial-drip") {
+      const mod = await import("./trial-drip");
+      return mod.trialDripProcessor(job, job.token!);
+    }
     const mod = await import("./generate-picks");
     const m = mod as {
       generatePicksJob?: (data: unknown) => Promise<unknown>;

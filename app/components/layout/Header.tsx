@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { TickerSearch } from "@/components/navigation/TickerSearch";
+import { ChangelogBell } from "@/components/changelog/ChangelogBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import type { Locale } from "@/lib/i18n/config";
@@ -65,6 +66,8 @@ export function Header({ user, locale = "id" }: HeaderProps) {
         </TooltipTrigger>
         <TooltipContent>Alerts</TooltipContent>
       </Tooltip>
+
+      <ChangelogBell />
 
       <LocaleSwitcher currentLocale={locale as "id" | "en"} />
       <ThemeToggle />
