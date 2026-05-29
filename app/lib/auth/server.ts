@@ -85,6 +85,11 @@ function buildAuth(input: BuildAuthInput) {
 
   return betterAuth({
     appName: "Nubuat",
+    // baseURL eksplisit: tanpa ini better-auth warn "Base URL could not be
+    // determined" dan link email verifikasi/reset + callback OAuth bisa salah
+    // (dikirim server-side tanpa konteks request). Ambil dari NEXT_PUBLIC_APP_URL
+    // (di-set per environment di Vercel); fallback localhost untuk dev.
+    baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: {
