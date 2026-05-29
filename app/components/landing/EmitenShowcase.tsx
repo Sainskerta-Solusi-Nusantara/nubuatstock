@@ -42,7 +42,7 @@ export function EmitenShowcase(props: EmitenShowcaseProps) {
         </div>
 
         <p className="mt-10 text-center text-xs text-muted-foreground">
-          Klik kode emiten untuk lihat analisa lengkap (perlu login)
+          Klik kode emiten untuk lihat analisis lengkap (perlu login)
         </p>
       </div>
     </section>

@@ -23,7 +23,7 @@ import { PublicNav } from "@/components/landing/PublicNav";
 
 export const metadata = {
   title: "Fitur — Nubuat",
-  description: "Daftar lengkap fitur Nubuat: Daily Picks, AI Copilot, Verdict 0-10, Wyckoff, Elliott Wave, Pattern Recognition, Screener, dan lainnya.",
+  description: "Daftar lengkap fitur Nubuat: Daily Picks, AI Buddy, Verdict 0-10, Wyckoff, Elliott Wave, Pattern Recognition, Screener, dan lainnya.",
 };
 
 interface FeatureCard {
@@ -118,7 +118,7 @@ const FEATURES: FeatureCard[] = [
   },
   {
     icon: Bot,
-    title: "AI Copilot",
+    title: "AI Buddy",
     description: "LLM-powered chatbot dengan 10 tools: harga, fundamental, news, backtest, screener, dan lainnya.",
     category: "AI",
     highlights: ["DeepSeek + tool use", "Conversational backtest", "Vector RAG research search", "Multi-step queries"],
@@ -168,7 +168,7 @@ export default function FeaturesPage() {
           </Link>
           <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Fitur Nubuat</h1>
           <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-            16+ modul analisis untuk retail trader Indonesia: Daily Picks, AI Copilot, Verdict 0-10, Wyckoff,
+            16+ modul analisis untuk retail trader Indonesia: Daily Picks, AI Buddy, Verdict 0-10, Wyckoff,
             Elliott Wave, Pattern Recognition, Screener, Compare, Sector Rotation, Paper Trading, dan
             banyak lagi.
           </p>

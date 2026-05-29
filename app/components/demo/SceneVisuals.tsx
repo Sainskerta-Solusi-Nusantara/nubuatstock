@@ -52,7 +52,7 @@ function IntroVisual() {
       <h2 className="mt-6 text-4xl font-bold tracking-tight">Nubuat AI</h2>
       <p className="mt-2 text-base text-muted-foreground">Sains di balik setiap trade</p>
       <div className="mt-6 grid grid-cols-2 gap-3 text-xs text-muted-foreground sm:grid-cols-4">
-        <Pill icon={Bot} label="AI Copilot" />
+        <Pill icon={Bot} label="AI Buddy" />
         <Pill icon={Award} label="Verdict 0-10" />
         <Pill icon={Wallet} label="Paper Trade" />
         <Pill icon={Zap} label="Pattern AI" />

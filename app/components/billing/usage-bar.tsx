@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils/cn";
 import type { UsageSummaryItem } from "@/lib/types/billing";
 
 const COUNTER_LABELS: Record<string, string> = {
-  "ai.queries": "AI Copilot Queries",
+  "ai.queries": "AI Buddy Queries",
   "alerts.created": "Alert dibuat",
   "picks.unlock": "Daily Picks dibuka",
   "backtest.runs": "Backtest run",

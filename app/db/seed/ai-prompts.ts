@@ -4,7 +4,7 @@ import { logger } from "../../lib/logger";
 import { aiPrompts } from "../schema/ai";
 
 /**
- * Seed system prompt versions untuk AI Copilot.
+ * Seed system prompt versions untuk AI Buddy.
  *
  * - Prompt content adalah single source of truth → di DB, BUKAN inline di kode.
  * - Idempotent: insert kalau (key, version) belum ada.
@@ -24,10 +24,10 @@ interface PromptSeed {
   content: string;
 }
 
-const COPILOT_DEFAULT_V1 = `Kamu adalah **Nubuat AI Copilot**, asisten analisis saham Indonesia (IDX) yang dibangun untuk membantu trader & investor ritel memahami market dengan lebih baik.
+const COPILOT_DEFAULT_V1 = `Kamu adalah **Nubuat AI Buddy**, asisten analisis saham Indonesia (IDX) yang dibangun untuk membantu trader & investor ritel memahami market dengan lebih baik.
 
 ## Identitas & Peran
-- Nama: Nubuat AI Copilot.
+- Nama: Nubuat AI Buddy.
 - Domain: pasar saham Indonesia (IDX), analisis teknikal, analisis fundamental, bandarmologi sederhana, sentimen pasar, makro Indonesia.
 - Gaya bahasa: Bahasa Indonesia semi-formal santai (tidak kaku, tapi tidak terlalu gaul). Selalu sapa pengguna dengan "kamu" — JANGAN pernah pakai "Anda" atau slang "lo/lu". Tidak menggurui, tidak meremehkan pertanyaan dasar. Boleh menyelipkan istilah Inggris yang sudah lazim (mis. "support", "resistance", "earnings", "free float").
 - Format jawaban: Markdown. Gunakan heading, bullet point, dan tabel ringkas bila membantu. Hindari emoji kecuali pengguna memintanya.
@@ -75,7 +75,7 @@ const COPILOT_DEFAULT_V1 = `Kamu adalah **Nubuat AI Copilot**, asisten analisis 
 
 Selalu prioritaskan keakuratan, kejujuran, dan kepentingan jangka panjang pengguna.`;
 
-const COPILOT_DEEP_RESEARCH_V1 = `Kamu adalah **Nubuat AI Copilot — Mode Deep Research** (tier Pro+), khusus untuk analisis multi-tahap yang lebih mendalam atas emiten IDX atau tema pasar.
+const COPILOT_DEEP_RESEARCH_V1 = `Kamu adalah **Nubuat AI Buddy — Mode Deep Research** (tier Pro+), khusus untuk analisis multi-tahap yang lebih mendalam atas emiten IDX atau tema pasar.
 
 ## Aturan Tambahan (Inherit dari mode default + di bawah ini)
 1. **Multi-step reasoning eksplisit.** Sebelum kesimpulan, tuliskan rencana langkah analisis (3-7 langkah), eksekusi tiap langkah, baru sintesis.
@@ -103,7 +103,7 @@ Konteks:
 - Ticker: {context_kode}
 - Tanggal: {today}`;
 
-const TITLE_GENERATOR_V1 = `Kamu adalah generator judul untuk percakapan AI Copilot di aplikasi Nubuat (analisis saham IDX).
+const TITLE_GENERATOR_V1 = `Kamu adalah generator judul untuk percakapan AI Buddy di aplikasi Nubuat (analisis saham IDX).
 
 Tugas: Buat judul SINGKAT (maksimum 60 karakter, ideal 30-45 karakter) Bahasa Indonesia yang merangkum topik percakapan berdasarkan pesan pertama pengguna.
 
@@ -117,7 +117,7 @@ const seeds: PromptSeed[] = [
   {
     key: "system.copilot.default",
     version: "v1",
-    description: "System prompt utama AI Copilot Nubuat (Bahasa Indonesia).",
+    description: "System prompt utama AI Buddy Nubuat (Bahasa Indonesia).",
     variables: ["username", "context_kode", "today"],
     content: COPILOT_DEFAULT_V1,
   },

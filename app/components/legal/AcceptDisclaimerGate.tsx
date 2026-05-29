@@ -110,7 +110,7 @@ export function AcceptDisclaimerGate({
               className="mt-1 h-4 w-4 shrink-0 rounded border-border accent-primary"
             />
             <span>
-              Saya memahami bahwa semua analisa, Daily Picks, dan output AI di {appName} bersifat <strong>informasi & edukasi</strong>, <strong>bukan ajakan jual/beli efek</strong>, dan keputusan investasi sepenuhnya tanggung jawab saya pribadi.
+              Saya memahami bahwa semua analisis, Daily Picks, dan output AI di {appName} bersifat <strong>informasi & edukasi</strong>, <strong>bukan ajakan jual/beli efek</strong>, dan keputusan investasi sepenuhnya tanggung jawab saya pribadi.
             </span>
           </label>
           <label className="flex items-start gap-3 cursor-pointer">

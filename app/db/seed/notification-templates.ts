@@ -312,7 +312,7 @@ const TEMPLATES: TemplateSeed[] = [
     subject: "Langganan Nubuat {{tier}} kamu berakhir",
     body: `<p>Halo {{name}},</p>
 <p>Paket <strong>{{tier}}</strong> kamu telah berakhir pada {{expiredAt}}. Kamu kini berada di paket Gratis.</p>
-<p><a href="{{renewUrl}}">Perpanjang sekarang</a> untuk akses penuh ke Daily Picks, AI Copilot, dan fitur premium lainnya.</p>`,
+<p><a href="{{renewUrl}}">Perpanjang sekarang</a> untuk akses penuh ke Daily Picks, AI Buddy, dan fitur premium lainnya.</p>`,
     isHtml: true,
     variables: {
       name: required(),

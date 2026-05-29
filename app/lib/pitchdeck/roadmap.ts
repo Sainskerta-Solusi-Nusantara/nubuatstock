@@ -3,7 +3,7 @@ export const ROADMAP_MILESTONES = [
     phase: "M0–M3 MVP",
     target: "500 closed beta",
     status: "✅ Done",
-    deliverables: ["Foundation lengkap", "980 emiten universe", "Auth + 3-tier RBAC", "Daily Picks code", "AI Copilot working", "Research module + PDF", "Backtest engine"],
+    deliverables: ["Foundation lengkap", "980 emiten universe", "Auth + 3-tier RBAC", "Daily Picks code", "AI Buddy working", "Research module + PDF", "Backtest engine"],
   },
   {
     phase: "M3–M6 Beta Public + Starter",

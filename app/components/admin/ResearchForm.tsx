@@ -207,7 +207,7 @@ export function ResearchForm({ initial }: { initial?: ResearchFormData }) {
                   value={data.summary}
                   onChange={(e) => update("summary", e.target.value)}
                   rows={4}
-                  placeholder="1-2 paragraf intisari analisa..."
+                  placeholder="1-2 paragraf intisari analisis..."
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 />
               </Field>

@@ -81,7 +81,7 @@ function useThrottledContent(content: string, interval = 60): string {
 }
 
 /**
- * Markdown renderer untuk AI Copilot messages.
+ * Markdown renderer untuk AI Buddy messages.
  *
  * Features:
  * - GitHub-flavored markdown (tables, strikethrough, autolinks)

@@ -3,7 +3,7 @@
  *
  * Pisahkan dari page UI supaya:
  * - Mudah update tanpa edit layout
- * - Bisa di-reuse untuk AI Copilot context, kalau user tanya "cara pakai X"
+ * - Bisa di-reuse untuk AI Buddy context, kalau user tanya "cara pakai X"
  * - Future: bisa migrate ke DB / CMS supaya superadmin bisa edit
  */
 
@@ -42,7 +42,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           "**Daily Picks** — Top 5 rekomendasi harian dari engine multi-faktor, dengan entry/SL/TP konkrit.",
           "**Watchlist Snapshot** — Performance ringkasan emiten yang kamu follow.",
           "**Alerts Aktif** — Trigger alerts yang baru saja terpicu.",
-          "**Pintasan menu** — link cepat ke Screener, Compare, Sectors, AI Copilot, dan modul lainnya.",
+          "**Pintasan menu** — link cepat ke Screener, Compare, Sectors, AI Buddy, dan modul lainnya.",
         ],
       },
       { type: "heading", level: 3, text: "Cara pakai" },
@@ -193,7 +193,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
       { type: "heading", level: 3, text: "Tab AI" },
       {
         type: "paragraph",
-        text: "Buka AI Copilot dengan konteks ticker ini pre-loaded. Tanya apa pun tentang emiten: 'Kenapa BBRI turun?', 'Bandingkan BBRI vs BMRI', 'Apa risiko BBRI 6 bulan ke depan?'.",
+        text: "Buka AI Buddy dengan konteks ticker ini pre-loaded. Tanya apa pun tentang emiten: 'Kenapa BBRI turun?', 'Bandingkan BBRI vs BMRI', 'Apa risiko BBRI 6 bulan ke depan?'.",
       },
     ],
   },
@@ -520,11 +520,11 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
   {
     id: "copilot",
     category: "Tools",
-    title: "AI Copilot",
+    title: "AI Buddy",
     icon: "Bot",
     summary: "LLM-powered chatbot dengan tool access ke data Nubuat. Bisa jawab kompleks, multi-step, dengan kutipan sumber.",
     contents: [
-      { type: "paragraph", text: "AI Copilot pakai DeepSeek dengan 9 tools yang akses live data: harga, fundamentals, watchlist, picks, news, screener, dll." },
+      { type: "paragraph", text: "AI Buddy pakai DeepSeek dengan 9 tools yang akses live data: harga, fundamentals, watchlist, picks, news, screener, dll." },
       { type: "heading", level: 3, text: "Contoh prompt yang bekerja baik" },
       {
         type: "list",
@@ -712,7 +712,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           { key: "PICK", value: "Daily Picks" },
           { key: "BT", value: "Backtest Engine" },
           { key: "RSH", value: "Riset Reports" },
-          { key: "AI", value: "AI Copilot" },
+          { key: "AI", value: "AI Buddy" },
         ],
       },
       { type: "heading", level: 3, text: "Group yang tersedia" },
@@ -747,7 +747,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
           { key: "Free", value: "Dashboard, watchlist (1), news basic, ticker page basic" },
           { key: "Trial 7 hari", value: "Semua fitur tier Pro (auto-downgrade ke Free setelahnya)" },
           { key: "Starter", value: "+ alerts, screener, daily picks, multiple watchlist" },
-          { key: "Pro", value: "+ AI Copilot, DCF, Verdict, Wyckoff, Bandarmology, backtest, research" },
+          { key: "Pro", value: "+ AI Buddy, DCF, Verdict, Wyckoff, Bandarmology, backtest, research" },
           { key: "Elite", value: "+ L2 depth, paper trading, API access, AI Deep Mode" },
           { key: "Institutional", value: "+ multi-seat, white-label, dedicated support & SLA" },
         ],

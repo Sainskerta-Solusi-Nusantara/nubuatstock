@@ -37,7 +37,7 @@ export const COMPETITORS = [
     strengths: ["Data terlengkap", "Foreign flow real-time", "Standard industri"],
     weaknesses: ["UX dated dari era 2010-an", "Tidak ada AI/rekomendasi", "Static charts"],
     pricing: "Free (ads-supported) / Premium ~Rp 200k/bln",
-    nubuatAdvantage: "Modern UX, AI Copilot, mobile-native",
+    nubuatAdvantage: "Modern UX, AI Buddy, mobile-native",
   },
   {
     name: "HOTS Mirae Asset",
@@ -53,7 +53,7 @@ export const COMPETITORS = [
     strengths: ["Robot trading auto execution", "Decent screener"],
     weaknesses: ["Broker-tied", "Riset terbatas", "Tidak ada deep analytics"],
     pricing: "Bundled",
-    nubuatAdvantage: "Open AI Copilot vs closed robot, multi-lens analysis",
+    nubuatAdvantage: "Open AI Buddy vs closed robot, multi-lens analysis",
   },
   {
     name: "AlphaFlow (klinikpenyesalan.com)",
@@ -86,9 +86,9 @@ export const CUSTOMER_PERSONAS = [
     name: "Budi — Trader Awam (Free → Starter)",
     demographics: "27 tahun, software engineer, AUM Rp 50jt, Jakarta",
     behavior: "Beli saham karena rekomendasi grup Telegram, 60% portfolio nyangkut, frustrasi tapi belum mau berhenti trading",
-    needs: "Kerangka analisa simple, alert otomatis, daily picks dengan SR/SL/TP eksplisit supaya tidak tebak-tebakan",
+    needs: "Kerangka analisis simple, alert otomatis, daily picks dengan SR/SL/TP eksplisit supaya tidak tebak-tebakan",
     targetTier: "Starter Rp 99k/bln (setelah 7-day trial)",
-    valueAlign: "Daily Picks + AI Copilot menjelaskan setiap entry — feel 'guided' tapi tetap mandiri",
+    valueAlign: "Daily Picks + AI Buddy menjelaskan setiap entry — feel 'guided' tapi tetap mandiri",
   },
   {
     name: "Sari — Swing Trader Aktif (Pro)",
@@ -131,7 +131,7 @@ export const WHY_NOW = [
   },
   {
     title: "AI sudah cukup baik & murah",
-    body: "DeepSeek (2024+) menawarkan kualitas mendekati GPT-4 dengan harga 90% lebih murah. Memungkinkan AI Copilot dengan unit economics yang viable untuk B2C Indonesia.",
+    body: "DeepSeek (2024+) menawarkan kualitas mendekati GPT-4 dengan harga 90% lebih murah. Memungkinkan AI Buddy dengan unit economics yang viable untuk B2C Indonesia.",
   },
   {
     title: "Kompetitor lokal stagnan",
@@ -160,7 +160,7 @@ export const GO_TO_MARKET = [
   },
   {
     phase: "Beta Public Launch (M3–M6)",
-    channels: ["Product Hunt launch", "Komunitas trading Telegram (paid takeover)", "YouTube influencer (Indo-trading channels)", "SEO content: 'cara analisa saham', '[ticker] valuasi'"],
+    channels: ["Product Hunt launch", "Komunitas trading Telegram (paid takeover)", "YouTube influencer (Indo-trading channels)", "SEO content: 'cara analisis saham', '[ticker] valuasi'"],
     cac: "Rp 100–300K/user (paid + organic mix)",
     target: "5K signup, 250 paying (5% conversion)",
   },

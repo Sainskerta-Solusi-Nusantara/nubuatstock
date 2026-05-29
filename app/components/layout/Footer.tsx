@@ -7,7 +7,7 @@ export function Footer() {
         <span>© {new Date().getFullYear()} Nubuat</span>
         <span aria-hidden>•</span>
         <span>
-          Data &amp; analisa untuk tujuan edukasi. Bukan rekomendasi investasi.
+          Data &amp; analisis untuk tujuan edukasi. Bukan rekomendasi investasi.
         </span>
       </div>
       <div className="flex items-center gap-3">

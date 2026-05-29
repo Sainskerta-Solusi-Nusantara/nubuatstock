@@ -12,7 +12,7 @@ interface GetWatchlistArgs {
 export const getUserWatchlistTool: ToolDefinition<GetWatchlistArgs> = {
   name: "get_user_watchlist",
   description:
-    "Ambil daftar ticker yang ada di watchlist user yang sedang chat. Berguna saat user bertanya 'analisa saham di watchlist saya' atau 'apa pendapatmu soal portfolio saya'.",
+    "Ambil daftar ticker yang ada di watchlist user yang sedang chat. Berguna saat user bertanya 'analisis saham di watchlist saya' atau 'apa pendapatmu soal portfolio saya'.",
   parameters: {
     type: "object",
     properties: {

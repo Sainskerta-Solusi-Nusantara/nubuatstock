@@ -228,7 +228,7 @@ export const PITCHDECK_FEATURES: PitchdeckFeature[] = [
   // ───── AI ─────
   {
     slug: "copilot",
-    title: "AI Copilot",
+    title: "AI Buddy",
     category: "AI",
     path: "/copilot",
     pitch:

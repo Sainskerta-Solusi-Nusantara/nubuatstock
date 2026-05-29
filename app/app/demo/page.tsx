@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 
 export const metadata = {
   title: "Demo Tour — Nubuat",
-  description: "Tour fitur Nubuat: cara pakai Daily Picks, Verdict, Wyckoff, Elliott Wave, Pattern Recognition, dan AI Copilot.",
+  description: "Tour fitur Nubuat: cara pakai Daily Picks, Verdict, Wyckoff, Elliott Wave, Pattern Recognition, dan AI Buddy.",
 };
 
 interface DemoStep {
@@ -82,7 +82,7 @@ const STEPS: DemoStep[] = [
   {
     step: 6,
     icon: Bot,
-    title: "Tanya AI Copilot Apa Saja",
+    title: "Tanya AI Buddy Apa Saja",
     description: "LLM chatbot dengan 10 tools — bisa run backtest, screener, news search, semua dengan natural language.",
     walkthrough: [
       "Buka /copilot atau tab AI di halaman ticker",
@@ -90,7 +90,7 @@ const STEPS: DemoStep[] = [
       "'Backtest BBRI strategy RSI 30/70 5 tahun terakhir' → run backtest + kasih metrics",
       "'Screen saham mining ROE &gt; 15%' → run screener + kasih shortlist",
     ],
-    cta: { label: "Tanya AI Copilot", href: "/copilot" },
+    cta: { label: "Tanya AI Buddy", href: "/copilot" },
   },
   {
     step: 7,

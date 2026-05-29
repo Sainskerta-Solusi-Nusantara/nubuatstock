@@ -123,13 +123,13 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "AI Buddy",
     question: "Apa itu AI Buddy?",
     answer:
-      "AI Buddy (AI Copilot) adalah asisten berbasis AI yang bisa menjawab pertanyaan soal saham dengan akses ke data Nubuat: harga, fundamental, watchlist, picks, dan news. Cocok untuk analisa cepat & belajar.",
+      "AI Buddy adalah asisten berbasis AI yang bisa menjawab pertanyaan soal saham dengan akses ke data Nubuat: harga, fundamental, watchlist, picks, dan news. Cocok untuk analisis cepat & belajar.",
   },
   {
     category: "AI Buddy",
     question: "Apakah jawaban AI Buddy adalah saran investasi?",
     answer:
-      "Bukan. AI Buddy memberikan analisa berbasis data sebagai bahan edukasi & riset, BUKAN rekomendasi beli/jual. Selalu validasi sendiri dan sesuaikan dengan profil risiko kamu sebelum mengambil keputusan.",
+      "Bukan. AI Buddy memberikan analisis berbasis data sebagai bahan edukasi & riset, BUKAN rekomendasi beli/jual. Selalu validasi sendiri dan sesuaikan dengan profil risiko kamu sebelum mengambil keputusan.",
   },
   {
     category: "AI Buddy",
@@ -175,7 +175,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "Data & Harga",
     question: "Kenapa harga di Nubuat kadang beda dengan aplikasi sekuritas?",
     answer:
-      "Karena data kami umumnya EOD/delayed, sementara aplikasi sekuritas menampilkan harga live. Perbedaan kecil itu wajar. Nubuat dirancang untuk analisa & riset, bukan untuk eksekusi order.",
+      "Karena data kami umumnya EOD/delayed, sementara aplikasi sekuritas menampilkan harga live. Perbedaan kecil itu wajar. Nubuat dirancang untuk analisis & riset, bukan untuk eksekusi order.",
   },
   {
     category: "Data & Harga",

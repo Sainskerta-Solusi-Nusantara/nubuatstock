@@ -114,7 +114,7 @@ const BRAND_FOOTER = (appName: string, supportEmail: string) => `
       Kamu menerima email ini karena terdaftar di ${appName}.<br>
       Pertanyaan? Email <a href="mailto:${supportEmail}" style="color:#15803d;">${supportEmail}</a>.<br>
       <br>
-      <em>Informasi & analisa di ${appName} untuk edukasi semata, bukan ajakan jual/beli efek.</em>
+      <em>Informasi & analisis di ${appName} untuk edukasi semata, bukan ajakan jual/beli efek.</em>
     </td>
   </tr>
 </table>`;
@@ -145,13 +145,13 @@ ${BRAND_HEADER(p.appName)}
 <table style="width:100%;max-width:560px;margin:0 auto;padding:32px;${baseStyle}">
 <tr><td>
 <h1 style="font-size:24px;margin:0 0 16px;">Halo ${p.userName} 👋</h1>
-<p>Terima kasih sudah daftar di <strong>${p.appName}</strong>. Kamu baru saja punya akses ke platform analisa saham Indonesia berbasis data.</p>
+<p>Terima kasih sudah daftar di <strong>${p.appName}</strong>. Kamu baru saja punya akses ke platform analisis saham Indonesia berbasis data.</p>
 ${trialBlock}
 <h2 style="font-size:16px;margin:24px 0 12px;">Coba 3 hal ini di hari pertama:</h2>
 <ol style="padding-left:20px;">
 <li><strong>Set watchlist</strong> — tambah 5-10 saham yang kamu pantau, dapat alert harga otomatis.</li>
 <li><strong>Buka Daily Picks pagi</strong> — sebelum bursa buka, dapat 3-10 setup dengan SR/SL/TP konkrit.</li>
-<li><strong>Tanya AI Copilot</strong> — "Bandingkan BBRI vs BMRI", "Kenapa GOTO turun hari ini?". Bahasa Indonesia, jawaban dengan sumber.</li>
+<li><strong>Tanya AI Buddy</strong> — "Bandingkan BBRI vs BMRI", "Kenapa GOTO turun hari ini?". Bahasa Indonesia, jawaban dengan sumber.</li>
 </ol>
 <div style="margin:28px 0;">
 <a href="https://nubuat.id/dashboard" style="display:inline-block;background:#16a34a;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;">Buka Dashboard</a>
@@ -169,14 +169,14 @@ Terima kasih sudah daftar di ${p.appName}!
 ${p.trialActive && p.trialEndsAt ? `🎉 Trial kamu aktif sampai ${p.trialEndsAt.toLocaleDateString("id-ID")}.\n\n` : ""}Coba 3 hal di hari pertama:
 1. Set watchlist saham yang kamu pantau
 2. Buka Daily Picks pagi (sebelum jam 9)
-3. Tanya AI Copilot dalam bahasa Indonesia
+3. Tanya AI Buddy dalam bahasa Indonesia
 
 Buka: https://nubuat.id/dashboard
 
 Mulai bingung? Reply email ini.
 
 — ${p.appName}
-Informasi & analisa untuk edukasi semata, bukan ajakan jual/beli efek.`;
+Informasi & analisis untuk edukasi semata, bukan ajakan jual/beli efek.`;
 
   return { subject, html, text };
 }
@@ -236,7 +236,7 @@ function trialDripCopy(p: TrialDripEmailParams): {
         bullets: [
           "Daily Picks dengan SR/SL/TP konkrit tiap pagi sebelum bursa buka.",
           "Bandarmology + foreign flow buat baca pergerakan bandar lebih awal.",
-          "AI Copilot tanpa batas harian — tanya apa saja soal saham IDX dengan sumber.",
+          "AI Buddy tanpa batas harian — tanya apa saja soal saham IDX dengan sumber.",
         ],
         ctaLabel: "Lihat paket Pro",
         closing: "Upgrade sekarang biar akses Pro kamu nggak putus saat trial berakhir.",
@@ -251,7 +251,7 @@ function trialDripCopy(p: TrialDripEmailParams): {
         bullets: [
           "Bandarmology penuh & foreign flow per saham.",
           "Research Aggregator (target price & rating sekuritas).",
-          "Data real-time + AI Copilot tanpa batas harian.",
+          "Data real-time + AI Buddy tanpa batas harian.",
         ],
         ctaLabel: "Upgrade ke Pro sekarang",
         closing: "Upgrade hari ini biar tetap Pro tanpa jeda. Cuma butuh beberapa menit.",
@@ -306,7 +306,7 @@ ${c.ctaLabel}: ${subscriptionUrl}
 ${c.closing}
 
 — ${p.appName}
-Informasi & analisa untuk edukasi semata, bukan ajakan jual/beli efek.`;
+Informasi & analisis untuk edukasi semata, bukan ajakan jual/beli efek.`;
 
   return { subject: c.subject, html, text };
 }

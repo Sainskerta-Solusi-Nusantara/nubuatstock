@@ -61,7 +61,7 @@ const STEPS: TourStep[] = [
   {
     icon: <Bot className="h-6 w-6" />,
     title: "5. Tanya AI Buddy",
-    body: "Bingung soal suatu saham? Tanya AI Buddy — dia kasih analisa cepat berbasis data pasar IDX. Anggap sebagai edukasi & teman riset, bukan ajakan jual/beli.",
+    body: "Bingung soal suatu saham? Tanya AI Buddy — dia kasih analisis cepat berbasis data pasar IDX. Anggap sebagai edukasi & teman riset, bukan ajakan jual/beli.",
   },
 ];
 

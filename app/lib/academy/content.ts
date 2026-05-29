@@ -7,7 +7,7 @@
  *
  * Struktur: Module → Lesson. Konten static & fully typed (bukan DB) supaya
  * MVP cepat & gampang di-review. Body lesson pakai markdown ringkas, dirender
- * lewat komponen yang sama dengan AI Copilot (react-markdown + remark-gfm).
+ * lewat komponen yang sama dengan AI Buddy (react-markdown + remark-gfm).
  *
  * CATATAN: untuk skala lebih besar (banyak lesson, edit oleh non-engineer,
  * versioning) konten ini bisa dipindah ke CMS / DB dengan superadmin editor.

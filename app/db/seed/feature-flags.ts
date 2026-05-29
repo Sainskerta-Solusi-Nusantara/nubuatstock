@@ -29,7 +29,7 @@ const defaults: NewFeatureFlag[] = [
   // ===== AI =====
   {
     key: "feature.ai_streaming",
-    description: "Aktifkan streaming response untuk AI Copilot.",
+    description: "Aktifkan streaming response untuk AI Buddy.",
     category: "ai",
     defaultValue: true,
     rolloutStrategy: { type: "all" },

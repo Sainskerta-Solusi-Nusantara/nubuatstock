@@ -75,7 +75,7 @@ Kebijakan Privasi ini menjelaskan bagaimana **Nubuat** ("kami", "platform") meng
 
 | Tujuan | Dasar Hukum (UU PDP Ps. 20) |
 |---|---|
-| Penyediaan layanan analisa saham | Pelaksanaan perjanjian (Pasal 20 ayat 2 huruf b) |
+| Penyediaan layanan analisis saham | Pelaksanaan perjanjian (Pasal 20 ayat 2 huruf b) |
 | Pengiriman email/push notification kritis | Pelaksanaan perjanjian |
 | Marketing email & analytics produk | Persetujuan eksplisit (kamu bisa opt-out) |
 | Keamanan, deteksi fraud, audit | Kepentingan sah pengendali data (Pasal 20 ayat 2 huruf f) |
@@ -162,7 +162,7 @@ Perubahan material akan diberitahukan via email 14 hari sebelum berlaku. Versi t
 
 **Berlaku sejak:** 11 Mei 2026
 
-Dokumen ini ("Syarat") mengatur hubungan antara kamu ("Pengguna") dengan **Nubuat** ("Platform", "Kami") dalam penggunaan layanan analisa saham berbasis subscription.
+Dokumen ini ("Syarat") mengatur hubungan antara kamu ("Pengguna") dengan **Nubuat** ("Platform", "Kami") dalam penggunaan layanan analisis saham berbasis subscription.
 
 Dengan menggunakan Platform, kamu setuju terikat oleh Syarat ini. Jika tidak setuju, jangan gunakan Platform.
 
@@ -170,7 +170,7 @@ Dengan menggunakan Platform, kamu setuju terikat oleh Syarat ini. Jika tidak set
 
 1.1 Nubuat adalah **platform analytics & informasi**, **BUKAN perusahaan efek**. Kami tidak melakukan eksekusi transaksi efek atas nama kamu.
 
-1.2 Seluruh analisa, daily picks, rekomendasi, riset, dan konten AI bersifat **informatif dan edukatif**. **Bukan saran investasi yang disesuaikan untuk situasi finansial pribadi kamu**.
+1.2 Seluruh analisis, daily picks, rekomendasi, riset, dan konten AI bersifat **informatif dan edukatif**. **Bukan saran investasi yang disesuaikan untuk situasi finansial pribadi kamu**.
 
 1.3 kamu tetap eksekusi order di broker pilihan kamu yang berizin OJK. Nubuat tidak menerima komisi dari broker manapun (no kickback).
 
@@ -198,7 +198,7 @@ Dengan menggunakan Platform, kamu setuju terikat oleh Syarat ini. Jika tidak set
 ## 4. Penggunaan yang Diizinkan
 
 Kamu BOLEH:
-- Menggunakan analisa untuk keputusan investasi pribadi kamu
+- Menggunakan analisis untuk keputusan investasi pribadi kamu
 - Download laporan riset untuk referensi pribadi
 - Share insight di media sosial dengan atribusi
 
@@ -282,7 +282,7 @@ Kami dapat update Syarat ini. Perubahan material akan diumumkan via email 14 har
 
 ## Ringkasan Tegas
 
-Seluruh informasi, analisa, daily picks, rekomendasi, riset, dan output AI di platform **Nubuat** disediakan untuk **tujuan edukasi dan informasi semata**.
+Seluruh informasi, analisis, daily picks, rekomendasi, riset, dan output AI di platform **Nubuat** disediakan untuk **tujuan edukasi dan informasi semata**.
 
 **Bukan ajakan, undangan, saran, atau rekomendasi** untuk membeli, menjual, atau menahan efek tertentu yang disesuaikan dengan profil finansial atau situasi personal kamu.
 
@@ -302,7 +302,7 @@ Seluruh informasi, analisa, daily picks, rekomendasi, riset, dan output AI di pl
 
 2.3 Data harga, fundamental, dan analitik bisa **tidak akurat, delay, atau mengandung error**. Sumber data pihak ketiga (Yahoo Finance, IDX, vendor) bisa rusak sewaktu-waktu.
 
-2.4 AI Copilot bisa **hallucinate** — selalu verifikasi klaim faktual sebelum bertindak.
+2.4 AI Buddy bisa **hallucinate** — selalu verifikasi klaim faktual sebelum bertindak.
 
 ## 3. Risiko Pasar Modal
 
@@ -358,7 +358,7 @@ Riset/konten dari sumber eksternal (sekuritas, media) yang di-link/aggregate di 
 
 ## 9. AI Output
 
-Output AI Copilot (DeepSeek/Anthropic/OpenAI):
+Output AI Buddy (DeepSeek/Anthropic/OpenAI):
 - Berdasarkan training data yang bisa **outdated**
 - Bisa **fabrikasi angka atau nama** (hallucination)
 - Selalu menyertakan disclaimer di tail output

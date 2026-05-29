@@ -23,7 +23,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   title: "Tentang Nubuat — Teman Bertumbuh Trader Ritel Indonesia",
   description:
-    "Nubuat hadir bukan cuma kasih sinyal beli/jual, tapi jadi teman seperjalanan kamu bertumbuh jadi trader & investor yang disiplin dan paham. Analisis multi-lensa (Technical, Fundamental, Bandarmology), AI Copilot berbahasa Indonesia, Elliott Wave otomatis, dan Daily Picks transparan untuk saham IDX.",
+    "Nubuat hadir bukan cuma kasih sinyal beli/jual, tapi jadi teman seperjalanan kamu bertumbuh jadi trader & investor yang disiplin dan paham. Analisis multi POV (Technical, Fundamental, Bandarmology), AI Buddy berbahasa Indonesia, Elliott Wave otomatis, dan Daily Picks transparan untuk saham IDX.",
   keywords: [
     "tentang nubuat",
     "aplikasi analisis saham indonesia",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Tentang Nubuat — Teman Bertumbuh Trader Ritel Indonesia",
     description:
-      "Nubie (pemula) harus Berbuat, harus terus tumbuh. Nubuat jadi teman seperjalanan kamu: analisis multi-lensa, AI Copilot berbahasa Indonesia, Elliott Wave otomatis, dan Daily Picks transparan.",
+      "Nubie (pemula) harus Berbuat, harus terus tumbuh. Nubuat jadi teman seperjalanan kamu: analisis multi POV, AI Buddy berbahasa Indonesia, Elliott Wave otomatis, dan Daily Picks transparan.",
     url: `${APP_URL}/about`,
     siteName: "Nubuat",
     locale: "id_ID",
@@ -63,13 +63,13 @@ interface Advantage {
 const ADVANTAGES: Advantage[] = [
   {
     icon: Eye,
-    title: "Analisis Multi-Lensa",
+    title: "Analisis Multi POV",
     description:
       "Satu emiten kamu lihat dari tiga sudut sekaligus: Technical (struktur harga & momentum), Fundamental (kesehatan & valuasi bisnis), dan Bandarmology (jejak akumulasi/distribusi pemain besar). Keputusan jadi lebih utuh, bukan cuma tebak-tebakan dari satu indikator.",
   },
   {
     icon: Bot,
-    title: "AI Copilot Berbahasa Indonesia",
+    title: "AI Buddy Berbahasa Indonesia",
     description:
       "Copilot yang menjelaskan keputusannya dengan bahasa yang kamu pahami — bukan jargon yang bikin pusing. Tanya kenapa sebuah saham dapat verdict tertentu, dan kamu dapat alasannya, bukan sekadar angka.",
   },
@@ -114,7 +114,7 @@ function OrganizationJsonLd() {
     name: "Nubuat",
     url: APP_URL,
     description:
-      "Aplikasi analisis saham Indonesia (IDX) untuk trader & investor ritel. Analisis multi-lensa (Technical, Fundamental, Bandarmology), AI Copilot berbahasa Indonesia, Elliott Wave otomatis, dan Daily Picks transparan.",
+      "Aplikasi analisis saham Indonesia (IDX) untuk trader & investor ritel. Analisis multi POV (Technical, Fundamental, Bandarmology), AI Buddy berbahasa Indonesia, Elliott Wave otomatis, dan Daily Picks transparan.",
     slogan: "Nubie Berbuat — pemula yang terus bertumbuh.",
     email: "support@nubuat.id",
     foundingLocation: {
@@ -152,9 +152,9 @@ export default function AboutPage() {
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             Nama <strong className="text-foreground">Nubuat</strong> lahir dari satu keyakinan
-            sederhana: <em>Nubie (pemula) harus Berbuat, harus terus tumbuh.</em> Kami bukan
-            sekadar mesin pemberi sinyal beli/jual — kami ingin jadi tempat kamu belajar, berproses,
-            dan jadi trader serta investor yang disiplin dan paham.
+            sederhana: <em>Nubie (pemula) harus Berbuat, harus terus tumbuh.</em> Kami ingin jadi
+            tempat kamu belajar, berproses dan bertumbuh. Karena medan perang kita bukan hanya pasar
+            saham, tapi juga pasar paham. :)
           </p>
         </div>
       </section>

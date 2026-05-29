@@ -54,7 +54,7 @@ export default function OpenGraphImage() {
             maxWidth: 880,
           }}
         >
-          Screener, daily picks, dan analisa teknikal untuk pasar IDX.
+          Screener, daily picks, dan analisis teknikal untuk pasar IDX.
         </div>
         <div
           style={{

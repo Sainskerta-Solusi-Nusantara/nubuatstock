@@ -59,7 +59,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.hero.subheadline",
-    value: "menganalisa setiap entry sebelum kamu klik beli — multi-lensa Technical, Fundamental, Bandarmology, dan AI yang menjelaskan keputusannya dalam Bahasa Indonesia.",
+    value: "menganalisis setiap entry sebelum kamu klik beli — multi POV Technical, Fundamental, Bandarmology, dan AI yang menjelaskan keputusannya dalam Bahasa Indonesia.",
     type: "string",
     description: "Subheadline di bawah headline. Akan di-prefix nama app + suffix tagline.",
   },
@@ -84,7 +84,7 @@ const landingDefaults: LandingConfigEntry[] = [
   {
     key: "landing.hero.stats",
     value: [
-      { label: "Emiten BEI dianalisa", value: "960+" },
+      { label: "Emiten BEI dianalisis", value: "960+" },
       { label: "Lensa analisis", value: "5" },
       { label: "Daily Picks dengan SR/SL/TP", value: "10/hari" },
       { label: "Bahasa Indonesia native", value: "100%" },
@@ -131,7 +131,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.painpoints.footnote",
-    value: "Jawabannya bukan analisa lebih banyak — tapi analisa multi-lensa yang konsisten, dengan level entry/SL/TP eksplisit & alasan yang transparan.",
+    value: "Jawabannya bukan analisis lebih banyak — tapi analisis multi POV yang konsisten, dengan level entry/SL/TP eksplisit & alasan yang transparan.",
     type: "string",
     description: "Catatan penutup painpoints.",
   },
@@ -160,7 +160,7 @@ const landingDefaults: LandingConfigEntry[] = [
     value: [
       { id: "multilens", badge: "Inti", title: "5 lensa analisis dalam satu verdict", body: "Technical + Fundamental + Bandarmology + Brokermology + Macro digabung jadi satu skor 0–100 dengan breakdown faktor transparan. Bukan black box." },
       { id: "picks", badge: "Killer", title: "Daily Picks dengan SR/SL/TP konkrit", body: "Bukan rekomendasi 'BBRI bagus'. Tapi: entry zone Rp 4.700–4.760, SL Rp 4.620, TP1 Rp 4.880 (R/R 1.7), setup pullback, time horizon 3–5 hari." },
-      { id: "ai", badge: "AI", title: "AI Copilot DeepSeek bilingual", body: "Tanya 'Kenapa GOTO turun hari ini?' atau 'Bandingkan ANTM vs MDKA dari sisi PE forward'. Bahasa Indonesia, jawaban dengan sumber & disclaimer." },
+      { id: "ai", badge: "AI", title: "AI Buddy DeepSeek bilingual", body: "Tanya 'Kenapa GOTO turun hari ini?' atau 'Bandingkan ANTM vs MDKA dari sisi PE forward'. Bahasa Indonesia, jawaban dengan sumber & disclaimer." },
       { id: "research", badge: "Hemat waktu", title: "Research Aggregator 15+ sekuritas", body: "Konsensus target price BRI Danareksa, Mandiri Sekuritas, Mirae, Trimegah dll — di-summarize otomatis. Tidak perlu cek satu-satu." },
       { id: "bandar", badge: "Edge", title: "Bandarmology & Foreign Flow", body: "Broker concentration heatmap, foreign flow intraday 5m (tier Pro), accumulation phase tagger. Lihat siapa yang 'bergerak duluan'." },
       { id: "cmd", badge: "Power user", title: "Bloomberg-style command palette", body: "Tekan Cmd+K, ketik 'BBRI', langsung buka. Atau 'EQS' untuk screener, 'BMAP' untuk broker map. Cepat seperti terminal pro." },
@@ -180,7 +180,7 @@ const landingDefaults: LandingConfigEntry[] = [
   },
   {
     key: "landing.emiten.subtitle",
-    value: "Saham yang sering kamu pantau (atau nyangkut) sudah masuk universe analisa. Total 960+ emiten BEI, dari LQ45 sampai papan akselerasi.",
+    value: "Saham yang sering kamu pantau (atau nyangkut) sudah masuk universe analisis. Total 960+ emiten BEI, dari LQ45 sampai papan akselerasi.",
     type: "string",
     description: "Subtitle emiten showcase.",
   },
@@ -260,7 +260,7 @@ const landingDefaults: LandingConfigEntry[] = [
       "Akses semua fitur tier Pro selama 7 hari",
       "Real-time quote semua emiten BEI",
       "Daily Picks dengan SR/SL/TP konkrit",
-      "AI Copilot DeepSeek — 50 query/hari",
+      "AI Buddy DeepSeek — 50 query/hari",
       "Bandarmology basic + foreign flow harian",
       "Watchlist unlimited + alerts unlimited",
       "Tanpa kartu kredit, tanpa charge mendadak",
@@ -280,8 +280,8 @@ const landingDefaults: LandingConfigEntry[] = [
   {
     key: "landing.faq.items",
     value: [
-      { q: "Apakah saya butuh akun broker untuk pakai Nubuat?", a: "Tidak. Nubuat adalah platform analisis & informasi — bukan broker. Kamu tetap eksekusi order di broker pilihan kamu. Nubuat memberikan analisa, level entry/SL/TP, dan insight; eksekusi tetap di tangan kamu." },
-      { q: "Apakah Nubuat memberikan saran investasi personal?", a: "Tidak. Semua analisa & Daily Picks bersifat informasi & edukasi berbasis data. Bukan ajakan jual/beli efek tertentu untuk kamu secara pribadi. Keputusan investasi selalu jadi tanggung jawab kamu. Lihat disclaimer di bawah." },
+      { q: "Apakah saya butuh akun broker untuk pakai Nubuat?", a: "Tidak. Nubuat adalah platform analisis & informasi — bukan broker. Kamu tetap eksekusi order di broker pilihan kamu. Nubuat memberikan analisis, level entry/SL/TP, dan insight; eksekusi tetap di tangan kamu." },
+      { q: "Apakah Nubuat memberikan saran investasi personal?", a: "Tidak. Semua analisis & Daily Picks bersifat informasi & edukasi berbasis data. Bukan ajakan jual/beli efek tertentu untuk kamu secara pribadi. Keputusan investasi selalu jadi tanggung jawab kamu. Lihat disclaimer di bawah." },
       { q: "Berapa biaya setelah trial 7 hari habis?", a: "Tier Free tetap gratis selamanya — kamu bisa lanjut pakai dengan fitur dasar (watchlist 10 emiten, quote delayed 15m, 5 AI query/hari). Mau lanjut tier Starter? Rp 99rb/bulan. Pro Rp 299rb/bulan, Elite Rp 899rb/bulan. Tidak ada auto-charge — kamu harus aktif upgrade." },
       { q: "AI Nubuat pakai model apa?", a: "Default DeepSeek (deepseek-v4-flash). Pengganti dapat di-swap admin ke Anthropic Claude atau OpenAI GPT lewat config — tidak ada vendor lock-in. Setiap response menyertakan disclaimer & sumber data." },
       { q: "Bandarmology — itu bukan teori konspirasi?", a: "Bukan. Bandarmology dalam Nubuat adalah analisis statistik aliran dana: broker mana net-buy/net-sell, foreign flow harian/intraday, volume spike, accumulation/distribution line. Semua data publik dari BEI/KSEI. Bukan tebakan." },

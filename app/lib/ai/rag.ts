@@ -1,6 +1,6 @@
 /**
  * RAG retriever — semantic search di pgvector index `research_embeddings`.
- * Dipakai oleh AI Copilot tool `search_research` dan internal context retrieval.
+ * Dipakai oleh AI Buddy tool `search_research` dan internal context retrieval.
  */
 
 import { sql } from "drizzle-orm";

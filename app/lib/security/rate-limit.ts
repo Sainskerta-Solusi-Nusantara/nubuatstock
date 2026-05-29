@@ -89,7 +89,7 @@ export function resetRateLimit(key: string): void {
 
 /** Common presets untuk consistent rate limit policy. */
 export const RATE_LIMITS = {
-  // AI Copilot — expensive, 30 query/min per user
+  // AI Buddy — expensive, 30 query/min per user
   aiChat: { limit: 30, windowMs: 60_000 },
   // AI tool (backtest, pattern explain) — heavy compute
   aiTool: { limit: 60, windowMs: 60_000 },

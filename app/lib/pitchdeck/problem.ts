@@ -6,7 +6,7 @@ export const PROBLEM_STATEMENTS = [
   },
   {
     stat: "67%",
-    label: "Retail trader yang belum punya kerangka analisa konsisten",
+    label: "Retail trader yang belum punya kerangka analisis konsisten",
     detail: "Lebih mengandalkan rumor grup Telegram, influencer 'pom-pom', dan FOMO daripada data terstruktur.",
   },
   {

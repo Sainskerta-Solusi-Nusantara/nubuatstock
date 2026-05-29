@@ -10,7 +10,7 @@ export const UNIQUE_VALUE_PROPS = [
     moat: "Track record realtime visible di /picks/performance — trust dari hit rate transparant",
   },
   {
-    title: "AI Copilot DeepSeek Bilingual",
+    title: "AI Buddy DeepSeek Bilingual",
     desc: "Tanya bahasa Indonesia, jawab dengan source citation + tool calls real. Cost 90% lebih rendah dari GPT-4.",
     moat: "Indonesia-tuned context (Bandarmology, terminologi BEI) + prompt caching custom",
   },

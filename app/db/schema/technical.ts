@@ -21,7 +21,7 @@ import { ulid, withTimestamps } from "./_base";
  * Dipakai oleh:
  * - Screener filter teknikal (Mode Swing Santai, Day Trader, Breakout Hunter, dll)
  * - Daily Picks scoring (technical factor)
- * - AI Copilot tool: compute_indicators
+ * - AI Buddy tool: compute_indicators
  *
  * Worker compute job: `worker/jobs/compute-technical-snapshots.ts` — iterate 980 emiten,
  * fetch 250 EOD bars, compute semua indikator, upsert. Runtime ~5-10 min full pass.

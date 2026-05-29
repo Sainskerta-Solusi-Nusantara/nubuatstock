@@ -241,7 +241,7 @@ function DashboardGreeting({
           {greeting}, {firstName}.
         </h1>
         <p className="text-sm text-muted-foreground">
-          Ringkasan pasar &amp; alat analisa kamu untuk hari ini.
+          Ringkasan pasar &amp; alat analisis kamu untuk hari ini.
         </p>
       </div>
       <div className="flex items-center gap-2">
@@ -466,7 +466,7 @@ function RecentConversations({
       <EmptyState
         icon={<Bot className="size-5" />}
         title="Belum ada percakapan"
-        description="Tanya AI Buddy apa saja soal saham kamu — analisa cepat berbasis data IDX."
+        description="Tanya AI Buddy apa saja soal saham kamu — analisis cepat berbasis data IDX."
         action={{ href: "/copilot", label: "Tanya AI Buddy" }}
       />
     );

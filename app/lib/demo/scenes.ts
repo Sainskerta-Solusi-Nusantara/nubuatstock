@@ -55,7 +55,7 @@ export const DEMO_SCENES: DemoScene[] = [
       "🤖 AI-powered analysis untuk 980+ emiten IDX",
       "📊 16 modul: Verdict, Wyckoff, Elliott, DCF, Paper Trading, dll",
       "🎯 Daily Picks dengan entry/SL/TP konkrit",
-      "💬 AI Copilot bilingual (ID/EN)",
+      "💬 AI Buddy bilingual (ID/EN)",
     ],
   },
   {
@@ -142,9 +142,9 @@ export const DEMO_SCENES: DemoScene[] = [
   {
     id: "ai_copilot",
     index: 6,
-    title: "AI Copilot dengan 10 Tools",
+    title: "AI Buddy dengan 10 Tools",
     narration:
-      "Tanyakan apa saja: kenapa BBRI turun hari ini, bandingkan BMRI dengan BBCA, atau backtest strategi RSI 30 70 untuk GOTO. AI Copilot pakai DeepSeek dengan 10 tools yang akses live data — bukan jawaban generic. Setiap output cite sumber data.",
+      "Tanyakan apa saja: kenapa BBRI turun hari ini, bandingkan BMRI dengan BBCA, atau backtest strategi RSI 30 70 untuk GOTO. AI Buddy pakai DeepSeek dengan 10 tools yang akses live data — bukan jawaban generic. Setiap output cite sumber data.",
     durationMs: 17000,
     visual: "ai_copilot",
     keyActions: [
@@ -154,7 +154,7 @@ export const DEMO_SCENES: DemoScene[] = [
       "Source citation per fakta",
       "Markdown rendering dengan auto-link ticker",
     ],
-    cta: { label: "Tanya AI Copilot", href: "/copilot" },
+    cta: { label: "Tanya AI Buddy", href: "/copilot" },
   },
   {
     id: "paper_trading",

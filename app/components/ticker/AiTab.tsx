@@ -16,7 +16,7 @@ export function AiTab({ ticker }: { ticker: string }) {
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2">
           <Bot className="size-4 text-primary" aria-hidden />
-          AI Copilot — Konteks {ticker}
+          AI Buddy — Konteks {ticker}
         </CardTitle>
         <CardDescription>
           Ajukan pertanyaan dengan konteks ticker ini aktif.

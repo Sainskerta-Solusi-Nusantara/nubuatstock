@@ -153,7 +153,7 @@ export default async function PricingPage() {
                   ["Elliott Wave Auto Count", "✓ 1D + 1W", "—", "—", "—", "Manual only"],
                   ["Pattern Recognition", "✓ 16 types + AI explain", "Basic", "—", "—", "✓"],
                   ["DCF Calculator", "✓ + sensitivity", "—", "—", "—", "—"],
-                  ["AI Copilot LLM", "✓ Unlimited", "—", "—", "—", "—"],
+                  ["AI Buddy LLM", "✓ Unlimited", "—", "—", "—", "—"],
                   ["Bandarmology", "✓ A/D OBV MFI", "—", "Foreign flow", "✓ Smart money flow", "—"],
                   ["Paper Trading", "✓ Rp 100jt", "✓", "—", "—", "✓"],
                   ["Backtest Engine", "✓ + AI conversational", "—", "—", "Walk-forward internal", "✓ Pine"],
@@ -203,7 +203,7 @@ export default async function PricingPage() {
                 a: "GoPay, OVO, DANA, ShopeePay, transfer bank (BCA/Mandiri/BRI/BNI), kartu kredit (Visa/Master). Via Midtrans/Xendit.",
               },
               {
-                q: "Apakah ada limit query AI Copilot?",
+                q: "Apakah ada limit query AI Buddy?",
                 a: "Free: 5 query/hari. Starter: 50 query/hari. Pro: 500 query/hari. Elite: unlimited (fair use policy). Institutional: custom quota.",
               },
               {

@@ -26,7 +26,7 @@ interface RunBacktestArgs {
 /**
  * `run_backtest` — execute backtest strategy untuk ticker IDX.
  *
- * AI Copilot tool ini menjawab pertanyaan tipe:
+ * AI Buddy tool ini menjawab pertanyaan tipe:
  *   - "Jika saya beli BBRI tiap RSI < 30 dan jual saat RSI > 70, profitnya berapa 5 tahun terakhir?"
  *   - "Backtest SMA 20/50 crossover di BMRI dari 2024"
  *   - "Apakah breakout 20-day high di GOTO menguntungkan?"

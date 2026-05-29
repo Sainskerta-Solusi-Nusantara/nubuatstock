@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Nubuat — Analisis Saham Indonesia",
     short_name: "Nubuat",
     description:
-      "Screener, daily picks, dan analisa teknikal untuk pasar saham Indonesia (IDX). Bukan rekomendasi investasi.",
+      "Screener, daily picks, dan analisis teknikal untuk pasar saham Indonesia (IDX). Bukan rekomendasi investasi.",
     start_url: "/",
     scope: "/",
     display: "standalone",

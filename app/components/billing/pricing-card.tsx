@@ -74,7 +74,7 @@ export function PricingCard({ data, cycle, currentTierKode, onSubscribe }: Prici
           ))}
         </ul>
         <div className="mt-6 space-y-1 text-xs text-muted-foreground">
-          <EntitlementLine entitlements={entitlements} keyName="ai.queries_per_day" label="AI Copilot" suffix=" query/hari" />
+          <EntitlementLine entitlements={entitlements} keyName="ai.queries_per_day" label="AI Buddy" suffix=" query/hari" />
           <EntitlementLine entitlements={entitlements} keyName="watchlist.max_items" label="Watchlist" suffix=" ticker" />
           <EntitlementLine entitlements={entitlements} keyName="alerts.max_active" label="Alert aktif" suffix="" />
           <EntitlementLine entitlements={entitlements} keyName="picks.daily_visible" label="Daily Picks" suffix=" per hari" />

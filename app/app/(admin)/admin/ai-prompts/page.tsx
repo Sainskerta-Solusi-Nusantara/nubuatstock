@@ -24,7 +24,7 @@ export default async function AdminAiPromptsPage() {
         <h1 className="text-2xl font-semibold">AI Prompts</h1>
         <p className="text-sm text-neutral-500">
           System prompts versioned & immutable. Aktivasi versi tertentu untuk apply ke runtime
-          AI Copilot.
+          AI Buddy.
         </p>
       </header>
 

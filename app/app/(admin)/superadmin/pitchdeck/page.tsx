@@ -67,7 +67,7 @@ export default function PitchdeckPage() {
           ))}
         </div>
         <div className="mt-4 rounded-md border border-bear/40 bg-bear-soft/30 p-4 text-sm">
-          <strong className="text-bear">Inti masalah:</strong> Trader retail tidak punya kerangka data multi-lensa yang konsisten untuk setiap entry/exit. Hasilnya: FOMO, stop loss tebakan, cut loss telat, hold tanpa thesis. Produk lokal mengatasi sebagian — tidak ada satu pun yang menggabungkan analytics multi-lens + AI explainable + research aggregator + Bloomberg-class UX di harga retail.
+          <strong className="text-bear">Inti masalah:</strong> Trader retail tidak punya kerangka data multi POV yang konsisten untuk setiap entry/exit. Hasilnya: FOMO, stop loss tebakan, cut loss telat, hold tanpa thesis. Produk lokal mengatasi sebagian — tidak ada satu pun yang menggabungkan analytics multi-lens + AI explainable + research aggregator + Bloomberg-class UX di harga retail.
         </div>
       </section>
 
@@ -79,7 +79,7 @@ export default function PitchdeckPage() {
             <p className="text-base leading-relaxed">
               <strong>Nubuat</strong> adalah terminal analisis saham Indonesia berbasis AI untuk retail trader
               yang ingin <strong>berhenti nyangkut</strong> dan mulai trading dengan kerangka data
-              multi-lensa yang konsisten. Kombinasi 5 lensa analisis (Technical, Fundamental,
+              multi POV yang konsisten. Kombinasi 5 lensa analisis (Technical, Fundamental,
               Bandarmology, Brokermology, Macro), Daily Picks dengan SR/SL/TP konkret, dan AI
               Copilot DeepSeek yang menjelaskan setiap sinyal dalam Bahasa Indonesia.
             </p>

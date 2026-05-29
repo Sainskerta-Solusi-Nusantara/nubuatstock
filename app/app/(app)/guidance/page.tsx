@@ -70,7 +70,7 @@ export default function GuidancePage() {
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
             Panduan lengkap cara pakai Nubuat — dari dashboard, daily picks, verdict scoring, wyckoff
-            phase, bandarmology, DCF, screener, sampai AI Copilot. Setiap fitur dijelaskan dengan cara baca + workflow + tips.
+            phase, bandarmology, DCF, screener, sampai AI Buddy. Setiap fitur dijelaskan dengan cara baca + workflow + tips.
           </p>
         </header>
 
@@ -95,7 +95,7 @@ export default function GuidancePage() {
                     <strong>4.</strong> Cek sentimen di tab News. Tambah ke <Link href="/watchlist" className="text-primary underline">Watchlist</Link> + set <Link href="/alerts" className="text-primary underline">Alert</Link>.
                   </li>
                   <li>
-                    <strong>5.</strong> Mau cari emiten lain? Pakai <Link href="/screener" className="text-primary underline">Screener</Link> dengan preset, atau tanya <Link href="/copilot" className="text-primary underline">AI Copilot</Link>.
+                    <strong>5.</strong> Mau cari emiten lain? Pakai <Link href="/screener" className="text-primary underline">Screener</Link> dengan preset, atau tanya <Link href="/copilot" className="text-primary underline">AI Buddy</Link>.
                   </li>
                 </ol>
                 <div className="mt-3 text-xs text-muted-foreground">
@@ -154,7 +154,7 @@ export default function GuidancePage() {
         <Card className="bg-card/40">
           <CardContent className="p-4 text-center text-xs text-muted-foreground">
             <p>
-              Pertanyaan lebih lanjut? Tanya <Link href="/copilot" className="text-primary underline">AI Copilot</Link>{" "}
+              Pertanyaan lebih lanjut? Tanya <Link href="/copilot" className="text-primary underline">AI Buddy</Link>{" "}
               atau email <a href="mailto:support@nubuat.id" className="text-primary underline">support@nubuat.id</a>.
             </p>
             <p className="mt-1">

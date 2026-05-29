@@ -57,7 +57,7 @@ export default async function LandingPage() {
     heroMiddle: { key: "landing.hero.headline_middle", default: ". Mulai" },
     heroBullish: { key: "landing.hero.headline_bullish", default: "profit" },
     heroTail: { key: "landing.hero.headline_tail", default: "dari data." },
-    heroSub: { key: "landing.hero.subheadline", default: "menganalisa setiap entry." },
+    heroSub: { key: "landing.hero.subheadline", default: "menganalisis setiap entry." },
     heroCta1: { key: "landing.hero.cta_primary", default: "Coba Gratis 7 Hari" },
     heroCta2: { key: "landing.hero.cta_secondary", default: "Lihat fitur" },
     heroNote: { key: "landing.hero.cta_note", default: "Tanpa kartu kredit." },

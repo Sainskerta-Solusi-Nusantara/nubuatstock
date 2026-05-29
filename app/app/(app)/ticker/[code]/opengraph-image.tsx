@@ -132,7 +132,7 @@ export default async function TickerOgImage({ params }: Props) {
             color: "#5e6b76",
           }}
         >
-          <div>Analisa teknikal, fundamental, bandarmologi &amp; AI</div>
+          <div>Analisis teknikal, fundamental, bandarmologi &amp; AI</div>
           <div>Edukasi, bukan rekomendasi investasi</div>
         </div>
       </div>

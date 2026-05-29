@@ -118,7 +118,7 @@ const defaults: ConfigEntry[] = [
     value: "deepseek-v4-flash",
     type: "string",
     category: "ai",
-    description: "Model DeepSeek default untuk AI Copilot.",
+    description: "Model DeepSeek default untuk AI Buddy.",
   },
   {
     key: "ai.deepseek.deep_model",
@@ -343,7 +343,7 @@ interface SecretSlot {
 }
 
 const secretSlots: SecretSlot[] = [
-  { key: "ai.deepseek.api_key", description: "API key DeepSeek untuk AI Copilot.", bootstrapEnv: "BOOTSTRAP_AI_DEEPSEEK_API_KEY" },
+  { key: "ai.deepseek.api_key", description: "API key DeepSeek untuk AI Buddy.", bootstrapEnv: "BOOTSTRAP_AI_DEEPSEEK_API_KEY" },
   { key: "ai.anthropic.api_key", description: "API key Anthropic (kalau provider di-swap ke anthropic).", bootstrapEnv: "BOOTSTRAP_AI_ANTHROPIC_API_KEY" },
   { key: "ai.openai.api_key", description: "API key OpenAI (kalau provider di-swap ke openai).", bootstrapEnv: "BOOTSTRAP_AI_OPENAI_API_KEY" },
   { key: "vendor.invezgo.api_key", description: "API key Invezgo.", bootstrapEnv: "BOOTSTRAP_VENDOR_INVEZGO_API_KEY" },

@@ -57,7 +57,7 @@ const tiers: TierDef[] = [
       "1 chart per halaman",
       "Basic TA: 20 indikator",
       "Daily Brief harian",
-      "AI Copilot 5 query/hari",
+      "AI Buddy 5 query/hari",
     ],
     entitlements: {
       "ai.queries_per_day": 5,
@@ -91,7 +91,7 @@ const tiers: TierDef[] = [
       "Full TA: 150 indikator",
       "Bandarmology basic (broker summary 1D)",
       "Daily Picks 3/hari",
-      "AI Copilot 50 query/hari",
+      "AI Buddy 50 query/hari",
       "Trial 7 hari penuh",
     ],
     entitlements: {
@@ -128,7 +128,7 @@ const tiers: TierDef[] = [
       "Multi-chart workspace",
       "Alerts unlimited",
       "Backtest hingga 3 strategi",
-      "AI Copilot 500 query/hari",
+      "AI Buddy 500 query/hari",
       "Mobile + Desktop app",
     ],
     entitlements: {
@@ -164,7 +164,7 @@ const tiers: TierDef[] = [
       "Paper trading",
       "Strategy marketplace",
       "Priority Discord & concierge onboarding",
-      "AI Copilot unlimited + Deep Mode (Opus)",
+      "AI Buddy unlimited + Deep Mode (Opus)",
       "API access read-only (rate-limited)",
     ],
     entitlements: {
@@ -295,7 +295,7 @@ export async function seedTiers(): Promise<void> {
 
 function describeEntitlement(key: string): string {
   const descriptions: Record<string, string> = {
-    "ai.queries_per_day": "Jumlah maksimum query AI Copilot per hari (reset 00:00 WIB).",
+    "ai.queries_per_day": "Jumlah maksimum query AI Buddy per hari (reset 00:00 WIB).",
     "watchlist.max_items": "Jumlah maksimum ticker di watchlist user.",
     "alerts.max_active": "Jumlah maksimum alert aktif (status enabled).",
     "picks.daily_visible": "Jumlah Daily Picks yang ditampilkan ke user per hari.",

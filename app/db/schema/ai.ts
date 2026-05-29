@@ -30,7 +30,7 @@ export interface AiCitation {
 }
 
 /**
- * Schema AI Copilot (Agent 7).
+ * Schema AI Buddy (Agent 7).
  *
  * Catatan desain:
  * - Tidak ada FK ke tabel `user` di sini karena Agent 3 (auth) memiliki schema-nya sendiri.
@@ -41,7 +41,7 @@ export interface AiCitation {
  */
 
 /**
- * `ai_conversations` — sesi percakapan user dengan AI Copilot.
+ * `ai_conversations` — sesi percakapan user dengan AI Buddy.
  *
  * - `contextKode` opsional — kalau conversation dibuka dari halaman ticker, ini di-set.
  * - `provider` & `modelUsed` di-snapshot saat first turn untuk audit/cost analytics.

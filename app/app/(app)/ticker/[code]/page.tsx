@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!company) {
     const title = `${normalized} — Analisis Saham`;
-    const description = `Analisa saham ${normalized} di IDX: harga, teknikal, fundamental, bandarmologi & ringkasan AI. Hanya di Nubuat.`;
+    const description = `Analisis saham ${normalized} di IDX: harga, teknikal, fundamental, bandarmologi & ringkasan AI. Hanya di Nubuat.`;
     const url = `/ticker/${normalized}`;
     return {
       title,
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const sektor = company.sectorNamaId ?? company.sectorKode;
   const title = `${company.kode} ${company.namaPerusahaan} — Analisis Saham`;
   const descParts = [
-    `Analisa lengkap saham ${company.kode} (${company.namaPerusahaan})`,
+    `Analisis lengkap saham ${company.kode} (${company.namaPerusahaan})`,
     sektor ? `sektor ${sektor}` : null,
     "di Bursa Efek Indonesia.",
     "Harga real-time, analisis teknikal, fundamental, bandarmologi, dan ringkasan AI.",
