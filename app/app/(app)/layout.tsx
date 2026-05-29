@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth/server";
 import { AppShell } from "@/components/layout/AppShell";
 import { ThemeScript } from "@/components/layout/ThemeScript";
 import { getLegalGateStatus } from "@/lib/legal/acceptance";
-import { getConfig } from "@/lib/config";
+import { getConfig, hasSecret } from "@/lib/config";
 import { AcceptDisclaimerGate } from "@/components/legal/AcceptDisclaimerGate";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 
@@ -29,11 +29,15 @@ export default async function AppLayout({
     redirect("/login");
   }
 
-  // Email verification gate (IMPROVEMENT_PLAN §8.1 #2): user yang belum verifikasi
-  // email tidak boleh akses fitur app. Redirect ke /verify-email yang menyediakan
-  // status + tombol kirim ulang. Dilakukan SEBELUM gate disclaimer.
+  // Email verification gate (IMPROVEMENT_PLAN §8.1 #2): hanya di-enforce kalau
+  // email sender (Resend) AKTIF. Kalau belum dikonfigurasi, verifikasi tak bisa
+  // dikirim → JANGAN kunci user (mencegah signup baru stuck di /verify-email).
+  // Begitu `email.resend.api_key` di-set, gate otomatis aktif.
   if (!session.user.emailVerified) {
-    redirect("/verify-email");
+    const emailSenderConfigured = await hasSecret("email.resend.api_key");
+    if (emailSenderConfigured) {
+      redirect("/verify-email");
+    }
   }
 
   const userId = (session as { userId?: string; user?: { id?: string } }).userId
