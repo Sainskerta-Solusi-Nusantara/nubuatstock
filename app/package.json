@@ -23,6 +23,7 @@
     "db:seed-research": "tsx --env-file=.env db/seed/research-sample.ts",
     "db:embed-research": "tsx --env-file=.env scripts/embed-research.ts",
     "worker": "tsx --env-file=.env worker/index.ts",
+    "worker:prod": "tsx worker/index.ts",
     "test": "vitest",
     "test:e2e": "playwright test",
     "generate:key": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
