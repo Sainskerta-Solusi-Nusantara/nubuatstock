@@ -11,7 +11,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   experimental: {
-    typedRoutes: true,
+    // typedRoutes tidak didukung Turbopack (next dev --turbo) di Next 15.1.x,
+    // tapi WAJIB untuk type-check `next build`. Jadi: aktif saat build (webpack,
+    // TURBOPACK unset), nonaktif saat dev turbo (TURBOPACK=1) supaya dev jalan +
+    // Tailwind v4 CSS ter-compile dengan benar di Turbopack.
+    typedRoutes: !process.env.TURBOPACK,
     serverActions: {
       bodySizeLimit: "2mb",
     },
