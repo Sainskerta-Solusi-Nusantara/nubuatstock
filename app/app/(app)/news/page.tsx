@@ -1,4 +1,4 @@
-import { Newspaper, TrendingUp, TrendingDown, Minus, Filter } from "lucide-react";
+import { Newspaper, TrendingUp, TrendingDown, Minus, Filter, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { NewsCard } from "@/components/news/NewsCard";
 import { Pagination } from "@/components/ui/pagination";
@@ -86,7 +86,29 @@ export default async function NewsFeedPage({ searchParams }: PageProps) {
       </div>
 
       {/* Filter */}
-      <form className="flex flex-wrap items-end gap-2" method="get">
+      <form className="space-y-3" method="get">
+        {/* Kolom pencarian utama — lebar penuh & menonjol biar langsung kelihatan
+            sebagai pencarian/filter berita. */}
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            name="q"
+            defaultValue={sp.q ?? ""}
+            placeholder="Cari berita berdasarkan judul…"
+            aria-label="Cari berita berdasarkan judul"
+            className="h-12 w-full rounded-lg border border-input bg-background pl-11 pr-28 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          />
+          <button
+            type="submit"
+            className="absolute right-1.5 top-1/2 inline-flex h-9 -translate-y-1/2 items-center gap-1.5 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:brightness-110"
+          >
+            <Filter className="h-3.5 w-3.5" />
+            Cari
+          </button>
+        </div>
+        {/* Filter sekunder */}
+        <div className="flex flex-wrap items-end gap-2">
         <FilterField label="Sumber">
           <select
             name="source"
@@ -123,21 +145,12 @@ export default async function NewsFeedPage({ searchParams }: PageProps) {
             className="h-9 w-24 rounded-md border border-input bg-background px-3 font-mono text-sm uppercase"
           />
         </FilterField>
-        <FilterField label="Cari judul">
-          <input
-            type="text"
-            name="q"
-            defaultValue={sp.q ?? ""}
-            placeholder="Kata kunci..."
-            className="h-9 w-48 rounded-md border border-input bg-background px-3 text-sm"
-          />
-        </FilterField>
         <button
           type="submit"
           className="inline-flex h-9 items-center gap-1 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:brightness-110"
         >
           <Filter className="h-3.5 w-3.5" />
-          Apply
+          Terapkan filter
         </button>
         {(sp.source || sp.sentiment || sp.ticker || sp.q) && (
           <a
@@ -147,6 +160,7 @@ export default async function NewsFeedPage({ searchParams }: PageProps) {
             Reset
           </a>
         )}
+        </div>
       </form>
 
       {/* Article list */}

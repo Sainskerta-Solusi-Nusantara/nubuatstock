@@ -13,6 +13,7 @@ import {
 } from "@/db/schema/billing";
 import {
   DEFAULT_FREE_TIER_KODE,
+  TIER_RANK,
   type BillingCycle,
   type SubscriptionProvider,
   type TierKode,
@@ -420,6 +421,98 @@ export async function activatePaidSubscription(opts: {
   logger.info(
     { userId: opts.userId, tier: inv.tierKode, subscriptionId: newId },
     "Paid subscription activated",
+  );
+
+  return inserted[0]!;
+}
+
+/**
+ * Admin override — set tier user secara manual (tanpa pembayaran).
+ * Dipakai superadmin di halaman Users & Roles. Expire sub aktif lama → buat
+ * sub aktif baru tier pilihan (provider "manual"). Granted 365 hari (non-free)
+ * supaya tidak langsung di-expire worker; free dianggap permanen.
+ */
+export async function setUserTierByAdmin(opts: {
+  userId: string;
+  tierKode: TierKode;
+  actorUserId: string;
+  reason?: string;
+}): Promise<UserSubscription> {
+  // Validasi tier ada.
+  const [tier] = await db
+    .select()
+    .from(subscriptionTiers)
+    .where(eq(subscriptionTiers.kode, opts.tierKode))
+    .limit(1);
+  if (!tier) throw new NotFoundError(`Tier ${opts.tierKode}`);
+
+  const active = await getActiveSubscription(opts.userId);
+  const now = new Date();
+
+  if (active) {
+    if (active.subscription.tierKode === opts.tierKode && active.subscription.status === "active") {
+      return active.subscription;
+    }
+    await db
+      .update(userSubscriptions)
+      .set({ status: "expired", currentPeriodEnd: now, updatedAt: now })
+      .where(eq(userSubscriptions.id, active.subscription.id));
+  }
+
+  const isFree = opts.tierKode === DEFAULT_FREE_TIER_KODE;
+  const periodEnd = isFree
+    ? new Date(now.getTime() + 100 * 365 * 24 * 60 * 60 * 1000) // ~permanen
+    : new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000);
+
+  const newId = ulid();
+  const inserted = await db
+    .insert(userSubscriptions)
+    .values({
+      id: newId,
+      userId: opts.userId,
+      tierKode: opts.tierKode,
+      status: "active",
+      billingCycle: "monthly" as BillingCycle,
+      startedAt: now,
+      currentPeriodStart: now,
+      currentPeriodEnd: periodEnd,
+      provider: "manual" as SubscriptionProvider,
+      metadata: { adminOverride: true, actorUserId: opts.actorUserId, reason: opts.reason ?? null },
+    })
+    .returning();
+
+  const fromTier = (active?.subscription.tierKode ?? null) as TierKode | null;
+  // Enum subscription_history_action tidak punya "admin_override" → petakan ke
+  // created/upgraded/downgraded berdasarkan rank; detail override ada di `reason`.
+  const histAction: "created" | "upgraded" | "downgraded" = !fromTier
+    ? "created"
+    : TIER_RANK[opts.tierKode] < TIER_RANK[fromTier]
+      ? "downgraded"
+      : "upgraded";
+  const reason = opts.reason ?? `Admin override oleh ${opts.actorUserId}`;
+  await db.insert(subscriptionHistory).values({
+    userId: opts.userId,
+    subscriptionId: newId,
+    action: histAction,
+    fromTierKode: fromTier,
+    toTierKode: opts.tierKode,
+    fromStatus: active?.subscription.status ?? null,
+    toStatus: "active",
+    reason,
+  });
+
+  invalidateUserCache(opts.userId);
+  await emitSubscriptionChanged({
+    userId: opts.userId,
+    subscriptionId: newId,
+    fromTier,
+    toTier: opts.tierKode,
+    action: histAction,
+  });
+
+  logger.info(
+    { userId: opts.userId, tier: opts.tierKode, actorUserId: opts.actorUserId },
+    "Tier set by admin override",
   );
 
   return inserted[0]!;

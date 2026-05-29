@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UsersRoleEditor } from "@/components/superadmin/UsersRoleEditor";
+import { UserTierEditor } from "@/components/superadmin/UserTierEditor";
 
 export const dynamic = "force-dynamic";
 
@@ -113,13 +114,14 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
                         <RoleBadge role={u.role} />
                       </td>
                       <td className="px-4 py-2">
-                        {u.tier ? (
-                          <Badge variant="outline" className="font-mono text-[10px] uppercase">
-                            {u.tier} {u.status === "trialing" && "· trial"}
-                          </Badge>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">—</span>
-                        )}
+                        <div className="flex items-center gap-2">
+                          <UserTierEditor userId={u.id} email={u.email} currentTier={u.tier} />
+                          {u.status === "trialing" && (
+                            <Badge variant="outline" className="text-[10px] uppercase">
+                              trial
+                            </Badge>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-2 text-xs text-muted-foreground">
                         {u.createdAt.toLocaleDateString("id-ID")}

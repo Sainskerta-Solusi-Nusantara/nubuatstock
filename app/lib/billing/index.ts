@@ -30,6 +30,7 @@ export {
 
 export {
   activatePaidSubscription,
+  setUserTierByAdmin,
   cancelSubscription,
   createPendingUpgrade,
   ensureFreeSubscription,

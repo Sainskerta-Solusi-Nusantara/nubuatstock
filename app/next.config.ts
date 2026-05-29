@@ -43,9 +43,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.brandfetch.io", port: "", pathname: "/**" },
       // Self-hosted logo emiten di Vercel Blob (sumber utama setelah sync-logos).
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com", port: "", pathname: "/**" },
-      // News thumbnail sources.
-      { protocol: "https", hostname: "awsimages.detik.net.id", port: "", pathname: "/**" },
+      // News thumbnail sources (pakai wildcard subdomain biar tahan feed baru
+      // mis. detik punya awsimages.* + akcdn.*).
+      { protocol: "https", hostname: "**.detik.net.id", port: "", pathname: "/**" },
       { protocol: "https", hostname: "**.cnbcindonesia.com", port: "", pathname: "/**" },
+      { protocol: "https", hostname: "**.antaranews.com", port: "", pathname: "/**" },
+      { protocol: "https", hostname: "**.investing.com", port: "", pathname: "/**" },
     ],
     deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920, 2048],
     imageSizes: [16, 32, 64, 96, 128, 256, 384],
@@ -72,7 +75,7 @@ const nextConfig: NextConfig = {
               // Image domains. Google `/s2/favicons` 301-redirect ke t*.gstatic.com,
               // jadi *.gstatic.com WAJIB di-whitelist juga supaya logo emiten tidak
               // di-block setelah redirect.
-              "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://cdn.brandfetch.io https://www.google.com https://*.gstatic.com https://awsimages.detik.net.id https://images.unsplash.com https://plus.unsplash.com https://*.cnbcindonesia.com",
+              "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://cdn.brandfetch.io https://www.google.com https://*.gstatic.com https://*.detik.net.id https://images.unsplash.com https://plus.unsplash.com https://*.cnbcindonesia.com https://*.antaranews.com https://*.investing.com",
               "font-src 'self' data:",
               // API: Sentry, PostHog, DeepSeek; allow self for streaming
               "connect-src 'self' https://*.sentry.io https://*.posthog.com https://api.deepseek.com wss://*",
