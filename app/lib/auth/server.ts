@@ -90,6 +90,10 @@ function buildAuth(input: BuildAuthInput) {
     // (dikirim server-side tanpa konteks request). Ambil dari NEXT_PUBLIC_APP_URL
     // (di-set per environment di Vercel); fallback localhost untuk dev.
     baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    // secret WAJIB di production — tanpa ini better-auth error/throw saat
+    // NODE_ENV=production (penyebab sign-in 500 di prod). Baca BETTER_AUTH_SECRET;
+    // fallback ke APP_MASTER_KEY (selalu ada, 64-hex stabil) supaya tak pernah kosong.
+    secret: process.env.BETTER_AUTH_SECRET ?? env.APP_MASTER_KEY,
     database: drizzleAdapter(db, {
       provider: "pg",
       schema: {
