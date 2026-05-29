@@ -26,7 +26,8 @@ export function PricingGrid({ tiers, currentTierKode }: PricingGridProps) {
       const res = await fetch("/api/billing/subscribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tierKode, billingCycle: c, provider: "midtrans" }),
+        // Xendit = gateway aktif (Invoice API live). Midtrans masih stub.
+        body: JSON.stringify({ tierKode, billingCycle: c, provider: "xendit" }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) {

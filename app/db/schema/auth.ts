@@ -40,8 +40,9 @@ export const users = pgTable(
     role: text("role").$type<UserRole>().notNull().default("user"),
     locale: text("locale").notNull().default("id-ID"),
     timezone: text("timezone").notNull().default("Asia/Jakarta"),
-    phone: text("phone"),
+    phone: text("phone"), // nomor WhatsApp (mandatory saat signup email)
     phoneVerifiedAt: timestamp("phone_verified_at", { withTimezone: true, mode: "date" }),
+    telegram: text("telegram"), // username/handle Telegram (opsional)
     mfaEnabled: boolean("mfa_enabled").notNull().default(false),
     failedLoginCount: integer("failed_login_count").notNull().default(0),
     lockedUntil: timestamp("locked_until", { withTimezone: true, mode: "date" }),

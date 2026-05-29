@@ -117,6 +117,40 @@ function buildAuth(input: BuildAuthInput) {
       // level core. Enforcement verifikasi dilakukan di app shell (layout (app))
       // supaya UX-nya berupa gate page, bukan error login mentah.
       requireEmailVerification: false,
+      // Reset password — link berlaku 1 jam. Email dikirim via Resend (soft-fail
+      // kalau email service belum dikonfigurasi: log warn, tidak crash).
+      resetPasswordTokenExpiresIn: 60 * 60,
+      sendResetPassword: async ({ user, url }) => {
+        try {
+          const [appName, supportEmail] = await Promise.all([
+            getConfig<string>("app.name", { defaultValue: "Nubuat" }),
+            getConfig<string>("app.support_email", { defaultValue: "support@nubuat.id" }),
+          ]);
+          const { sendEmail, renderResetPasswordEmail } = await import(
+            "@/lib/notifications/email"
+          );
+          const { subject, html, text } = renderResetPasswordEmail({
+            appName,
+            resetUrl: url,
+            supportEmail,
+          });
+          const res = await sendEmail({
+            to: user.email,
+            subject,
+            html,
+            text,
+            tags: [{ name: "type", value: "reset_password" }],
+          });
+          if (!res.ok) {
+            logger.warn(
+              { err: res.error, userId: user.id },
+              "reset password email tidak terkirim (email service belum dikonfigurasi?)",
+            );
+          }
+        } catch (err) {
+          logger.error({ err, userId: user.id }, "sendResetPassword gagal");
+        }
+      },
       // Argon2id adalah default better-auth password hasher (via @node-rs/argon2).
       // Kalau better-auth v1.1 sudah ganti ke scrypt, override perlu password.hash.
       // Kita biarkan default — sudah aman per AGENTS.md §7.

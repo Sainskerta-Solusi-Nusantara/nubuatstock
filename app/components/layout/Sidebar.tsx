@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Activity,
   Bell,
   BookOpen,
   Bot,
@@ -12,12 +13,14 @@ import {
   Gift,
   GitCompareArrows,
   GraduationCap,
+  History,
   Home,
   Layers,
   LayoutGrid,
   LifeBuoy,
   LineChart,
   ListChecks,
+  MessageCircleQuestion,
   Newspaper,
   Presentation,
   Search,
@@ -48,28 +51,58 @@ interface SidebarItem {
   match?: (p: string) => boolean;
 }
 
-const PRIMARY: SidebarItem[] = [
-  { href: "/", label: "Dashboard", icon: Home, match: (p) => p === "/" },
-  { href: "/picks", label: "Daily Picks", icon: ListChecks },
-  { href: "/portfolio", label: "Paper Trade", icon: Wallet, badge: "NEW" },
-  { href: "/leaderboard", label: "Hall of Fame", icon: Trophy, badge: "NEW" },
-  { href: "/news", label: "News", icon: Newspaper },
-  { href: "/watchlist", label: "Watchlist", icon: Star },
-  { href: "/alerts", label: "Alerts", icon: Bell },
-];
+interface SidebarGroup {
+  label: string;
+  items: SidebarItem[];
+}
 
-const SECONDARY: SidebarItem[] = [
-  { href: "/screener", label: "Screener", icon: Search, badge: "NEW" },
-  { href: "/compare", label: "Compare", icon: GitCompareArrows, badge: "NEW" },
-  { href: "/workspace", label: "Terminal Pro", icon: LayoutGrid, badge: "NEW" },
-  { href: "/sectors", label: "Sectors", icon: Layers },
-  { href: "/rotation", label: "Rotation (RRG)", icon: LineChart, badge: "NEW" },
-  { href: "/copilot", label: "AI Buddy", icon: Bot },
-  { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
-  { href: "/help", label: "Help Center", icon: LifeBuoy, badge: "NEW" },
-  { href: "/referral", label: "Ajak Teman", icon: Gift, badge: "NEW" },
-  { href: "/guidance", label: "Guidance", icon: BookOpen },
-  { href: "/subscription", label: "Subscription", icon: CreditCard },
+const GROUPS: SidebarGroup[] = [
+  {
+    label: "Utama",
+    items: [
+      { href: "/dashboard", label: "Dashboard", icon: Home, match: (p) => p === "/dashboard" || p === "/" },
+      { href: "/picks", label: "Daily Picks", icon: ListChecks },
+      { href: "/news", label: "News", icon: Newspaper },
+    ],
+  },
+  {
+    label: "Analisis",
+    items: [
+      { href: "/watchlist", label: "Watchlist", icon: Star },
+      { href: "/screener", label: "Screener", icon: Search, badge: "NEW" },
+      { href: "/compare", label: "Compare", icon: GitCompareArrows, badge: "NEW" },
+      { href: "/workspace", label: "Terminal Pro", icon: LayoutGrid, badge: "NEW" },
+      { href: "/sectors", label: "Sectors", icon: Layers },
+      { href: "/rotation", label: "Rotation (RRG)", icon: LineChart, badge: "NEW" },
+      { href: "/capital-flow", label: "Capital Flow", icon: Activity },
+    ],
+  },
+  {
+    label: "Trading",
+    items: [
+      { href: "/portfolio", label: "Paper Trade", icon: Wallet, badge: "NEW" },
+      { href: "/leaderboard", label: "Hall of Fame", icon: Trophy, badge: "NEW" },
+      { href: "/backtest", label: "Backtest", icon: History },
+      { href: "/alerts", label: "Alerts", icon: Bell },
+    ],
+  },
+  {
+    label: "AI & Belajar",
+    items: [
+      { href: "/copilot", label: "AI Buddy", icon: Bot },
+      { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
+      { href: "/guidance", label: "Guidance", icon: BookOpen },
+      { href: "/help", label: "Help Center", icon: LifeBuoy, badge: "NEW" },
+      { href: "/support", label: "Bantuan", icon: MessageCircleQuestion },
+    ],
+  },
+  {
+    label: "Akun",
+    items: [
+      { href: "/referral", label: "Ajak Teman", icon: Gift, badge: "NEW" },
+      { href: "/subscription", label: "Subscription", icon: CreditCard },
+    ],
+  },
 ];
 
 const STORAGE_KEY = "nubuat-sidebar-collapsed";
@@ -163,9 +196,18 @@ export function Sidebar({ isAdmin, isSuperadmin = false, tier }: SidebarProps) {
       <Separator />
 
       <nav className="flex-1 overflow-y-auto px-2 py-3">
-        <ul className="space-y-1">{PRIMARY.map(renderItem)}</ul>
-        <Separator className="my-3" />
-        <ul className="space-y-1">{SECONDARY.map(renderItem)}</ul>
+        {GROUPS.map((group, idx) => (
+          <div key={group.label} className={cn(idx > 0 && "mt-4")}>
+            {!collapsed ? (
+              <p className="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                {group.label}
+              </p>
+            ) : (
+              idx > 0 && <Separator className="my-2" />
+            )}
+            <ul className="space-y-1">{group.items.map(renderItem)}</ul>
+          </div>
+        ))}
 
         {isAdmin && (
           <>

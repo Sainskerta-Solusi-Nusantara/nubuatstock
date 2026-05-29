@@ -29,7 +29,8 @@ export async function getSessionDurationSeconds(): Promise<number> {
 }
 
 export async function getPasswordMinLength(): Promise<number> {
-  return getConfig<number>(AUTH_CONFIG_KEYS.passwordMinLength, { defaultValue: 12 });
+  // Default 8 (cukup aman + ramah; bisa di-override via app_config).
+  return getConfig<number>(AUTH_CONFIG_KEYS.passwordMinLength, { defaultValue: 8 });
 }
 
 export async function getAppName(): Promise<string> {

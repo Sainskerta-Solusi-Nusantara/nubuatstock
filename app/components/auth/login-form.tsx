@@ -14,6 +14,7 @@ export function LoginForm({ callbackUrl = "/dashboard" }: { callbackUrl?: string
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -80,13 +81,23 @@ export function LoginForm({ callbackUrl = "/dashboard" }: { callbackUrl?: string
             Lupa password?
           </Link>
         </div>
-        <input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          {...register("password")}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            {...register("password")}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 pr-16 text-sm focus:border-neutral-900 focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-neutral-600 hover:text-neutral-900"
+            aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+          >
+            {showPassword ? "Sembunyikan" : "Tampilkan"}
+          </button>
+        </div>
         {errors.password ? (
           <p className="text-xs text-red-600">{errors.password.message}</p>
         ) : null}

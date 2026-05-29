@@ -23,10 +23,16 @@ export function SignupForm({
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const schema = z.object({
     name: nameSchema,
     email: emailSchema,
+    whatsapp: z
+      .string()
+      .trim()
+      .regex(/^\+?[0-9]{8,20}$/, "Nomor WhatsApp tidak valid (8-20 digit)"),
+    telegram: z.string().trim().max(64).optional(),
     password: z
       .string()
       .min(minPasswordLength, `Password minimal ${minPasswordLength} karakter`)
@@ -61,6 +67,18 @@ export function SignupForm({
         setServerError(result.error.message ?? "Gagal mendaftar");
         setSubmitting(false);
         return;
+      }
+      // autoSignIn aktif → user sudah punya session. Simpan kontak (WhatsApp
+      // wajib + Telegram opsional). Best-effort: kalau gagal, user tetap lanjut
+      // (bisa lengkapi di Settings).
+      try {
+        await fetch("/api/account/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ whatsapp: values.whatsapp, telegram: values.telegram }),
+        });
+      } catch {
+        /* abaikan — non-blocking */
       }
       router.push(callbackUrl);
       router.refresh();
@@ -103,19 +121,65 @@ export function SignupForm({
       </div>
 
       <div className="space-y-1">
+        <label htmlFor="whatsapp" className="text-sm font-medium text-neutral-800">
+          Nomor WhatsApp
+        </label>
+        <input
+          id="whatsapp"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="08xxxxxxxxxx"
+          {...register("whatsapp")}
+          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+        />
+        <p className="text-xs text-neutral-500">Wajib — untuk notifikasi penting & verifikasi.</p>
+        {errors.whatsapp ? (
+          <p className="text-xs text-red-600">{errors.whatsapp.message}</p>
+        ) : null}
+      </div>
+
+      <div className="space-y-1">
+        <label htmlFor="telegram" className="text-sm font-medium text-neutral-800">
+          Telegram <span className="font-normal text-neutral-500">(opsional)</span>
+        </label>
+        <input
+          id="telegram"
+          type="text"
+          autoComplete="off"
+          placeholder="@username"
+          {...register("telegram")}
+          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+        />
+        {errors.telegram ? (
+          <p className="text-xs text-red-600">{errors.telegram.message}</p>
+        ) : null}
+      </div>
+
+      <div className="space-y-1">
         <label htmlFor="password" className="text-sm font-medium text-neutral-800">
           Password
         </label>
-        <input
-          id="password"
-          type="password"
-          autoComplete="new-password"
-          {...register("password")}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
-        />
+        <div className="relative">
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            {...register("password")}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 pr-16 text-sm focus:border-neutral-900 focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-neutral-600 hover:text-neutral-900"
+            aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+          >
+            {showPassword ? "Sembunyikan" : "Tampilkan"}
+          </button>
+        </div>
         <p className="text-xs text-neutral-500">
-          Minimal {minPasswordLength} karakter. Gunakan kombinasi huruf, angka, &
-          simbol.
+          Minimal {minPasswordLength} karakter. Tip: pakai saran password kuat dari
+          browser kamu.
         </p>
         {errors.password ? (
           <p className="text-xs text-red-600">{errors.password.message}</p>

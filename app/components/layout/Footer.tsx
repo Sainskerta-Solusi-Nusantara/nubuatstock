@@ -11,13 +11,13 @@ export function Footer() {
         </span>
       </div>
       <div className="flex items-center gap-3">
-        <Link href="/legal/terms" className="hover:text-foreground">
+        <Link href="/terms" className="hover:text-foreground">
           Syarat
         </Link>
-        <Link href="/legal/privacy" className="hover:text-foreground">
+        <Link href="/privacy" className="hover:text-foreground">
           Privasi
         </Link>
-        <Link href="/legal/disclosure" className="hover:text-foreground">
+        <Link href="/disclaimer" className="hover:text-foreground">
           Disclosure
         </Link>
       </div>

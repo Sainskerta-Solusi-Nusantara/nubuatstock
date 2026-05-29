@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -69,5 +70,40 @@ export const supportMessages = pgTable(
   },
   (t) => [
     index("support_messages_ticket_idx").on(t.ticketId, t.createdAt),
+  ],
+);
+
+/**
+ * Lightweight product feedback — bukan ticket support (no thread, no status).
+ *
+ * Dipakai oleh FeedbackDialog di dashboard: user kasih rating (1–5, optional)
+ * + pesan singkat. Disimpan terpisah dari ticket supaya queue support tetap
+ * bersih dan feedback bisa diagregasi (NPS-ish) tanpa noise.
+ *
+ * Categories: bug | feature | billing | other | feedback (selaras dengan copy UI).
+ */
+export const supportFeedback = pgTable(
+  "support_feedback",
+  {
+    id: ulid(),
+    userId: ulidRef("user_id"),
+    /** Snapshot email saat submit */
+    userEmail: text("user_email").notNull(),
+    category: text("category", {
+      enum: ["bug", "feature", "billing", "other", "feedback"],
+    })
+      .notNull()
+      .default("feedback"),
+    message: text("message").notNull(),
+    /** Optional 1–5 rating */
+    rating: integer("rating"),
+    /** Snapshot URL context saat submit */
+    contextUrl: text("context_url"),
+    metadata: jsonbT<Record<string, unknown>>("metadata"),
+    ...withTimestamps,
+  },
+  (t) => [
+    index("support_feedback_user_idx").on(t.userId),
+    index("support_feedback_created_idx").on(t.createdAt),
   ],
 );

@@ -19,7 +19,7 @@ type NavItem = {
 };
 
 const LEFT: NavItem[] = [
-  { href: "/", label: "Home", icon: Home, match: (p: string) => p === "/" },
+  { href: "/dashboard", label: "Home", icon: Home, match: (p: string) => p === "/dashboard" || p === "/" },
   { href: "/picks", label: "Picks", icon: ListChecks },
 ];
 
