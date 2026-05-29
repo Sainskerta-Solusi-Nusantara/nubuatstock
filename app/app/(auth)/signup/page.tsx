@@ -6,6 +6,7 @@ import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { AuthHeading } from "@/components/auth/auth-heading";
 import { RefCapture } from "@/components/referral/ref-capture";
 import { getGoogleOAuthCreds, getPasswordMinLength } from "@/lib/auth/config";
+import { hasSecret } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Daftar",
@@ -20,9 +21,10 @@ export default async function SignupPage({
   // Terima `trial=1`, `trial=true`, `trial=pro` — semua value non-empty
   // dianggap niat trial. Tier default Pro 7 hari di server.
   const trialIntent = typeof trial === "string" && trial.length > 0 && trial !== "0" && trial !== "false";
-  const [minLen, google] = await Promise.all([
+  const [minLen, google, emailVerificationEnabled] = await Promise.all([
     getPasswordMinLength(),
     getGoogleOAuthCreds(),
+    hasSecret("email.resend.api_key"),
   ]);
   return (
     <>
@@ -37,8 +39,9 @@ export default async function SignupPage({
       />
       <SignupForm
         minPasswordLength={minLen}
-        callbackUrl={callbackUrl ?? "/"}
+        callbackUrl={callbackUrl ?? "/dashboard"}
         trial={trialIntent}
+        emailVerificationEnabled={emailVerificationEnabled}
       />
       <div className="my-5 flex items-center gap-3 text-xs text-neutral-400">
         <div className="h-px flex-1 bg-neutral-200" />

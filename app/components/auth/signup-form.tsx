@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, MailCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,21 +10,33 @@ import { z } from "zod";
 import { authClient } from "@/lib/auth/client";
 import { emailSchema, nameSchema } from "@/lib/types/auth";
 import { FormMessage } from "./form-message";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function SignupForm({
   minPasswordLength,
   callbackUrl = "/dashboard",
   trial = false,
+  emailVerificationEnabled = false,
 }: {
   minPasswordLength: number;
   callbackUrl?: string;
   /** True kalau user datang via `/signup?trial=1` — server hook pakai cookie ini untuk start trial Pro 7 hari. */
   trial?: boolean;
+  /** True kalau email sender (Resend) aktif → instruksi cek email verifikasi ditampilkan. */
+  emailVerificationEnabled?: boolean;
 }) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [successEmail, setSuccessEmail] = useState<string | null>(null);
 
   const schema = z.object({
     name: nameSchema,
@@ -81,8 +93,9 @@ export function SignupForm({
       } catch {
         /* abaikan — non-blocking */
       }
-      router.push(callbackUrl);
-      router.refresh();
+      // Tampilkan popup sukses (instruksi cek email kalau verifikasi aktif).
+      // Redirect dilakukan saat user klik "Lanjut" di dialog.
+      setSuccessEmail(values.email);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Pendaftaran gagal";
       setServerError(msg);
@@ -91,6 +104,7 @@ export function SignupForm({
   }
 
   return (
+    <>
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
       {serverError ? <FormMessage variant="error">{serverError}</FormMessage> : null}
 
@@ -195,5 +209,41 @@ export function SignupForm({
         {submitting ? "Memproses..." : "Daftar"}
       </button>
     </form>
+
+      <Dialog open={successEmail !== null} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md" hideClose>
+          <DialogHeader className="items-center text-center">
+            <div className="mb-2 flex size-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+              <MailCheck className="size-6" />
+            </div>
+            <DialogTitle className="text-center">Pendaftaran berhasil! 🎉</DialogTitle>
+          </DialogHeader>
+          <p className="text-center text-sm text-muted-foreground">
+            {emailVerificationEnabled ? (
+              <>
+                Kami sudah mengirim email verifikasi ke{" "}
+                <span className="font-medium text-foreground">{successEmail}</span>. Cek inbox
+                (atau folder spam) dan klik tautannya untuk mengaktifkan akunmu.
+              </>
+            ) : (
+              <>
+                Akunmu sudah aktif. Selamat datang di Nubuat — yuk mulai analisis saham IDX
+                pertamamu!
+              </>
+            )}
+          </p>
+          <DialogFooter className="sm:justify-center">
+            <Button
+              onClick={() => {
+                router.push(emailVerificationEnabled ? "/verify-email" : callbackUrl);
+                router.refresh();
+              }}
+            >
+              {emailVerificationEnabled ? "Lanjut & verifikasi email" : "Masuk ke dashboard"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
