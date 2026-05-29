@@ -79,8 +79,8 @@ export function PatternCard({ patterns }: PatternCardProps) {
                 {p.patternDescription}
               </p>
 
-              {/* Narrative */}
-              {p.narrative && (
+              {/* Narrative template (AI-cached narrative ditangani ExplainButton) */}
+              {p.narrative && !p.narrative.startsWith("AI:") && (
                 <p className="text-[11px] leading-relaxed">
                   {p.narrative}
                 </p>

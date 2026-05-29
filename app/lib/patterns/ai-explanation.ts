@@ -3,18 +3,26 @@ import { PATTERN_META, type PatternType } from "./types";
 import { logger } from "@/lib/logger";
 
 /**
- * Generate AI explanation untuk pattern detection per ticker.
+ * AI Pattern Explanation — "Jelaskan pola ini".
  *
- * 2 paragraf bahasa Indonesia:
- *   1. Makna pattern secara umum + apa yang biasanya terjadi setelahnya
- *   2. Konteks spesifik untuk ticker ini — alasan kenapa pattern relevan,
- *      potential price targets, hal yang harus dipantau
+ * generatePatternExplanation() menghasilkan penjelasan markdown bahasa Indonesia
+ * awam untuk satu pattern yang terdeteksi:
+ *   - Apa pola ini & cara membacanya
+ *   - Implikasi bullish/bearish + behavior pasar tipikal
+ *   - Konteks spesifik ticker (level penting + yang perlu dipantau)
+ *   - Disclaimer ("bukan ajakan jual/beli")
  *
- * Caching: store hasil di DB pattern_detections.narrative (sudah ada kolom-nya).
- * Generate on-demand kalau narrative null, cached otherwise.
+ * Kalau LLM gagal / belum dikonfigurasi → fallback ke deskripsi statis dari
+ * PATTERN_META (lewat buildFallbackExplanation) supaya panel TIDAK pernah kosong.
+ *
+ * Caller (route) yang memutuskan caching: hasil `source === "ai"` boleh disimpan
+ * ke pattern_detections.narrative dengan prefix "AI:"; fallback JANGAN di-cache.
  */
 
-interface AIExplanationInput {
+const DISCLAIMER =
+  "_Penjelasan ini bersifat edukatif untuk membantu kamu membaca chart — **bukan ajakan untuk membeli atau menjual**. Pola teknikal bisa gagal (false breakout); selalu validasi sendiri dan kelola risiko sebelum mengambil keputusan._";
+
+export interface AIExplanationInput {
   ticker: string;
   patternType: PatternType;
   direction: "bullish" | "bearish";
@@ -31,11 +39,24 @@ interface AIExplanationInput {
   companyName?: string | null;
 }
 
+export interface PatternExplanationResult {
+  /** Markdown siap-render (sudah termasuk disclaimer). */
+  explanation: string;
+  /** "ai" = dari LLM (boleh di-cache); "fallback" = statis (jangan di-cache). */
+  source: "ai" | "fallback";
+}
+
+/**
+ * Generate penjelasan AI. Selalu mengembalikan explanation non-empty:
+ * jatuh ke fallback statis kalau LLM gagal / belum terkonfigurasi.
+ */
 export async function generatePatternExplanation(
   input: AIExplanationInput,
-): Promise<string> {
+): Promise<PatternExplanationResult> {
   const meta = PATTERN_META[input.patternType];
-  if (!meta) return "";
+  if (!meta) {
+    return { explanation: buildFallbackExplanation(input), source: "fallback" };
+  }
 
   try {
     const { client, config } = await getAiClient();
@@ -50,12 +71,15 @@ ${input.volumeConfirmation ? "Volume konfirmasi: YA" : ""}
 
 Pattern definition: ${meta.description}
 
-Tulis penjelasan 2 paragraf bahasa Indonesia profesional:
-Paragraf 1: Makna pattern ini secara umum + behavior pasar tipikal setelah pattern complete.
-Paragraf 2: Konteks spesifik untuk ${input.ticker} — implikasi current level + hal yang perlu dimonitor.
+Tulis penjelasan markdown bahasa Indonesia awam (santai tapi tetap kredibel) untuk pemula:
+1. Apa pola "${meta.label}" ini & cara membacanya di chart (1-2 kalimat).
+2. Implikasi ${input.direction === "bullish" ? "bullish" : "bearish"} + apa yang biasanya terjadi pasar setelah pola ini.
+3. Konteks ${input.ticker} sekarang — kaitkan dengan level Breakout/Target/Stop di atas + apa yang perlu kamu pantau.
 
-Output HANYA JSON: {"explanation": "..."} dengan paragraph dipisah \\n\\n.
-Singkat, padat, tidak bertele-tele. ~150 kata total.`;
+Aturan:
+- Sapa pembaca dengan "kamu" (jangan "Anda"). Hindari jargon berat; kalau pakai istilah, jelaskan singkat.
+- Boleh pakai bullet point. Ringkas, ~150 kata. JANGAN tambahkan disclaimer (sistem yang menambahkan).
+Output HANYA JSON: {"explanation": "...markdown..."}`;
 
     const completion = await client.chat.completions.create({
       model: config.defaultModel,
@@ -63,20 +87,74 @@ Singkat, padat, tidak bertele-tele. ~150 kata total.`;
         {
           role: "system",
           content:
-            "Kamu adalah analis teknikal saham Indonesia profesional. Jelaskan pattern dengan netral, informatif, tidak hype. Sapa pembaca dengan 'kamu' (jangan pakai 'Anda'). Ingatkan bahwa pattern bisa gagal.",
+            "Kamu adalah analis teknikal saham Indonesia yang menjelaskan pola chart ke pemula dengan bahasa awam, netral, dan tidak hype. Sapa pembaca dengan 'kamu'. Selalu ingatkan implisit bahwa pola bisa gagal.",
         },
         { role: "user", content: userPrompt },
       ],
       temperature: 0.4,
-      max_tokens: 400,
+      max_tokens: 500,
       response_format: { type: "json_object" },
     });
 
     const content = completion.choices[0]?.message.content ?? "{}";
     const parsed = JSON.parse(content);
-    return String(parsed.explanation ?? "").trim();
+    const text = String(parsed.explanation ?? "").trim();
+    if (!text) {
+      return { explanation: buildFallbackExplanation(input), source: "fallback" };
+    }
+    return { explanation: `${text}\n\n${DISCLAIMER}`, source: "ai" };
   } catch (err) {
-    logger.warn({ err: (err as Error).message, ticker: input.ticker }, "Pattern AI explanation failed");
-    return ""; // Fall back ke narrative template yang sudah ada di detector
+    logger.warn(
+      { err: (err as Error).message, ticker: input.ticker },
+      "Pattern AI explanation failed — using static fallback",
+    );
+    return { explanation: buildFallbackExplanation(input), source: "fallback" };
   }
+}
+
+/**
+ * Fallback statis dari PATTERN_META — dipakai kalau LLM gagal / belum dikonfigurasi.
+ * Tetap informatif & ber-disclaimer supaya panel tidak pernah kosong.
+ */
+export function buildFallbackExplanation(input: AIExplanationInput): string {
+  const meta = PATTERN_META[input.patternType];
+  const label = meta?.label ?? input.patternType;
+  const desc = meta?.description ?? "Pola chart teknikal.";
+  const bias =
+    input.direction === "bullish"
+      ? "Polanya cenderung **bullish** — biasanya jadi sinyal harga berpotensi naik kalau breakout-nya terkonfirmasi."
+      : "Polanya cenderung **bearish** — biasanya jadi sinyal harga berpotensi turun kalau breakdown-nya terkonfirmasi.";
+
+  const statusNote =
+    input.status === "forming"
+      ? "Saat ini pola masih **forming** (terbentuk tapi belum breakout), jadi belum tervalidasi."
+      : input.status === "completed"
+        ? "Pola sudah **completed** (breakout terkonfirmasi)."
+        : "Pola sudah **invalidated** (gagal).";
+
+  const k = input.keyLevels;
+  const fmt = (n: number) => n.toLocaleString("id-ID", { maximumFractionDigits: 0 });
+
+  return [
+    `### ${label}`,
+    "",
+    desc,
+    "",
+    bias,
+    "",
+    `**Cara membacanya untuk ${input.ticker}:** ${statusNote}`,
+    "",
+    "Level yang bisa kamu pantau:",
+    "",
+    `- **Breakout:** ${fmt(k.breakout)} — level yang perlu ditembus agar pola valid.`,
+    `- **Target:** ${fmt(k.target)} — proyeksi harga jika pola berjalan.`,
+    `- **Stop:** ${fmt(k.stop)} — level untuk membatasi risiko jika pola gagal.`,
+    ...(input.volumeConfirmation
+      ? ["", "Volume sudah mengkonfirmasi pergerakan ini, yang menambah keyakinan pada pola."]
+      : []),
+    "",
+    DISCLAIMER,
+    "",
+    "_(Penjelasan otomatis dari basis data pola — AI tidak tersedia saat ini.)_",
+  ].join("\n");
 }

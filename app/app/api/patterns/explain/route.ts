@@ -1,11 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { and, eq, isNull, or } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { patternDetections } from "@/db/schema/patterns";
 import { companies } from "@/db/schema/companies";
 import { quotesEod } from "@/db/schema/market";
-import { desc } from "drizzle-orm";
 import { requireSession } from "@/lib/auth/server";
 import { generatePatternExplanation } from "@/lib/patterns/ai-explanation";
 import { handleError } from "@/lib/utils/api";
@@ -51,7 +50,7 @@ export async function POST(req: NextRequest) {
       .orderBy(desc(quotesEod.tradeDate))
       .limit(1);
 
-    const explanation = await generatePatternExplanation({
+    const { explanation, source } = await generatePatternExplanation({
       ticker: pattern.companyKode,
       patternType: pattern.patternType as PatternType,
       direction: pattern.direction as "bullish" | "bearish",
@@ -67,14 +66,19 @@ export async function POST(req: NextRequest) {
       currentPrice: latest ? Number(latest.close) : null,
     });
 
-    if (explanation) {
+    // Cache hanya hasil AI sungguhan; fallback statis JANGAN disimpan supaya
+    // request berikutnya tetap mencoba LLM lagi saat sudah terkonfigurasi.
+    if (source === "ai") {
       await db
         .update(patternDetections)
         .set({ narrative: `AI: ${explanation}`, updatedAt: new Date() })
         .where(eq(patternDetections.id, patternId));
     }
 
-    return NextResponse.json({ ok: true, data: { explanation, cached: false } });
+    return NextResponse.json({
+      ok: true,
+      data: { explanation, source, cached: false },
+    });
   } catch (err) {
     return handleError(err);
   }

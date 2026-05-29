@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   CreditCard,
   GitCompareArrows,
+  GraduationCap,
   Home,
   Layers,
   LineChart,
@@ -58,6 +59,7 @@ const SECONDARY: SidebarItem[] = [
   { href: "/sectors", label: "Sectors", icon: Layers },
   { href: "/rotation", label: "Rotation (RRG)", icon: LineChart, badge: "NEW" },
   { href: "/copilot", label: "AI Copilot", icon: Bot },
+  { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
   { href: "/guidance", label: "Guidance", icon: BookOpen },
   { href: "/subscription", label: "Subscription", icon: CreditCard },
 ];
