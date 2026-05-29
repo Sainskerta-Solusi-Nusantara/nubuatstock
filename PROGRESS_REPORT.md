@@ -890,8 +890,9 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - Migration belum dijalankan: kolom soft-delete akun, tabel glossary, constraint audit immutability.
 
 **Numbers**
-- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): **18 commit**, belum di-push ke GitHub — nunggu perintah founder.
-- Unit test: 68 → **374** (+306 sesi ini: verdict 48, valuation 42, picks 54+20, billing 41, search 10, drip 14, reversal patterns 14, dll). tsc error: 0. Build: ✅.
+- Commit (branch `feat/launch-blockers-elliott-screener-uiux`): **20 commit**, belum di-push ke GitHub — nunggu perintah founder.
+- Unit test: 68 → **431** (+363: verdict 48, valuation 42, picks 54+20, billing 41, search 10, drip 14, reversal 14, rotation 18, ai-summary 15, spike 9, four-actor 15, dll). tsc error: 0. Build: ✅.
+- Bandarmology L2: spike detection + **4-pelaku classification** (engine+UI siap, data nunggu vendor) — ter-mount di tab Bandarmology ticker. RRG rotation 4-kuadran. AI auto-summary harian. **In-app Academy** (4 modul/15 lesson). AI Pattern Explanation. Prod release runbook (`RELEASE.md` + `npm run post-deploy`).
 - Versi Next.js: **deploy AMAN** (pin exact 15.1.11). Dev pakai **Turbopack** (typedRoutes kondisional: off di turbo, on di build) — CSS Tailwind v4 jalan.
 - **Trial = Pro 7 hari** distandarkan; `/pricing` baca DB (Starter 99k/Pro 299k/Elite 899k), publik (nav "Harga" tak perlu login).
 - **Login fixed**: DB lokal kosong → seed 3 akun demo + grandfather emailVerified. Tema balik **dark default**.
