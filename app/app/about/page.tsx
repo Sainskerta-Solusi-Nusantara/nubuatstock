@@ -16,6 +16,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { Footer } from "@/components/landing/Footer";
+import { PublicNav } from "@/components/landing/PublicNav";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
@@ -133,6 +134,7 @@ function OrganizationJsonLd() {
 export default function AboutPage() {
   return (
     <main className="bg-background text-foreground">
+      <PublicNav />
       <OrganizationJsonLd />
 
       {/* Hero / Visi */}

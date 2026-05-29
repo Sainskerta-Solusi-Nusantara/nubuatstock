@@ -7,6 +7,7 @@ import {
   listGlossaryTerms,
 } from "@/lib/glossary/service";
 import { GlossarySearch } from "./GlossarySearch";
+import { PublicNav } from "@/components/landing/PublicNav";
 
 // ISR — konten dari DB, di-render statis & di-revalidate tiap 1 jam.
 export const revalidate = 3600;
@@ -79,6 +80,7 @@ export default async function GlossaryPage({ searchParams }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <PublicNav />
       <div className="mx-auto max-w-5xl px-6 py-12 sm:py-16">
         {/* Header */}
         <header className="mb-8">

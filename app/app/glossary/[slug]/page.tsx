@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PublicNav } from "@/components/landing/PublicNav";
 import {
   getAllGlossarySlugs,
   getGlossaryTermBySlug,
@@ -90,6 +91,7 @@ export default async function GlossaryTermPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <PublicNav />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
