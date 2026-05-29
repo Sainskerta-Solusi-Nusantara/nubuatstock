@@ -19,7 +19,7 @@ export default async function LoginPage({
   const google = await getGoogleOAuthCreds();
   return (
     <>
-      <AuthHeading title="Masuk ke akun Anda" description="Lanjutkan analisis pasar." />
+      <AuthHeading title="Masuk ke akunmu" description="Lanjutkan analisis pasar." />
       <LoginForm callbackUrl={callbackUrl ?? "/dashboard"} />
       <div className="my-5 flex items-center gap-3 text-xs text-neutral-400">
         <div className="h-px flex-1 bg-neutral-200" />
