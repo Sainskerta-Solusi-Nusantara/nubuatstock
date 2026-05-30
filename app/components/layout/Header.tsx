@@ -117,7 +117,7 @@ export function Header({ user, locale = "id" }: HeaderProps) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/account">
+            <Link href="/settings/account">
               <User aria-hidden /> Profil
             </Link>
           </DropdownMenuItem>

@@ -22,6 +22,22 @@ import { invalidateUserCache } from "./entitlements";
 import { emitSubscriptionChanged } from "./events";
 
 /**
+ * Soft-trigger referral qualification untuk `referredUserId` (user yang sedang
+ * start trial / first paid). Memicu grantReward (kredit ke referrer) di
+ * lib/referral. Dipanggil non-blocking (try/catch) + dynamic import supaya tidak
+ * bikin circular dep antara lib/billing dan lib/referral, dan kegagalan referral
+ * tidak boleh membatalkan flow billing.
+ */
+async function tryMarkReferralQualified(referredUserId: string): Promise<void> {
+  try {
+    const { markQualified } = await import("../referral/service");
+    await markQualified(referredUserId);
+  } catch (err) {
+    logger.warn({ err, userId: referredUserId }, "Referral markQualified failed (non-blocking)");
+  }
+}
+
+/**
  * Subscription lifecycle operations.
  *
  * - `ensureFreeSubscription(userId)` — idempotent, create free subscription kalau
@@ -184,6 +200,9 @@ export async function startTrialSubscription(opts: {
       action: "upgraded",
     });
 
+    // Referral: trial start adalah qualifying action → grant reward ke referrer.
+    await tryMarkReferralQualified(opts.userId);
+
     logger.info(
       { userId: opts.userId, subscriptionId: existingSub.id, trialEndsAt, tierKode: targetTier },
       "Trial subscription started (upgrade from existing)",
@@ -231,6 +250,9 @@ export async function startTrialSubscription(opts: {
     // tetap mencatat "trial_started" — emit hanya untuk fan-out.
     action: "created",
   });
+
+  // Referral: trial start adalah qualifying action → grant reward ke referrer.
+  await tryMarkReferralQualified(opts.userId);
 
   logger.info(
     { userId: opts.userId, subscriptionId: id, trialEndsAt, tierKode: targetTier },
@@ -307,13 +329,26 @@ export async function createPendingUpgrade(
   const now = new Date();
   const dueDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 jam
 
+  // Redemption kredit referral: kurangi nominal invoice memakai saldo reward
+  // 'granted' milik user (maksimal sampai amount). Reward yang dipakai ditandai
+  // 'redeemed'. Soft-import + try/catch supaya kegagalan modul referral tidak
+  // membatalkan pembuatan invoice (cukup tidak ada potongan). Sisa minimal 0.
+  let redemption = { redeemedIdr: 0, rewardsRedeemed: 0, rewardIds: [] as string[] };
+  try {
+    const { redeemCreditForAmount } = await import("../referral/service");
+    redemption = await redeemCreditForAmount(opts.userId, amount);
+  } catch (err) {
+    logger.warn({ err, userId: opts.userId }, "Referral redemption failed (non-blocking)");
+  }
+  const finalAmount = Math.max(0, amount - redemption.redeemedIdr);
+
   await db.insert(invoices).values({
     id: invoiceId,
     userId: opts.userId,
     subscriptionId: active?.subscription.id ?? null,
     tierKode: opts.targetTierKode,
     billingCycle: opts.billingCycle,
-    amountIdr: amount,
+    amountIdr: finalAmount,
     currency: "IDR",
     status: "draft",
     issuedAt: now,
@@ -323,18 +358,27 @@ export async function createPendingUpgrade(
     metadata: {
       targetTierKode: opts.targetTierKode,
       fromTierKode: active?.subscription.tierKode ?? null,
+      ...(redemption.redeemedIdr > 0
+        ? {
+            referralRedemption: {
+              listAmountIdr: amount,
+              creditAppliedIdr: redemption.redeemedIdr,
+              rewardIds: redemption.rewardIds,
+            },
+          }
+        : {}),
     },
   });
 
   logger.info(
-    { userId: opts.userId, invoiceId, tier: opts.targetTierKode, amount },
+    { userId: opts.userId, invoiceId, tier: opts.targetTierKode, listAmount: amount, creditApplied: redemption.redeemedIdr, finalAmount },
     "Pending upgrade invoice created",
   );
 
   return {
     invoiceId,
     invoiceNumber,
-    amountIdr: amount,
+    amountIdr: finalAmount,
     targetTier: tier,
   };
 }
@@ -417,6 +461,9 @@ export async function activatePaidSubscription(opts: {
     toTier: inv.tierKode as TierKode,
     action: active ? "upgraded" : "created",
   });
+
+  // Referral: first paid juga qualifying action → grant reward ke referrer.
+  await tryMarkReferralQualified(opts.userId);
 
   logger.info(
     { userId: opts.userId, tier: inv.tierKode, subscriptionId: newId },

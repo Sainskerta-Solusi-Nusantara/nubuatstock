@@ -11,6 +11,7 @@ import { generateDailyDigestProcessor } from "./generate-daily-digest";
 import { computeAnalysisSnapshotsProcessor } from "./compute-analysis-snapshots";
 import { accountDeletionSweepProcessor } from "./account-deletion-sweep";
 import { paperLeaderboardProcessor } from "./paper-leaderboard";
+import { renewSubscriptionsProcessor } from "./renew-subscriptions";
 
 /**
  * Worker Job Registry.
@@ -138,6 +139,7 @@ export const jobRegistry: Partial<Record<QueueName | string, JobRegistration>> =
   // semua key jobRegistry di luar queueNames juga.
   "account.deletion.sweep": { processor: accountDeletionSweepProcessor, concurrency: 1 },
   "paper.leaderboard": { processor: paperLeaderboardProcessor, concurrency: 1 },
+  "billing.renew": { processor: renewSubscriptionsProcessor, concurrency: 1 },
 };
 
 export function registerJobProcessor(

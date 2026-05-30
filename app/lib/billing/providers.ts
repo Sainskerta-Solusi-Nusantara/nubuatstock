@@ -80,18 +80,92 @@ export async function createTransaction(
     return createXenditInvoice(secret, input);
   }
 
-  // Midtrans: belum diimplementasikan (butuh Snap/Core API). Tetap stub supaya
-  // tidak crash — UI tampilkan empty state. Ganti saat server key Midtrans siap.
-  logger.info(
-    { provider, invoiceId: input.invoice.id },
-    "createTransaction Midtrans STUB — belum diimplementasikan",
-  );
+  return createMidtransSnapTransaction(secret, input);
+}
+
+/**
+ * Midtrans Snap API — POST /snap/v1/transactions (hosted checkout).
+ * Auth: HTTP Basic, username = server key, password kosong → base64("<key>:").
+ * `order_id` = invoiceNumber kita (dipakai webhook midtrans untuk match via
+ * invoice_number). Return `redirect_url` (Snap hosted page) + `token`.
+ * Spec: https://docs.midtrans.com/reference/snap-1
+ *
+ * Pola soft-fail mengikuti createXenditInvoice: network error & non-2xx →
+ * ValidationError yang ramah, secret missing sudah dijaga di createTransaction.
+ */
+async function createMidtransSnapTransaction(
+  serverKey: string,
+  input: CreateTransactionInput,
+): Promise<CreateTransactionResult> {
+  const baseUrl = (
+    await getConfig<string>("payment.midtrans.base_url", {
+      defaultValue: "https://app.sandbox.midtrans.com",
+    })
+  ).replace(/\/$/, "");
+  const { success, failure } = await getPaymentRedirectUrls();
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "https://nubuat.sainskerta.net").replace(/\/$/, "");
+  const abs = (u: string) => (u.startsWith("http") ? u : appUrl + (u.startsWith("/") ? u : `/${u}`));
+
+  const orderId = input.invoice.invoiceNumber ?? input.invoice.id;
+  const body = {
+    transaction_details: {
+      order_id: orderId,
+      gross_amount: input.invoice.amountIdr,
+    },
+    customer_details: {
+      first_name: input.customer.name || input.customer.email,
+      email: input.customer.email,
+    },
+    item_details: [
+      {
+        id: String(input.invoice.tierKode ?? "subscription"),
+        price: input.invoice.amountIdr,
+        quantity: 1,
+        name: `Nubuat ${String(input.invoice.tierKode ?? "").toUpperCase()} — ${input.invoice.billingCycle ?? "monthly"}`.trim().slice(0, 50),
+      },
+    ],
+    callbacks: {
+      finish: abs(success),
+      error: abs(failure),
+    },
+  };
+
+  const auth = Buffer.from(`${serverKey}:`).toString("base64");
+  let res: Response;
+  try {
+    res = await fetch(`${baseUrl}/snap/v1/transactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Basic ${auth}`,
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (err) {
+    logger.error({ err, invoiceId: input.invoice.id }, "Midtrans Snap network error");
+    throw new ValidationError("Gagal menghubungi Midtrans. Coba lagi sebentar lagi.");
+  }
+
+  const json = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+  if (!res.ok) {
+    const messages = Array.isArray(json?.error_messages)
+      ? (json.error_messages as unknown[]).join("; ")
+      : String(json?.status_message ?? res.status);
+    logger.error(
+      { status: res.status, errorMessages: json?.error_messages, invoiceId: input.invoice.id },
+      "Midtrans Snap createTransaction failed",
+    );
+    throw new ValidationError(`Midtrans gagal membuat transaksi: ${messages}`);
+  }
+
+  logger.info({ invoiceId: input.invoice.id, hasToken: Boolean(json.token) }, "Midtrans Snap transaction created");
   return {
-    provider,
-    paymentToken: null,
-    redirectUrl: null,
-    providerInvoiceId: null,
-    raw: { stub: true, provider, invoiceId: input.invoice.id },
+    provider: "midtrans",
+    paymentToken: typeof json.token === "string" ? json.token : null,
+    redirectUrl: typeof json.redirect_url === "string" ? json.redirect_url : null,
+    providerInvoiceId: typeof json.token === "string" ? json.token : null,
+    raw: json,
   };
 }
 

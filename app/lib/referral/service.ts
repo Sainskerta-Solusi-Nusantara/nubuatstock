@@ -227,6 +227,86 @@ export async function grantReward(referralId: string): Promise<string | null> {
 }
 
 /**
+ * getAvailableCredit — total saldo kredit referral yang masih bisa dipakai
+ * (status 'granted', belum 'redeemed') milik user. Integer rupiah.
+ */
+export async function getAvailableCredit(userId: string): Promise<number> {
+  const rows = await db
+    .select({ amountIdr: referralRewards.amountIdr })
+    .from(referralRewards)
+    .where(
+      and(
+        eq(referralRewards.userId, userId),
+        eq(referralRewards.status, "granted"),
+      ),
+    );
+  return rows.reduce((sum, r) => sum + (r.amountIdr ?? 0), 0);
+}
+
+export interface RedeemCreditResult {
+  /** Total kredit yang dipakai (integer rupiah). */
+  redeemedIdr: number;
+  /** Jumlah reward row yang ditandai 'redeemed'. */
+  rewardsRedeemed: number;
+  /** Id reward yang di-redeem (untuk metadata invoice). */
+  rewardIds: string[];
+}
+
+/**
+ * redeemCreditForAmount — pakai saldo kredit referral 'granted' milik user untuk
+ * menutup sebagian/seluruh `targetAmountIdr`. Strategi greedy: ambil reward dari
+ * yang terlama (created_at asc), tandai 'redeemed' selama total redeem masih <=
+ * targetAmountIdr. Reward bersifat all-or-nothing per row (tidak ada partial
+ * redeem) supaya ledger tetap sederhana & idempotent.
+ *
+ * Return total yang berhasil di-redeem + id reward yang dipakai. Tidak pernah
+ * melebihi targetAmountIdr. Non-throwing untuk input <= 0 (return zero result).
+ */
+export async function redeemCreditForAmount(
+  userId: string,
+  targetAmountIdr: number,
+): Promise<RedeemCreditResult> {
+  if (!Number.isFinite(targetAmountIdr) || targetAmountIdr <= 0) {
+    return { redeemedIdr: 0, rewardsRedeemed: 0, rewardIds: [] };
+  }
+
+  const granted = await db
+    .select({ id: referralRewards.id, amountIdr: referralRewards.amountIdr })
+    .from(referralRewards)
+    .where(
+      and(
+        eq(referralRewards.userId, userId),
+        eq(referralRewards.status, "granted"),
+      ),
+    )
+    .orderBy(referralRewards.createdAt);
+
+  let redeemedIdr = 0;
+  const rewardIds: string[] = [];
+  for (const r of granted) {
+    const amt = r.amountIdr ?? 0;
+    if (amt <= 0) continue;
+    if (redeemedIdr + amt > targetAmountIdr) continue; // jangan over-redeem
+    // Tandai redeemed secara atomik (guard status supaya idempotent vs race).
+    const updated = await db
+      .update(referralRewards)
+      .set({ status: "redeemed" })
+      .where(and(eq(referralRewards.id, r.id), eq(referralRewards.status, "granted")))
+      .returning({ id: referralRewards.id });
+    if (updated[0]) {
+      redeemedIdr += amt;
+      rewardIds.push(updated[0].id);
+    }
+    if (redeemedIdr >= targetAmountIdr) break;
+  }
+
+  if (redeemedIdr > 0) {
+    logger.info({ userId, redeemedIdr, rewardsRedeemed: rewardIds.length }, "Referral credit redeemed");
+  }
+  return { redeemedIdr, rewardsRedeemed: rewardIds.length, rewardIds };
+}
+
+/**
  * getReferralStats — ringkasan untuk halaman /referral.
  * `baseUrl` dari request headers untuk build shareable link.
  */

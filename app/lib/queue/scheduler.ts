@@ -127,6 +127,16 @@ const CRON_DEFINITIONS: CronJobDefinition[] = [
     data: { source: "scheduler" },
   },
   {
+    // Renewal/perpanjangan — buat invoice renewal untuk subscription non-free
+    // yang current_period_end mendekat (default 3 hari) + reminder. MVP tanpa
+    // card-on-file; user bayar invoice seperti upgrade biasa.
+    queueName: "billing.renew",
+    jobName: "scheduled.renew",
+    configKey: "billing.renew_cron",
+    defaultCron: "0 2 * * *", // 02:00 WIB tiap hari
+    data: { source: "scheduler" },
+  },
+  {
     // Paper Trading Hall of Fame — snapshot ranking harian.
     queueName: "paper.leaderboard",
     jobName: "scheduled.snapshot",
