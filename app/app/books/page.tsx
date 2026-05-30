@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Download, Layers, TrendingUp, Shield, BarChart3 } from "lucide-react";
+import { BookOpen, Download, Layers, TrendingUp, Shield, BarChart3, BookOpenText } from "lucide-react";
 import { Footer } from "@/components/landing/Footer";
 import { PublicNav } from "@/components/landing/PublicNav";
 
@@ -119,15 +119,24 @@ export default function BooksPage() {
                   {/* Spacer */}
                   <div className="flex-1" />
 
-                  {/* Download Button */}
-                  <Link
-                    href={book.file}
-                    download
-                    className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-500 active:scale-[0.98]"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download PDF
-                  </Link>
+                  {/* Buttons */}
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      href={`/books/${book.id}`}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-500 active:scale-[0.98]"
+                    >
+                      <BookOpenText className="h-4 w-4" />
+                      Baca Online
+                    </Link>
+                    <Link
+                      href={book.file}
+                      download
+                      className="flex items-center justify-center gap-2 rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-slate-800 active:scale-[0.98]"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download PDF
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
