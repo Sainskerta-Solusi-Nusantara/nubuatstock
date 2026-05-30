@@ -24,7 +24,18 @@ export function Features(props: FeaturesProps) {
       </div>
 
       <div className="mx-auto max-w-6xl px-6">
-        {/* Galeri pratinjau fitur (gambar 1-7) — di ATAS heading. File di public/fitur/. */}
+        {/* Heading galeri + subtitle, lalu galeri pratinjau fitur (gambar 1-7). */}
+        <div className="mx-auto mb-10 max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Fitur-Fitur <span className="text-bull">Unggulan</span>
+          </h2>
+          <p className="mt-4 text-muted-foreground">
+            Dari Daily Picks sampai Elliott Wave otomatis dan AI Buddy — semua alat
+            yang kamu butuhkan untuk analisis saham IDX yang disiplin, dalam satu terminal.
+            Ketuk tiap gambar untuk lihat lebih dekat.
+          </p>
+        </div>
+        {/* Galeri pratinjau fitur (gambar 1-7). File di public/fitur/. */}
         <FeatureGallery />
 
         <div className="mx-auto max-w-2xl text-center">
