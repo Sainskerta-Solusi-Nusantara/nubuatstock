@@ -242,6 +242,59 @@ export async function triggerAlert(
     channels: alert.channels as AlertTriggeredEvent["channels"],
   };
   logger.debug({ event: ALERT_EVENTS.TRIGGERED, payload: fullEvent }, "alert.triggered detail");
+
+  // Kirim ringkasan via WhatsApp ke pemilik alert. Non-blocking & soft-fail:
+  // kegagalan WA TIDAK boleh menggagalkan trigger (row sudah tersimpan di atas).
+  // `dispatchAlertWhatsApp` menelan semua error sendiri; `void` agar tidak menunggu.
+  void dispatchAlertWhatsApp({
+    userId: alert.userId,
+    companyKode: alert.companyKode,
+    condition: alert.condition,
+    snapshot,
+  });
+}
+
+/**
+ * Susun pesan WhatsApp ringkas lalu kirim via wa-dispatch (yang sudah handle
+ * opt-in/consent/quiet-hours/daily-cap + disclaimer + soft-fail). Dynamic import
+ * dipakai untuk menghindari circular dep antara lib/alerts dan lib/notifications.
+ *
+ * Best-effort: semua error ditelan di sini supaya trigger tetap sukses. Kalau
+ * provider WA "none"/belum di-set, wa-dispatch mengembalikan { ok:false } tanpa
+ * throw — jadi tidak ada error yang bocor.
+ */
+async function dispatchAlertWhatsApp(args: {
+  userId: string;
+  companyKode: string;
+  condition: unknown;
+  snapshot: Record<string, unknown>;
+}): Promise<void> {
+  try {
+    const condText = summarizeConditionForEvent(args.condition);
+    const priceText = formatTriggerPrice(args.snapshot);
+    const pricePart = priceText ? `harga ${priceText} — ` : "";
+    // Disclaimer ditambahkan otomatis oleh wa-dispatch — JANGAN dobel di sini.
+    const message = `🔔 Alert ${args.companyKode}: ${pricePart}${condText}. Cek di Nubuat.`;
+
+    const { sendWhatsAppToUser } = await import("@/lib/notifications/wa-dispatch");
+    await sendWhatsAppToUser(args.userId, "alerts", message);
+  } catch (err) {
+    logger.warn({ err, userId: args.userId }, "dispatchAlertWhatsApp gagal (diabaikan)");
+  }
+}
+
+/**
+ * Ambil harga terkini dari snapshot evaluasi untuk pesan WA. Snapshot dibentuk
+ * `evaluateCondition`; untuk kondisi harga field-nya `last`. Defensif: kalau tak
+ * ada angka harga (mis. volume_spike/ma_cross), return null dan pesan dikirim
+ * tanpa bagian harga.
+ */
+function formatTriggerPrice(snapshot: Record<string, unknown>): string | null {
+  const v = snapshot["last"];
+  if (typeof v === "number" && Number.isFinite(v)) {
+    return v.toLocaleString("id-ID");
+  }
+  return null;
 }
 
 function summarizeConditionForEvent(condition: unknown): string {

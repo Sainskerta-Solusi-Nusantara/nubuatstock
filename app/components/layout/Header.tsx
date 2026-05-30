@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import * as React from "react";
-import { Bell, LineChart, LogOut, Search, Settings, Shield, User } from "lucide-react";
+import { Bell, BellRing, LineChart, LogOut, Search, Settings, Shield, User } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { TickerSearch } from "@/components/navigation/TickerSearch";
 import { useCommandPalette } from "@/components/navigation/CommandPaletteProvider";
 import { ChangelogBell } from "@/components/changelog/ChangelogBell";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import type { Locale } from "@/lib/i18n/config";
@@ -75,16 +76,7 @@ export function Header({ user, locale = "id" }: HeaderProps) {
         <TooltipContent>Cari saham</TooltipContent>
       </Tooltip>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button asChild variant="ghost" size="icon" aria-label="Notifikasi">
-            <Link href="/alerts">
-              <Bell className="size-4" aria-hidden />
-            </Link>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Alerts</TooltipContent>
-      </Tooltip>
+      <NotificationBell />
 
       <ChangelogBell />
 
@@ -124,6 +116,11 @@ export function Header({ user, locale = "id" }: HeaderProps) {
           <DropdownMenuItem asChild>
             <Link href="/settings/notifications">
               <Bell aria-hidden /> Notifikasi
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/alerts">
+              <BellRing aria-hidden /> Alerts
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

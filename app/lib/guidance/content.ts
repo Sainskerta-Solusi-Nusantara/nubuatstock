@@ -755,6 +755,119 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
       { type: "note", tone: "info", title: "Trial auto-expiry", body: "Trial otomatis berakhir setelah 7 hari. Akun di-downgrade ke Free tanpa charge. Kamu bisa upgrade kapan saja di /subscription." },
     ],
   },
+
+  // ============================ PAPER TRADING ============================
+  {
+    id: "paper-trading",
+    category: "Tools",
+    title: "Paper Trading & Hall of Fame",
+    icon: "Award",
+    summary: "Latihan trading dengan modal virtual Rp 100 juta — uji strategi tanpa risiko uang asli, lalu adu peringkat di leaderboard.",
+    contents: [
+      { type: "paragraph", text: "Paper Trading memberi kamu portofolio virtual Rp 100.000.000 untuk simulasi beli/jual saham IDX dengan harga nyata (EOD). Cocok buat belajar eksekusi, uji disiplin entry/exit, dan validasi strategi sebelum pakai uang sungguhan." },
+      { type: "steps", items: [
+        { title: "Buka /portfolio", body: "Portofolio virtual otomatis dibuat dengan saldo Rp 100 juta." },
+        { title: "Beli saham", body: "Pilih ticker + jumlah lot (kelipatan 100). Fill pakai harga terakhir + slippage 15 bps + fee, biar realistis." },
+        { title: "Pantau posisi", body: "Lihat unrealized P/L, nilai posisi, dan total return % yang di-mark-to-market." },
+        { title: "Jual & evaluasi", body: "Tutup posisi, cek realized P/L. Belajar dari yang nyangkut maupun yang cuan." },
+      ] },
+      { type: "note", tone: "info", title: "Hall of Fame", body: "Buka /leaderboard untuk lihat peringkat trader berdasarkan return %. Nama di-mask demi privasi, snapshot di-update harian. Paper trading GRATIS untuk semua." },
+      { type: "note", tone: "warning", title: "Ingat", body: "Hasil simulasi pakai uang virtual & harga EOD — tidak menjamin hasil nyata. Anggap sarana latihan & edukasi." },
+    ],
+  },
+
+  // ============================ TERMINAL PRO ============================
+  {
+    id: "workspace",
+    category: "Tools",
+    title: "Terminal Pro (Workspace)",
+    icon: "Layers",
+    summary: "Workspace multi-chart untuk pantau banyak emiten sekaligus, simpan & bagikan layout, plus function code ala Bloomberg.",
+    contents: [
+      { type: "paragraph", text: "Terminal Pro (/workspace) adalah ruang kerja multi-chart: tampilkan beberapa emiten berdampingan dalam grid (1/2/4 panel). Cocok untuk memantau watchlist aktif atau membandingkan beberapa saham secara visual. Fitur tier Pro." },
+      { type: "steps", items: [
+        { title: "Pilih layout", body: "Atur grid 1, 2, atau 4 panel sesuai kebutuhan." },
+        { title: "Isi tiap panel", body: "Ketik kode emiten + interval di tiap panel untuk memuat chart-nya." },
+        { title: "Pakai function code", body: "Ketik kode ala-Bloomberg: DES (deskripsi), FA (fundamental), GIP (chart), EQS (screener), RV (compare), BMAP (bandarmology), N (news)." },
+        { title: "Simpan & bagikan", body: "Layout di-encode ke URL — klik 'Bagikan' untuk salin link. Buka link itu kapan saja untuk memulihkan workspace." },
+      ] },
+      { type: "note", tone: "info", title: "Tier", body: "Terminal Pro tersedia mulai tier Pro. Tier lebih rendah melihat ajakan upgrade." },
+    ],
+  },
+
+  // ============================ NOTIFIKASI & WHATSAPP ============================
+  {
+    id: "notifications",
+    category: "Account",
+    title: "Notifikasi & WhatsApp",
+    icon: "Bell",
+    summary: "Atur kanal & jenis notifikasi — termasuk alert lewat WhatsApp dengan kontrol anti-spam (opt-in, jam tenang, batas harian).",
+    contents: [
+      { type: "paragraph", text: "Nubuat bisa memberi tahu kamu lewat beberapa kanal: dalam aplikasi (lonceng di header), email, dan WhatsApp. Atur semuanya di /settings/notifications." },
+      { type: "heading", level: 3, text: "Kanal" },
+      { type: "list", items: [
+        "Dalam aplikasi — notifikasi muncul di lonceng & halaman /notifications.",
+        "Email — dikirim ke email akunmu (perlu email sender aktif).",
+        "WhatsApp — alert dikirim ke nomor WA-mu. Wajib opt-in dulu (centang persetujuan).",
+      ] },
+      { type: "heading", level: 3, text: "Jenis notifikasi" },
+      { type: "list", items: [
+        "Alert harga — saat alert yang kamu pasang ter-trigger.",
+        "Daily Picks — saham pilihan harian.",
+        "Berita — berita penting emiten yang kamu pantau.",
+      ] },
+      { type: "note", tone: "success", title: "Anti-spam", body: "Atur 'jam tenang' (notifikasi WA ditahan di rentang jam itu) dan 'batas harian' (maks alert WA/hari). Nubuat tidak akan membanjiri kamu — kebalikan dari grup sinyal WA yang spam." },
+      { type: "note", tone: "info", title: "Lonceng", body: "Ikon lonceng di header menampilkan notifikasi terbaru + jumlah belum dibaca. Klik 'Tandai semua dibaca' atau buka /notifications untuk riwayat lengkap." },
+    ],
+  },
+
+  // ============================ AJAK TEMAN (REFERRAL) ============================
+  {
+    id: "referral",
+    category: "Account",
+    title: "Ajak Teman (Referral)",
+    icon: "Users",
+    summary: "Bagikan kode referral, ajak teman gabung, dan dapat kredit yang bisa dipakai memotong tagihan langganan.",
+    contents: [
+      { type: "paragraph", text: "Setiap akun punya kode referral unik. Bagikan link-mu; saat teman mendaftar dan memenuhi syarat (mis. mulai trial/berlangganan), kamu dapat kredit." },
+      { type: "steps", items: [
+        { title: "Buka /referral", body: "Lihat kode & link referral kamu, plus statistik (diundang, qualified, total reward)." },
+        { title: "Bagikan link", body: "Salin link dan kirim ke teman. Yang daftar lewat link itu terhubung ke kamu." },
+        { title: "Dapat kredit", body: "Saat referral memenuhi syarat, kredit masuk otomatis." },
+        { title: "Pakai kredit", body: "Kredit otomatis memotong nilai invoice saat kamu upgrade/perpanjang langganan." },
+      ] },
+    ],
+  },
+
+  // ============================ CAPITAL FLOW ============================
+  {
+    id: "capital-flow",
+    category: "Discovery",
+    title: "Capital Flow",
+    icon: "Activity",
+    summary: "Pantau aliran modal di pasar — ke mana uang mengalir antar sektor & emiten.",
+    contents: [
+      { type: "paragraph", text: "Capital Flow (/capital-flow) memvisualisasikan aliran dana di pasar berdasarkan data harga & volume — membantu melihat sektor/emiten yang sedang diakumulasi atau ditinggalkan." },
+      { type: "note", tone: "info", title: "Lihat juga", body: "Gabungkan dengan Sector Heatmap (/sectors) dan Rotation/RRG (/rotation) untuk gambaran rotasi sektor yang lebih lengkap." },
+    ],
+  },
+
+  // ============================ BANTUAN & FEEDBACK ============================
+  {
+    id: "support",
+    category: "Account",
+    title: "Bantuan & Feedback",
+    icon: "FileText",
+    summary: "Buat tiket bantuan, kirim feedback, atau cari jawaban cepat di Help Center.",
+    contents: [
+      { type: "paragraph", text: "Butuh bantuan atau punya masukan? Nubuat menyediakan beberapa jalur." },
+      { type: "list", items: [
+        "Help Center (/help) — FAQ dengan pencarian: akun, langganan, paper trading, AI Buddy, pembayaran, data, dll.",
+        "Tiket Bantuan (/support) — buat tiket untuk masalah spesifik, lacak balasannya dalam satu thread.",
+        "Kirim Feedback — lewat kartu 'Butuh bantuan?' di Dashboard, beri rating + pesan singkat.",
+      ] },
+    ],
+  },
 ];
 
 export const GUIDANCE_CATEGORIES = [
