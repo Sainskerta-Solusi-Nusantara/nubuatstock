@@ -122,6 +122,11 @@ export function Header({ user, locale = "id" }: HeaderProps) {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link href="/settings/notifications">
+              <Bell aria-hidden /> Notifikasi
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link href="/subscription">
               <Settings aria-hidden /> Subscription
             </Link>
