@@ -50,7 +50,7 @@ function IntroVisual() {
     <div className="flex h-full flex-col items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 p-8">
       <div className="animate-pulse text-7xl">📈</div>
       <h2 className="mt-6 text-4xl font-bold tracking-tight">Nubuat AI</h2>
-      <p className="mt-2 text-base text-muted-foreground">Sains di balik setiap trade</p>
+      <p className="mt-2 text-base text-muted-foreground">Teman untuk terus tumbuh</p>
       <div className="mt-6 grid grid-cols-2 gap-3 text-xs text-muted-foreground sm:grid-cols-4">
         <Pill icon={Bot} label="AI Buddy" />
         <Pill icon={Award} label="Verdict 0-10" />

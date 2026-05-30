@@ -269,7 +269,7 @@ export function ResearchReportPDF({ report, ticker, companyName, appName, discla
         <View style={styles.headerRow}>
           <View>
             <Text style={styles.brand}>{appName} Research</Text>
-            <Text style={styles.brandSub}>Sains di balik setiap trade</Text>
+            <Text style={styles.brandSub}>Teman untuk terus tumbuh</Text>
           </View>
           <Text style={styles.reportTypeBadge}>{report.reportType.replace(/_/g, " ")}</Text>
         </View>

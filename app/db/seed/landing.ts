@@ -296,7 +296,7 @@ const landingDefaults: LandingConfigEntry[] = [
   // ===== FOOTER =====
   {
     key: "landing.footer.tagline",
-    value: "Sains di balik setiap trade. Untuk trader retail Indonesia yang tidak mau nyangkut lagi.",
+    value: "Teman untuk terus tumbuh. Menemani kamu belajar paham di pasar saham.",
     type: "string",
     description: "Tagline kecil di footer.",
   },

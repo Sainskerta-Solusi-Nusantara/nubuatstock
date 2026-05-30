@@ -265,7 +265,7 @@ export default function FeaturesPage() {
 
       <Footer
         appName="Nubuat"
-        tagline="Sains di balik setiap trade"
+        tagline="Teman untuk terus tumbuh"
         supportEmail="support@nubuat.id"
         disclaimer="Informasi edukasi — bukan ajakan jual/beli."
         imageCredits="Image credits: Unsplash"
