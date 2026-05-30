@@ -56,6 +56,34 @@ export function RotationChart({ entities, variant = "sector" }: Props) {
   const centerX = xScale(100);
   const centerY = yScale(100);
 
+  // Anti-tumpang-tindih label: titik terakhir tiap entity yang berdekatan
+  // bikin labelnya saling menimpa (mis. Keuangan vs Konsumen Primer di tengah).
+  // Greedy de-collision: geser label yang bertabrakan ke atas 13px bertahap.
+  const labelDy = new Map<string, number>();
+  {
+    const placed: Array<{ x: number; y: number }> = [];
+    const lasts = entities
+      .filter((e) => e.trail.length > 0)
+      .map((e) => {
+        const l = e.trail[e.trail.length - 1]!;
+        return { kode: e.kode, x: xScale(l.rsRatio), y: yScale(l.rsMomentum) };
+      })
+      .sort((a, b) => a.y - b.y);
+    for (const p of lasts) {
+      let dy = 0;
+      let guard = 0;
+      while (
+        placed.some((q) => Math.abs(q.x - p.x) < 72 && Math.abs(q.y - (p.y + dy)) < 13) &&
+        guard < 16
+      ) {
+        dy -= 13;
+        guard++;
+      }
+      placed.push({ x: p.x, y: p.y + dy });
+      labelDy.set(p.kode, dy);
+    }
+  }
+
   return (
     <div className="w-full overflow-x-auto">
       <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="w-full max-w-3xl mx-auto block">
@@ -119,12 +147,13 @@ export function RotationChart({ entities, variant = "sector" }: Props) {
               <circle cx={xScale(last.rsRatio)} cy={yScale(last.rsMomentum)} r={radius} fill={color} stroke="white" strokeWidth={2} />
               <text
                 x={xScale(last.rsRatio)}
-                y={yScale(last.rsMomentum) - radius - 4}
+                y={yScale(last.rsMomentum) - radius - 4 + (labelDy.get(e.kode) ?? 0)}
                 textAnchor="middle"
                 fontSize={variant === "sector" ? 11 : 9}
                 fontWeight="bold"
                 fill="currentColor"
                 pointerEvents="none"
+                style={{ paintOrder: "stroke", stroke: "var(--background)", strokeWidth: 3 }}
               >
                 {variant === "sector" ? e.name.slice(0, 12) : e.kode}
               </text>
