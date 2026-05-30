@@ -127,6 +127,23 @@ export async function sendNotification(
       sentAt: new Date(),
     });
     dispatched.push("in_app");
+
+    // Web Push (PWA) — fire-and-forget tickle ke device user (kalau ada langganan
+    // + VAPID di-set). Service worker akan fetch notifikasi terbaru. Soft-fail,
+    // non-blocking: tidak menunda/menggagalkan dispatch. Soft-import hindari
+    // memuat lib push kalau tak perlu.
+    void (async () => {
+      try {
+        const { sendPushToUser } = await import("@/lib/push/send");
+        await sendPushToUser(input.userId, {
+          title,
+          body: primary.body,
+          url: input.linkUrl ?? "/notifications",
+        });
+      } catch {
+        /* abaikan — push opsional */
+      }
+    })();
   }
 
   // External channels — render per channel & enqueue.

@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { users } from "@/db/schema/auth";
 import { getOrCreatePreferences } from "@/lib/notifications/preferences";
 import { NotificationPrefs } from "@/components/settings/NotificationPrefs";
+import { PushToggle } from "@/components/pwa/PushToggle";
 
 /**
  * Pengaturan Notifikasi & WhatsApp (`/settings/notifications`).
@@ -48,6 +49,7 @@ export default async function NotificationSettingsPage() {
           dailyCap: prefs.dailyCap,
         }}
       />
+      <PushToggle />
     </div>
   );
 }
