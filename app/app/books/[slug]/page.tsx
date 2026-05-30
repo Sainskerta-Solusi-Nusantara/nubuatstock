@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BookOpen, ArrowLeft, ArrowRight, Download, Menu } from "lucide-react";
 import { PublicNav } from "@/components/landing/PublicNav";
-import { Footer } from "@/components/landing/Footer";
+import { Footer } from "@/components/layout/Footer";
 
 const BOOKS_MAP: Record<string, { title: string; file: string; jilid: number; chapters: string[] }> = {
   "1": {

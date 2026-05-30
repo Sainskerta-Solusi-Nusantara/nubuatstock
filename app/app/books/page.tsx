@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BookOpen, Download, Layers, TrendingUp, Shield, BarChart3, BookOpenText } from "lucide-react";
-import { Footer } from "@/components/landing/Footer";
+import { Footer } from "@/components/layout/Footer";
 import { PublicNav } from "@/components/landing/PublicNav";
 
 export const metadata = {
