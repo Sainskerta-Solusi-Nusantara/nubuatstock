@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getIcon } from "@/lib/landing/icon-map";
 import type { FeatureItem } from "@/lib/landing/types";
+import { FeatureGallery } from "./FeatureGallery";
 
 export interface FeaturesProps {
   headlineLead: string;
@@ -57,45 +58,5 @@ export function Features(props: FeaturesProps) {
         </div>
       </div>
     </section>
-  );
-}
-
-/** Galeri pratinjau fitur — taruh file di public/fitur/1.jpg .. 7.jpg. */
-const GALLERY: Array<{ src: string; title: string; desc: string }> = [
-  { src: "/fitur/1.jpg", title: "Dashboard & Daily Picks", desc: "Ringkasan pasar + saham pilihan harian lengkap dengan entry, stop loss, dan target." },
-  { src: "/fitur/2.jpg", title: "Analisis Per Emiten", desc: "Verdict 0–10, teknikal, fundamental, dan bandarmology dalam satu halaman." },
-  { src: "/fitur/3.jpg", title: "Elliott Wave Otomatis", desc: "Hitung wave count + narasi AI Bahasa Indonesia untuk baca skenario harga." },
-  { src: "/fitur/4.jpg", title: "AI Buddy", desc: "Tanya apa saja soal saham IDX — jawaban berbasis data, lengkap dengan sumber." },
-  { src: "/fitur/5.jpg", title: "Screener & Rotasi Sektor", desc: "Saring emiten sesuai kriteria + lihat rotasi sektor (RRG) & heatmap." },
-  { src: "/fitur/6.jpg", title: "Paper Trading & Hall of Fame", desc: "Latihan trading modal virtual Rp100jt, adu peringkat di leaderboard." },
-  { src: "/fitur/7.jpg", title: "Backtest & Alert", desc: "Uji strategi (walk-forward + Monte Carlo) dan pasang alert harga." },
-];
-
-function FeatureGallery() {
-  return (
-    <div className="mb-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {GALLERY.map((g, i) => (
-        <figure
-          key={g.src}
-          className={`overflow-hidden rounded-xl border border-border bg-card shadow-sm ${
-            i === 6 ? "sm:col-span-2 lg:col-span-1" : ""
-          }`}
-        >
-          <div className="relative aspect-[16/10] w-full bg-muted">
-            <Image
-              src={g.src}
-              alt={g.title}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover"
-            />
-          </div>
-          <figcaption className="p-4">
-            <h3 className="text-sm font-semibold">{g.title}</h3>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{g.desc}</p>
-          </figcaption>
-        </figure>
-      ))}
-    </div>
   );
 }
