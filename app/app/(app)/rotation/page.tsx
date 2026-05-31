@@ -147,7 +147,7 @@ export default async function RotationPage({ searchParams }: PageProps) {
                         >
                           <span className="font-semibold">{e.kode}</span>
                           {scope === "ticker" && (
-                            <span className="ml-1 text-[10px] text-muted-foreground line-clamp-1 inline-block max-w-[150px] truncate align-bottom">
+                            <span className="ml-1 text-[10px] text-muted-foreground line-clamp-1 inline-block max-w-[110px] truncate sm:max-w-[150px] align-bottom">
                               {e.name}
                             </span>
                           )}

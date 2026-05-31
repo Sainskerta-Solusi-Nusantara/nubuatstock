@@ -43,7 +43,7 @@ export default async function PicksPage() {
         <PicksEmptyState latestRun={latestRun} today={today} />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {visible.map((p) => (
               <PickCard key={p.id} pick={p} />
             ))}
