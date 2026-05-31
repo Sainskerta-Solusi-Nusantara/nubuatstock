@@ -71,7 +71,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             <div className="font-medium text-neutral-700 truncate">{session.user.email}</div>
           </div>
           <Link
-            href="/"
+            href="/dashboard"
             className="mt-4 block text-xs text-neutral-500 hover:text-neutral-700 underline"
           >
             ← Kembali ke app
