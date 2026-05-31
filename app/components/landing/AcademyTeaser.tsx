@@ -10,6 +10,7 @@ import {
   FileText,
   Globe,
   GraduationCap,
+  Layers,
   Lock,
   LineChart,
   Radar,
@@ -41,6 +42,7 @@ const ICONS: Record<string, LucideIcon> = {
   Coins,
   Rocket,
   Globe,
+  Layers,
 };
 
 /**

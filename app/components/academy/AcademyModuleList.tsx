@@ -14,6 +14,7 @@ import {
   FileText,
   Globe,
   GraduationCap,
+  Layers,
   LineChart,
   Radar,
   Rocket,
@@ -55,6 +56,7 @@ const ICONS: Record<string, LucideIcon> = {
   Coins,
   Rocket,
   Globe,
+  Layers,
 };
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);

@@ -28,6 +28,10 @@ import { sektorRotasiModule } from "./modules/sektor-rotasi";
 import { dividendModule } from "./modules/dividend";
 import { ipoCorporateActionModule } from "./modules/ipo-corporate-action";
 import { makroTemaPasarModule } from "./modules/makro-tema-pasar";
+import { sahamSyariahModule } from "./modules/saham-syariah";
+import { etfReksadanaModule } from "./modules/etf-reksadana";
+import { mekanismeOrderModule } from "./modules/mekanisme-order";
+import { valuasiMendalamModule } from "./modules/valuasi-mendalam";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -884,6 +888,10 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
   dividendModule,
   ipoCorporateActionModule,
   makroTemaPasarModule,
+  sahamSyariahModule,
+  etfReksadanaModule,
+  mekanismeOrderModule,
+  valuasiMendalamModule,
 ];
 
 // ---------------------------------------------------------------------------

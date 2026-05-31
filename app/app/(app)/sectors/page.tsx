@@ -98,7 +98,7 @@ export default async function SectorsPage({ searchParams }: PageProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid auto-rows-[76px] grid-cols-2 gap-2 sm:auto-rows-[96px] sm:grid-cols-3 lg:grid-cols-4">
             {metrics.map((s) => {
               const ret = pickReturn(s, window);
               const weight = (s.totalMarketCapIdr / totalMarketCap) * 100;
