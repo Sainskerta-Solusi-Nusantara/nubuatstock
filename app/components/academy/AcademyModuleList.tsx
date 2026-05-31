@@ -9,14 +9,12 @@ import {
   Calculator,
   CandlestickChart,
   CheckCircle2,
-  ChevronRight,
-  Circle,
-  Clock,
   Compass,
   FileText,
   GraduationCap,
   LineChart,
   Radar,
+  Search,
   ShieldCheck,
   Triangle,
   Users,
@@ -32,6 +30,7 @@ import {
   ACADEMY_MODULES,
   ACADEMY_LESSON_ORDER,
   TOTAL_LESSON_COUNT,
+  WMI_MODULE_SLUG,
 } from "@/lib/academy/content";
 import { useReadLessons } from "@/components/academy/useAcademyProgress";
 
@@ -56,116 +55,148 @@ const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);
 
 export function AcademyModuleList() {
   const read = useReadLessons(ALL_SLUGS);
+  const [query, setQuery] = React.useState("");
+
+  const q = query.trim().toLowerCase();
+
+  // Pisahkan modul belajar umum vs modul Sertifikasi (WMI).
+  const learningModules = ACADEMY_MODULES.filter((m) => m.slug !== WMI_MODULE_SLUG);
+  const certModules = ACADEMY_MODULES.filter((m) => m.slug === WMI_MODULE_SLUG);
+
+  // Filter pencarian: cocok judul/deskripsi modul ATAU judul lesson di dalamnya.
+  const matches = (m: (typeof ACADEMY_MODULES)[number]) => {
+    if (!q) return true;
+    if (m.title.toLowerCase().includes(q) || m.description.toLowerCase().includes(q)) return true;
+    return m.lessons.some((l) => l.title.toLowerCase().includes(q) || l.summary.toLowerCase().includes(q));
+  };
+
+  const filteredLearning = learningModules.filter(matches);
+  const filteredCert = certModules.filter(matches);
+
+  // Summary: modul selesai (semua lesson dibaca) + overall %.
   const totalRead = read.size;
   const overallPct = TOTAL_LESSON_COUNT > 0 ? Math.round((totalRead / TOTAL_LESSON_COUNT) * 100) : 0;
+  const modulesCompleted = ACADEMY_MODULES.filter(
+    (m) => m.lessons.length > 0 && m.lessons.every((l) => read.has(l.slug)),
+  ).length;
 
   return (
     <div className="space-y-6">
-      {/* Overall progress */}
+      {/* Summary */}
       <Card>
         <CardContent className="p-4">
-          <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="font-semibold">Progress kamu</span>
-            <span className="text-muted-foreground">
-              {totalRead} / {TOTAL_LESSON_COUNT} lesson selesai
-            </span>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <SummaryStat value={`${modulesCompleted}/${ACADEMY_MODULES.length}`} label="Modul selesai" />
+            <SummaryStat value={`${totalRead}/${TOTAL_LESSON_COUNT}`} label="Lesson dibaca" />
+            <SummaryStat value={`${overallPct}%`} label="Progress total" />
           </div>
-          <Progress value={overallPct} />
-          <p className="mt-2 text-xs text-muted-foreground">
-            {overallPct === 100
-              ? "Mantap! Kamu sudah menyelesaikan semua modul Academy."
-              : "Tandai lesson sebagai selesai saat sudah dibaca untuk melacak progres kamu."}
-          </p>
+          <Progress value={overallPct} className="mt-3" />
         </CardContent>
       </Card>
 
-      {/* Modules */}
-      <div className="space-y-5">
-        {ACADEMY_MODULES.map((mod) => {
-          const Icon = ICONS[mod.icon] ?? GraduationCap;
-          const lessonSlugs = mod.lessons.map((l) => l.slug);
-          const doneCount = lessonSlugs.filter((s) => read.has(s)).length;
-          const pct = Math.round((doneCount / mod.lessons.length) * 100);
-          const complete = doneCount === mod.lessons.length;
-
-          return (
-            <Card key={mod.slug} className={cn(complete && "border-bull/40")}>
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
-                      complete ? "bg-bull/15 text-bull" : "bg-primary/10 text-primary",
-                    )}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-lg font-bold tracking-tight">{mod.title}</h2>
-                      <Badge variant={mod.level === "Pemula" ? "secondary" : "neutral"}>
-                        {mod.level}
-                      </Badge>
-                      {complete && (
-                        <Badge variant="bull" className="gap-1">
-                          <CheckCircle2 className="h-3 w-3" /> Selesai
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{mod.description}</p>
-
-                    <div className="mt-3 flex items-center gap-2">
-                      <Progress value={pct} className="h-1.5" />
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {doneCount}/{mod.lessons.length}
-                      </span>
-                    </div>
-
-                    {/* Lessons */}
-                    <ul className="mt-3 divide-y divide-border rounded-md border border-border">
-                      {mod.lessons.map((lesson) => {
-                        const isRead = read.has(lesson.slug);
-                        return (
-                          <li key={lesson.slug}>
-                            <Link
-                              href={`/academy/${lesson.slug}`}
-                              className="flex items-center gap-3 px-3 py-2.5 transition hover:bg-accent"
-                            >
-                              {isRead ? (
-                                <CheckCircle2 className="h-4 w-4 shrink-0 text-bull" />
-                              ) : (
-                                <Circle className="h-4 w-4 shrink-0 text-muted-foreground" />
-                              )}
-                              <div className="min-w-0 flex-1">
-                                <div
-                                  className={cn(
-                                    "truncate text-sm font-medium",
-                                    isRead && "text-muted-foreground",
-                                  )}
-                                >
-                                  {lesson.title}
-                                </div>
-                                <div className="truncate text-xs text-muted-foreground">
-                                  {lesson.summary}
-                                </div>
-                              </div>
-                              <span className="hidden shrink-0 items-center gap-1 text-xs text-muted-foreground sm:flex">
-                                <Clock className="h-3 w-3" />
-                                {lesson.readMinutes} mnt
-                              </span>
-                              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+      {/* Search */}
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Cari modul atau materi… (mis. candlestick, valuasi, psikologi)"
+          aria-label="Cari modul Academy"
+          className="h-11 w-full rounded-lg border border-input bg-background pl-10 pr-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        />
       </div>
+
+      {/* Grid modul belajar */}
+      {filteredLearning.length > 0 ? (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredLearning.map((mod) => (
+            <ModuleCard key={mod.slug} mod={mod} read={read} />
+          ))}
+        </div>
+      ) : (
+        <p className="py-8 text-center text-sm text-muted-foreground">
+          Tidak ada modul yang cocok dengan &ldquo;{query}&rdquo;.
+        </p>
+      )}
+
+      {/* Seksi Sertifikasi (WMI) — dipisah karena tidak semua orang butuh. */}
+      {filteredCert.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 pt-2">
+            <Award className="size-4 text-primary" />
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              Sertifikasi
+            </h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredCert.map((mod) => (
+              <ModuleCard key={mod.slug} mod={mod} read={read} highlight />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function SummaryStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div>
+      <div className="text-xl font-bold">{value}</div>
+      <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function ModuleCard({
+  mod,
+  read,
+  highlight,
+}: {
+  mod: (typeof ACADEMY_MODULES)[number];
+  read: Set<string>;
+  highlight?: boolean;
+}) {
+  const Icon = ICONS[mod.icon] ?? GraduationCap;
+  const total = mod.lessons.length;
+  const readCount = mod.lessons.filter((l) => read.has(l.slug)).length;
+  const pct = total > 0 ? Math.round((readCount / total) * 100) : 0;
+  const done = total > 0 && readCount === total;
+
+  return (
+    <Link href={`/academy/modul/${mod.slug}`} className="group block">
+      <Card
+        className={cn(
+          "h-full transition hover:border-primary/50 hover:shadow-md",
+          highlight && "border-primary/40 bg-primary/5",
+        )}
+      >
+        <CardContent className="flex h-full flex-col p-4">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Icon className="size-5" />
+            </div>
+            {done ? (
+              <Badge className="gap-1 bg-bull/15 text-bull">
+                <CheckCircle2 className="size-3" /> Selesai
+              </Badge>
+            ) : (
+              <Badge variant="secondary" className="text-[10px]">
+                {mod.level}
+              </Badge>
+            )}
+          </div>
+          <h3 className="mt-3 font-bold leading-snug group-hover:text-primary">{mod.title}</h3>
+          <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted-foreground">{mod.description}</p>
+          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <Progress value={pct} className="h-1.5 flex-1" />
+            <span className="shrink-0">
+              {readCount}/{total}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

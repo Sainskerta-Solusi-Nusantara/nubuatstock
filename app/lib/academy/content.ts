@@ -886,6 +886,13 @@ export function getLessonBySlug(slug: string): LessonRef | undefined {
   return ACADEMY_LESSON_ORDER.find((ref) => ref.lesson.slug === slug);
 }
 
+export function getModuleBySlug(slug: string): AcademyModule | undefined {
+  return ACADEMY_MODULES.find((m) => m.slug === slug);
+}
+
+/** Slug modul WMI — dipisah ke seksi "Sertifikasi" di UI (tidak semua butuh). */
+export const WMI_MODULE_SLUG = "wmi-wakil-manajer-investasi";
+
 export function getAdjacentLessons(slug: string): {
   prev?: LessonRef;
   next?: LessonRef;
