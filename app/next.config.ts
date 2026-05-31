@@ -80,7 +80,7 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               // Next.js perlu inline scripts untuk hydration; pakai nonce di prod kalau strict mode
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel-insights.com https://*.posthog.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.vercel-insights.com https://va.vercel-scripts.com https://*.posthog.com",
               "style-src 'self' 'unsafe-inline'",
               // Image domains. Google `/s2/favicons` 301-redirect ke t*.gstatic.com,
               // jadi *.gstatic.com WAJIB di-whitelist juga supaya logo emiten tidak

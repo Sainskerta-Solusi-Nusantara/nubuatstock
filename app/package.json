@@ -49,6 +49,7 @@
     "@react-pdf/renderer": "^4.5.1",
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-table": "^8.20.5",
+    "@vercel/analytics": "^1.4.1",
     "@vercel/blob": "^2.4.0",
     "better-auth": "^1.1.0",
     "bullmq": "^5.34.0",
