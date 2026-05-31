@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ShieldAlert } from "lucide-react";
 import { requireSuperadmin } from "@/lib/auth/roles";
 import { getSession } from "@/lib/auth/server";
+import { SuperadminNavLink } from "./_NavLink";
 
 export const dynamic = "force-dynamic";
 
@@ -29,18 +30,18 @@ export default async function SuperadminLayout({ children }: { children: React.R
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-7xl">
+      <div className="flex w-full">
         <aside className="sticky top-0 hidden h-screen w-60 shrink-0 border-r border-border bg-card/50 p-4 lg:block">
           <div className="mb-6 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Super Admin
           </div>
           <nav className="space-y-1 text-sm">
-            <SidebarLink href="/superadmin">📊 Overview</SidebarLink>
-            <SidebarLink href="/superadmin/growth">📈 Growth & Retention</SidebarLink>
-            <SidebarLink href="/superadmin/revenue">💰 Revenue & MRR</SidebarLink>
-            <SidebarLink href="/superadmin/landing">🎨 Landing Content</SidebarLink>
-            <SidebarLink href="/superadmin/users">👥 Users & Roles</SidebarLink>
-            <SidebarLink href="/superadmin/system">🩺 System Health</SidebarLink>
+            <SuperadminNavLink href="/superadmin" exact>📊 Overview</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/growth">📈 Growth & Retention</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/revenue">💰 Revenue & MRR</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/landing">🎨 Landing Content</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/users">👥 Users & Roles</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/system">🩺 System Health</SuperadminNavLink>
             <Link
               href="/superadmin/pitchdeck"
               className="flex items-center justify-between rounded-md border border-primary/40 bg-primary/10 px-3 py-2 font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"
@@ -54,13 +55,13 @@ export default async function SuperadminLayout({ children }: { children: React.R
               Admin (shared)
             </div>
             <nav className="space-y-1 text-sm">
-              <SidebarLink href="/admin/config">⚙️ Config</SidebarLink>
-              <SidebarLink href="/admin/secrets">🔐 Secrets</SidebarLink>
-              <SidebarLink href="/admin/feature-flags">🚩 Feature Flags</SidebarLink>
-              <SidebarLink href="/admin/audit">📜 Audit Log</SidebarLink>
-              <SidebarLink href="/admin/jobs">⚙️ Jobs</SidebarLink>
-              <SidebarLink href="/admin/ai-prompts">🤖 AI Prompts</SidebarLink>
-              <SidebarLink href="/admin/pricing">💵 Pricing</SidebarLink>
+              <SuperadminNavLink href="/admin/config">⚙️ Config</SuperadminNavLink>
+              <SuperadminNavLink href="/admin/secrets">🔐 Secrets</SuperadminNavLink>
+              <SuperadminNavLink href="/admin/feature-flags">🚩 Feature Flags</SuperadminNavLink>
+              <SuperadminNavLink href="/admin/audit">📜 Audit Log</SuperadminNavLink>
+              <SuperadminNavLink href="/admin/jobs">⚙️ Jobs</SuperadminNavLink>
+              <SuperadminNavLink href="/admin/ai-prompts">🤖 AI Prompts</SuperadminNavLink>
+              <SuperadminNavLink href="/admin/pricing">💵 Pricing</SuperadminNavLink>
             </nav>
           </div>
         </aside>
@@ -68,16 +69,5 @@ export default async function SuperadminLayout({ children }: { children: React.R
         <main className="min-w-0 flex-1 p-6 lg:p-8">{children}</main>
       </div>
     </div>
-  );
-}
-
-function SidebarLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="block rounded-md px-3 py-2 text-foreground/80 transition hover:bg-accent hover:text-foreground"
-    >
-      {children}
-    </Link>
   );
 }
