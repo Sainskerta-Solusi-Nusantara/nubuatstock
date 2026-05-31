@@ -21,18 +21,12 @@ export const SCREENER_PRESETS: ScreenerPreset[] = [
     id: "swing-santai",
     name: "🧘 Mode Swing Santai",
     description:
-      "Stochastic 10,5,5 oversold mulai reversal + RSI recovering + price > SMA50 + MACD histogram balik positif + volume konfirmasi + ROE sehat. Sinyal swing klasik low-stress untuk hold beberapa hari ke minggu, diurut dari paling oversold.",
+      "Murni Stochastic Slow (10,5,5): %K di area jenuh jual (< 20) dan mulai cross ke atas %D (momentum berbalik). Tanpa indikator lain biar simpel — diurut dari paling oversold.",
     philosophy: "Swing trader Indonesia favorite — entry saat oversold mulai reversal, exit di overbought atau target Fibonacci.",
     filters: {
-      maxStochK_10_5_5: 35,            // Oversold zone (< 35, prefer < 20)
-      stochBullishCross_10_5_5: true,  // %K > %D (reversal: momentum turning up)
-      minRsi14: 30,                    // RSI 14 recovering from oversold
-      maxRsi14: 55,                    // ...but not yet overbought
-      isAboveSma50: true,              // Medium-term uptrend intact
-      macdHistogramTurningUp: true,    // MACD histogram baru cross ke positif
-      minVolumeRatio: 1.0,             // Volume ≥ rata-rata (konfirmasi)
-      minRoe: 0.08,                    // Fundamental sanity check (ROE > 8%)
-      sort: "stoch_k",                 // Most oversold first (spec: Stoch %K asc)
+      maxStochK_10_5_5: 20,            // Jenuh jual (Stoch Slow 10,5,5, %K < 20)
+      stochBullishCross_10_5_5: true,  // %K cross ke atas %D (momentum berbalik)
+      sort: "stoch_k",                 // Paling oversold dulu (Stoch %K asc)
       sortDir: "asc",
     },
   },
