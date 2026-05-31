@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { getConfig } from "@/lib/config";
 import { CookieConsentBanner } from "@/components/consent/CookieConsentBanner";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 /**
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <CookieConsentBanner />
+        <VercelAnalytics />
       </body>
     </html>
   );
