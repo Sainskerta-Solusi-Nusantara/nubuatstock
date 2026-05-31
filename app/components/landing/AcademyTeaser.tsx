@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  AlertTriangle,
   Award,
   Activity,
   Brain,
@@ -19,11 +20,14 @@ import {
   Radar,
   Receipt,
   Rocket,
+  Scale,
   ShieldCheck,
+  Ticket,
   Triangle,
   TrendingUp,
   Users,
   Waves,
+  Waypoints,
   Zap,
   type LucideIcon,
 } from "lucide-react";
@@ -55,6 +59,10 @@ const ICONS: Record<string, LucideIcon> = {
   ClipboardList,
   Landmark,
   Lightbulb,
+  AlertTriangle,
+  Scale,
+  Ticket,
+  Waypoints,
 };
 
 /**

@@ -38,6 +38,10 @@ import { scalpingDaytradingModule } from "./modules/scalping-daytrading";
 import { tradingPlanJurnalModule } from "./modules/trading-plan-jurnal";
 import { taxLegalModule } from "./modules/tax-legal";
 import { studiKasusIdxModule } from "./modules/studi-kasus-idx";
+import { sahamFcaModule } from "./modules/saham-fca";
+import { insiderIntegritasModule } from "./modules/insider-integritas";
+import { waranLengkapModule } from "./modules/waran-lengkap";
+import { moneyFlowTimingModule } from "./modules/money-flow-timing";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -904,6 +908,10 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
   tradingPlanJurnalModule,
   taxLegalModule,
   studiKasusIdxModule,
+  sahamFcaModule,
+  insiderIntegritasModule,
+  waranLengkapModule,
+  moneyFlowTimingModule,
 ];
 
 // ---------------------------------------------------------------------------
