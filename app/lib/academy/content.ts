@@ -24,6 +24,10 @@ import { candlestickModule } from "./modules/candlestick";
 import { fundamentalModule } from "./modules/fundamental";
 import { bandarmologyLanjutanModule } from "./modules/bandarmology-lanjutan";
 import { psikologiModule } from "./modules/psikologi";
+import { sektorRotasiModule } from "./modules/sektor-rotasi";
+import { dividendModule } from "./modules/dividend";
+import { ipoCorporateActionModule } from "./modules/ipo-corporate-action";
+import { makroTemaPasarModule } from "./modules/makro-tema-pasar";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -876,6 +880,10 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
   fundamentalModule,
   bandarmologyLanjutanModule,
   psikologiModule,
+  sektorRotasiModule,
+  dividendModule,
+  ipoCorporateActionModule,
+  makroTemaPasarModule,
 ];
 
 // ---------------------------------------------------------------------------

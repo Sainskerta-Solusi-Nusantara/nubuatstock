@@ -9,11 +9,14 @@ import {
   Calculator,
   CandlestickChart,
   CheckCircle2,
+  Coins,
   Compass,
   FileText,
+  Globe,
   GraduationCap,
   LineChart,
   Radar,
+  Rocket,
   Search,
   ShieldCheck,
   Triangle,
@@ -49,6 +52,9 @@ const ICONS: Record<string, LucideIcon> = {
   CandlestickChart,
   Brain,
   Radar,
+  Coins,
+  Rocket,
+  Globe,
 };
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);

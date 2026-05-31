@@ -5,12 +5,15 @@ import {
   Brain,
   Calculator,
   CandlestickChart,
+  Coins,
   Compass,
   FileText,
+  Globe,
   GraduationCap,
   Lock,
   LineChart,
   Radar,
+  Rocket,
   ShieldCheck,
   Triangle,
   Users,
@@ -35,6 +38,9 @@ const ICONS: Record<string, LucideIcon> = {
   CandlestickChart,
   Brain,
   Radar,
+  Coins,
+  Rocket,
+  Globe,
 };
 
 /**
