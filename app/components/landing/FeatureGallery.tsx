@@ -6,13 +6,13 @@ import { X, ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 
 /** Galeri pratinjau fitur — file di public/fitur/1.jpg .. 7.jpg. */
 const GALLERY: Array<{ src: string; title: string; desc: string }> = [
-  { src: "/fitur/1.jpg", title: "Dashboard & Daily Picks", desc: "Ringkasan pasar + saham pilihan harian lengkap dengan entry, stop loss, dan target." },
-  { src: "/fitur/2.jpg", title: "Analisis Per Emiten", desc: "Verdict 0–10, teknikal, fundamental, dan bandarmology dalam satu halaman." },
-  { src: "/fitur/3.jpg", title: "Elliott Wave Otomatis", desc: "Hitung wave count + narasi AI Bahasa Indonesia untuk baca skenario harga." },
-  { src: "/fitur/4.jpg", title: "AI Buddy", desc: "Tanya apa saja soal saham IDX — jawaban berbasis data, lengkap dengan sumber." },
-  { src: "/fitur/5.jpg", title: "Screener & Rotasi Sektor", desc: "Saring emiten sesuai kriteria + lihat rotasi sektor (RRG) & heatmap." },
-  { src: "/fitur/6.jpg", title: "Paper Trading & Hall of Fame", desc: "Latihan trading modal virtual Rp100jt, adu peringkat di leaderboard." },
-  { src: "/fitur/7.jpg", title: "Backtest & Alert", desc: "Uji strategi (walk-forward + Monte Carlo) dan pasang alert harga." },
+  { src: "/fitur/1.jpg", title: "Nubuat Verdict per Emiten", desc: "Skor 0-10 dari 6 faktor (teknikal, momentum, value, quality, growth, sentimen) — transparan, lengkap dengan alasannya." },
+  { src: "/fitur/2.jpg", title: "Compare Emiten", desc: "Bandingkan beberapa saham berdampingan: fundamental side-by-side + Verdict tiap emiten." },
+  { src: "/fitur/3.jpg", title: "Sector Heatmap", desc: "Performa 11 sektor IDX dalam satu layar — ukuran sel ikut market cap, warna ikut return." },
+  { src: "/fitur/4.jpg", title: "AI Buddy", desc: "Tanya apa saja soal saham IDX — jawaban berbasis data, lengkap dengan sumber. Ada Deep Mode." },
+  { src: "/fitur/5.jpg", title: "Academy", desc: "Belajar dari nol sampai mahir: dasar saham, teknikal, Wyckoff, Elliott Wave, sampai persiapan WMI." },
+  { src: "/fitur/6.jpg", title: "Rotation (RRG)", desc: "Relative Rotation Graph: petakan sektor ke kuadran Leading / Improving / Weakening / Lagging." },
+  { src: "/fitur/7.jpg", title: "Guidance — Cara Pakai", desc: "Panduan lengkap tiap fitur: baca Verdict, Wyckoff, bandarmology, screener, sampai AI Buddy." },
 ];
 
 export function FeatureGallery() {
