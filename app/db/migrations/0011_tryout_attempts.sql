@@ -4,7 +4,7 @@
 -- =============================================================================
 
 CREATE TABLE IF NOT EXISTS tryout_attempts (
-  id text PRIMARY KEY,
+  id text PRIMARY KEY DEFAULT gen_ulid(),
   user_id text NOT NULL,
   package_slug text NOT NULL,
   total_questions integer NOT NULL,
@@ -20,3 +20,4 @@ CREATE TABLE IF NOT EXISTS tryout_attempts (
 CREATE INDEX IF NOT EXISTS tryout_attempts_user_idx ON tryout_attempts (user_id);
 CREATE INDEX IF NOT EXISTS tryout_attempts_user_pkg_idx ON tryout_attempts (user_id, package_slug);
 CREATE INDEX IF NOT EXISTS tryout_attempts_submitted_idx ON tryout_attempts (submitted_at);
+ALTER TABLE tryout_attempts ALTER COLUMN id SET DEFAULT gen_ulid(); -- applied to prod 2026-05-31
