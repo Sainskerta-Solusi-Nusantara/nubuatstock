@@ -73,10 +73,10 @@ export function RotationChart({ entities, variant = "sector" }: Props) {
       let dy = 0;
       let guard = 0;
       while (
-        placed.some((q) => Math.abs(q.x - p.x) < 72 && Math.abs(q.y - (p.y + dy)) < 13) &&
-        guard < 16
+        placed.some((q) => Math.abs(q.x - p.x) < 72 && Math.abs(q.y - (p.y + dy)) < 14) &&
+        guard < 24
       ) {
-        dy -= 13;
+        dy -= 14;
         guard++;
       }
       placed.push({ x: p.x, y: p.y + dy });
