@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" font-family="sans-serif">
+  <text x="280" y="24" text-anchor="middle" fill="#999" font-size="13" font-weight="bold">Pola Star (3 candle)</text>
+
+  <!-- Morning Star -->
+  <text x="140" y="52" text-anchor="middle" fill="#16a34a" font-size="12" font-weight="bold">Morning Star (bullish)</text>
+  <!-- big red -->
+  <line x1="70" y1="70" x2="70" y2="78" stroke="#dc2626" stroke-width="2"/>
+  <rect x="58" y="78" width="24" height="80" fill="#dc2626"/>
+  <line x1="70" y1="158" x2="70" y2="166" stroke="#dc2626" stroke-width="2"/>
+  <!-- small star -->
+  <line x1="140" y1="166" x2="140" y2="174" stroke="#16a34a" stroke-width="2"/>
+  <rect x="128" y="174" width="24" height="14" fill="#16a34a"/>
+  <line x1="140" y1="188" x2="140" y2="196" stroke="#16a34a" stroke-width="2"/>
+  <!-- big green -->
+  <line x1="210" y1="80" x2="210" y2="88" stroke="#16a34a" stroke-width="2"/>
+  <rect x="198" y="88" width="24" height="80" fill="#16a34a"/>
+  <line x1="210" y1="168" x2="210" y2="176" stroke="#16a34a" stroke-width="2"/>
+  <text x="140" y="230" text-anchor="middle" fill="#999" font-size="10">merah besar &#8594; kecil &#8594; hijau besar</text>
+  <text x="140" y="246" text-anchor="middle" fill="#999" font-size="9">dasar tren turun</text>
+
+  <!-- Evening Star -->
+  <text x="420" y="52" text-anchor="middle" fill="#dc2626" font-size="12" font-weight="bold">Evening Star (bearish)</text>
+  <!-- big green -->
+  <line x1="350" y1="120" x2="350" y2="128" stroke="#16a34a" stroke-width="2"/>
+  <rect x="338" y="128" width="24" height="80" fill="#16a34a"/>
+  <line x1="350" y1="208" x2="350" y2="216" stroke="#16a34a" stroke-width="2"/>
+  <!-- small star -->
+  <line x1="420" y1="86" x2="420" y2="94" stroke="#dc2626" stroke-width="2"/>
+  <rect x="408" y="94" width="24" height="14" fill="#dc2626"/>
+  <line x1="420" y1="108" x2="420" y2="116" stroke="#dc2626" stroke-width="2"/>
+  <!-- big red -->
+  <line x1="490" y1="110" x2="490" y2="118" stroke="#dc2626" stroke-width="2"/>
+  <rect x="478" y="118" width="24" height="80" fill="#dc2626"/>
+  <line x1="490" y1="198" x2="490" y2="206" stroke="#dc2626" stroke-width="2"/>
+  <text x="420" y="246" text-anchor="middle" fill="#999" font-size="10">hijau besar &#8594; kecil &#8594; merah besar</text>
+  <text x="420" y="262" text-anchor="middle" fill="#999" font-size="9">puncak tren naik</text>
+</svg>

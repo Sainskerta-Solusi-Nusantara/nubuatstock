@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="system-ui, sans-serif">
+  <text x="60" y="34" fill="#999" font-size="14" font-weight="bold">Risk-Reward Ratio 1:2</text>
+
+  <!-- price ladder -->
+  <line x1="200" y1="60" x2="560" y2="60" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="575" y="64" fill="#16a34a" font-size="12">Target (TP) 1.100</text>
+
+  <line x1="200" y1="200" x2="560" y2="200" stroke="#3b82f6" stroke-width="2"/>
+  <text x="575" y="204" fill="#3b82f6" font-size="12">Entry 1.000</text>
+
+  <line x1="200" y1="270" x2="560" y2="270" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="575" y="274" fill="#dc2626" font-size="12">Stop Loss 950</text>
+
+  <!-- reward bar -->
+  <rect x="260" y="60" width="40" height="140" fill="#16a34a" opacity="0.25"/>
+  <text x="240" y="135" fill="#16a34a" font-size="13" transform="rotate(-90 240 135)">REWARD +100</text>
+
+  <!-- risk bar -->
+  <rect x="380" y="200" width="40" height="70" fill="#dc2626" opacity="0.25"/>
+  <text x="362" y="245" fill="#dc2626" font-size="13" transform="rotate(-90 362 245)">RISK -50</text>
+
+  <!-- ratio -->
+  <text x="220" y="330" fill="#999" font-size="13">Risiko 50 ditukar potensi untung 100  =  rasio 1 : 2 (layak)</text>
+</svg>

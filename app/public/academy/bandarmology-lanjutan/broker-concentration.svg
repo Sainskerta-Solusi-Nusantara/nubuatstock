@@ -1,0 +1,27 @@
+<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <text x="240" y="24" text-anchor="middle" fill="#999" font-size="15" font-weight="bold">Broker Concentration</text>
+  <text x="240" y="44" text-anchor="middle" fill="#999" font-size="11">Konsentrasi net buy pada sedikit broker = jejak akumulasi</text>
+
+  <!-- axis -->
+  <line x1="60" y1="210" x2="450" y2="210" stroke="#888" stroke-width="1"/>
+  <line x1="60" y1="70" x2="60" y2="210" stroke="#888" stroke-width="1"/>
+  <text x="40" y="76" fill="#999" font-size="10">Net</text>
+
+  <!-- net buyers (green) -->
+  <rect x="80" y="90" width="34" height="120" fill="#16a34a"/>
+  <rect x="124" y="120" width="34" height="90" fill="#16a34a"/>
+  <rect x="168" y="150" width="34" height="60" fill="#16a34a"/>
+  <text x="97" y="225" text-anchor="middle" fill="#999" font-size="10">YP</text>
+  <text x="141" y="225" text-anchor="middle" fill="#999" font-size="10">CC</text>
+  <text x="185" y="225" text-anchor="middle" fill="#999" font-size="10">KZ</text>
+
+  <!-- net sellers (red, retail spread) -->
+  <rect x="260" y="210" width="22" height="22" fill="#dc2626"/>
+  <rect x="290" y="210" width="22" height="18" fill="#dc2626"/>
+  <rect x="320" y="210" width="22" height="24" fill="#dc2626"/>
+  <rect x="350" y="210" width="22" height="16" fill="#dc2626"/>
+  <rect x="380" y="210" width="22" height="20" fill="#dc2626"/>
+  <text x="330" y="252" text-anchor="middle" fill="#999" font-size="10">banyak broker ritel (net sell kecil-kecil)</text>
+
+  <text x="141" y="62" text-anchor="middle" fill="#16a34a" font-size="11" font-weight="bold">terkonsentrasi (smart money)</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <text x="240" y="22" text-anchor="middle" fill="#999" font-size="15" font-weight="bold">Foreign Flow vs IHSG</text>
+  <text x="240" y="42" text-anchor="middle" fill="#999" font-size="11">Net foreign buy (hijau) / sell (merah) bergerak searah indeks</text>
+
+  <!-- zero line -->
+  <line x1="50" y1="150" x2="450" y2="150" stroke="#888" stroke-width="1"/>
+  <text x="30" y="154" fill="#999" font-size="10">0</text>
+  <text x="20" y="100" fill="#999" font-size="10">net</text>
+  <text x="14" y="113" fill="#999" font-size="10">buy</text>
+  <text x="20" y="200" fill="#999" font-size="10">net</text>
+  <text x="14" y="213" fill="#999" font-size="10">sell</text>
+
+  <!-- foreign net bars -->
+  <rect x="70" y="120" width="26" height="30" fill="#16a34a"/>
+  <rect x="105" y="100" width="26" height="50" fill="#16a34a"/>
+  <rect x="140" y="90" width="26" height="60" fill="#16a34a"/>
+  <rect x="175" y="115" width="26" height="35" fill="#16a34a"/>
+  <rect x="210" y="150" width="26" height="25" fill="#dc2626"/>
+  <rect x="245" y="150" width="26" height="45" fill="#dc2626"/>
+  <rect x="280" y="150" width="26" height="60" fill="#dc2626"/>
+  <rect x="315" y="150" width="26" height="30" fill="#dc2626"/>
+  <rect x="350" y="130" width="26" height="20" fill="#16a34a"/>
+  <rect x="385" y="110" width="26" height="40" fill="#16a34a"/>
+
+  <!-- IHSG line overlaid -->
+  <polyline points="83,135 118,118 153,95 188,90 223,108 258,125 293,138 328,128 363,118 398,100"
+    fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="398" y="92" fill="#3b82f6" font-size="11" font-weight="bold">IHSG</text>
+
+  <text x="150" y="250" text-anchor="middle" fill="#16a34a" font-size="11">asing masuk → indeks naik</text>
+  <text x="300" y="250" text-anchor="middle" fill="#dc2626" font-size="11">asing keluar → indeks tertekan</text>
+</svg>

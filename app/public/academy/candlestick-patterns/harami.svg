@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 280" font-family="sans-serif">
+  <text x="260" y="24" text-anchor="middle" fill="#999" font-size="13" font-weight="bold">Pola Harami (induk &amp; bayi)</text>
+
+  <!-- Bullish Harami -->
+  <text x="140" y="54" text-anchor="middle" fill="#16a34a" font-size="12" font-weight="bold">Bullish Harami</text>
+  <line x1="100" y1="74" x2="100" y2="82" stroke="#dc2626" stroke-width="2"/>
+  <rect x="86" y="82" width="28" height="96" fill="#dc2626"/>
+  <line x1="100" y1="178" x2="100" y2="186" stroke="#dc2626" stroke-width="2"/>
+  <line x1="170" y1="108" x2="170" y2="116" stroke="#16a34a" stroke-width="2"/>
+  <rect x="158" y="116" width="24" height="34" fill="#16a34a"/>
+  <line x1="170" y1="150" x2="170" y2="158" stroke="#16a34a" stroke-width="2"/>
+  <text x="140" y="210" text-anchor="middle" fill="#999" font-size="10">candle merah besar lalu</text>
+  <text x="140" y="226" text-anchor="middle" fill="#999" font-size="10">hijau kecil di dalam body-nya</text>
+
+  <!-- Bearish Harami -->
+  <text x="380" y="54" text-anchor="middle" fill="#dc2626" font-size="12" font-weight="bold">Bearish Harami</text>
+  <line x1="340" y1="74" x2="340" y2="82" stroke="#16a34a" stroke-width="2"/>
+  <rect x="326" y="82" width="28" height="96" fill="#16a34a"/>
+  <line x1="340" y1="178" x2="340" y2="186" stroke="#16a34a" stroke-width="2"/>
+  <line x1="410" y1="108" x2="410" y2="116" stroke="#dc2626" stroke-width="2"/>
+  <rect x="398" y="116" width="24" height="34" fill="#dc2626"/>
+  <line x1="410" y1="150" x2="410" y2="158" stroke="#dc2626" stroke-width="2"/>
+  <text x="380" y="210" text-anchor="middle" fill="#999" font-size="10">candle hijau besar lalu</text>
+  <text x="380" y="226" text-anchor="middle" fill="#999" font-size="10">merah kecil di dalam body-nya</text>
+
+  <text x="260" y="262" text-anchor="middle" fill="#999" font-size="10">Body kecil ditampung penuh body besar sebelumnya = momentum melemah</text>
+</svg>

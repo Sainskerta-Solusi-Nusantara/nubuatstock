@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240" font-family="sans-serif">
+  <text x="300" y="24" text-anchor="middle" fill="#999" font-size="13" font-weight="bold">Jenis-jenis Doji (open &#8776; close)</text>
+
+  <!-- Standard Doji -->
+  <text x="80" y="52" text-anchor="middle" fill="#999" font-size="11" font-weight="bold">Standard</text>
+  <line x1="80" y1="70" x2="80" y2="110" stroke="#999" stroke-width="2"/>
+  <rect x="62" y="109" width="36" height="3" fill="#999"/>
+  <line x1="80" y1="112" x2="80" y2="152" stroke="#999" stroke-width="2"/>
+  <text x="80" y="180" text-anchor="middle" fill="#999" font-size="9">wick atas &amp; bawah seimbang</text>
+
+  <!-- Long-legged Doji -->
+  <text x="220" y="52" text-anchor="middle" fill="#999" font-size="11" font-weight="bold">Long-legged</text>
+  <line x1="220" y1="64" x2="220" y2="109" stroke="#999" stroke-width="2"/>
+  <rect x="202" y="109" width="36" height="3" fill="#999"/>
+  <line x1="220" y1="112" x2="220" y2="158" stroke="#999" stroke-width="2"/>
+  <text x="220" y="180" text-anchor="middle" fill="#999" font-size="9">kedua wick sangat panjang</text>
+
+  <!-- Dragonfly Doji -->
+  <text x="380" y="52" text-anchor="middle" fill="#16a34a" font-size="11" font-weight="bold">Dragonfly</text>
+  <rect x="362" y="76" width="36" height="3" fill="#16a34a"/>
+  <line x1="380" y1="79" x2="380" y2="160" stroke="#16a34a" stroke-width="2"/>
+  <text x="380" y="180" text-anchor="middle" fill="#999" font-size="9">wick bawah saja (bias bullish)</text>
+
+  <!-- Gravestone Doji -->
+  <text x="520" y="52" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">Gravestone</text>
+  <line x1="520" y1="76" x2="520" y2="157" stroke="#dc2626" stroke-width="2"/>
+  <rect x="502" y="157" width="36" height="3" fill="#dc2626"/>
+  <text x="520" y="180" text-anchor="middle" fill="#999" font-size="9">wick atas saja (bias bearish)</text>
+
+  <text x="300" y="216" text-anchor="middle" fill="#999" font-size="10">Doji = keraguan pasar / keseimbangan beli-jual</text>
+</svg>

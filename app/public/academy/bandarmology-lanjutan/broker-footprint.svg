@@ -1,0 +1,27 @@
+<svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <text x="240" y="22" text-anchor="middle" fill="#999" font-size="15" font-weight="bold">Broker Footprint: Akumulasi vs Distribusi</text>
+
+  <!-- price line -->
+  <polyline points="40,200 90,205 140,198 190,160 240,120 300,118 360,150 430,200"
+    fill="none" stroke="#888" stroke-width="2"/>
+
+  <!-- accumulation zone (green) -->
+  <rect x="40" y="190" width="110" height="40" fill="#16a34a" opacity="0.15"/>
+  <text x="95" y="252" text-anchor="middle" fill="#16a34a" font-size="11" font-weight="bold">Akumulasi</text>
+  <text x="95" y="266" text-anchor="middle" fill="#999" font-size="10">broker besar net buy, harga datar</text>
+
+  <!-- markup -->
+  <line x1="160" y1="200" x2="290" y2="120" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="215" y="150" text-anchor="middle" fill="#3b82f6" font-size="11" font-weight="bold">Markup</text>
+
+  <!-- distribution zone (red) -->
+  <rect x="290" y="108" width="80" height="40" fill="#dc2626" opacity="0.15"/>
+  <text x="330" y="98" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">Distribusi</text>
+  <text x="330" y="84" text-anchor="middle" fill="#999" font-size="10">broker besar net sell ke ritel</text>
+
+  <!-- markdown -->
+  <line x1="360" y1="150" x2="430" y2="200" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="410" y="172" text-anchor="middle" fill="#dc2626" font-size="11" font-weight="bold">Markdown</text>
+
+  <text x="240" y="40" text-anchor="middle" fill="#999" font-size="11">jejak broker = peta siklus akumulasi → markup → distribusi → markdown</text>
+</svg>

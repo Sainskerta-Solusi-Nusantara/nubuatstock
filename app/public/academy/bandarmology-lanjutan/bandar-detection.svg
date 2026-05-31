@@ -1,0 +1,32 @@
+<svg viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <text x="240" y="22" text-anchor="middle" fill="#999" font-size="15" font-weight="bold">Deteksi Bandar Beraksi</text>
+  <text x="240" y="40" text-anchor="middle" fill="#999" font-size="11">harga + volume + broker dominan menyatu</text>
+
+  <!-- price panel -->
+  <polyline points="40,150 90,148 140,145 175,100 220,75 270,80 320,70 380,120 430,160"
+    fill="none" stroke="#888" stroke-width="2"/>
+  <text x="30" y="80" fill="#999" font-size="10">harga</text>
+
+  <!-- breakout marker -->
+  <circle cx="175" cy="100" r="5" fill="#16a34a"/>
+  <text x="175" y="92" text-anchor="middle" fill="#16a34a" font-size="10" font-weight="bold">breakout</text>
+
+  <!-- distribution top marker -->
+  <circle cx="320" cy="70" r="5" fill="#dc2626"/>
+  <text x="320" y="62" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="bold">puncak</text>
+
+  <!-- volume panel -->
+  <line x1="40" y1="270" x2="450" y2="270" stroke="#888" stroke-width="1"/>
+  <text x="30" y="230" fill="#999" font-size="10">vol</text>
+  <rect x="60" y="255" width="18" height="15" fill="#888"/>
+  <rect x="95" y="250" width="18" height="20" fill="#888"/>
+  <rect x="130" y="255" width="18" height="15" fill="#888"/>
+  <rect x="165" y="210" width="18" height="60" fill="#16a34a"/>
+  <rect x="200" y="225" width="18" height="45" fill="#16a34a"/>
+  <rect x="270" y="230" width="18" height="40" fill="#888"/>
+  <rect x="315" y="215" width="18" height="55" fill="#dc2626"/>
+  <rect x="375" y="220" width="18" height="50" fill="#dc2626"/>
+
+  <text x="180" y="290" text-anchor="middle" fill="#16a34a" font-size="10">volume melonjak + 1 broker dominan net buy</text>
+  <text x="360" y="290" text-anchor="middle" fill="#dc2626" font-size="10">broker yg sama berbalik net sell</text>
+</svg>

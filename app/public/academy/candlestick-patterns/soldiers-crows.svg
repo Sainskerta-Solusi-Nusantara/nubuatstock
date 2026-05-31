@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" font-family="sans-serif">
+  <text x="280" y="24" text-anchor="middle" fill="#999" font-size="13" font-weight="bold">Pola Tiga Candle Searah</text>
+
+  <!-- Three White Soldiers -->
+  <text x="140" y="52" text-anchor="middle" fill="#16a34a" font-size="12" font-weight="bold">Three White Soldiers</text>
+  <line x1="70" y1="150" x2="70" y2="158" stroke="#16a34a" stroke-width="2"/>
+  <rect x="58" y="158" width="24" height="56" fill="#16a34a"/>
+  <line x1="70" y1="214" x2="70" y2="222" stroke="#16a34a" stroke-width="2"/>
+  <line x1="140" y1="118" x2="140" y2="126" stroke="#16a34a" stroke-width="2"/>
+  <rect x="128" y="126" width="24" height="56" fill="#16a34a"/>
+  <line x1="140" y1="182" x2="140" y2="190" stroke="#16a34a" stroke-width="2"/>
+  <line x1="210" y1="86" x2="210" y2="94" stroke="#16a34a" stroke-width="2"/>
+  <rect x="198" y="94" width="24" height="56" fill="#16a34a"/>
+  <line x1="210" y1="150" x2="210" y2="158" stroke="#16a34a" stroke-width="2"/>
+  <text x="140" y="248" text-anchor="middle" fill="#999" font-size="10">3 hijau naik beruntun</text>
+  <text x="140" y="264" text-anchor="middle" fill="#999" font-size="9">(reversal/lanjutan bullish)</text>
+
+  <!-- Three Black Crows -->
+  <text x="420" y="52" text-anchor="middle" fill="#dc2626" font-size="12" font-weight="bold">Three Black Crows</text>
+  <line x1="350" y1="78" x2="350" y2="86" stroke="#dc2626" stroke-width="2"/>
+  <rect x="338" y="86" width="24" height="56" fill="#dc2626"/>
+  <line x1="350" y1="142" x2="350" y2="150" stroke="#dc2626" stroke-width="2"/>
+  <line x1="420" y1="110" x2="420" y2="118" stroke="#dc2626" stroke-width="2"/>
+  <rect x="408" y="118" width="24" height="56" fill="#dc2626"/>
+  <line x1="420" y1="174" x2="420" y2="182" stroke="#dc2626" stroke-width="2"/>
+  <line x1="490" y1="142" x2="490" y2="150" stroke="#dc2626" stroke-width="2"/>
+  <rect x="478" y="150" width="24" height="56" fill="#dc2626"/>
+  <line x1="490" y1="206" x2="490" y2="214" stroke="#dc2626" stroke-width="2"/>
+  <text x="420" y="248" text-anchor="middle" fill="#999" font-size="10">3 merah turun beruntun</text>
+  <text x="420" y="264" text-anchor="middle" fill="#999" font-size="9">(reversal bearish)</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <text x="240" y="22" text-anchor="middle" fill="#999" font-size="15" font-weight="bold">Broker Rotation</text>
+  <text x="240" y="40" text-anchor="middle" fill="#999" font-size="11">pergantian broker dominan dari hari ke hari</text>
+
+  <!-- 3 day columns -->
+  <text x="110" y="70" text-anchor="middle" fill="#999" font-size="11" font-weight="bold">Hari 1-3</text>
+  <text x="240" y="70" text-anchor="middle" fill="#999" font-size="11" font-weight="bold">Hari 4-6</text>
+  <text x="370" y="70" text-anchor="middle" fill="#999" font-size="11" font-weight="bold">Hari 7-9</text>
+
+  <!-- day1 dominant green broker A -->
+  <rect x="70" y="90" width="80" height="28" rx="4" fill="#16a34a"/>
+  <text x="110" y="109" text-anchor="middle" fill="#fff" font-size="11">YP net buy</text>
+
+  <!-- arrow -->
+  <line x1="155" y1="104" x2="195" y2="104" stroke="#3b82f6" stroke-width="2"/>
+  <polygon points="195,104 187,99 187,109" fill="#3b82f6"/>
+
+  <!-- day2 dominant green broker B (rotation, masih akumulasi) -->
+  <rect x="200" y="90" width="80" height="28" rx="4" fill="#16a34a"/>
+  <text x="240" y="109" text-anchor="middle" fill="#fff" font-size="11">CC net buy</text>
+
+  <!-- arrow -->
+  <line x1="285" y1="104" x2="325" y2="104" stroke="#3b82f6" stroke-width="2"/>
+  <polygon points="325,104 317,99 317,109" fill="#3b82f6"/>
+
+  <!-- day3 broker berbalik sell (waspada distribusi) -->
+  <rect x="330" y="90" width="80" height="28" rx="4" fill="#dc2626"/>
+  <text x="370" y="109" text-anchor="middle" fill="#fff" font-size="11">YP net sell</text>
+
+  <text x="170" y="160" text-anchor="middle" fill="#16a34a" font-size="11">rotasi antar broker hijau = akumulasi estafet (sehat)</text>
+  <text x="240" y="185" text-anchor="middle" fill="#dc2626" font-size="11">broker akumulator berbalik jadi penjual = sinyal distribusi</text>
+</svg>

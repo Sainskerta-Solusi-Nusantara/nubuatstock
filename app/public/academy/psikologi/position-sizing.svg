@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" font-family="system-ui, sans-serif">
+  <text x="60" y="34" fill="#999" font-size="14" font-weight="bold">Position Sizing: dari Risk% ke Jumlah Lot</text>
+
+  <!-- step boxes -->
+  <rect x="40" y="70" width="200" height="80" rx="8" fill="none" stroke="#3b82f6" stroke-width="2"/>
+  <text x="60" y="100" fill="#3b82f6" font-size="13" font-weight="bold">1. Modal</text>
+  <text x="60" y="125" fill="#999" font-size="12">Rp 100.000.000</text>
+
+  <rect x="280" y="70" width="200" height="80" rx="8" fill="none" stroke="#dc2626" stroke-width="2"/>
+  <text x="300" y="100" fill="#dc2626" font-size="13" font-weight="bold">2. Risk per trade</text>
+  <text x="300" y="125" fill="#999" font-size="12">1% = Rp 1.000.000</text>
+
+  <rect x="520" y="70" width="200" height="80" rx="8" fill="none" stroke="#dc2626" stroke-width="2"/>
+  <text x="540" y="100" fill="#dc2626" font-size="13" font-weight="bold">3. Jarak Stop</text>
+  <text x="540" y="125" fill="#999" font-size="12">Entry 1.000 - SL 950</text>
+  <text x="540" y="143" fill="#999" font-size="12">= Rp 50 / lembar</text>
+
+  <!-- arrows -->
+  <line x1="240" y1="110" x2="280" y2="110" stroke="#999" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="480" y1="110" x2="520" y2="110" stroke="#999" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- formula -->
+  <rect x="120" y="210" width="520" height="70" rx="8" fill="none" stroke="#16a34a" stroke-width="2"/>
+  <text x="150" y="240" fill="#16a34a" font-size="14" font-weight="bold">Jumlah lembar = Risk (Rp) / Jarak Stop (Rp)</text>
+  <text x="150" y="265" fill="#999" font-size="13">1.000.000 / 50 = 20.000 lembar = 200 lot</text>
+
+  <line x1="380" y1="150" x2="380" y2="210" stroke="#999" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <text x="120" y="330" fill="#16a34a" font-size="13" font-weight="bold">Hasil: beli 200 lot.</text>
+  <text x="120" y="352" fill="#999" font-size="12">Kalau kena SL, rugi tepat Rp 1 juta (1% modal). Disiplin terjaga.</text>
+
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#999"/>
+    </marker>
+  </defs>
+</svg>

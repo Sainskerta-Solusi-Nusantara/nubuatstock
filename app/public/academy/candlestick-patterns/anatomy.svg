@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 260" font-family="sans-serif">
+  <!-- Bullish candle -->
+  <text x="120" y="28" text-anchor="middle" fill="#16a34a" font-size="14" font-weight="bold">Candle Bullish (Hijau)</text>
+  <line x1="120" y1="50" x2="120" y2="90" stroke="#16a34a" stroke-width="2"/>
+  <line x1="120" y1="170" x2="120" y2="210" stroke="#16a34a" stroke-width="2"/>
+  <rect x="100" y="90" width="40" height="80" fill="#16a34a"/>
+  <text x="175" y="70" fill="#999" font-size="11">Upper wick (sumbu atas)</text>
+  <text x="175" y="134" fill="#999" font-size="11">Body = Close - Open</text>
+  <text x="175" y="195" fill="#999" font-size="11">Lower wick (sumbu bawah)</text>
+  <text x="120" y="232" text-anchor="middle" fill="#999" font-size="10">Close di atas Open</text>
+
+  <!-- Bearish candle -->
+  <text x="400" y="28" text-anchor="middle" fill="#dc2626" font-size="14" font-weight="bold">Candle Bearish (Merah)</text>
+  <line x1="400" y1="50" x2="400" y2="90" stroke="#dc2626" stroke-width="2"/>
+  <line x1="400" y1="170" x2="400" y2="210" stroke="#dc2626" stroke-width="2"/>
+  <rect x="380" y="90" width="40" height="80" fill="#dc2626"/>
+  <text x="400" y="232" text-anchor="middle" fill="#999" font-size="10">Close di bawah Open</text>
+</svg>
