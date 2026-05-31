@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-const TIERS = ["free", "starter", "pro", "elite", "institutional"] as const;
+const TIERS = ["free", "starter", "pro", "elite", "institutional", "trial"] as const;
 type Tier = (typeof TIERS)[number];
 
 interface Props {

@@ -6,10 +6,10 @@ import { getSession } from "@/lib/auth/server";
 import { requireSuperadmin } from "@/lib/auth/roles";
 import { ok, fail, handleError } from "@/lib/utils/api";
 import { auditLog } from "@/lib/observability/audit";
-import { getUserTier, setUserTierByAdmin } from "@/lib/billing";
+import { getUserTier, setUserTierByAdmin, startTrialSubscription } from "@/lib/billing";
 
 const bodySchema = z.object({
-  tier: z.enum(["free", "starter", "pro", "elite", "institutional"]),
+  tier: z.enum(["free", "starter", "pro", "elite", "institutional", "trial"]),
   reason: z.string().max(280).optional(),
 });
 
@@ -33,11 +33,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!target) return fail(404, "USER_NOT_FOUND", "User tidak ditemukan");
 
     const beforeTier = await getUserTier(id);
-    if (beforeTier === tier) {
+    if (tier !== "trial" && beforeTier === tier) {
       return ok({ unchanged: true, tier });
     }
 
-    await setUserTierByAdmin({ userId: id, tierKode: tier, actorUserId: actor.userId, reason });
+    if (tier === "trial") {
+      // Trial = Pro 7 hari (status trialing). Otomatis kedaluwarsa lewat
+      // trial_ends_at / current_period_end (waktu 7 hari berjalan sendiri).
+      await startTrialSubscription({ userId: id, durationDays: 7, tierKode: "pro" });
+    } else {
+      await setUserTierByAdmin({ userId: id, tierKode: tier, actorUserId: actor.userId, reason });
+    }
 
     await auditLog({
       actorUserId: actor.userId,
