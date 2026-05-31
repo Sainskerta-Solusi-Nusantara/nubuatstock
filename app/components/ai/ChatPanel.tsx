@@ -254,6 +254,22 @@ export function ChatPanel({
     sendMessageRef.current = sendMessage;
   }, [sendMessage]);
 
+  // Auto-fire ringkasan emiten saat chat baru dibuka dengan konteks ticker
+  // (mis. dari tombol "Buka AI Buddy dengan konteks BNBR" di halaman emiten).
+  // Hanya untuk percakapan BARU (belum ada conversationId & belum ada pesan).
+  const autoFiredRef = useRef(false);
+  useEffect(() => {
+    if (autoFiredRef.current) return;
+    if (conversationId !== null) return;
+    if (initialMessages.length > 0) return;
+    if (!contextKode) return;
+    autoFiredRef.current = true;
+    sendMessage(
+      `Beri ringkasan ${contextKode} sekarang: harga & perubahan terkini, Nubuat Verdict (skor + alasan singkat), kondisi teknikal, fundamental ringkas, dan sentimen berita terbaru. Tutup dengan 3 pertanyaan lanjutan yang relevan.`,
+      { deepMode: false },
+    );
+  }, [contextKode, conversationId, initialMessages.length, sendMessage]);
+
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col">
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 md:px-4">

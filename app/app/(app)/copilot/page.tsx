@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 const PAGE_SIZE = 20;
 
 interface PageProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; ticker?: string }>;
 }
 
 /**
@@ -28,6 +28,12 @@ export default async function CopilotPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   const page = Math.max(1, Number(sp.page) || 1);
   const offset = (page - 1) * PAGE_SIZE;
+  // ?ticker=BNBR (dari tombol "Buka AI Buddy dengan konteks" di halaman emiten)
+  // → set konteks emiten + auto-fire ringkasan begitu chat kebuka.
+  const ticker =
+    typeof sp.ticker === "string" && sp.ticker.trim()
+      ? sp.ticker.trim().toUpperCase().slice(0, 12)
+      : null;
 
   const provider = await getConfig<string>("ai.provider");
   const configured = await hasSecret(`ai.${provider}.api_key`);
@@ -83,7 +89,7 @@ export default async function CopilotPage({ searchParams }: PageProps) {
           <ChatPanel
             conversationId={null}
             initialMessages={[]}
-            contextKode={null}
+            contextKode={ticker}
             deepModeAvailable={deepModeAvailable}
           />
         )}
