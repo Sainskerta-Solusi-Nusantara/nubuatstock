@@ -21,6 +21,17 @@ export interface ChangelogEntry {
 /** Entry changelog, urut terbaru dulu. */
 export const changelogEntries: ChangelogEntry[] = [
   {
+    version: "1.8.0",
+    date: "2026-05-31",
+    title: "Academy makin lengkap + diagram di mana-mana",
+    items: [
+      "3 modul baru: Psikologi & Money Management, Bandarmology Lanjutan, dan Candlestick Patterns Lengkap (25+ pola).",
+      "Modul lama kini dilengkapi gambar/diagram — candlestick, support-resistance, risk-reward, dan lainnya.",
+      "Sertifikat Try Out di-desain ulang (tema putih-hijau) biar lebih rapi.",
+      "Kami pasang analitik traffic biar bisa terus memperbaiki pengalaman kamu.",
+    ],
+  },
+  {
     version: "1.7.0",
     date: "2026-05-31",
     title: "Academy WMI, Try Out & modul Elliott/Wyckoff",
