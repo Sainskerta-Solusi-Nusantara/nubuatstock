@@ -93,7 +93,7 @@ const GROUPS: SidebarGroup[] = [
       { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
       { href: "/guidance", label: "Guidance", icon: BookOpen },
       { href: "/help", label: "Help Center", icon: LifeBuoy, badge: "NEW" },
-      { href: "/support", label: "Bantuan", icon: MessageCircleQuestion },
+      { href: "/support", label: "Tiket & Feedback", icon: MessageCircleQuestion },
     ],
   },
   {

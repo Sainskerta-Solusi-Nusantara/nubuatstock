@@ -28,8 +28,11 @@ import { db } from "../lib/db";
 import { companies } from "../db/schema/companies";
 
 const CONCURRENCY = 6;
-const FORCE = process.env.FORCE === "1";
+// Force re-upload walau sudah self-hosted: via env FORCE=1 ATAU flag --force.
+const FORCE = process.env.FORCE === "1" || process.argv.includes("--force");
 const BLOB_HOST = "blob.vercel-storage.com";
+/** Ukuran logo (px). 256 = lebih tajam/HD dari 128 sebelumnya. */
+const LOGO_SIZE = 256;
 
 /** Fallback domain untuk emiten populer (dev lokal tanpa data website Yahoo). */
 const DOMAIN_MAP: Record<string, string> = {
@@ -58,9 +61,10 @@ function resolveDomain(kode: string, website: string | null, logoUrl: string | n
 /** Ambil bytes logo terbaik untuk sebuah domain. */
 async function fetchLogoBytes(domain: string): Promise<Buffer | null> {
   const candidates = [
-    `https://cdn.brandfetch.io/${domain}/w/256/h/256`,
-    `https://logo.clearbit.com/${domain}`,
-    `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+    `https://cdn.brandfetch.io/${domain}/w/512/h/512`,
+    `https://logo.clearbit.com/${domain}?size=512&format=png`,
+    `https://icons.duckduckgo.com/ip3/${domain}.ico`,
+    `https://www.google.com/s2/favicons?domain=${domain}&sz=256`,
   ];
   for (const url of candidates) {
     try {
@@ -87,8 +91,8 @@ async function syncOne(c: { kode: string; website: string | null; logoUrl: strin
   if (!raw) return "fail";
 
   const webp = await sharp(raw)
-    .resize(128, 128, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 0 } })
-    .webp({ quality: 90 })
+    .resize(LOGO_SIZE, LOGO_SIZE, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 0 } })
+    .webp({ quality: 92 })
     .toBuffer();
 
   const blob = await put(`company-logos/${c.kode}.webp`, webp, {
