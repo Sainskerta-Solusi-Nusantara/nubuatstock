@@ -21,6 +21,39 @@ export interface ChangelogEntry {
 /** Entry changelog, urut terbaru dulu. */
 export const changelogEntries: ChangelogEntry[] = [
   {
+    version: "1.7.0",
+    date: "2026-05-31",
+    title: "Academy WMI, Try Out & modul Elliott/Wyckoff",
+    items: [
+      "Modul WMI (Wakil Manajer Investasi) + Try Out 10 paket soal lengkap dengan pembahasan.",
+      "Lulus Try Out? Unduh sertifikat penyelesaian dalam bentuk PDF.",
+      "Modul Elliott Wave & Wyckoff selengkapnya — disertai diagram biar gampang dipahami.",
+      "Riwayat skor Try Out tersimpan, plus contoh sekuritas populer di materi buka rekening.",
+    ],
+  },
+  {
+    version: "1.6.0",
+    date: "2026-05-31",
+    title: "Notifikasi: lonceng, WhatsApp & push browser",
+    items: [
+      "Lonceng notifikasi di header + halaman riwayat notifikasi.",
+      "Alert saham bisa dikirim ke WhatsApp kamu (opt-in, ada jam tenang & batas harian biar tak spam).",
+      "Notifikasi push langsung di browser/HP walau app ditutup (PWA).",
+      "Atur semua kanal & jenis notifikasi di Pengaturan → Notifikasi.",
+    ],
+  },
+  {
+    version: "1.5.0",
+    date: "2026-05-31",
+    title: "Terminal Pro, Paper Trading, Ajak Teman & lainnya",
+    items: [
+      "Terminal Pro: workspace multi-chart untuk pantau banyak emiten sekaligus.",
+      "Paper Trading modal virtual Rp100jt + Hall of Fame leaderboard.",
+      "Backtest lanjutan (walk-forward & Monte Carlo) untuk uji strategi lebih dalam.",
+      "Program Ajak Teman (referral) berhadiah kredit + AI Buddy makin pintar (sumber & Deep Mode).",
+    ],
+  },
+  {
     version: "1.4.0",
     date: "2026-05-29",
     title: "Elliott Wave & teman-temannya",

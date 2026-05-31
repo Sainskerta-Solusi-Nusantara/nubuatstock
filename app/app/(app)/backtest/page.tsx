@@ -53,6 +53,13 @@ export default function BacktestPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPro, setIsPro] = useState(false);
 
+  // Bersihkan error & hasil lama saat ganti strategi/ticker — biar tak terkesan
+  // "error saat ganti strategi" padahal itu sisa state run sebelumnya.
+  useEffect(() => {
+    setError(null);
+    setResult(null);
+  }, [form.strategy, form.ticker]);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
