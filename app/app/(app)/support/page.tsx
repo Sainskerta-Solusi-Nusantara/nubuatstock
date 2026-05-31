@@ -18,7 +18,7 @@ import { STATUS_META } from "@/components/support/ticket-meta";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Bantuan & Tiket",
+  title: "Tiket & Feedback",
 };
 
 export default async function SupportPage() {
@@ -30,7 +30,7 @@ export default async function SupportPage() {
       <div>
         <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
           <LifeBuoy className="size-5 text-primary" aria-hidden />
-          Bantuan & Tiket
+          Tiket & Feedback
         </h1>
         <p className="text-sm text-muted-foreground">
           Buka tiket buat masalah yang butuh tindak lanjut. Tim kami balas lewat

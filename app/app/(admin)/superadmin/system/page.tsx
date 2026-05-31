@@ -9,8 +9,9 @@ export const dynamic = "force-dynamic";
 const FEEDBACK_LABEL: Record<string, string> = {
   bug: "Bug",
   feature: "Fitur",
-  general: "Umum",
-  nps: "NPS",
+  billing: "Billing",
+  feedback: "Feedback",
+  other: "Lainnya",
 };
 
 function timeAgo(d: Date | string | null): string {
@@ -77,7 +78,7 @@ export default async function SuperadminSystemPage() {
                 {feedback.map((f) => (
                   <li key={f.id} className="py-3 first:pt-0 last:pb-0">
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-[10px]">{FEEDBACK_LABEL[f.type] ?? f.type}</Badge>
+                      <Badge variant="outline" className="text-[10px]">{FEEDBACK_LABEL[f.category] ?? f.category}</Badge>
                       {typeof f.rating === "number" && (
                         <span className="flex items-center gap-0.5 text-xs text-amber-500">
                           <Star className="h-3 w-3 fill-current" /> {f.rating}
@@ -87,8 +88,8 @@ export default async function SuperadminSystemPage() {
                     </div>
                     <p className="mt-1 text-sm">{f.message}</p>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">
-                      {f.userName ?? f.userEmail ?? "—"}
-                      {f.url ? ` · ${f.url}` : ""}
+                      {f.userEmail ?? "—"}
+                      {f.contextUrl ? ` · ${f.contextUrl}` : ""}
                     </p>
                   </li>
                 ))}
@@ -123,7 +124,7 @@ export default async function SuperadminSystemPage() {
                       </Badge>
                     </div>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">
-                      {t.userName ?? t.userEmail ?? "—"} · {t.category} · {t.priority} · {timeAgo(t.createdAt)}
+                      {t.userEmail ?? "—"} · {t.category} · {t.priority} · {timeAgo(t.createdAt)}
                     </p>
                   </li>
                 ))}

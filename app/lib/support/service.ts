@@ -238,6 +238,24 @@ export async function submitFeedback(
   return { id: row.id };
 }
 
+/**
+ * List feedback produk terbaru (untuk superadmin). Terbaru dulu.
+ */
+export async function listFeedback(limit = 50) {
+  return db
+    .select()
+    .from(supportFeedback)
+    .orderBy(desc(supportFeedback.createdAt))
+    .limit(limit);
+}
+
+/**
+ * Semua tiket (admin scope) — terbaru dulu. Alias deskriptif untuk listTickets().
+ */
+export async function listAllTickets(limit = 50) {
+  return listTickets({ limit });
+}
+
 export async function getTicketStats() {
   const rows = await db
     .select({
