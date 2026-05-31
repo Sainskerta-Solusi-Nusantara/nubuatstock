@@ -108,7 +108,7 @@ export default async function NewsFeedPage({ searchParams }: PageProps) {
           </button>
         </div>
         {/* Filter sekunder */}
-        <div className="flex flex-wrap items-end gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end">
         <FilterField label="Sumber">
           <select
             name="source"

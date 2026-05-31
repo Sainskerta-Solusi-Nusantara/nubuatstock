@@ -39,7 +39,7 @@ export default async function ComparePage({ searchParams }: PageProps) {
       {/* Input form */}
       <Card>
         <CardContent className="p-4">
-          <form method="get" className="flex flex-wrap items-end gap-2">
+          <form method="get" className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end">
             <div className="flex-1 min-w-[200px]">
               <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                 Tickers (pisahkan koma, max 4)
@@ -103,7 +103,7 @@ export default async function ComparePage({ searchParams }: PageProps) {
           {/* Header row with ticker info — scroll horizontally on small screens so each card stays readable */}
           <div className="-mx-1 overflow-x-auto px-1">
             <div
-              className="grid gap-3"
+              className="grid gap-3 overflow-x-auto"
               style={{ gridTemplateColumns: `repeat(${data.length}, minmax(150px, 1fr))` }}
             >
               {data.map((d) => (
@@ -263,7 +263,7 @@ function VerdictComparison({ data }: { data: CompareTickerData[] }) {
         <CardTitle className="text-base">Nubuat Verdict Comparison</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3 overflow-x-auto">
-        <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(160px, 1fr))` }}>
+        <div className="grid gap-3 overflow-x-auto" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(160px, 1fr))` }}>
           {data.map((d) => {
             if (!d.verdict) {
               return (
@@ -318,7 +318,7 @@ function VerdictComparison({ data }: { data: CompareTickerData[] }) {
         </div>
 
         {/* News coverage */}
-        <div className="grid gap-2 pt-3 border-t border-border" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(120px, 1fr))` }}>
+        <div className="grid gap-2 overflow-x-auto pt-3 border-t border-border" style={{ gridTemplateColumns: `repeat(${data.length}, minmax(120px, 1fr))` }}>
           {data.map((d) => (
             <div key={d.kode} className="rounded-md bg-card/40 p-2 text-center">
               <div className="text-[9px] uppercase tracking-wider text-muted-foreground">News 30d</div>
