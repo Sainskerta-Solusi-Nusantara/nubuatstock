@@ -8,6 +8,7 @@
  */
 import Link from "next/link";
 import { NavAuthButtons } from "./NavAuthButtons";
+import { PublicMobileMenu } from "./PublicMobileMenu";
 
 export function PublicNav({
   appName = "Nubuat",
@@ -34,7 +35,10 @@ export function PublicNav({
           <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition">Harga</Link>
           <NavAuthButtons ctaText={ctaText} />
         </nav>
-        <NavAuthButtons ctaText={ctaText} mobile />
+        <div className="flex items-center gap-2 sm:hidden">
+          <NavAuthButtons ctaText={ctaText} mobile />
+          <PublicMobileMenu ctaText={ctaText} />
+        </div>
       </div>
     </header>
   );
