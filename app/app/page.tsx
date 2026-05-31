@@ -7,6 +7,7 @@ import { Painpoints } from "@/components/landing/Painpoints";
 import { Features } from "@/components/landing/Features";
 import { EmitenShowcase } from "@/components/landing/EmitenShowcase";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { AcademyTeaser } from "@/components/landing/AcademyTeaser";
 import { TrialCTA } from "@/components/landing/TrialCTA";
 import { FAQ } from "@/components/landing/FAQ";
 import { Footer } from "@/components/landing/Footer";
@@ -140,6 +141,7 @@ export default async function LandingPage() {
         subtitle={c.howSubtitle}
         steps={c.howSteps}
       />
+      <AcademyTeaser />
       <TrialCTA
         headline={c.trialHead}
         description={c.trialDesc}

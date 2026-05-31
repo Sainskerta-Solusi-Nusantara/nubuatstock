@@ -28,7 +28,7 @@ export function PublicNav({
         <nav className="hidden items-center gap-6 text-sm sm:flex">
           <Link href="/about" className="text-muted-foreground hover:text-foreground transition">About Us</Link>
           <Link href="/#features" className="text-muted-foreground hover:text-foreground transition">Fitur</Link>
-          <Link href="/academy" className="text-muted-foreground hover:text-foreground transition">Academy</Link>
+          <Link href="/#academy" className="text-muted-foreground hover:text-foreground transition">Academy</Link>
           <Link href="/glossary" className="text-muted-foreground hover:text-foreground transition">Glossary</Link>
           <Link href="/research" className="text-muted-foreground hover:text-foreground transition">Riset</Link>
           <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition">Harga</Link>

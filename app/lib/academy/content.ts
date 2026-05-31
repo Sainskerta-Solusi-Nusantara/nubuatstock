@@ -19,6 +19,11 @@
 // (circular type-only import — aman karena hanya tipe).
 import { elliottModule } from "./modules/elliott";
 import { wyckoffModule } from "./modules/wyckoff";
+import { chartPatternsModule } from "./modules/chart-patterns";
+import { candlestickModule } from "./modules/candlestick";
+import { fundamentalModule } from "./modules/fundamental";
+import { bandarmologyLanjutanModule } from "./modules/bandarmology-lanjutan";
+import { psikologiModule } from "./modules/psikologi";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -866,6 +871,11 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
 
   elliottModule,
   wyckoffModule,
+  chartPatternsModule,
+  candlestickModule,
+  fundamentalModule,
+  bandarmologyLanjutanModule,
+  psikologiModule,
 ];
 
 // ---------------------------------------------------------------------------
