@@ -4,6 +4,10 @@ import * as React from "react";
 import Link from "next/link";
 import {
   Award,
+  Activity,
+  Brain,
+  Calculator,
+  CandlestickChart,
   CheckCircle2,
   ChevronRight,
   Circle,
@@ -12,8 +16,11 @@ import {
   FileText,
   GraduationCap,
   LineChart,
+  Radar,
   ShieldCheck,
+  Triangle,
   Users,
+  Waves,
   type LucideIcon,
 } from "lucide-react";
 
@@ -36,6 +43,13 @@ const ICONS: Record<string, LucideIcon> = {
   FileText,
   Compass,
   Award,
+  Waves,
+  Activity,
+  Triangle,
+  Calculator,
+  CandlestickChart,
+  Brain,
+  Radar,
 };
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);
