@@ -153,7 +153,7 @@ export default function AboutPage() {
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             Nama <strong className="text-foreground">Nubuat</strong> lahir dari satu keyakinan
             sederhana: <em>Nubie (pemula) harus Berbuat, harus terus tumbuh.</em> Kami ingin jadi
-            tempat kamu belajar, berproses dan bertumbuh. Karena medan perang kita bukan hanya pasar
+            tempat kamu belajar, berproses, dan berkembang. Karena medan perang kita bukan hanya pasar
             saham, tapi juga pasar paham. :)
           </p>
         </div>
