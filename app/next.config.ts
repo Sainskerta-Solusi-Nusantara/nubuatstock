@@ -29,6 +29,16 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "2mb",
     },
+    // Tree-shake barrel imports dari paket icon/UI besar: hanya icon yang
+    // benar-benar dipakai yang masuk bundle (additive, aman).
+    optimizePackageImports: [
+      "lucide-react",
+      "date-fns",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-select",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-dialog",
+    ],
   },
   serverExternalPackages: ["pino", "postgres", "@anthropic-ai/sdk", "openai", "bullmq"],
   images: {

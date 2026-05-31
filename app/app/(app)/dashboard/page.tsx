@@ -25,8 +25,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { MorningBrief } from "@/components/dashboard/MorningBrief";
+import { FirstRunChecklist } from "@/components/onboarding/FirstRunChecklist";
 import { HelpCard } from "@/components/support/HelpCard";
 import { BuildInfo } from "@/components/layout/BuildInfo";
+import { TrialBanner } from "@/components/billing/TrialBanner";
 import { getActiveSubscription } from "@/lib/billing";
 import { getTodayPicks, listPicksHistory } from "@/lib/picks/service";
 import {
@@ -45,8 +47,8 @@ export default async function DashboardPage() {
   const userId = session.user.id;
 
   // Parallel fetch — each wrapped in try/catch via helper so one failure doesn't 500 the page.
-  const [tierLabel, picks, watchlistItems, sectors, recentChats] = await Promise.all([
-    safeGetTierLabel(userId),
+  const [subInfo, picks, watchlistItems, sectors, recentChats] = await Promise.all([
+    safeGetSubInfo(userId),
     safeGetTopPicks(),
     safeGetWatchlistItems(userId),
     safeGetSectorRotation(),
@@ -55,7 +57,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <DashboardGreeting firstName={firstName} tierLabel={tierLabel} />
+      {/* Upgrade nudge kontekstual: banner trial (client, dismissable harian).
+          Hanya render saat user benar-benar sedang trial. */}
+      {subInfo.trialEndsAt && (
+        <TrialBanner trialEndsAt={subInfo.trialEndsAt} tierLabel={subInfo.tierLabel} />
+      )}
+
+      <DashboardGreeting firstName={firstName} tierLabel={subInfo.tierLabel} />
+
+      {/* Onboarding aktivasi: checklist langkah pertama untuk user baru.
+          Client component, self-hides via localStorage saat selesai / di-dismiss. */}
+      <FirstRunChecklist />
 
       <Suspense fallback={null}>
         <MorningBrief />
@@ -137,12 +149,21 @@ export default async function DashboardPage() {
 
 // =================== Safe fetchers ===================
 
-async function safeGetTierLabel(userId: string): Promise<string> {
+async function safeGetSubInfo(
+  userId: string,
+): Promise<{ tierLabel: string; trialEndsAt: string | null }> {
   try {
     const active = await getActiveSubscription(userId);
-    return active?.tier.nama ?? "Free";
+    const trialEnd =
+      active?.subscription.status === "trialing"
+        ? (active.subscription.trialEndsAt ?? active.subscription.currentPeriodEnd)
+        : null;
+    return {
+      tierLabel: active?.tier.nama ?? "Free",
+      trialEndsAt: trialEnd ? trialEnd.toISOString() : null,
+    };
   } catch {
-    return "Free";
+    return { tierLabel: "Free", trialEndsAt: null };
   }
 }
 

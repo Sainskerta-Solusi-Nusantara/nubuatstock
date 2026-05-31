@@ -45,8 +45,8 @@ const STEPS: TourStep[] = [
   },
   {
     icon: <LineChart className="h-6 w-6" />,
-    title: "2. Analisis emiten",
-    body: "Buka halaman ticker untuk lihat Nubuat Verdict, teknikal, fundamental, dan bandarmology dalam satu tempat. Semua disusun rapi biar kamu paham kondisi sahamnya cepat.",
+    title: "2. Analisis emiten & Daily Picks",
+    body: "Buka halaman ticker untuk lihat Nubuat Verdict, teknikal, fundamental, dan bandarmology dalam satu tempat. Belum tahu mulai dari mana? Cek Daily Picks di dashboard — top rekomendasi harian berbasis multi-faktor.",
   },
   {
     icon: <Star className="h-6 w-6" />,
