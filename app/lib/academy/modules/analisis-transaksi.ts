@@ -70,6 +70,8 @@ Net Foreign = Foreign Buy - Foreign Sell
 
 > Net foreign paling relevan di saham **likuid & besar**. Di saham gorengan kecil, asing jarang main; pergerakan lebih didominasi broker ritel/lokal tertentu.
 
+![Siklus akumulasi, markup, distribusi, markdown: smart money beli saat murah, ritel FOMO beli saat mahal di puncak](/academy/analisis-transaksi/akumulasi-distribusi.svg)
+
 ## Pola yang sering muncul
 
 - **Akumulasi diam-diam** — net buy konsisten, harga sideways/naik pelan, volume belum meledak.

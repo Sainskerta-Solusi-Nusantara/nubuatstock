@@ -36,6 +36,8 @@ Harga saham hanya bisa bergerak dalam **kelipatan tertentu** sesuai rentang harg
 
 ## Bid & Offer (antrian)
 
+![Order book: antrian bid (beli) hijau di kiri, offer (jual) merah di kanan, best price di tengah, dan spread di antaranya](/academy/mekanisme/bid-offer.svg)
+
 - **Bid** = antrian **beli** (harga yang orang mau bayar).
 - **Offer/Ask** = antrian **jual** (harga yang orang mau lepas).
 

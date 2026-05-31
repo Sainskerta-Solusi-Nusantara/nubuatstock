@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Siklus akumulasi, markup, distribusi, markdown dengan posisi smart money dan ritel">
+  <!-- price curve: accumulation (flat low) -> markup (up) -> distribution (flat high) -> markdown (down) -->
+  <polyline points="40,250 90,248 140,252 190,245 240,200 290,150 340,110 400,85 460,82 520,90 560,140 610,200 660,255"
+    fill="none" stroke="#e5e7eb" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+
+  <!-- phase zones -->
+  <rect x="40" y="40" width="160" height="270" fill="#16a34a" opacity="0.07" />
+  <rect x="200" y="40" width="180" height="270" fill="#3b82f6" opacity="0.07" />
+  <rect x="380" y="40" width="160" height="270" fill="#dc2626" opacity="0.07" />
+  <rect x="540" y="40" width="140" height="270" fill="#f59e0b" opacity="0.07" />
+
+  <text x="60" y="60" fill="#16a34a" font-size="12" font-weight="700">AKUMULASI</text>
+  <text x="245" y="60" fill="#3b82f6" font-size="12" font-weight="700">MARKUP</text>
+  <text x="410" y="60" fill="#dc2626" font-size="12" font-weight="700">DISTRIBUSI</text>
+  <text x="560" y="60" fill="#f59e0b" font-size="12" font-weight="700">MARKDOWN</text>
+
+  <!-- smart money buys low -->
+  <text x="55" y="295" fill="#16a34a" font-size="11" font-weight="700">Smart money beli</text>
+  <!-- ritel buys high -->
+  <text x="395" y="295" fill="#dc2626" font-size="11" font-weight="700">Ritel FOMO beli</text>
+
+  <!-- annotation arrows -->
+  <text x="60" y="240" fill="#16a34a" font-size="18">&#9650;</text>
+  <text x="420" y="100" fill="#dc2626" font-size="18">&#9660;</text>
+
+  <text x="40" y="330" fill="#999" font-size="11">Jejak broker/net foreign membantu menebak fase ini — ikut smart money, jangan jadi exit liquidity</text>
+</svg>

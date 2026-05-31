@@ -48,9 +48,13 @@ Sebelum lanjut, kuasai: **Analisis Teknikal** (candlestick, support-resistance, 
       title: "Setup Entry: Pullback, Breakout, Reversal",
       readMinutes: 8,
       summary: "Tiga skema entry klasik swing + konfirmasi yang dipakai.",
-      body: `## 1. Pullback (paling andal di tren naik)
+      body: `![Tiga setup entry swing: pullback ke support, breakout resistance, dan reversal](/academy/swing/three-setups.svg)
+
+## 1. Pullback (paling andal di tren naik)
 
 Saham tren naik → koreksi sehat ke area support (mis. MA20/MA50, atau garis tren) → muncul tanda berbalik → entry.
+
+![Setup pullback: tren naik di atas MA50, koreksi pantul support jadi titik entry, stop di bawah support, target di resistance berikut](/academy/swing/pullback-entry.svg)
 
 **Konfirmasi:**
 - Harga menyentuh support & **menolak** (candle bullish: hammer, bullish engulfing).

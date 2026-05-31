@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Setup entry pullback: tren naik, koreksi ke support MA, lalu lanjut naik dengan entry, stop, dan target">
+  <!-- MA50 support line (rising) -->
+  <line x1="40" y1="300" x2="680" y2="150" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6,4" />
+  <text x="540" y="140" fill="#3b82f6" font-size="12" font-weight="700">MA50 (support)</text>
+
+  <!-- price path: up, pullback to MA, up again -->
+  <polyline points="40,300 130,235 200,275 280,205 350,250 430,150 500,205 590,110 660,70"
+    fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+
+  <!-- pullback highlight (entry zone) -->
+  <circle cx="350" cy="250" r="9" fill="none" stroke="#16a34a" stroke-width="2.5" />
+  <text x="300" y="290" fill="#16a34a" font-size="13" font-weight="700">ENTRY</text>
+  <text x="262" y="307" fill="#999" font-size="11">koreksi pantul support</text>
+
+  <!-- stop loss -->
+  <line x1="300" y1="278" x2="430" y2="278" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,3" />
+  <text x="436" y="282" fill="#dc2626" font-size="12" font-weight="700">Stop loss (di bawah support)</text>
+
+  <!-- target -->
+  <line x1="560" y1="95" x2="680" y2="95" stroke="#9ca3af" stroke-width="2" stroke-dasharray="4,3" />
+  <text x="540" y="60" fill="#e5e7eb" font-size="12" font-weight="700">Target (resistance berikut)</text>
+
+  <!-- trend label -->
+  <text x="40" y="335" fill="#999" font-size="12">Tren utama NAIK — beli saat koreksi (diskon), bukan saat sudah terbang</text>
+</svg>

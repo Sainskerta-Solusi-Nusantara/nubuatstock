@@ -55,6 +55,8 @@ Tujuan baca money flow: **ikut arah smart money**, bukan jadi exit liquidity.
       summary: "Saat harga dan aliran dana 'tidak sepakat' — sering jadi sinyal dini pembalikan.",
       body: `## Divergensi = sinyal dini
 
+![Divergensi bearish: harga buat higher high tapi indikator money flow buat lower high, sinyal dini pembalikan turun](/academy/money-flow/divergensi.svg)
+
 **Divergensi** terjadi saat **harga** dan **indikator money flow** bergerak berlawanan. Sering mendahului pembalikan.
 
 ### Bullish divergence

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Tiga setup entry swing: pullback, breakout, dan reversal">
+  <!-- Panel 1: Pullback -->
+  <text x="40" y="30" fill="#16a34a" font-size="13" font-weight="700">1. Pullback</text>
+  <polyline points="30,200 70,150 100,175 140,120 170,145 220,90" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round" />
+  <circle cx="170" cy="145" r="7" fill="none" stroke="#16a34a" stroke-width="2" />
+  <text x="40" y="240" fill="#999" font-size="10.5">Tren naik + koreksi</text>
+  <text x="40" y="256" fill="#999" font-size="10.5">ke support → entry</text>
+
+  <!-- Panel 2: Breakout -->
+  <text x="270" y="30" fill="#3b82f6" font-size="13" font-weight="700">2. Breakout</text>
+  <line x1="260" y1="120" x2="430" y2="120" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5,3" />
+  <text x="380" y="114" fill="#9ca3af" font-size="10">resistance</text>
+  <polyline points="260,160 290,150 320,165 350,150 380,160 410,95 450,70" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linejoin="round" />
+  <circle cx="410" cy="95" r="7" fill="none" stroke="#3b82f6" stroke-width="2" />
+  <text x="270" y="240" fill="#999" font-size="10.5">Tembus resistance</text>
+  <text x="270" y="256" fill="#999" font-size="10.5">+ volume → entry</text>
+
+  <!-- Panel 3: Reversal -->
+  <text x="500" y="30" fill="#f59e0b" font-size="13" font-weight="700">3. Reversal</text>
+  <polyline points="500,90 540,140 580,110 600,165 640,150 690,100" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linejoin="round" />
+  <circle cx="600" cy="165" r="7" fill="none" stroke="#f59e0b" stroke-width="2" />
+  <text x="500" y="240" fill="#999" font-size="10.5">Balik dari downtrend</text>
+  <text x="500" y="256" fill="#999" font-size="10.5">(paling berisiko)</text>
+
+  <!-- dividers -->
+  <line x1="245" y1="20" x2="245" y2="265" stroke="#374151" stroke-width="1" />
+  <line x1="480" y1="20" x2="480" y2="265" stroke="#374151" stroke-width="1" />
+</svg>

@@ -79,6 +79,8 @@ Waran bergerak **jauh lebih kencang** dari sahamnya (persentase). Saham naik 5% 
 
 > Leverage = pedang bermata dua. **Untung besar & rugi besar** sama mudahnya. Banyak ritel tergoda waran karena "murah", lalu kaget modal habis cepat.
 
+![Payoff call warrant: rugi tetap (premi) di bawah exercise, untung naik setelah break-even, plus ilustrasi time decay menyusutkan nilai mendekati jatuh tempo](/academy/waran/payoff-timedecay.svg)
+
 ## Time decay (theta) — musuh diam-diam
 
 Waran punya **tanggal jatuh tempo**. Makin dekat jatuh tempo, **nilai waktu (time value) menyusut** — disebut **time decay**. Bahkan kalau harga saham **diam**, harga waran bisa **turun terus** karena waktu berkurang.

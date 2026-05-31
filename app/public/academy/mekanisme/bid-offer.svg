@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Order book: antrian bid (beli) di kiri dan offer (jual) di kanan dengan best price di tengah">
+  <text x="360" y="34" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Order Book (Antrian)</text>
+
+  <!-- BID column (green, buy) -->
+  <text x="170" y="64" fill="#16a34a" font-size="13" font-weight="700" text-anchor="middle">BID (Beli)</text>
+  <g font-size="12">
+    <rect x="60" y="80" width="220" height="30" fill="#16a34a" opacity="0.18" /><text x="72" y="100" fill="#16a34a">1.000</text><text x="250" y="100" fill="#16a34a" text-anchor="end">850 lot</text>
+    <rect x="60" y="114" width="220" height="30" fill="#16a34a" opacity="0.13" /><text x="72" y="134" fill="#16a34a">995</text><text x="250" y="134" fill="#16a34a" text-anchor="end">1.200 lot</text>
+    <rect x="60" y="148" width="220" height="30" fill="#16a34a" opacity="0.09" /><text x="72" y="168" fill="#16a34a">990</text><text x="250" y="168" fill="#16a34a" text-anchor="end">2.400 lot</text>
+  </g>
+  <text x="170" y="200" fill="#16a34a" font-size="11" text-anchor="middle" font-weight="700">best bid 1.000 (tertinggi)</text>
+
+  <!-- OFFER column (red, sell) -->
+  <text x="550" y="64" fill="#dc2626" font-size="13" font-weight="700" text-anchor="middle">OFFER (Jual)</text>
+  <g font-size="12">
+    <rect x="440" y="80" width="220" height="30" fill="#dc2626" opacity="0.18" /><text x="452" y="100" fill="#dc2626">1.005</text><text x="630" y="100" fill="#dc2626" text-anchor="end">600 lot</text>
+    <rect x="440" y="114" width="220" height="30" fill="#dc2626" opacity="0.13" /><text x="452" y="134" fill="#dc2626">1.010</text><text x="630" y="134" fill="#dc2626" text-anchor="end">1.500 lot</text>
+    <rect x="440" y="148" width="220" height="30" fill="#dc2626" opacity="0.09" /><text x="452" y="168" fill="#dc2626">1.015</text><text x="630" y="168" fill="#dc2626" text-anchor="end">900 lot</text>
+  </g>
+  <text x="550" y="200" fill="#dc2626" font-size="11" text-anchor="middle" font-weight="700">best offer 1.005 (terendah)</text>
+
+  <!-- spread arrow -->
+  <line x1="290" y1="95" x2="430" y2="95" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4,3" />
+  <text x="360" y="240" fill="#e5e7eb" font-size="12" text-anchor="middle" font-weight="700">Spread = 1.005 &#8722; 1.000 = 5</text>
+
+  <text x="360" y="285" fill="#999" font-size="11.5" text-anchor="middle">Mau cepat KEBELI → sikat di harga offer (1.005).</text>
+  <text x="360" y="305" fill="#999" font-size="11.5" text-anchor="middle">Mau lebih murah → pasang bid &amp; antri (belum tentu kebeli).</text>
+  <text x="360" y="333" fill="#999" font-size="11" text-anchor="middle">Hati-hati order book bisa dimanipulasi — konfirmasi dengan running trade.</text>
+</svg>
