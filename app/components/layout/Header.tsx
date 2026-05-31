@@ -44,7 +44,7 @@ function initials(name: string): string {
 export function Header({ user, locale = "id" }: HeaderProps) {
   const { setOpen } = useCommandPalette();
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur sm:gap-3 sm:px-4 md:px-6">
       <Link
         href="/"
         className="flex items-center gap-2 font-bold tracking-tight md:hidden"
