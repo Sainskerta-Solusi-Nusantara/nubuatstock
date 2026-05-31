@@ -30,7 +30,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/research", "/privacy", "/terms", "/disclaimer", "/login", "/signup"],
+        allow: ["/", "/saham", "/research", "/privacy", "/terms", "/disclaimer", "/login", "/signup"],
         disallow: ["/api/", "/admin/", "/superadmin/", "/dashboard", "/watchlist", "/picks", "/alerts", "/copilot", "/subscription"],
       },
       // Blokir bot AI/scraper dari seluruh situs.
