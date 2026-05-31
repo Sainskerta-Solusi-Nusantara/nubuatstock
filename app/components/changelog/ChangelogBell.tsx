@@ -5,7 +5,6 @@ import { Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   changelogEntries,
@@ -93,12 +92,12 @@ export function ChangelogBell() {
         <TooltipContent>Apa yang baru</TooltipContent>
       </Tooltip>
 
-      <PopoverContent align="end" className="w-80 p-0">
-        <div className="flex items-center gap-2 border-b px-4 py-3">
+      <PopoverContent align="end" className="flex max-h-[75vh] w-[min(20rem,calc(100vw-1.5rem))] flex-col p-0">
+        <div className="flex shrink-0 items-center gap-2 border-b px-4 py-3">
           <Sparkles className="size-4 text-primary" aria-hidden />
           <h2 className="text-sm font-semibold text-foreground">Apa yang baru</h2>
         </div>
-        <ScrollArea className="max-h-96">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           <ul className="divide-y">
             {changelogEntries.map((entry) => (
               <li key={entry.version} className="px-4 py-3">
@@ -130,7 +129,7 @@ export function ChangelogBell() {
               </li>
             ))}
           </ul>
-        </ScrollArea>
+        </div>
       </PopoverContent>
     </Popover>
   );
