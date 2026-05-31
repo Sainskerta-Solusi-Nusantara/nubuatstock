@@ -14,15 +14,21 @@ import {
   FileText,
   Globe,
   GraduationCap,
+  Landmark,
   Layers,
+  Lightbulb,
   LineChart,
+  ClipboardList,
   Radar,
+  Receipt,
   Rocket,
   Search,
   ShieldCheck,
   Triangle,
+  TrendingUp,
   Users,
   Waves,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -57,6 +63,12 @@ const ICONS: Record<string, LucideIcon> = {
   Rocket,
   Globe,
   Layers,
+  Receipt,
+  TrendingUp,
+  Zap,
+  ClipboardList,
+  Landmark,
+  Lightbulb,
 };
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);

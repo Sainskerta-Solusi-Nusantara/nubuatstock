@@ -32,6 +32,12 @@ import { sahamSyariahModule } from "./modules/saham-syariah";
 import { etfReksadanaModule } from "./modules/etf-reksadana";
 import { mekanismeOrderModule } from "./modules/mekanisme-order";
 import { valuasiMendalamModule } from "./modules/valuasi-mendalam";
+import { analisisTransaksiModule } from "./modules/analisis-transaksi";
+import { swingTradingModule } from "./modules/swing-trading";
+import { scalpingDaytradingModule } from "./modules/scalping-daytrading";
+import { tradingPlanJurnalModule } from "./modules/trading-plan-jurnal";
+import { taxLegalModule } from "./modules/tax-legal";
+import { studiKasusIdxModule } from "./modules/studi-kasus-idx";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -892,6 +898,12 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
   etfReksadanaModule,
   mekanismeOrderModule,
   valuasiMendalamModule,
+  analisisTransaksiModule,
+  swingTradingModule,
+  scalpingDaytradingModule,
+  tradingPlanJurnalModule,
+  taxLegalModule,
+  studiKasusIdxModule,
 ];
 
 // ---------------------------------------------------------------------------

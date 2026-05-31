@@ -10,15 +10,21 @@ import {
   FileText,
   Globe,
   GraduationCap,
+  Landmark,
   Layers,
+  Lightbulb,
   Lock,
   LineChart,
+  ClipboardList,
   Radar,
+  Receipt,
   Rocket,
   ShieldCheck,
   Triangle,
+  TrendingUp,
   Users,
   Waves,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -43,6 +49,12 @@ const ICONS: Record<string, LucideIcon> = {
   Rocket,
   Globe,
   Layers,
+  Receipt,
+  TrendingUp,
+  Zap,
+  ClipboardList,
+  Landmark,
+  Lightbulb,
 };
 
 /**
