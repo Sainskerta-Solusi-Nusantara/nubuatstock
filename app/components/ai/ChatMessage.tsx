@@ -203,38 +203,16 @@ function CitationList({ citations }: { citations: AiCitation[] }) {
   );
 }
 
-function ToolMessage({ toolName, content }: { toolName?: string | null; content: string }) {
-  const [expanded, setExpanded] = React.useState(false);
-  const label = toolName ? TOOL_LABELS[toolName] ?? toolName : "tool call";
-  const summary = buildToolSummary(content);
+function ToolMessage({ toolName }: { toolName?: string | null; content: string }) {
+  // Tampilkan HANYA label ramah Bahasa Indonesia. Detail teknis (nama tool mentah
+  // mis. "search_companies", summary "count=1 • results=[1]", JSON args/hasil)
+  // SENGAJA disembunyikan dari user.
+  const label = toolName ? TOOL_LABELS[toolName] ?? "Menganalisis data" : "Menganalisis data";
 
   return (
-    <div className="my-1.5 flex items-start gap-2">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary">
-        <Wrench className="h-3.5 w-3.5 text-muted-foreground" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <button
-          onClick={() => setExpanded((e) => !e)}
-          className="inline-flex max-w-full items-center gap-1.5 rounded-md border border-border bg-card/50 px-2 py-1 text-[11px] transition hover:bg-card"
-        >
-          <span className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-primary">
-            {toolName ?? "tool"}
-          </span>
-          <span className="shrink-0 font-medium">{label}</span>
-          {summary && (
-            <span className="truncate text-muted-foreground">· {summary}</span>
-          )}
-          <ChevronDown
-            className={cn("h-3 w-3 shrink-0 text-muted-foreground transition-transform", expanded && "rotate-180")}
-          />
-        </button>
-        {expanded && (
-          <pre className="mt-1 max-h-64 overflow-auto rounded-md border border-border bg-secondary/30 p-2 text-[10px] leading-relaxed">
-            <code>{truncate(prettyJson(content), 3000)}</code>
-          </pre>
-        )}
-      </div>
+    <div className="my-1.5 flex items-center gap-2 text-[11px] text-muted-foreground">
+      <Wrench className="h-3 w-3 shrink-0" aria-hidden />
+      <span>{label}</span>
     </div>
   );
 }
