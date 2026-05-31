@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Tiga indikator populer: Moving Average dengan golden cross, RSI dengan overbought-oversold, dan MACD">
+  <!-- ===== MA panel ===== -->
+  <text x="40" y="28" fill="#e5e7eb" font-size="14" font-weight="700">Moving Average (MA50 &amp; MA200)</text>
+  <!-- price -->
+  <polyline points="50,110 110,95 170,105 230,80 290,90 350,55 410,65 470,40 530,55 590,30 650,45"
+    fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" />
+  <!-- MA200 (slow, smooth) -->
+  <polyline points="50,115 170,108 290,95 410,80 530,68 650,58"
+    fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" />
+  <!-- MA50 (fast) crossing above -->
+  <polyline points="50,125 170,112 290,90 410,72 530,55 650,45"
+    fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" />
+  <!-- golden cross -->
+  <circle cx="300" cy="92" r="6" fill="none" stroke="#16a34a" stroke-width="2" />
+  <text x="312" y="130" fill="#16a34a" font-size="12" font-weight="700">Golden Cross</text>
+  <text x="600" y="115" fill="#3b82f6" font-size="11">MA200</text>
+  <text x="600" y="78" fill="#f59e0b" font-size="11">MA50</text>
+
+  <!-- ===== RSI panel ===== -->
+  <line x1="40" y1="160" x2="680" y2="160" stroke="#4b5563" stroke-width="1" />
+  <text x="40" y="185" fill="#e5e7eb" font-size="14" font-weight="700">RSI (0&#8211;100)</text>
+  <!-- 70 / 30 bands -->
+  <line x1="50" y1="205" x2="670" y2="205" stroke="#dc2626" stroke-width="1" stroke-dasharray="5 3" />
+  <line x1="50" y1="280" x2="670" y2="280" stroke="#16a34a" stroke-width="1" stroke-dasharray="5 3" />
+  <text x="676" y="209" fill="#dc2626" font-size="10">70</text>
+  <text x="676" y="284" fill="#16a34a" font-size="10">30</text>
+  <!-- rsi line -->
+  <polyline points="50,270 120,210 190,200 260,250 330,290 400,260 470,200 540,195 610,230 670,240"
+    fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" />
+  <text x="120" y="198" fill="#dc2626" font-size="10">overbought</text>
+  <text x="330" y="305" fill="#16a34a" font-size="10">oversold</text>
+
+  <!-- ===== MACD panel ===== -->
+  <line x1="40" y1="320" x2="680" y2="320" stroke="#4b5563" stroke-width="1" />
+  <text x="40" y="345" fill="#e5e7eb" font-size="14" font-weight="700">MACD</text>
+  <line x1="50" y1="385" x2="670" y2="385" stroke="#6b7280" stroke-width="1" />
+  <!-- histogram -->
+  <g>
+    <rect x="120" y="385" width="14" height="18" fill="#dc2626" />
+    <rect x="150" y="385" width="14" height="10" fill="#dc2626" />
+    <rect x="180" y="378" width="14" height="7" fill="#16a34a" />
+    <rect x="210" y="368" width="14" height="17" fill="#16a34a" />
+    <rect x="240" y="362" width="14" height="23" fill="#16a34a" />
+    <rect x="270" y="372" width="14" height="13" fill="#16a34a" />
+  </g>
+  <!-- macd + signal lines -->
+  <polyline points="60,400 150,392 240,365 330,372 420,380 510,375 600,368 670,372"
+    fill="none" stroke="#3b82f6" stroke-width="2" />
+  <polyline points="60,398 150,396 240,378 330,375 420,378 510,376 600,372 670,374"
+    fill="none" stroke="#f59e0b" stroke-width="2" />
+  <text x="200" y="358" fill="#16a34a" font-size="11" font-weight="700">cross ke atas &#8594; momentum naik</text>
+</svg>

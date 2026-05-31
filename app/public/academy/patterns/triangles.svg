@@ -1,0 +1,28 @@
+<svg viewBox="0 0 660 280" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="660" height="280" fill="none"/>
+  <text x="330" y="18" fill="#999" font-size="14" font-weight="bold" text-anchor="middle">TRIANGLE: Ascending • Descending • Symmetrical</text>
+
+  <!-- ASCENDING -->
+  <text x="100" y="50" fill="#999" font-size="13" text-anchor="middle" font-weight="bold">Ascending (bullish)</text>
+  <line x1="30" y1="70" x2="180" y2="70" stroke="#999" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <line x1="30" y1="220" x2="180" y2="80" stroke="#16a34a" stroke-width="1.5"/>
+  <polyline points="35,140 60,72 80,130 110,74 130,118 160,76 175,90"
+            fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="35" y="245" fill="#999" font-size="11">datar atas, dasar naik → breakout ↑</text>
+
+  <!-- DESCENDING -->
+  <text x="330" y="50" fill="#999" font-size="13" text-anchor="middle" font-weight="bold">Descending (bearish)</text>
+  <line x1="250" y1="210" x2="400" y2="210" stroke="#999" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <line x1="250" y1="70" x2="400" y2="200" stroke="#dc2626" stroke-width="1.5"/>
+  <polyline points="255,90 280,205 300,120 330,207 350,150 380,208 395,185"
+            fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="255" y="245" fill="#999" font-size="11">datar bawah, puncak turun → breakdown ↓</text>
+
+  <!-- SYMMETRICAL -->
+  <text x="555" y="50" fill="#999" font-size="13" text-anchor="middle" font-weight="bold">Symmetrical (netral)</text>
+  <line x1="475" y1="75" x2="630" y2="135" stroke="#dc2626" stroke-width="1.5"/>
+  <line x1="475" y1="215" x2="630" y2="135" stroke="#16a34a" stroke-width="1.5"/>
+  <polyline points="480,90 505,205 525,110 555,185 575,130 600,160 625,138"
+            fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+  <text x="480" y="245" fill="#999" font-size="11">menyempit; arah ikut breakout</text>
+</svg>

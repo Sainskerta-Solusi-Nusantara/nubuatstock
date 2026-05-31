@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="system-ui, sans-serif">
+  <!-- Peta multiple valuasi relatif: apa yang dibagi apa -->
+  <text x="400" y="32" text-anchor="middle" fill="#999" font-size="20" font-weight="700">Peta Multiple Valuasi Relatif</text>
+
+  <!-- PER -->
+  <rect x="40" y="70" width="340" height="64" rx="8" fill="#16a34a" fill-opacity="0.15" stroke="#16a34a" stroke-width="2"/>
+  <text x="60" y="98" fill="#16a34a" font-size="16" font-weight="700">PER</text>
+  <text x="60" y="120" fill="#999" font-size="12">Harga per Saham / Laba per Saham (EPS)</text>
+
+  <!-- PBV -->
+  <rect x="420" y="70" width="340" height="64" rx="8" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+  <text x="440" y="98" fill="#3b82f6" font-size="16" font-weight="700">PBV</text>
+  <text x="440" y="120" fill="#999" font-size="12">Harga per Saham / Nilai Buku per Saham</text>
+
+  <!-- PEG -->
+  <rect x="40" y="160" width="340" height="64" rx="8" fill="#16a34a" fill-opacity="0.15" stroke="#16a34a" stroke-width="2"/>
+  <text x="60" y="188" fill="#16a34a" font-size="16" font-weight="700">PEG</text>
+  <text x="60" y="210" fill="#999" font-size="12">PER / Pertumbuhan Laba (% per tahun)</text>
+
+  <!-- EV/EBITDA -->
+  <rect x="420" y="160" width="340" height="64" rx="8" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+  <text x="440" y="188" fill="#3b82f6" font-size="16" font-weight="700">EV / EBITDA</text>
+  <text x="440" y="210" fill="#999" font-size="12">Enterprise Value / Laba sblm bunga, pajak, depresiasi</text>
+
+  <!-- legenda EV -->
+  <rect x="40" y="252" width="720" height="58" rx="8" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="55" y="276" fill="#999" font-size="12" font-weight="700">EV (Enterprise Value)</text>
+  <text x="55" y="297" fill="#999" font-size="12">= Kapitalisasi Pasar + Total Utang - Kas. Menggambarkan harga "seluruh bisnis", netral struktur modal.</text>
+
+  <text x="400" y="350" text-anchor="middle" fill="#999" font-size="13">Murah/mahal hanya relatif: bandingkan dengan peers sektor dan rata-rata historis emiten itu sendiri.</text>
+  <text x="400" y="378" text-anchor="middle" fill="#999" font-size="12">Multiple rendah bisa berarti murah - atau jebakan nilai (value trap). Cek alasannya.</text>
+</svg>

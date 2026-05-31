@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" font-family="system-ui, sans-serif">
+  <!-- Piramida analisis top-down: Ekonomi Makro -> Industri -> Perusahaan -->
+  <text x="400" y="34" text-anchor="middle" fill="#999" font-size="20" font-weight="700">Pendekatan Top-Down</text>
+
+  <!-- Lapisan 1: Ekonomi Makro (puncak) -->
+  <polygon points="400,60 300,170 500,170" fill="#16a34a" fill-opacity="0.18" stroke="#16a34a" stroke-width="2"/>
+  <text x="400" y="120" text-anchor="middle" fill="#16a34a" font-size="17" font-weight="700">Ekonomi Makro</text>
+  <text x="400" y="143" text-anchor="middle" fill="#999" font-size="12">PDB, inflasi, suku bunga, kurs</text>
+
+  <!-- Lapisan 2: Industri/Sektor -->
+  <polygon points="300,180 500,180 560,290 240,290" fill="#3b82f6" fill-opacity="0.18" stroke="#3b82f6" stroke-width="2"/>
+  <text x="400" y="228" text-anchor="middle" fill="#3b82f6" font-size="17" font-weight="700">Industri / Sektor</text>
+  <text x="400" y="251" text-anchor="middle" fill="#999" font-size="12">siklus, regulasi, struktur persaingan</text>
+
+  <!-- Lapisan 3: Perusahaan (dasar) -->
+  <polygon points="240,300 560,300 620,410 180,410" fill="#16a34a" fill-opacity="0.12" stroke="#16a34a" stroke-width="2"/>
+  <text x="400" y="350" text-anchor="middle" fill="#16a34a" font-size="17" font-weight="700">Perusahaan / Emiten</text>
+  <text x="400" y="373" text-anchor="middle" fill="#999" font-size="12">moat, manajemen, rasio, valuasi</text>
+
+  <!-- Panah arah analisis -->
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#999"/>
+    </marker>
+  </defs>
+  <line x1="690" y1="80" x2="690" y2="400" stroke="#999" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="710" y="245" fill="#999" font-size="12" transform="rotate(90 710 245)" text-anchor="middle">dari umum ke spesifik</text>
+
+  <text x="400" y="445" text-anchor="middle" fill="#999" font-size="12">Bottom-up = arah sebaliknya: mulai dari emiten unggul, abaikan timing makro</text>
+</svg>

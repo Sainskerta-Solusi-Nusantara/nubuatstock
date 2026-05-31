@@ -1,0 +1,23 @@
+<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="600" height="320" fill="none"/>
+  <line x1="40" y1="20" x2="40" y2="280" stroke="#888" stroke-width="1"/>
+  <line x1="40" y1="280" x2="580" y2="280" stroke="#888" stroke-width="1"/>
+  <!-- price path: fall, bottom1, bounce, bottom2, breakout up -->
+  <polyline points="60,60 150,220 230,140 330,220 420,140 470,100 560,55"
+            fill="none" stroke="#3b82f6" stroke-width="3"/>
+  <!-- two bottoms markers -->
+  <circle cx="150" cy="220" r="5" fill="#16a34a"/>
+  <circle cx="330" cy="220" r="5" fill="#16a34a"/>
+  <text x="110" y="245" fill="#999" font-size="14">Dasar 1</text>
+  <text x="295" y="245" fill="#999" font-size="14">Dasar 2</text>
+  <!-- neckline (resistance between bottoms) -->
+  <line x1="120" y1="140" x2="480" y2="140" stroke="#999" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="190" y="128" fill="#999" font-size="13">Neckline (resistance)</text>
+  <!-- breakout -->
+  <circle cx="470" cy="100" r="5" fill="#16a34a"/>
+  <line x1="470" y1="140" x2="470" y2="70" stroke="#16a34a" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="440" y="55" fill="#16a34a" font-size="13" font-weight="bold">Breakout ▲</text>
+  <text x="500" y="95" fill="#16a34a" font-size="12">target</text>
+  <text x="44" y="35" fill="#999" font-size="12">Harga</text>
+  <text x="300" y="305" fill="#999" font-size="14" font-weight="bold" text-anchor="middle">DOUBLE BOTTOM (bullish reversal — bentuk "W")</text>
+</svg>

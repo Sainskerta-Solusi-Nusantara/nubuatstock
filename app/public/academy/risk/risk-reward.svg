@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Risk-reward ratio 1 banding 2 dengan entry, stop loss, dan target profit">
+  <!-- price axis -->
+  <line x1="120" y1="40" x2="120" y2="320" stroke="#4b5563" stroke-width="1" />
+
+  <!-- ENTRY line -->
+  <line x1="120" y1="200" x2="620" y2="200" stroke="#9ca3af" stroke-width="2" />
+  <text x="630" y="205" fill="#e5e7eb" font-size="13" font-weight="700">Entry</text>
+  <text x="10" y="205" fill="#999" font-size="12">1.000</text>
+
+  <!-- STOP LOSS line -->
+  <line x1="120" y1="270" x2="620" y2="270" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 4" />
+  <text x="630" y="275" fill="#dc2626" font-size="13" font-weight="700">Stop Loss</text>
+  <text x="10" y="275" fill="#999" font-size="12">950</text>
+
+  <!-- TARGET line -->
+  <line x1="120" y1="60" x2="620" y2="60" stroke="#16a34a" stroke-width="2" stroke-dasharray="6 4" />
+  <text x="630" y="65" fill="#16a34a" font-size="13" font-weight="700">Target</text>
+  <text x="10" y="65" fill="#999" font-size="12">1.100</text>
+
+  <!-- RISK zone (entry -> SL) -->
+  <rect x="200" y="200" width="80" height="70" fill="#dc2626" opacity="0.2" />
+  <line x1="240" y1="200" x2="240" y2="270" stroke="#dc2626" stroke-width="1" />
+  <text x="240" y="295" fill="#dc2626" font-size="13" font-weight="700" text-anchor="middle">Risk</text>
+  <text x="240" y="312" fill="#999" font-size="11" text-anchor="middle">1</text>
+
+  <!-- REWARD zone (entry -> target) -->
+  <rect x="320" y="60" width="80" height="140" fill="#16a34a" opacity="0.2" />
+  <line x1="360" y1="60" x2="360" y2="200" stroke="#16a34a" stroke-width="1" />
+  <text x="360" y="130" fill="#16a34a" font-size="13" font-weight="700" text-anchor="middle">Reward</text>
+  <text x="360" y="148" fill="#999" font-size="11" text-anchor="middle">2</text>
+
+  <!-- price path entry rising to target -->
+  <polyline points="120,200 200,210 280,180 360,140 440,110 520,80 600,60"
+    fill="none" stroke="#e5e7eb" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+
+  <text x="370" y="345" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Risk : Reward = 1 : 2 (cari minimal 1:2)</text>
+</svg>

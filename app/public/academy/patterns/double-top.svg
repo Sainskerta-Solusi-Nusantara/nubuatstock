@@ -1,0 +1,25 @@
+<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="600" height="320" fill="none"/>
+  <!-- axes -->
+  <line x1="40" y1="20" x2="40" y2="280" stroke="#888" stroke-width="1"/>
+  <line x1="40" y1="280" x2="580" y2="280" stroke="#888" stroke-width="1"/>
+  <!-- price path: rise, peak1, dip, peak2, breakdown -->
+  <polyline points="60,250 150,90 230,170 330,90 420,170 470,210 560,255"
+            fill="none" stroke="#3b82f6" stroke-width="3"/>
+  <!-- two peaks markers -->
+  <circle cx="150" cy="90" r="5" fill="#dc2626"/>
+  <circle cx="330" cy="90" r="5" fill="#dc2626"/>
+  <text x="120" y="78" fill="#999" font-size="14">Puncak 1</text>
+  <text x="300" y="78" fill="#999" font-size="14">Puncak 2</text>
+  <!-- neckline (support between peaks) -->
+  <line x1="120" y1="170" x2="480" y2="170" stroke="#999" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="200" y="190" fill="#999" font-size="13">Neckline (support)</text>
+  <!-- breakdown -->
+  <circle cx="470" cy="210" r="5" fill="#dc2626"/>
+  <line x1="470" y1="170" x2="470" y2="265" stroke="#dc2626" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="445" y="300" fill="#dc2626" font-size="13" font-weight="bold">Breakdown ▼</text>
+  <!-- target arrow -->
+  <text x="500" y="245" fill="#dc2626" font-size="12">target</text>
+  <text x="44" y="35" fill="#999" font-size="12">Harga</text>
+  <text x="300" y="20" fill="#999" font-size="14" font-weight="bold" text-anchor="middle">DOUBLE TOP (bearish reversal — bentuk "M")</text>
+</svg>

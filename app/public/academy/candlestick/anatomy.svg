@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Anatomi candlestick bullish dan bearish: body, upper wick, lower wick, open, close, high, low">
+  <!-- ============ BULLISH CANDLE (left) ============ -->
+  <g>
+    <!-- wick (high-low) -->
+    <line x1="200" y1="40" x2="200" y2="320" stroke="#16a34a" stroke-width="2" />
+    <!-- body (open-close) -->
+    <rect x="170" y="120" width="60" height="140" fill="#16a34a" rx="2" />
+
+    <!-- price guide lines -->
+    <line x1="120" y1="40" x2="200" y2="40" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="120" y1="120" x2="170" y2="120" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="120" y1="260" x2="170" y2="260" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="120" y1="320" x2="200" y2="320" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+
+    <g fill="#999" font-size="13" text-anchor="end">
+      <text x="112" y="44">High</text>
+      <text x="112" y="124">Close</text>
+      <text x="112" y="264">Open</text>
+      <text x="112" y="324">Low</text>
+    </g>
+
+    <!-- annotations right -->
+    <line x1="232" y1="40" x2="290" y2="40" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="232" y1="120" x2="290" y2="120" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <text x="296" y="84" fill="#999" font-size="12">Upper wick</text>
+    <line x1="290" y1="40" x2="290" y2="120" stroke="#9ca3af" stroke-width="1" />
+
+    <line x1="232" y1="120" x2="320" y2="120" stroke="transparent" />
+    <line x1="290" y1="120" x2="290" y2="260" stroke="#9ca3af" stroke-width="1" />
+    <line x1="232" y1="260" x2="290" y2="260" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <text x="296" y="195" fill="#16a34a" font-size="12" font-weight="700">Body</text>
+
+    <line x1="232" y1="320" x2="290" y2="320" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="290" y1="260" x2="290" y2="320" stroke="#9ca3af" stroke-width="1" />
+    <text x="296" y="295" fill="#999" font-size="12">Lower wick</text>
+
+    <text x="200" y="345" fill="#16a34a" font-size="14" font-weight="700" text-anchor="middle">BULLISH (Close &gt; Open)</text>
+  </g>
+
+  <!-- ============ BEARISH CANDLE (right) ============ -->
+  <g>
+    <line x1="540" y1="40" x2="540" y2="320" stroke="#dc2626" stroke-width="2" />
+    <rect x="510" y="120" width="60" height="140" fill="#dc2626" rx="2" />
+
+    <line x1="572" y1="40" x2="640" y2="40" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="572" y1="120" x2="640" y2="120" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="572" y1="260" x2="640" y2="260" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+    <line x1="572" y1="320" x2="640" y2="320" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4 3" />
+
+    <g fill="#999" font-size="13">
+      <text x="648" y="44">High</text>
+      <text x="648" y="124">Open</text>
+      <text x="648" y="264">Close</text>
+      <text x="648" y="324">Low</text>
+    </g>
+
+    <text x="540" y="345" fill="#dc2626" font-size="14" font-weight="700" text-anchor="middle">BEARISH (Close &lt; Open)</text>
+  </g>
+</svg>

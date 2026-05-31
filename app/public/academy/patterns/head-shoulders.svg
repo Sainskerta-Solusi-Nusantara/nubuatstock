@@ -1,0 +1,27 @@
+<svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <rect width="640" height="340" fill="none"/>
+  <line x1="40" y1="20" x2="40" y2="290" stroke="#888" stroke-width="1"/>
+  <line x1="40" y1="290" x2="620" y2="290" stroke="#888" stroke-width="1"/>
+  <text x="320" y="18" fill="#999" font-size="14" font-weight="bold" text-anchor="middle">HEAD &amp; SHOULDERS (bearish reversal)</text>
+  <!-- price: LS - head - RS - breakdown -->
+  <polyline points="55,240 120,150 175,205 240,80 310,205 370,140 430,205 470,240 560,275"
+            fill="none" stroke="#3b82f6" stroke-width="3"/>
+  <!-- markers -->
+  <circle cx="120" cy="150" r="4" fill="#dc2626"/>
+  <circle cx="240" cy="80" r="4" fill="#dc2626"/>
+  <circle cx="370" cy="140" r="4" fill="#dc2626"/>
+  <text x="78" y="140" fill="#999" font-size="12">Bahu kiri</text>
+  <text x="212" y="70" fill="#999" font-size="12">Kepala</text>
+  <text x="350" y="130" fill="#999" font-size="12">Bahu kanan</text>
+  <!-- neckline through the two troughs -->
+  <line x1="120" y1="205" x2="500" y2="205" stroke="#999" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="170" y="225" fill="#999" font-size="13">Neckline (support)</text>
+  <!-- breakdown -->
+  <circle cx="470" cy="240" r="5" fill="#dc2626"/>
+  <line x1="470" y1="205" x2="470" y2="278" stroke="#dc2626" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="455" y="300" fill="#dc2626" font-size="12" font-weight="bold">Breakdown ▼</text>
+  <text x="44" y="35" fill="#999" font-size="12">Harga</text>
+
+  <!-- Inverse H&S panel divider -->
+  <text x="320" y="320" fill="#999" font-size="13" text-anchor="middle">Inverse H&amp;S = pola yang sama tapi terbalik → bullish reversal (neckline jadi resistance, breakout ke atas)</text>
+</svg>

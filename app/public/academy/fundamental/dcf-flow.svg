@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" font-family="system-ui, sans-serif">
+  <!-- Alur kas masa depan didiskonto ke nilai sekarang (DCF) -->
+  <text x="400" y="32" text-anchor="middle" fill="#999" font-size="20" font-weight="700">Arus Kas Didiskonto (DCF)</text>
+
+  <defs>
+    <marker id="arr2" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#999"/>
+    </marker>
+  </defs>
+
+  <!-- garis waktu -->
+  <line x1="60" y1="300" x2="740" y2="300" stroke="#999" stroke-width="1.5" marker-end="url(#arr2)"/>
+  <text x="745" y="318" fill="#999" font-size="11">waktu</text>
+
+  <!-- batang arus kas tahun 1..3 + terminal -->
+  <rect x="170" y="230" width="50" height="70" fill="#16a34a" fill-opacity="0.5"/>
+  <text x="195" y="222" text-anchor="middle" fill="#16a34a" font-size="12">FCF 1</text>
+  <text x="195" y="318" text-anchor="middle" fill="#999" font-size="11">th 1</text>
+
+  <rect x="290" y="220" width="50" height="80" fill="#16a34a" fill-opacity="0.5"/>
+  <text x="315" y="212" text-anchor="middle" fill="#16a34a" font-size="12">FCF 2</text>
+  <text x="315" y="318" text-anchor="middle" fill="#999" font-size="11">th 2</text>
+
+  <rect x="410" y="210" width="50" height="90" fill="#16a34a" fill-opacity="0.5"/>
+  <text x="435" y="202" text-anchor="middle" fill="#16a34a" font-size="12">FCF 3</text>
+  <text x="435" y="318" text-anchor="middle" fill="#999" font-size="11">th 3</text>
+
+  <rect x="540" y="160" width="50" height="140" fill="#3b82f6" fill-opacity="0.5"/>
+  <text x="565" y="152" text-anchor="middle" fill="#3b82f6" font-size="12">TV</text>
+  <text x="565" y="318" text-anchor="middle" fill="#999" font-size="11">th 4+</text>
+
+  <!-- panah diskonto ke kiri (present value) -->
+  <path d="M170,250 C120,250 100,170 80,140" fill="none" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <path d="M290,240 C150,240 110,160 80,135" fill="none" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <path d="M540,200 C200,200 120,150 80,130" fill="none" stroke="#999" stroke-width="1.2" stroke-dasharray="4 3"/>
+
+  <!-- kotak nilai sekarang -->
+  <rect x="20" y="100" width="120" height="64" rx="8" fill="#16a34a" fill-opacity="0.18" stroke="#16a34a" stroke-width="2"/>
+  <text x="80" y="126" text-anchor="middle" fill="#16a34a" font-size="13" font-weight="700">Nilai Sekarang</text>
+  <text x="80" y="146" text-anchor="middle" fill="#999" font-size="11">(jumlah PV)</text>
+
+  <!-- rumus diskonto -->
+  <text x="400" y="370" text-anchor="middle" fill="#999" font-size="14">PV = FCF(t) / (1 + r)^t  -  Nilai Wajar = jumlah PV(FCF) + PV(Terminal Value)</text>
+  <text x="400" y="396" text-anchor="middle" fill="#999" font-size="12">r = tingkat diskonto (WACC). Makin jauh kas, makin kecil nilai sekarangnya.</text>
+</svg>

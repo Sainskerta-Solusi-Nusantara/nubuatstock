@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Fase akumulasi di area bawah lalu markup, dan distribusi di area atas lalu markdown">
+  <line x1="40" y1="310" x2="700" y2="310" stroke="#4b5563" stroke-width="1" />
+
+  <!-- AKUMULASI: sideways low -->
+  <rect x="50" y="230" width="180" height="60" fill="#16a34a" opacity="0.12" />
+  <polyline points="55,275 80,255 105,278 130,252 155,276 180,254 205,272 230,250"
+    fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+  <text x="140" y="220" fill="#16a34a" font-size="13" font-weight="700" text-anchor="middle">AKUMULASI</text>
+  <text x="140" y="340" fill="#999" font-size="11" text-anchor="middle">sideways di bawah, ritel pesimis</text>
+
+  <!-- MARKUP: rising -->
+  <polyline points="230,250 290,200 350,130 410,80"
+    fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+  <text x="320" y="160" fill="#999" font-size="11" text-anchor="middle">markup (naik)</text>
+
+  <!-- DISTRIBUSI: sideways high -->
+  <rect x="410" y="55" width="180" height="60" fill="#dc2626" opacity="0.12" />
+  <polyline points="415,90 440,68 465,92 490,66 515,90 540,70 565,92 590,72"
+    fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+  <text x="500" y="45" fill="#dc2626" font-size="13" font-weight="700" text-anchor="middle">DISTRIBUSI</text>
+  <text x="500" y="340" fill="#999" font-size="11" text-anchor="middle">sideways di atas, ritel euforia</text>
+
+  <!-- MARKDOWN: falling -->
+  <polyline points="590,72 640,150 680,240"
+    fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+  <text x="650" y="200" fill="#dc2626" font-size="11" text-anchor="end">markdown</text>
+</svg>

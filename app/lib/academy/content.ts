@@ -204,6 +204,8 @@ Setiap candle merangkum 4 harga: **Open, High, Low, Close**.
 - **Warna hijau** (umumnya) — Close > Open (harga naik).
 - **Warna merah** — Close < Open (harga turun).
 
+![Anatomi candlestick bullish & bearish: body, upper wick, lower wick, dan posisi open/close/high/low](/academy/candlestick/anatomy.svg)
+
 ### Apa yang diceritakan candle
 
 - **Body panjang hijau** → pembeli dominan kuat.
@@ -218,6 +220,8 @@ Setiap candle merangkum 4 harga: **Open, High, Low, Close**.
 | **Shooting Star** | Sumbu atas panjang setelah naik → potensi pembalikan turun. |
 | **Doji** | Open ≈ Close → keraguan pasar. |
 | **Bullish Engulfing** | Candle hijau "menelan" candle merah sebelumnya → sinyal naik. |
+
+![Contoh pola candlestick: Doji (ragu), Hammer (potensi naik), dan Bullish Engulfing](/academy/candlestick/doji-hammer-engulfing.svg)
 
 > Satu candle jarang cukup. Selalu baca dalam **konteks** tren dan lokasi (di support? di resistance?).`,
       },
@@ -234,6 +238,8 @@ Setiap candle merangkum 4 harga: **Open, High, Low, Close**.
 - **Resistance** — area harga di mana penawaran menekan kenaikan ("atap").
 
 Saat resistance ditembus (*breakout*), ia sering berubah jadi support baru — dan sebaliknya.
+
+![Level support & resistance tempat harga memantul, plus garis tren naik dan tren turun](/academy/teknikal/support-resistance.svg)
 
 ### Tren
 
@@ -267,6 +273,8 @@ Harga memberi tahu **apa** yang terjadi; volume memberi tahu **seberapa serius**
 - **Breakout + volume melonjak** → konfirmasi kuat.
 - **Breakout + volume tipis** → waspada *false breakout*.
 
+![Volume melonjak saat harga menembus resistance — konfirmasi breakout yang sehat](/academy/teknikal/volume-breakout.svg)
+
 ### Divergensi volume
 
 Kalau harga terus naik tapi volume terus menurun, itu sinyal momentum melemah — pembeli mulai habis. Sebaliknya, volume yang membesar saat harga mendekati support bisa menandakan akumulasi.
@@ -281,6 +289,8 @@ Kalau harga terus naik tapi volume terus menurun, itu sinyal momentum melemah �
         body: `## Indikator Populer
 
 Indikator adalah turunan matematis dari harga/volume. Alat bantu — **bukan bola kristal**.
+
+![Tiga indikator populer: Moving Average dengan golden cross, RSI dengan zona overbought/oversold, dan MACD](/academy/teknikal/indicators.svg)
 
 ### Moving Average (MA)
 
@@ -351,6 +361,8 @@ Bandarmology adalah **analisis probabilistik**, bukan sinyal pasti. Jejak bisa m
 
 Ini adalah inti dari bandarmology (dan beririsan dengan teori Wyckoff).
 
+![Fase akumulasi (sideways di area bawah) lalu markup naik, disusul distribusi (sideways di area atas) lalu markdown turun](/academy/bandarmology/akumulasi-distribusi.svg)
+
 ### Akumulasi
 
 Pemain besar mengumpulkan saham **secara perlahan** agar harga tidak naik terlalu cepat.
@@ -386,6 +398,8 @@ Ciri-ciri:
         body: `## Membaca Broker Summary
 
 **Broker summary** menampilkan ringkasan broker mana yang paling banyak membeli & menjual sebuah saham pada periode tertentu.
+
+![Ilustrasi tabel broker summary: top buyers (net beli) vs top sellers (net jual) beserta net value](/academy/bandarmology/broker-summary.svg)
 
 ### Komponen yang dibaca
 
@@ -485,7 +499,9 @@ Maksimal beli = 1.000.000 ÷ 50 = **20.000 lembar (200 lot)**.
 
 ### Risk/Reward Ratio
 
-Sebelum masuk, bandingkan potensi untung vs rugi. Cari minimal **1:2** (potensi untung 2× potensi rugi). Di Nubuat, Daily Picks sudah menyertakan entry/SL/TP dengan rasio ini.`,
+Sebelum masuk, bandingkan potensi untung vs rugi. Cari minimal **1:2** (potensi untung 2× potensi rugi). Di Nubuat, Daily Picks sudah menyertakan entry/SL/TP dengan rasio ini.
+
+![Risk-reward ratio 1:2 dengan posisi Entry, Stop Loss di bawah, dan Target di atas](/academy/risk/risk-reward.svg)`,
       },
       {
         slug: "diversifikasi",

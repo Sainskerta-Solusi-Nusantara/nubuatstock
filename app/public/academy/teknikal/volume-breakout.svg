@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Volume melonjak mengonfirmasi breakout di atas resistance">
+  <!-- price panel -->
+  <!-- resistance line -->
+  <line x1="40" y1="110" x2="680" y2="110" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 4" />
+  <text x="44" y="102" fill="#dc2626" font-size="13" font-weight="700">Resistance</text>
+
+  <!-- price: sideways below resistance, then breakout up -->
+  <polyline points="50,150 100,120 150,160 200,125 250,155 300,120 350,150 400,118 440,70 500,45 560,60 620,30 670,40"
+    fill="none" stroke="#e5e7eb" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+
+  <!-- breakout marker -->
+  <circle cx="420" cy="95" r="6" fill="none" stroke="#16a34a" stroke-width="2" />
+  <text x="430" y="80" fill="#16a34a" font-size="13" font-weight="700">Breakout!</text>
+
+  <!-- divider -->
+  <line x1="40" y1="210" x2="680" y2="210" stroke="#4b5563" stroke-width="1" />
+  <text x="44" y="228" fill="#999" font-size="12">Volume</text>
+
+  <!-- volume bars: low while sideways, spike at breakout -->
+  <g fill="#6b7280">
+    <rect x="56" y="290" width="22" height="30" />
+    <rect x="106" y="295" width="22" height="25" />
+    <rect x="156" y="285" width="22" height="35" />
+    <rect x="206" y="298" width="22" height="22" />
+    <rect x="256" y="292" width="22" height="28" />
+    <rect x="306" y="296" width="22" height="24" />
+    <rect x="356" y="288" width="22" height="32" />
+  </g>
+  <!-- breakout volume spike (green, tall) -->
+  <g fill="#16a34a">
+    <rect x="406" y="240" width="22" height="80" />
+    <rect x="476" y="250" width="22" height="70" />
+    <rect x="536" y="262" width="22" height="58" />
+    <rect x="606" y="255" width="22" height="65" />
+  </g>
+  <text x="415" y="232" fill="#16a34a" font-size="12" font-weight="700" text-anchor="middle">Volume melonjak</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 380" font-family="system-ui, sans-serif">
+  <!-- Dekomposisi DuPont: ROE = Net Margin x Asset Turnover x Equity Multiplier -->
+  <text x="400" y="32" text-anchor="middle" fill="#999" font-size="20" font-weight="700">Dekomposisi DuPont atas ROE</text>
+
+  <!-- ROE box -->
+  <rect x="320" y="60" width="160" height="56" rx="8" fill="#16a34a" fill-opacity="0.18" stroke="#16a34a" stroke-width="2"/>
+  <text x="400" y="84" text-anchor="middle" fill="#16a34a" font-size="16" font-weight="700">ROE</text>
+  <text x="400" y="104" text-anchor="middle" fill="#999" font-size="11">Laba Bersih / Ekuitas</text>
+
+  <!-- connectors -->
+  <line x1="400" y1="116" x2="150" y2="170" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="116" x2="400" y2="170" stroke="#999" stroke-width="1.5"/>
+  <line x1="400" y1="116" x2="650" y2="170" stroke="#999" stroke-width="1.5"/>
+  <text x="263" y="150" text-anchor="middle" fill="#999" font-size="22">x</text>
+  <text x="525" y="150" text-anchor="middle" fill="#999" font-size="22">x</text>
+
+  <!-- Net Profit Margin -->
+  <rect x="60" y="172" width="180" height="64" rx="8" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+  <text x="150" y="196" text-anchor="middle" fill="#3b82f6" font-size="14" font-weight="700">Net Margin</text>
+  <text x="150" y="216" text-anchor="middle" fill="#999" font-size="11">Laba Bersih</text>
+  <text x="150" y="230" text-anchor="middle" fill="#999" font-size="11">/ Penjualan</text>
+
+  <!-- Asset Turnover -->
+  <rect x="310" y="172" width="180" height="64" rx="8" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+  <text x="400" y="196" text-anchor="middle" fill="#3b82f6" font-size="14" font-weight="700">Asset Turnover</text>
+  <text x="400" y="216" text-anchor="middle" fill="#999" font-size="11">Penjualan</text>
+  <text x="400" y="230" text-anchor="middle" fill="#999" font-size="11">/ Total Aset</text>
+
+  <!-- Equity Multiplier -->
+  <rect x="560" y="172" width="180" height="64" rx="8" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="2"/>
+  <text x="650" y="196" text-anchor="middle" fill="#3b82f6" font-size="14" font-weight="700">Equity Multiplier</text>
+  <text x="650" y="216" text-anchor="middle" fill="#999" font-size="11">Total Aset</text>
+  <text x="650" y="230" text-anchor="middle" fill="#999" font-size="11">/ Ekuitas (leverage)</text>
+
+  <!-- captions -->
+  <text x="150" y="270" text-anchor="middle" fill="#999" font-size="11">profitabilitas</text>
+  <text x="400" y="270" text-anchor="middle" fill="#999" font-size="11">efisiensi aset</text>
+  <text x="650" y="270" text-anchor="middle" fill="#999" font-size="11">struktur utang</text>
+
+  <text x="400" y="330" text-anchor="middle" fill="#999" font-size="13">ROE tinggi karena utang besar bukan sama dengan ROE tinggi karena margin/efisiensi. DuPont mengungkap sumbernya.</text>
+</svg>
