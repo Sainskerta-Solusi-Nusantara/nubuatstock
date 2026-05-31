@@ -96,6 +96,20 @@ export function LessonMarkdown({ content }: { content: string }) {
               {children}
             </blockquote>
           ),
+          // Diagram/gambar lesson (mis. SVG di /academy/...). Pakai <img> biasa
+          // (bukan next/image) supaya SVG lokal & path apa pun langsung tampil.
+          img: ({ src, alt }) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={typeof src === "string" ? src : ""}
+              alt={alt ?? ""}
+              loading="lazy"
+              className="my-5 w-full rounded-lg border border-border bg-card/40 p-3"
+            />
+          ),
+          figcaption: ({ children }) => (
+            <figcaption className="-mt-3 mb-5 text-center text-xs text-muted-foreground">{children}</figcaption>
+          ),
           hr: () => <hr className="my-6 border-border" />,
           strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
           em: ({ children }) => <em className="italic">{children}</em>,

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" role="img" aria-label="Ilustrasi 3 aturan wajib Elliott Wave: wave 2 tidak retrace di bawah awal wave 1, wave 3 bukan terpendek, wave 4 tidak overlap wave 1">
+  <style>
+    .impulse { stroke: #16a34a; stroke-width: 3; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+    .dot-i { fill: #16a34a; }
+    .lbl { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; }
+    .cap { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; }
+    .axis { stroke: #888; stroke-width: 1; opacity: 0.4; }
+    .guide { stroke: #888; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.7; }
+    .ok { fill: #16a34a; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 700; }
+    .bad { fill: #dc2626; font-family: system-ui, -apple-system, sans-serif; font-size: 13px; font-weight: 700; }
+  </style>
+
+  <line class="axis" x1="40" y1="20" x2="40" y2="330" />
+  <line class="axis" x1="40" y1="330" x2="700" y2="330" />
+
+  <!-- impulse: 0(70,300) 1(170,170) 2(230,230) 3(400,70) 4(480,150) 5(560,55) -->
+  <polyline class="impulse" points="70,300 170,170 230,230 400,70 480,150 560,55" />
+  <circle class="dot-i" cx="170" cy="170" r="5" />
+  <circle class="dot-i" cx="230" cy="230" r="5" />
+  <circle class="dot-i" cx="400" cy="70" r="5" />
+  <circle class="dot-i" cx="480" cy="150" r="5" />
+  <circle class="dot-i" cx="560" cy="55" r="5" />
+
+  <text class="lbl" x="164" y="160">1</text>
+  <text class="lbl" x="236" y="244">2</text>
+  <text class="lbl" x="394" y="60">3</text>
+  <text class="lbl" x="486" y="164">4</text>
+  <text class="lbl" x="554" y="46">5</text>
+
+  <!-- RULE 1: wave 2 stays above start of wave 1 (level of point 0 -> y=300) -->
+  <line class="guide" x1="70" y1="300" x2="300" y2="300" />
+  <text class="ok" x="240" y="294">Aturan 1: wave 2 tidak turun di bawah awal wave 1</text>
+
+  <!-- RULE 3: wave 4 must not overlap wave 1 high. wave 1 top = y170. show level line. wave 4 low y150 stays above -->
+  <line class="guide" x1="170" y1="170" x2="600" y2="170" />
+  <text class="ok" x="500" y="184">Aturan 3: wave 4 tidak overlap wilayah wave 1</text>
+
+  <!-- RULE 2 note: wave 3 longest -->
+  <text class="ok" x="330" y="120">Aturan 2: wave 3 bukan</text>
+  <text class="ok" x="330" y="136">yang terpendek (sering</text>
+  <text class="ok" x="330" y="152">paling panjang)</text>
+
+  <text class="cap" x="40" y="356">Garis putus-putus = batas yang tidak boleh dilanggar.</text>
+</svg>

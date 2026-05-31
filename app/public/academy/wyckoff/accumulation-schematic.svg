@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 420" font-family="system-ui, Arial, sans-serif">
+  <text x="430" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#888">Skema Akumulasi Wyckoff (Fase A–E)</text>
+
+  <!-- area trading range -->
+  <rect x="120" y="230" width="560" height="120" fill="#16a34a" opacity="0.10"/>
+  <!-- garis resistance & support range -->
+  <line x1="120" y1="230" x2="760" y2="230" stroke="#16a34a" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="120" y1="350" x2="760" y2="350" stroke="#16a34a" stroke-width="1" stroke-dasharray="5 4"/>
+  <text x="100" y="234" text-anchor="end" font-size="10" fill="#16a34a">Resistance</text>
+  <text x="100" y="354" text-anchor="end" font-size="10" fill="#16a34a">Support</text>
+
+  <!-- sumbu -->
+  <line x1="60" y1="380" x2="800" y2="380" stroke="#888" stroke-width="1.5"/>
+  <line x1="60" y1="380" x2="60" y2="60" stroke="#888" stroke-width="1.5"/>
+
+  <!-- kurva harga -->
+  <path d="M60 130 L120 300
+           L150 245 L185 360 L210 235
+           L245 320 L300 248 L350 320
+           L400 250 L430 392 L455 320
+           L500 250 L560 235 L600 210
+           L660 250 L720 180 L780 110"
+        fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+
+  <!-- fase pemisah -->
+  <line x1="120" y1="60" x2="120" y2="380" stroke="#888" stroke-width="0.7" stroke-dasharray="3 3"/>
+  <line x1="225" y1="60" x2="225" y2="380" stroke="#888" stroke-width="0.7" stroke-dasharray="3 3"/>
+  <line x1="375" y1="60" x2="375" y2="380" stroke="#888" stroke-width="0.7" stroke-dasharray="3 3"/>
+  <line x1="475" y1="60" x2="475" y2="380" stroke="#888" stroke-width="0.7" stroke-dasharray="3 3"/>
+  <line x1="610" y1="60" x2="610" y2="380" stroke="#888" stroke-width="0.7" stroke-dasharray="3 3"/>
+
+  <!-- label fase -->
+  <text x="170" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#16a34a">A</text>
+  <text x="300" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#16a34a">B</text>
+  <text x="425" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#16a34a">C</text>
+  <text x="542" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#16a34a">D</text>
+  <text x="700" y="78" text-anchor="middle" font-size="12" font-weight="bold" fill="#16a34a">E</text>
+
+  <!-- event label -->
+  <circle cx="120" cy="300" r="4" fill="#dc2626"/>
+  <text x="118" y="318" text-anchor="middle" font-size="10" fill="#999">PS</text>
+  <circle cx="185" cy="360" r="4" fill="#dc2626"/>
+  <text x="185" y="378" text-anchor="middle" font-size="10" fill="#999">SC</text>
+  <circle cx="210" cy="235" r="4" fill="#3b82f6"/>
+  <text x="210" y="225" text-anchor="middle" font-size="10" fill="#999">AR</text>
+  <circle cx="350" cy="320" r="4" fill="#3b82f6"/>
+  <text x="350" y="338" text-anchor="middle" font-size="10" fill="#999">ST</text>
+  <circle cx="430" cy="392" r="4" fill="#16a34a"/>
+  <text x="430" y="410" text-anchor="middle" font-size="10" fill="#16a34a">Spring</text>
+  <circle cx="455" cy="320" r="4" fill="#16a34a"/>
+  <text x="465" y="335" text-anchor="middle" font-size="10" fill="#999">Test</text>
+  <circle cx="600" cy="210" r="4" fill="#16a34a"/>
+  <text x="600" y="200" text-anchor="middle" font-size="10" fill="#16a34a">SOS</text>
+  <circle cx="660" cy="250" r="4" fill="#3b82f6"/>
+  <text x="665" y="268" text-anchor="middle" font-size="10" fill="#999">LPS</text>
+  <text x="745" y="100" text-anchor="middle" font-size="10" fill="#16a34a">BU / Markup</text>
+</svg>

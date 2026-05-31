@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" role="img" aria-label="Pola Elliott Wave lengkap: 5 wave impuls naik (1-2-3-4-5) diikuti 3 wave koreksi turun (A-B-C)">
+  <style>
+    .impulse { stroke: #16a34a; stroke-width: 3; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+    .corr { stroke: #dc2626; stroke-width: 3; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+    .dot-i { fill: #16a34a; }
+    .dot-c { fill: #dc2626; }
+    .lbl { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; }
+    .cap { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; }
+    .axis { stroke: #888; stroke-width: 1; opacity: 0.4; }
+    .grid { stroke: #888; stroke-width: 1; opacity: 0.12; }
+  </style>
+
+  <!-- axes -->
+  <line class="axis" x1="40" y1="20" x2="40" y2="330" />
+  <line class="axis" x1="40" y1="330" x2="700" y2="330" />
+  <text class="cap" x="8" y="180" transform="rotate(-90 14,180)">Harga</text>
+  <text class="cap" x="350" y="358">Waktu</text>
+
+  <!-- IMPULSE: start(0) low, up to 1, down to 2, up to 3 (highest), down to 4, up to 5 -->
+  <!-- points: 0(60,300) 1(150,200) 2(210,250) 3(360,90) 4(440,150) 5(520,60) -->
+  <polyline class="impulse" points="60,300 150,200 210,250 360,90 440,150 520,60" />
+
+  <!-- CORRECTION ABC down from 5 -->
+  <!-- A(580,150) B(630,110) C(690,210) -->
+  <polyline class="corr" points="520,60 580,150 630,110 690,210" />
+
+  <!-- pivot dots -->
+  <circle class="dot-i" cx="150" cy="200" r="5" />
+  <circle class="dot-i" cx="210" cy="250" r="5" />
+  <circle class="dot-i" cx="360" cy="90" r="5" />
+  <circle class="dot-i" cx="440" cy="150" r="5" />
+  <circle class="dot-i" cx="520" cy="60" r="5" />
+  <circle class="dot-c" cx="580" cy="150" r="5" />
+  <circle class="dot-c" cx="630" cy="110" r="5" />
+  <circle class="dot-c" cx="690" cy="210" r="5" />
+
+  <!-- impulse labels -->
+  <text class="lbl" x="144" y="190">1</text>
+  <text class="lbl" x="216" y="262">2</text>
+  <text class="lbl" x="354" y="80">3</text>
+  <text class="lbl" x="446" y="162">4</text>
+  <text class="lbl" x="514" y="50">5</text>
+
+  <!-- correction labels -->
+  <text class="lbl" x="582" y="142">A</text>
+  <text class="lbl" x="632" y="102">B</text>
+  <text class="lbl" x="692" y="222">C</text>
+
+  <!-- phase captions -->
+  <text class="cap" x="150" y="320" text-anchor="middle" fill="#16a34a">Fase impuls (5 gelombang)</text>
+  <text class="cap" x="620" y="260" text-anchor="middle" fill="#dc2626">Koreksi (A-B-C)</text>
+</svg>

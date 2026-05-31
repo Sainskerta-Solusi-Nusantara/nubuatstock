@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Pola koreksi Zigzag 5-3-5: wave A turun tajam, wave B naik kecil, wave C turun tajam">
+  <style>
+    .corr { stroke: #dc2626; stroke-width: 3; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+    .dot-c { fill: #dc2626; }
+    .lbl { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; }
+    .cap { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; }
+    .axis { stroke: #888; stroke-width: 1; opacity: 0.4; }
+  </style>
+  <line class="axis" x1="40" y1="20" x2="40" y2="270" />
+  <line class="axis" x1="40" y1="270" x2="460" y2="270" />
+
+  <!-- start high, A down deep, B up shallow, C down deeper than A -->
+  <!-- 0(70,60) A(190,200) B(280,130) C(430,250) -->
+  <polyline class="corr" points="70,60 190,200 280,130 430,250" />
+  <circle class="dot-c" cx="190" cy="200" r="5" />
+  <circle class="dot-c" cx="280" cy="130" r="5" />
+  <circle class="dot-c" cx="430" cy="250" r="5" />
+
+  <text class="lbl" x="196" y="214">A</text>
+  <text class="lbl" x="282" y="122">B</text>
+  <text class="lbl" x="432" y="244">C</text>
+
+  <text class="cap" x="240" y="300" text-anchor="middle">Zigzag (5-3-5): tajam, B tak melewati awal A</text>
+</svg>

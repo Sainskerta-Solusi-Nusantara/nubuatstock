@@ -14,6 +14,12 @@
  * Bentuk tipe di bawah sengaja dibuat serializable supaya migrasi mudah.
  */
 
+// Modul besar dipisah ke file sendiri (lib/academy/modules/*) lalu di-compose
+// ke ACADEMY_MODULES di bawah. Modul ini mengimpor `AcademyModule` dari file ini
+// (circular type-only import — aman karena hanya tipe).
+import { elliottModule } from "./modules/elliott";
+import { wyckoffModule } from "./modules/wyckoff";
+
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
   slug: string;
@@ -755,6 +761,95 @@ Total Rp3.000.000 → 3.050 lembar, harga rata-rata ≈ Rp984 — lebih rendah d
       },
     ],
   },
+
+  // ============================ MODUL: WMI ============================
+  {
+    slug: "wmi-wakil-manajer-investasi",
+    title: "WMI — Wakil Manajer Investasi",
+    icon: "Award",
+    level: "Menengah",
+    description:
+      "Persiapan sertifikasi WMI (Wakil Manajer Investasi): apa itu, untuk siapa, struktur ujian, silabus, dan tips lulus. Lanjutkan ke Try Out 10 paket soal + sertifikat.",
+    lessons: [
+      {
+        slug: "wmi-apa-itu",
+        title: "Apa Itu WMI?",
+        readMinutes: 5,
+        summary: "WMI = izin profesi OJK untuk mengelola portofolio investasi nasabah.",
+        body: `**WMI (Wakil Manajer Investasi)** adalah izin profesi dari OJK bagi orang perseorangan yang mewakili perusahaan **Manajer Investasi (MI)** dalam mengelola portofolio efek nasabah (reksa dana, kontrak pengelolaan dana/KPD, dll).
+
+WMI adalah salah satu dari tiga izin wakil di pasar modal:
+
+| Izin | Untuk |
+|---|---|
+| **WPPE** | Wakil Perantara Pedagang Efek (broker/dealer) |
+| **WPEE** | Wakil Penjamin Emisi Efek (underwriter) |
+| **WMI** | Wakil Manajer Investasi (pengelola investasi) |
+
+Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset management), izin **WMI umumnya wajib**.`,
+      },
+      {
+        slug: "wmi-untuk-siapa",
+        title: "Untuk Siapa & Kenapa Penting?",
+        readMinutes: 4,
+        summary: "Cocok untuk calon fund manager, analis, sales reksa dana, hingga fresh graduate.",
+        body: `Cocok untuk: calon **fund manager**, analis investasi, tim pengelolaan portofolio MI, financial planner, sales reksa dana yang ingin naik level, serta mahasiswa/fresh graduate yang menargetkan karier di industri pengelolaan dana.
+
+**Manfaat:**
+
+- Syarat legal untuk mengelola dana nasabah.
+- Bukti kompetensi yang diakui industri → buka peluang karier & kenaikan jenjang.
+- Memperdalam pemahaman pasar modal, valuasi, dan manajemen portofolio secara terstruktur.`,
+      },
+      {
+        slug: "wmi-struktur-ujian",
+        title: "Struktur & Format Ujian",
+        readMinutes: 4,
+        summary: "Pilihan ganda berbasis komputer (CBT) dengan nilai ambang kelulusan.",
+        body: `Ujian WMI diselenggarakan lembaga sertifikasi profesi pasar modal di bawah pengawasan OJK. Format umum:
+
+- **Pilihan ganda** (multiple choice), berbasis komputer (CBT).
+- Materi lintas beberapa bidang (lihat silabus).
+- Ada **nilai ambang kelulusan** (passing grade).
+
+> Detail jumlah soal, durasi, biaya, dan jadwal mengikuti ketentuan lembaga penyelenggara terkini — selalu cek sumber resmi sebelum mendaftar. **Try Out di Nubuat** membantumu berlatih format & materinya.`,
+      },
+      {
+        slug: "wmi-silabus",
+        title: "Silabus & Materi yang Diuji",
+        readMinutes: 6,
+        summary: "Enam bidang: ekonomi, produk investasi, reksa dana, portofolio, analisis efek, etika-regulasi.",
+        body: `Bidang materi utama WMI:
+
+1. **Ekonomi & Keuangan** — makroekonomi (inflasi, suku bunga, PDB, nilai tukar), nilai waktu uang, matematika keuangan.
+2. **Produk Investasi & Pasar Modal** — saham, obligasi/SBN, derivatif, kelembagaan (BEI, KPEI, KSEI, OJK), mekanisme perdagangan & IPO.
+3. **Reksa Dana & Pengelolaan Investasi** — jenis reksa dana, NAB, KIK, biaya, prospektus, perpajakan.
+4. **Manajemen Portofolio** — diversifikasi, CAPM/beta, Markowitz, Sharpe/Treynor, alokasi & rebalancing.
+5. **Analisis Efek** — fundamental (rasio, valuasi saham/obligasi) & teknikal dasar.
+6. **Etika & Regulasi** — UU Pasar Modal No.8/1995, POJK, kode etik, larangan (insider trading, manipulasi pasar), APU-PPT/KYC, prinsip mengenal nasabah & kesesuaian (suitability).`,
+      },
+      {
+        slug: "wmi-tips-lulus",
+        title: "Tips Lulus + Mulai Try Out",
+        readMinutes: 4,
+        summary: "Kuasai konsep & hitungan, banyak latihan soal, lalu uji di Try Out WMI.",
+        body: `**Tips:**
+
+1. Kuasai konsep, jangan menghafal mati — banyak soal kasus/hitungan.
+2. Latih matematika keuangan (PV/FV, yield, NAB) sampai cepat.
+3. Hafal kelembagaan & regulasi inti (siapa mengatur apa, larangan & sanksinya).
+4. Kerjakan banyak latihan soal + baca pembahasannya.
+5. Kelola waktu saat ujian.
+
+**Siap berlatih?** Buka **[Try Out WMI](/academy/tryout)** — 10 paket soal latihan lintas silabus, lengkap dengan **pembahasan tiap soal**, riwayat skor, dan **sertifikat penyelesaian** kalau kamu lulus.
+
+> Soal latihan disusun berdasarkan silabus WMI untuk tujuan edukasi — bukan reproduksi soal ujian resmi.`,
+      },
+    ],
+  },
+
+  elliottModule,
+  wyckoffModule,
 ];
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" role="img" aria-label="Pola koreksi Flat 3-3-5: wave A, wave B kembali hampir ke awal A, wave C turun ke sekitar bawah A">
+  <style>
+    .corr { stroke: #dc2626; stroke-width: 3; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+    .dot-c { fill: #dc2626; }
+    .lbl { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 18px; font-weight: 700; }
+    .cap { fill: #888; font-family: system-ui, -apple-system, sans-serif; font-size: 14px; }
+    .axis { stroke: #888; stroke-width: 1; opacity: 0.4; }
+    .guide { stroke: #888; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.6; }
+  </style>
+  <line class="axis" x1="40" y1="20" x2="40" y2="270" />
+  <line class="axis" x1="40" y1="270" x2="460" y2="270" />
+
+  <!-- flat: sideways. start(70,70) A down(180,200) B up near start(300,90) C down to ~A level(430,210) -->
+  <polyline class="corr" points="70,70 180,200 300,90 430,210" />
+  <circle class="dot-c" cx="180" cy="200" r="5" />
+  <circle class="dot-c" cx="300" cy="90" r="5" />
+  <circle class="dot-c" cx="430" cy="210" r="5" />
+
+  <!-- guide levels showing 'flat' nature -->
+  <line class="guide" x1="70" y1="70" x2="300" y2="70" />
+  <line class="guide" x1="180" y1="200" x2="430" y2="200" />
+
+  <text class="lbl" x="178" y="216">A</text>
+  <text class="lbl" x="302" y="82">B</text>
+  <text class="lbl" x="432" y="226">C</text>
+
+  <text class="cap" x="240" y="300" text-anchor="middle">Flat (3-3-5): mendatar, B hampir kembali ke awal A</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" font-family="system-ui, Arial, sans-serif">
+  <text x="410" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#888">3 Hukum Wyckoff</text>
+
+  <!-- Hukum 1: Supply & Demand -->
+  <rect x="40" y="60" width="220" height="220" rx="10" fill="none" stroke="#888" stroke-width="1.2"/>
+  <text x="150" y="86" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">1. Supply &amp; Demand</text>
+  <!-- timbangan -->
+  <line x1="150" y1="120" x2="150" y2="240" stroke="#888" stroke-width="2"/>
+  <line x1="90" y1="150" x2="210" y2="150" stroke="#888" stroke-width="2"/>
+  <circle cx="90" cy="175" r="22" fill="#16a34a" opacity="0.25" stroke="#16a34a"/>
+  <text x="90" y="179" text-anchor="middle" font-size="11" fill="#16a34a">Demand</text>
+  <circle cx="210" cy="175" r="22" fill="#dc2626" opacity="0.25" stroke="#dc2626"/>
+  <text x="210" y="179" text-anchor="middle" font-size="11" fill="#dc2626">Supply</text>
+  <text x="150" y="265" text-anchor="middle" font-size="10" fill="#999">Demand &gt; Supply = harga naik</text>
+
+  <!-- Hukum 2: Cause & Effect -->
+  <rect x="300" y="60" width="220" height="220" rx="10" fill="none" stroke="#888" stroke-width="1.2"/>
+  <text x="410" y="86" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">2. Cause &amp; Effect</text>
+  <!-- range = cause -->
+  <rect x="330" y="170" width="100" height="50" fill="#16a34a" opacity="0.15" stroke="#16a34a" stroke-dasharray="3 3"/>
+  <text x="380" y="200" text-anchor="middle" font-size="10" fill="#16a34a">cause (range)</text>
+  <!-- effect = move up -->
+  <path d="M430 195 L490 120" stroke="#3b82f6" stroke-width="2.5" fill="none" marker-end="url(#arr)"/>
+  <text x="470" y="150" text-anchor="middle" font-size="10" fill="#3b82f6">effect</text>
+  <text x="410" y="265" text-anchor="middle" font-size="10" fill="#999">range lebar = target jauh</text>
+
+  <!-- Hukum 3: Effort vs Result -->
+  <rect x="560" y="60" width="220" height="220" rx="10" fill="none" stroke="#888" stroke-width="1.2"/>
+  <text x="670" y="86" text-anchor="middle" font-size="13" font-weight="bold" fill="#999">3. Effort vs Result</text>
+  <!-- batang volume (effort) -->
+  <rect x="600" y="160" width="20" height="70" fill="#888"/>
+  <rect x="640" y="180" width="20" height="50" fill="#888"/>
+  <rect x="680" y="120" width="20" height="110" fill="#dc2626" opacity="0.6"/>
+  <text x="610" y="248" text-anchor="middle" font-size="9" fill="#999">vol</text>
+  <text x="650" y="248" text-anchor="middle" font-size="9" fill="#999">vol</text>
+  <text x="690" y="248" text-anchor="middle" font-size="9" fill="#dc2626">vol↑</text>
+  <text x="670" y="115" text-anchor="middle" font-size="10" fill="#dc2626">effort besar, result kecil = anomali</text>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0 0 L6 3 L0 6 Z" fill="#3b82f6"/>
+    </marker>
+  </defs>
+</svg>
