@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { ThemeScript } from "@/components/layout/ThemeScript";
 import { getLegalGateStatus } from "@/lib/legal/acceptance";
 import { getConfig, hasSecret } from "@/lib/config";
+import { getUserTier } from "@/lib/billing/entitlements";
 import { AcceptDisclaimerGate } from "@/components/legal/AcceptDisclaimerGate";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 
@@ -66,10 +67,13 @@ export default async function AppLayout({
     disclaimerText = disclaimer;
   }
 
+  // Resolve tier aktif user untuk badge "Paket" di Sidebar (fallback "free").
+  const tier = userId ? await getUserTier(userId).catch(() => "free") : "free";
+
   return (
     <>
       <ThemeScript />
-      <AppShell user={session.user} tier={null}>
+      <AppShell user={session.user} tier={tier}>
         {children}
       </AppShell>
       {needsAcceptance ? (

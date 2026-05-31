@@ -34,6 +34,7 @@ const ICONS: Record<string, LucideIcon> = {
   ShieldCheck,
   FileText,
   Compass,
+  Award,
 };
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);
