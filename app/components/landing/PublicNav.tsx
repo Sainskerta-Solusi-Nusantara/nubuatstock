@@ -7,6 +7,7 @@
  * halaman mana pun, bukan cuma di landing.
  */
 import Link from "next/link";
+import { NavAuthButtons } from "./NavAuthButtons";
 
 export function PublicNav({
   appName = "Nubuat",
@@ -31,20 +32,9 @@ export function PublicNav({
           <Link href="/glossary" className="text-muted-foreground hover:text-foreground transition">Glossary</Link>
           <Link href="/research" className="text-muted-foreground hover:text-foreground transition">Riset</Link>
           <Link href="/pricing" className="text-muted-foreground hover:text-foreground transition">Harga</Link>
-          <Link href="/login" className="text-muted-foreground hover:text-foreground transition">Login</Link>
-          <Link
-            href="/signup?trial=pro"
-            className="inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
-          >
-            {ctaText}
-          </Link>
+          <NavAuthButtons ctaText={ctaText} />
         </nav>
-        <Link
-          href="/signup?trial=pro"
-          className="inline-flex h-9 items-center rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground sm:hidden"
-        >
-          Daftar
-        </Link>
+        <NavAuthButtons ctaText={ctaText} mobile />
       </div>
     </header>
   );
