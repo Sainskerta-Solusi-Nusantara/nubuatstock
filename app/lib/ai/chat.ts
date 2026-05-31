@@ -547,13 +547,19 @@ async function loadHistory(
   const chrono = rows.slice().reverse();
   const out: ChatCompletionMessageParam[] = [];
   for (const r of chrono) {
+    // History HANYA user + assistant (teks). Pesan role "tool" SENGAJA di-drop:
+    // window `limit` bisa memotong di tengah urutan (assistant-with-tool_calls →
+    // tool result), menyisakan pesan "tool" tanpa parent → API tolak 400
+    // ("must be a response to a preceding message with tool_calls"). Output tool
+    // sudah terangkum di teks assistant; tool tetap dipanggil fresh tiap turn.
     if (r.role === "user") {
-      out.push({ role: "user", content: r.content });
+      const c = (r.content ?? "").trim();
+      if (c) out.push({ role: "user", content: c });
     } else if (r.role === "assistant") {
-      out.push({ role: "assistant", content: r.content });
-    } else if (r.role === "tool" && r.toolCallId) {
-      out.push({ role: "tool", tool_call_id: r.toolCallId, content: r.content });
+      const c = (r.content ?? "").trim();
+      if (c) out.push({ role: "assistant", content: c });
     }
+    // role "tool" → di-skip.
   }
   return out;
 }
