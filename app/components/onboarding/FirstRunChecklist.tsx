@@ -205,55 +205,57 @@ export function FirstRunChecklist() {
               <li
                 key={it.id}
                 className={cn(
-                  "flex items-start gap-3 rounded-lg border p-3 transition-colors",
+                  "flex flex-col gap-2 rounded-lg border p-3 transition-colors sm:flex-row sm:items-start sm:gap-3",
                   isDone
                     ? "border-primary/30 bg-primary/5"
                     : "border-border bg-card hover:border-primary/40",
                 )}
               >
-                <button
-                  type="button"
-                  onClick={() => setItem(it.id, !isDone)}
-                  aria-pressed={isDone}
-                  aria-label={
-                    isDone
-                      ? `Tandai "${it.label}" belum selesai`
-                      : `Tandai "${it.label}" selesai`
-                  }
-                  className={cn(
-                    "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    isDone
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/40 text-transparent hover:border-primary",
-                  )}
-                >
-                  <Check className="size-3" aria-hidden />
-                </button>
-
-                <div className="min-w-0 flex-1">
-                  <p
-                    className={cn(
-                      "flex items-center gap-1.5 text-sm font-medium",
+                <div className="flex min-w-0 flex-1 items-start gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setItem(it.id, !isDone)}
+                    aria-pressed={isDone}
+                    aria-label={
                       isDone
-                        ? "text-muted-foreground line-through"
-                        : "text-foreground",
+                        ? `Tandai "${it.label}" belum selesai`
+                        : `Tandai "${it.label}" selesai`
+                    }
+                    className={cn(
+                      "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      isDone
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground/40 text-transparent hover:border-primary",
                     )}
                   >
-                    <span
+                    <Check className="size-3" aria-hidden />
+                  </button>
+
+                  <div className="min-w-0 flex-1">
+                    <p
                       className={cn(
-                        "shrink-0",
-                        isDone ? "text-muted-foreground" : "text-primary",
+                        "flex items-center gap-1.5 text-sm font-medium",
+                        isDone
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground",
                       )}
                     >
-                      {it.icon}
-                    </span>
-                    {it.label}
-                  </p>
-                  {!isDone && (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {it.hint}
+                      <span
+                        className={cn(
+                          "shrink-0",
+                          isDone ? "text-muted-foreground" : "text-primary",
+                        )}
+                      >
+                        {it.icon}
+                      </span>
+                      {it.label}
                     </p>
-                  )}
+                    {!isDone && (
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {it.hint}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {!isDone && (
@@ -261,7 +263,7 @@ export function FirstRunChecklist() {
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="shrink-0"
+                    className="ml-8 shrink-0 self-start sm:ml-0 sm:self-auto"
                   >
                     {/* Klik CTA = intent jelas → tandai selesai lalu navigasi.
                         Pakai onClick (bukan hanya href) supaya progres persist
