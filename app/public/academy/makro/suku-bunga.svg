@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Efek suku bunga ke sektor: turun menguntungkan properti dan bank, naik menekan growth">
+  <text x="360" y="32" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Suku Bunga &amp; Dampaknya ke Sektor</text>
+
+  <!-- suku bunga TURUN -->
+  <rect x="40" y="70" width="300" height="180" rx="8" fill="#16a34a" opacity="0.08" stroke="#16a34a" stroke-width="1.5" />
+  <text x="190" y="100" fill="#16a34a" font-size="13" font-weight="700" text-anchor="middle">Suku Bunga TURUN &#8595;</text>
+  <text x="60" y="130" fill="#e5e7eb" font-size="11">&#8226; KPR/pinjaman murah &#8594; Properti, Otomotif</text>
+  <text x="60" y="155" fill="#e5e7eb" font-size="11">&#8226; Kredit lancar &#8594; Keuangan/Bank</text>
+  <text x="60" y="180" fill="#e5e7eb" font-size="11">&#8226; Valuasi growth/teknologi naik</text>
+  <text x="60" y="205" fill="#16a34a" font-size="11" font-weight="700">&#8226; Risk-on: uang masuk saham</text>
+  <text x="60" y="230" fill="#999" font-size="10.5">(uang murah = bagus untuk pasar)</text>
+
+  <!-- suku bunga NAIK -->
+  <rect x="380" y="70" width="300" height="180" rx="8" fill="#dc2626" opacity="0.08" stroke="#dc2626" stroke-width="1.5" />
+  <text x="530" y="100" fill="#dc2626" font-size="13" font-weight="700" text-anchor="middle">Suku Bunga NAIK &#8593;</text>
+  <text x="400" y="130" fill="#e5e7eb" font-size="11">&#8226; Biaya dana mahal &#8594; emiten berutang tertekan</text>
+  <text x="400" y="155" fill="#e5e7eb" font-size="11">&#8226; Valuasi growth tertekan</text>
+  <text x="400" y="180" fill="#e5e7eb" font-size="11">&#8226; Pilih saham nilai &amp; dividen</text>
+  <text x="400" y="205" fill="#dc2626" font-size="11" font-weight="700">&#8226; Deposito/obligasi menarik &#8594; uang keluar</text>
+  <text x="400" y="230" fill="#999" font-size="10.5">(uang mahal = rem untuk pasar)</text>
+
+  <text x="360" y="290" fill="#999" font-size="11" text-anchor="middle">Rantai: inflasi tinggi &#8594; BI naikkan suku bunga &#8594; valuasi tertekan. Pantau RDG BI &amp; The Fed.</text>
+</svg>

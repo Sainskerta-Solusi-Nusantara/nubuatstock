@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Dua tahap screening saham syariah: bisnis dan keuangan, menghasilkan Daftar Efek Syariah">
+  <text x="360" y="32" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Screening Saham Syariah (DES-OJK)</text>
+
+  <!-- stage 1 -->
+  <rect x="40" y="70" width="220" height="170" rx="8" fill="#16a34a" opacity="0.08" stroke="#16a34a" stroke-width="1.5" />
+  <text x="150" y="98" fill="#16a34a" font-size="12.5" font-weight="700" text-anchor="middle">1. Screening Bisnis</text>
+  <text x="60" y="128" fill="#e5e7eb" font-size="11">Usaha utama bukan:</text>
+  <text x="70" y="150" fill="#999" font-size="11">&#8226; riba (bunga)</text>
+  <text x="70" y="170" fill="#999" font-size="11">&#8226; judi / maysir</text>
+  <text x="70" y="190" fill="#999" font-size="11">&#8226; gharar berlebih</text>
+  <text x="70" y="210" fill="#999" font-size="11">&#8226; barang haram</text>
+
+  <!-- arrow -->
+  <text x="288" y="160" fill="#6b7280" font-size="24">&#8594;</text>
+
+  <!-- stage 2 -->
+  <rect x="330" y="70" width="240" height="170" rx="8" fill="#3b82f6" opacity="0.08" stroke="#3b82f6" stroke-width="1.5" />
+  <text x="450" y="98" fill="#3b82f6" font-size="12.5" font-weight="700" text-anchor="middle">2. Screening Keuangan</text>
+  <text x="350" y="132" fill="#e5e7eb" font-size="11">Utang berbunga / aset</text>
+  <text x="360" y="152" fill="#16a34a" font-size="12" font-weight="700">&lt; 45%</text>
+  <text x="350" y="182" fill="#e5e7eb" font-size="11">Pendapatan non-halal /</text>
+  <text x="350" y="198" fill="#e5e7eb" font-size="11">total pendapatan</text>
+  <text x="360" y="220" fill="#16a34a" font-size="12" font-weight="700">&lt; 10%</text>
+
+  <!-- result -->
+  <text x="600" y="160" fill="#6b7280" font-size="24">&#8594;</text>
+  <rect x="600" y="120" width="100" height="60" rx="8" fill="#16a34a" opacity="0.18" stroke="#16a34a" stroke-width="2" />
+  <text x="650" y="148" fill="#16a34a" font-size="12" font-weight="700" text-anchor="middle">Masuk</text>
+  <text x="650" y="166" fill="#16a34a" font-size="12" font-weight="700" text-anchor="middle">DES</text>
+
+  <text x="360" y="290" fill="#999" font-size="11" text-anchor="middle">Di-review OJK 2x setahun (Mei &amp; Nov). Status syariah bisa berubah — selalu cek daftar terbaru.</text>
+</svg>

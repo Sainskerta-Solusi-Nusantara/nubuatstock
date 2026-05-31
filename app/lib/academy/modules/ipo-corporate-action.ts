@@ -58,6 +58,8 @@ Saham IPO punya batas **auto reject** khusus yang lebih lebar di hari-hari awal 
 
 Tujuannya menggalang dana tambahan (ekspansi, bayar utang, perkuat modal — sering di perbankan).
 
+![Right issue: tiga pilihan pemegang saham — tebus (hindari dilusi), jual rights, atau diam (hak hangus + dilusi)](/academy/corpaction/right-issue.svg)
+
 ## Dilusi
 
 Karena jumlah saham bertambah, **kepemilikan & laba per saham (EPS) bisa terdilusi** kalau kamu tidak ikut menebus.

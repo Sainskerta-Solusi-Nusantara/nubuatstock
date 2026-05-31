@@ -45,6 +45,8 @@ Kamu tidak perlu jadi ekonom. Cukup paham **beberapa variabel kunci** dan **arah
 
 Bank sentral (BI, dan acuan global The Fed) mengatur suku bunga untuk menjaga inflasi & stabilitas.
 
+![Efek suku bunga ke sektor: turun menguntungkan properti & bank dan growth, naik menekan growth dan menarik uang ke deposito](/academy/makro/suku-bunga.svg)
+
 ### Saat suku bunga TURUN
 - Pinjaman & KPR lebih murah → **Properti, Otomotif, Konsumen** terbantu.
 - Bank lebih mudah salurkan kredit → **Keuangan** (umumnya positif).

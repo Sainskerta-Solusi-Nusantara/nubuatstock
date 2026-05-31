@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Konsep valuasi: harga vs nilai wajar dan margin of safety">
+  <text x="360" y="34" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Harga vs Nilai Wajar &amp; Margin of Safety</text>
+
+  <!-- bars -->
+  <!-- nilai wajar bar -->
+  <rect x="160" y="80" width="120" height="180" fill="#16a34a" opacity="0.25" stroke="#16a34a" stroke-width="2" />
+  <text x="220" y="278" fill="#16a34a" font-size="12" font-weight="700" text-anchor="middle">Nilai Wajar</text>
+  <text x="220" y="70" fill="#16a34a" font-size="12" text-anchor="middle">1.000</text>
+
+  <!-- harga bar (lower) -->
+  <rect x="440" y="170" width="120" height="90" fill="#3b82f6" opacity="0.25" stroke="#3b82f6" stroke-width="2" />
+  <text x="500" y="278" fill="#3b82f6" font-size="12" font-weight="700" text-anchor="middle">Harga Pasar</text>
+  <text x="500" y="160" fill="#3b82f6" font-size="12" text-anchor="middle">700</text>
+
+  <!-- margin of safety bracket -->
+  <line x1="610" y1="80" x2="610" y2="170" stroke="#f59e0b" stroke-width="2" />
+  <line x1="600" y1="80" x2="620" y2="80" stroke="#f59e0b" stroke-width="2" />
+  <line x1="600" y1="170" x2="620" y2="170" stroke="#f59e0b" stroke-width="2" />
+  <text x="628" y="128" fill="#f59e0b" font-size="12" font-weight="700">Margin of Safety 30%</text>
+
+  <text x="360" y="305" fill="#999" font-size="11.5" text-anchor="middle">Beli jauh DI BAWAH nilai wajar = bantalan kalau taksiranmu salah. Harga &#8800; nilai.</text>
+</svg>

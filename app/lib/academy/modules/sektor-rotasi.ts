@@ -93,6 +93,8 @@ Hasilnya 4 kuadran:
 | **Lagging** (kiri-bawah) | Lemah & momentum negatif | Hindari |
 | **Improving** (kiri-atas) | Masih lemah tapi mulai membaik | Watchlist, calon naik |
 
+![Empat kuadran RRG: Improving, Leading, Weakening, Lagging dengan rotasi searah jarum jam](/academy/sektor/rrg-kuadran.svg)
+
 ## Putaran searah jarum jam
 
 Sektor biasanya bergerak **searah jarum jam**:

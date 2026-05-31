@@ -45,6 +45,8 @@ Kamu bisa pakai **Screener** untuk memfilter emiten, lalu cek status syariah lew
 
 **DES** adalah daftar resmi efek syariah yang diterbitkan **OJK** (lewat Dewan Pengawas Syariah). Direview & diperbarui **dua kali setahun** (biasanya Mei & November). Saham yang masuk DES = dianggap syariah untuk periode itu.
 
+![Dua tahap screening saham syariah: screening bisnis lalu screening keuangan, menghasilkan Daftar Efek Syariah](/academy/syariah/screening.svg)
+
 ## Dua tahap screening
 
 1. **Screening bisnis (kualitatif)** — usaha utama tidak termasuk yang dilarang (riba, judi, alkohol, dll).

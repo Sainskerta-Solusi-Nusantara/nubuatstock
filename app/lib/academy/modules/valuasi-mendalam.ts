@@ -54,6 +54,8 @@ Artinya: berapa rupiah kamu bayar untuk tiap Rp1 laba. PER 10 = "balik modal" da
 
 > **PEG** = PER / pertumbuhan laba (%). PEG < 1 sering dianggap wajar untuk saham bertumbuh. Membantu menilai PER tinggi yang ditopang growth.
 
+![Harga vs nilai wajar: harga pasar di bawah nilai wajar memberi margin of safety](/academy/valuasi/per-pbv.svg)
+
 ## PBV (Price to Book Value)
 
 \`\`\`

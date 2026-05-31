@@ -82,7 +82,9 @@ Yang penting bukan dividen sekali besar, tapi **konsisten & tumbuh** bertahun-ta
       title: "Tanggal Penting: Cum-Date, Ex-Date, Recording, Payment",
       readMinutes: 6,
       summary: "Kapan harus pegang saham agar dapat dividen — dan apa itu 'dividend run'.",
-      body: `## Empat tanggal yang wajib dipahami
+      body: `![Timeline dividen: cum-date (terakhir dapat), ex-date (tidak dapat, harga turun), recording date, payment date](/academy/dividend/cum-ex-timeline.svg)
+
+## Empat tanggal yang wajib dipahami
 
 1. **Cum-Date (Cum Dividend)** — hari **terakhir** kamu bisa beli/pegang saham dan **masih berhak** dapat dividen.
 2. **Ex-Date (Ex Dividend)** — sehari setelah cum-date. Beli di hari ini **tidak** dapat dividen. Harga biasanya **turun ±sebesar dividen** di pembukaan (penyesuaian wajar).
