@@ -100,6 +100,9 @@ export const referralRewards = pgTable(
     }),
     type: referralRewardTypeEnum("type").notNull().default("credit"),
     amountIdr: integer("amount_idr").notNull(),
+    // Berapa rupiah dari reward ini yang sudah dipakai (redeem sebagian).
+    // Sisa Coin = amount_idr - redeemed_idr. Status → 'redeemed' saat habis.
+    redeemedIdr: integer("redeemed_idr").notNull().default(0),
     status: referralRewardStatusEnum("status").notNull().default("granted"),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
       .notNull()

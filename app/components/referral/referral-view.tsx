@@ -2,9 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Copy, Gift, Share2, Users } from "lucide-react";
+import { Check, Copy, Gift, Share2, Users, Coins, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ReferralStats } from "@/lib/referral";
+
+export interface RedeemTierOption {
+  kode: string;
+  nama: string;
+  priceMonthlyIdr: number;
+}
 
 function formatIDR(v: number): string {
   return new Intl.NumberFormat("id-ID", {
@@ -12,6 +19,10 @@ function formatIDR(v: number): string {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(v);
+}
+
+function formatCoin(v: number): string {
+  return `${new Intl.NumberFormat("id-ID").format(v)} Coin`;
 }
 
 async function postClaim(code?: string): Promise<{ attributed: boolean }> {
@@ -32,14 +43,48 @@ async function postClaim(code?: string): Promise<{ attributed: boolean }> {
   return json.data ?? { attributed: false };
 }
 
-export function ReferralView({ stats }: { stats: ReferralStats }) {
+export function ReferralView({
+  stats,
+  coinBalance,
+  tiers,
+}: {
+  stats: ReferralStats;
+  coinBalance: number;
+  tiers: RedeemTierOption[];
+}) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [claimMsg, setClaimMsg] = useState<string | null>(null);
   const [claimErr, setClaimErr] = useState<string | null>(null);
   const [claiming, setClaiming] = useState(false);
+  const [redeeming, setRedeeming] = useState<string | null>(null);
   const autoClaimedRef = useRef(false);
+
+  async function redeem(tierKode: string) {
+    setRedeeming(tierKode);
+    try {
+      const res = await fetch("/api/referral/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ tierKode, billingCycle: "monthly" }),
+      });
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.ok) {
+        toast.error(json?.error?.message ?? "Gagal menukar Coin.");
+        return;
+      }
+      toast.success(`Langganan ${json.data.tierName} aktif 1 bulan! 🎉`, {
+        description: `Sisa Coin kamu: ${new Intl.NumberFormat("id-ID").format(json.data.remainingCoin)}.`,
+      });
+      router.refresh();
+    } catch {
+      toast.error("Terjadi kesalahan saat menukar Coin.");
+    } finally {
+      setRedeeming(null);
+    }
+  }
 
   // Auto-claim sekali saat mount: kalau ada cookie `nubuat_ref` dari landing,
   // attribute user yang sedang login. No-op kalau tidak ada / sudah pernah.
@@ -98,8 +143,9 @@ export function ReferralView({ stats }: { stats: ReferralStats }) {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Ajak Teman</h1>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          Bagikan link referral kamu. Tiap teman yang qualified, kamu dapat reward
-          kredit {formatIDR(25000)}.
+          Bagikan link referral kamu. Tiap teman yang mulai trial, kamu dapat{" "}
+          <strong>50.000 Coin</strong>. Coin tidak bisa dicairkan jadi uang, tapi
+          bisa ditukar untuk berlangganan Nubuat.
         </p>
       </header>
 
@@ -157,14 +203,62 @@ export function ReferralView({ stats }: { stats: ReferralStats }) {
         </Card>
         <Card>
           <CardContent className="flex items-center gap-3 p-4">
-            <Gift className="h-8 w-8 text-primary" />
+            <Coins className="h-8 w-8 text-amber-500" />
             <div>
-              <div className="text-2xl font-bold">{formatIDR(stats.rewardIdr)}</div>
-              <div className="text-xs text-muted-foreground">Total reward</div>
+              <div className="text-2xl font-bold">{new Intl.NumberFormat("id-ID").format(coinBalance)}</div>
+              <div className="text-xs text-muted-foreground">Coin tersedia</div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Tukar Coin jadi langganan */}
+      <Card className="border-amber-500/30 bg-amber-500/5">
+        <CardHeader className="pb-2">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Coins className="h-4 w-4 text-amber-500" />
+            Tukar Coin jadi langganan
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Saldo kamu: <strong className="text-foreground">{formatCoin(coinBalance)}</strong>.
+            Tukar dengan langganan bulanan di bawah. Coin tidak bisa dicairkan jadi uang tunai.
+          </p>
+          {tiers.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Belum ada paket yang bisa ditukar.</p>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {tiers.map((t) => {
+                const affordable = coinBalance >= t.priceMonthlyIdr;
+                const busy = redeeming === t.kode;
+                return (
+                  <div
+                    key={t.kode}
+                    className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2.5"
+                  >
+                    <div>
+                      <div className="text-sm font-semibold">{t.nama}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {formatCoin(t.priceMonthlyIdr)} / bulan
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => redeem(t.kode)}
+                      disabled={!affordable || busy}
+                      className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                      {affordable ? "Tukar" : "Coin kurang"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Manual claim */}
       <Card>

@@ -261,6 +261,116 @@ export async function startTrialSubscription(opts: {
   return inserted[0]!;
 }
 
+/**
+ * activateSubscriptionFromCredit — aktifkan/perpanjang langganan berbayar TANPA
+ * gateway & TANPA invoice. Dipakai redemption Coin referral (Coin → langganan).
+ * Kalau user sudah punya langganan aktif tier sama, perpanjang dari akhir periode;
+ * selain itu set baru dari sekarang. Periode: monthly = 30 hari, annual = 365 hari.
+ */
+export async function activateSubscriptionFromCredit(opts: {
+  userId: string;
+  tierKode: TierKode;
+  billingCycle: BillingCycle;
+  reason?: string;
+  metadata?: Record<string, unknown>;
+}): Promise<UserSubscription> {
+  const now = new Date();
+  const periodMs = (opts.billingCycle === "annual" ? 365 : 30) * 86400000;
+
+  const existing = await db
+    .select()
+    .from(userSubscriptions)
+    .where(
+      and(
+        eq(userSubscriptions.userId, opts.userId),
+        inArray(userSubscriptions.status, ["active", "trialing"]),
+      ),
+    )
+    .limit(1);
+
+  if (existing.length > 0) {
+    const sub = existing[0]!;
+    const sameActiveTier =
+      sub.status === "active" && sub.tierKode === opts.tierKode && !!sub.currentPeriodEnd && sub.currentPeriodEnd > now;
+    const base = sameActiveTier ? sub.currentPeriodEnd! : now;
+    const newEnd = new Date(base.getTime() + periodMs);
+    const updated = await db
+      .update(userSubscriptions)
+      .set({
+        tierKode: opts.tierKode,
+        status: "active",
+        billingCycle: opts.billingCycle,
+        currentPeriodStart: now,
+        currentPeriodEnd: newEnd,
+        trialEndsAt: null,
+        provider: "manual",
+        metadata: { ...((sub.metadata as Record<string, unknown>) ?? {}), ...(opts.metadata ?? {}) },
+        updatedAt: now,
+      })
+      .where(eq(userSubscriptions.id, sub.id))
+      .returning();
+
+    await db.insert(subscriptionHistory).values({
+      userId: opts.userId,
+      subscriptionId: sub.id,
+      action: sameActiveTier ? "renewed" : "upgraded",
+      fromTierKode: sub.tierKode,
+      toTierKode: opts.tierKode,
+      fromStatus: sub.status,
+      toStatus: "active",
+      actorUserId: null,
+      reason: opts.reason ?? "Aktivasi langganan",
+    });
+
+    invalidateUserCache(opts.userId);
+    await emitSubscriptionChanged({
+      userId: opts.userId,
+      subscriptionId: sub.id,
+      fromTier: sub.tierKode as TierKode,
+      toTier: opts.tierKode,
+      action: "upgraded",
+    });
+    return updated[0]!;
+  }
+
+  const id = ulid();
+  const inserted = await db
+    .insert(userSubscriptions)
+    .values({
+      id,
+      userId: opts.userId,
+      tierKode: opts.tierKode,
+      status: "active",
+      billingCycle: opts.billingCycle,
+      startedAt: now,
+      currentPeriodStart: now,
+      currentPeriodEnd: new Date(now.getTime() + periodMs),
+      provider: "manual",
+      metadata: opts.metadata ?? {},
+    })
+    .returning();
+
+  await db.insert(subscriptionHistory).values({
+    userId: opts.userId,
+    subscriptionId: id,
+    action: "created",
+    toTierKode: opts.tierKode,
+    toStatus: "active",
+    actorUserId: null,
+    reason: opts.reason ?? "Aktivasi langganan",
+  });
+
+  invalidateUserCache(opts.userId);
+  await emitSubscriptionChanged({
+    userId: opts.userId,
+    subscriptionId: id,
+    fromTier: null,
+    toTier: opts.tierKode,
+    action: "created",
+  });
+  return inserted[0]!;
+}
+
 export async function getActiveSubscription(
   userId: string,
 ): Promise<{ subscription: UserSubscription; tier: SubscriptionTier } | null> {

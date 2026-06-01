@@ -1,7 +1,10 @@
 import { headers } from "next/headers";
+import { and, asc, eq, gt } from "drizzle-orm";
 import { ReferralView } from "@/components/referral/referral-view";
 import { requireSession } from "@/lib/auth/server";
-import { getReferralStats } from "@/lib/referral";
+import { getReferralStats, getAvailableCredit } from "@/lib/referral";
+import { db } from "@/lib/db";
+import { subscriptionTiers } from "@/db/schema/billing";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +24,18 @@ async function getBaseUrl(): Promise<string> {
 export default async function ReferralPage() {
   const session = await requireSession();
   const baseUrl = await getBaseUrl();
-  const stats = await getReferralStats(session.user.id, baseUrl);
-  return <ReferralView stats={stats} />;
+  const [stats, coinBalance, tierRows] = await Promise.all([
+    getReferralStats(session.user.id, baseUrl),
+    getAvailableCredit(session.user.id),
+    db
+      .select({
+        kode: subscriptionTiers.kode,
+        nama: subscriptionTiers.nama,
+        priceMonthlyIdr: subscriptionTiers.priceMonthlyIdr,
+      })
+      .from(subscriptionTiers)
+      .where(and(eq(subscriptionTiers.isPublic, true), gt(subscriptionTiers.priceMonthlyIdr, 0)))
+      .orderBy(asc(subscriptionTiers.sortOrder)),
+  ]);
+  return <ReferralView stats={stats} coinBalance={coinBalance} tiers={tierRows} />;
 }

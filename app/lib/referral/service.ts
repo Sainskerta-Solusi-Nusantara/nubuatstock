@@ -12,7 +12,7 @@
  * - Idempotent: satu reward per referral (unique referral_id).
  */
 
-import { and, count, eq, ne } from "drizzle-orm";
+import { and, count, desc, eq, inArray, ne } from "drizzle-orm";
 import { ulid } from "ulid";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
@@ -21,9 +21,14 @@ import {
   referralRewards,
   referrals,
 } from "@/db/schema/referral";
+import { users } from "@/db/schema/auth";
 
-/** Reward credit untuk referrer saat referral qualified. Integer rupiah. */
-export const REWARD_AMOUNT_IDR = 25_000;
+/**
+ * Reward credit ("Coin") untuk referrer saat referral qualified. Integer rupiah,
+ * Coin 1:1 rupiah (1 Coin = Rp 1). Hanya bisa ditukar jadi langganan Nubuat —
+ * TIDAK bisa di-withdraw jadi uang tunai.
+ */
+export const REWARD_AMOUNT_IDR = 50_000;
 
 /** Panjang slug code (Crockford-ish base32, tanpa karakter ambigu). */
 const CODE_LENGTH = 7;
@@ -232,7 +237,10 @@ export async function grantReward(referralId: string): Promise<string | null> {
  */
 export async function getAvailableCredit(userId: string): Promise<number> {
   const rows = await db
-    .select({ amountIdr: referralRewards.amountIdr })
+    .select({
+      amountIdr: referralRewards.amountIdr,
+      redeemedIdr: referralRewards.redeemedIdr,
+    })
     .from(referralRewards)
     .where(
       and(
@@ -240,7 +248,7 @@ export async function getAvailableCredit(userId: string): Promise<number> {
         eq(referralRewards.status, "granted"),
       ),
     );
-  return rows.reduce((sum, r) => sum + (r.amountIdr ?? 0), 0);
+  return rows.reduce((sum, r) => sum + Math.max(0, (r.amountIdr ?? 0) - (r.redeemedIdr ?? 0)), 0);
 }
 
 export interface RedeemCreditResult {
@@ -253,14 +261,14 @@ export interface RedeemCreditResult {
 }
 
 /**
- * redeemCreditForAmount — pakai saldo kredit referral 'granted' milik user untuk
- * menutup sebagian/seluruh `targetAmountIdr`. Strategi greedy: ambil reward dari
- * yang terlama (created_at asc), tandai 'redeemed' selama total redeem masih <=
- * targetAmountIdr. Reward bersifat all-or-nothing per row (tidak ada partial
- * redeem) supaya ledger tetap sederhana & idempotent.
+ * redeemCreditForAmount — pakai saldo Coin 'granted' user untuk menutup
+ * `targetAmountIdr`. Coin bersifat fungible: tiap reward row bisa dipakai
+ * SEBAGIAN (lewat kolom redeemed_idr), jadi harga tier bisa ditutup persis tanpa
+ * masalah kembalian. Ambil dari row terlama dulu (created_at asc). Saat sebuah
+ * row habis (redeemed_idr = amount_idr) statusnya jadi 'redeemed'.
  *
- * Return total yang berhasil di-redeem + id reward yang dipakai. Tidak pernah
- * melebihi targetAmountIdr. Non-throwing untuk input <= 0 (return zero result).
+ * Return total yang berhasil di-redeem + id reward yang tersentuh. Tidak pernah
+ * melebihi targetAmountIdr. Non-throwing untuk input <= 0.
  */
 export async function redeemCreditForAmount(
   userId: string,
@@ -271,7 +279,11 @@ export async function redeemCreditForAmount(
   }
 
   const granted = await db
-    .select({ id: referralRewards.id, amountIdr: referralRewards.amountIdr })
+    .select({
+      id: referralRewards.id,
+      amountIdr: referralRewards.amountIdr,
+      redeemedIdr: referralRewards.redeemedIdr,
+    })
     .from(referralRewards)
     .where(
       and(
@@ -281,29 +293,38 @@ export async function redeemCreditForAmount(
     )
     .orderBy(referralRewards.createdAt);
 
-  let redeemedIdr = 0;
+  let redeemed = 0;
   const rewardIds: string[] = [];
   for (const r of granted) {
-    const amt = r.amountIdr ?? 0;
-    if (amt <= 0) continue;
-    if (redeemedIdr + amt > targetAmountIdr) continue; // jangan over-redeem
-    // Tandai redeemed secara atomik (guard status supaya idempotent vs race).
+    if (redeemed >= targetAmountIdr) break;
+    const remainingInRow = (r.amountIdr ?? 0) - (r.redeemedIdr ?? 0);
+    if (remainingInRow <= 0) continue;
+    const need = targetAmountIdr - redeemed;
+    const take = Math.min(remainingInRow, need);
+    const newRedeemed = (r.redeemedIdr ?? 0) + take;
+    const fullyUsed = newRedeemed >= (r.amountIdr ?? 0);
+    // Atomik: guard status & redeemed_idr lama supaya idempotent vs race.
     const updated = await db
       .update(referralRewards)
-      .set({ status: "redeemed" })
-      .where(and(eq(referralRewards.id, r.id), eq(referralRewards.status, "granted")))
+      .set({ redeemedIdr: newRedeemed, status: fullyUsed ? "redeemed" : "granted" })
+      .where(
+        and(
+          eq(referralRewards.id, r.id),
+          eq(referralRewards.status, "granted"),
+          eq(referralRewards.redeemedIdr, r.redeemedIdr ?? 0),
+        ),
+      )
       .returning({ id: referralRewards.id });
     if (updated[0]) {
-      redeemedIdr += amt;
+      redeemed += take;
       rewardIds.push(updated[0].id);
     }
-    if (redeemedIdr >= targetAmountIdr) break;
   }
 
-  if (redeemedIdr > 0) {
-    logger.info({ userId, redeemedIdr, rewardsRedeemed: rewardIds.length }, "Referral credit redeemed");
+  if (redeemed > 0) {
+    logger.info({ userId, redeemedIdr: redeemed, rewardsRedeemed: rewardIds.length }, "Referral Coin redeemed");
   }
-  return { redeemedIdr, rewardsRedeemed: rewardIds.length, rewardIds };
+  return { redeemedIdr: redeemed, rewardsRedeemed: rewardIds.length, rewardIds };
 }
 
 /**
@@ -345,4 +366,123 @@ export async function getReferralStats(
     qualified: qualifiedRows[0]?.n ?? 0,
     rewardIdr,
   };
+}
+
+// =================== Superadmin monitoring ===================
+
+export interface ReferralAdminOverview {
+  totalCodes: number;
+  totalReferred: number;
+  qualified: number; // status != pending
+  rewarded: number; // status rewarded
+  coinGranted: number; // total Coin pernah diberikan
+  coinRedeemed: number; // total Coin terpakai (ditukar langganan)
+  coinOutstanding: number; // sisa Coin beredar
+}
+
+/** Ringkasan agregat seluruh program referral (untuk dashboard superadmin). */
+export async function getReferralAdminOverview(): Promise<ReferralAdminOverview> {
+  const [codes, refs, rewards] = await Promise.all([
+    db.select({ id: referralCodes.id }).from(referralCodes),
+    db.select({ status: referrals.status }).from(referrals),
+    db
+      .select({ amountIdr: referralRewards.amountIdr, redeemedIdr: referralRewards.redeemedIdr })
+      .from(referralRewards),
+  ]);
+  const coinGranted = rewards.reduce((s, r) => s + (r.amountIdr ?? 0), 0);
+  const coinRedeemed = rewards.reduce((s, r) => s + (r.redeemedIdr ?? 0), 0);
+  return {
+    totalCodes: codes.length,
+    totalReferred: refs.length,
+    qualified: refs.filter((r) => r.status !== "pending").length,
+    rewarded: refs.filter((r) => r.status === "rewarded").length,
+    coinGranted,
+    coinRedeemed,
+    coinOutstanding: coinGranted - coinRedeemed,
+  };
+}
+
+export interface ReferrerRow {
+  userId: string;
+  email: string;
+  name: string | null;
+  code: string | null;
+  totalReferred: number;
+  qualified: number;
+  coinEarned: number;
+  coinAvailable: number;
+}
+
+/** Leaderboard pengajak: berapa orang diajak tiap user + Coin yang didapat. */
+export async function listTopReferrers(limit = 100): Promise<ReferrerRow[]> {
+  const refs = await db
+    .select({ referrerUserId: referrals.referrerUserId, status: referrals.status })
+    .from(referrals);
+  if (refs.length === 0) return [];
+
+  const agg = new Map<string, { total: number; qualified: number }>();
+  for (const r of refs) {
+    const m = agg.get(r.referrerUserId) ?? { total: 0, qualified: 0 };
+    m.total += 1;
+    if (r.status !== "pending") m.qualified += 1;
+    agg.set(r.referrerUserId, m);
+  }
+  const ids = [...agg.keys()];
+
+  const [userRows, codeRows, rewardRows] = await Promise.all([
+    db.select({ id: users.id, email: users.email, name: users.name }).from(users).where(inArray(users.id, ids)),
+    db.select({ userId: referralCodes.userId, code: referralCodes.code }).from(referralCodes).where(inArray(referralCodes.userId, ids)),
+    db.select({ userId: referralRewards.userId, amountIdr: referralRewards.amountIdr, redeemedIdr: referralRewards.redeemedIdr }).from(referralRewards).where(inArray(referralRewards.userId, ids)),
+  ]);
+  const uMap = new Map(userRows.map((u) => [u.id, u]));
+  const cMap = new Map(codeRows.map((c) => [c.userId, c.code]));
+  const rMap = new Map<string, { earned: number; available: number }>();
+  for (const rw of rewardRows) {
+    const m = rMap.get(rw.userId) ?? { earned: 0, available: 0 };
+    m.earned += rw.amountIdr ?? 0;
+    m.available += Math.max(0, (rw.amountIdr ?? 0) - (rw.redeemedIdr ?? 0));
+    rMap.set(rw.userId, m);
+  }
+
+  return ids
+    .map((id) => ({
+      userId: id,
+      email: uMap.get(id)?.email ?? "—",
+      name: (uMap.get(id)?.name as string | null) ?? null,
+      code: cMap.get(id) ?? null,
+      totalReferred: agg.get(id)!.total,
+      qualified: agg.get(id)!.qualified,
+      coinEarned: rMap.get(id)?.earned ?? 0,
+      coinAvailable: rMap.get(id)?.available ?? 0,
+    }))
+    .sort((a, b) => b.totalReferred - a.totalReferred || b.coinEarned - a.coinEarned)
+    .slice(0, limit);
+}
+
+export interface ReferralActivityRow {
+  id: string;
+  referrerEmail: string;
+  referredEmail: string;
+  code: string;
+  status: string;
+  createdAt: Date;
+  qualifiedAt: Date | null;
+}
+
+/** Aktivitas terbaru: siapa aktivasi dari kode siapa. */
+export async function listRecentReferralActivity(limit = 100): Promise<ReferralActivityRow[]> {
+  const rows = await db.select().from(referrals).orderBy(desc(referrals.createdAt)).limit(limit);
+  if (rows.length === 0) return [];
+  const ids = [...new Set(rows.flatMap((r) => [r.referrerUserId, r.referredUserId]))];
+  const userRows = await db.select({ id: users.id, email: users.email }).from(users).where(inArray(users.id, ids));
+  const uMap = new Map(userRows.map((u) => [u.id, u.email]));
+  return rows.map((r) => ({
+    id: r.id,
+    referrerEmail: uMap.get(r.referrerUserId) ?? "—",
+    referredEmail: uMap.get(r.referredUserId) ?? "—",
+    code: r.code,
+    status: r.status,
+    createdAt: r.createdAt,
+    qualifiedAt: r.qualifiedAt ?? null,
+  }));
 }

@@ -3,3 +3,4 @@
  * Import dari sini, JANGAN langsung dari sub-file.
  */
 export * from "./service";
+export * from "./redeem";
