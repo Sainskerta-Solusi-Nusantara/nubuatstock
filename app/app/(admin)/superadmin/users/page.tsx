@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { sql } from "drizzle-orm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,16 +23,30 @@ interface UserRow {
   lastLoginAt: Date | null;
 }
 
-export default async function UsersPage({ searchParams }: { searchParams: Promise<{ q?: string; role?: string }> }) {
+const PAGE_SIZE = 25;
+
+export default async function UsersPage({ searchParams }: { searchParams: Promise<{ q?: string; role?: string; page?: string }> }) {
   const sp = await searchParams;
   const q = sp.q?.trim() ?? "";
   const roleFilter = sp.role?.trim() ?? "";
+  const page = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
+  const offset = (page - 1) * PAGE_SIZE;
   const session = await getSession();
   const selfId = (session as { user?: { id?: string } } | null)?.user?.id ?? null;
 
   // Best-effort query — kalau tabel users belum ada (DB kosong), tampilkan empty state
   let users: UserRow[] = [];
+  let total = 0;
   try {
+    const countRows = await db.execute(sql`
+      SELECT count(*)::int AS n
+      FROM users u
+      WHERE (${q} = '' OR u.email ILIKE '%' || ${q} || '%' OR u.name ILIKE '%' || ${q} || '%')
+        AND (${roleFilter} = '' OR u.role = ${roleFilter})
+        AND u.deleted_at IS NULL
+    `);
+    total = Number((countRows as unknown as Array<Record<string, unknown>>)[0]?.n ?? 0);
+
     const rows = await db.execute(sql`
       SELECT u.id, u.email, u.name, u.role, u.phone, u.telegram, u.created_at, u.last_login_at,
              us.tier_kode AS tier, us.status AS status
@@ -41,7 +56,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
         AND (${roleFilter} = '' OR u.role = ${roleFilter})
         AND u.deleted_at IS NULL
       ORDER BY u.created_at DESC
-      LIMIT 100
+      LIMIT ${PAGE_SIZE} OFFSET ${offset}
     `);
     users = (rows as unknown as Array<Record<string, unknown>>).map((r) => ({
       id: String(r.id),
@@ -57,7 +72,18 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
     }));
   } catch {
     users = [];
+    total = 0;
   }
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const buildHref = (p: number) => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (roleFilter) params.set("role", roleFilter);
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return qs ? `/superadmin/users?${qs}` : "/superadmin/users";
+  };
 
   return (
     <div className="space-y-6">
@@ -92,7 +118,9 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
 
       <Card>
         <CardHeader>
-          <CardTitle>{users.length} user (max 100 ditampilkan)</CardTitle>
+          <CardTitle className="text-base">
+            {total.toLocaleString("id-ID")} user{q || roleFilter ? " (terfilter)" : ""} — halaman {page} dari {totalPages}
+          </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {users.length === 0 ? (
@@ -158,6 +186,43 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
           )}
         </CardContent>
       </Card>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-xs text-muted-foreground">
+            Menampilkan {users.length} dari {total.toLocaleString("id-ID")} user
+          </span>
+          <div className="flex items-center gap-2">
+            {page > 1 ? (
+              <Link
+                href={buildHref(page - 1)}
+                className="inline-flex h-9 items-center rounded-md border border-input bg-background px-3 text-sm font-medium hover:bg-accent"
+              >
+                ← Sebelumnya
+              </Link>
+            ) : (
+              <span className="inline-flex h-9 cursor-not-allowed items-center rounded-md border border-input px-3 text-sm font-medium opacity-40">
+                ← Sebelumnya
+              </span>
+            )}
+            <span className="text-xs text-muted-foreground">
+              {page} / {totalPages}
+            </span>
+            {page < totalPages ? (
+              <Link
+                href={buildHref(page + 1)}
+                className="inline-flex h-9 items-center rounded-md border border-input bg-background px-3 text-sm font-medium hover:bg-accent"
+              >
+                Berikutnya →
+              </Link>
+            ) : (
+              <span className="inline-flex h-9 cursor-not-allowed items-center rounded-md border border-input px-3 text-sm font-medium opacity-40">
+                Berikutnya →
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
