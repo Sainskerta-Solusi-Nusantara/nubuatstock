@@ -32,16 +32,35 @@ export interface RotationPoint {
 /** Default parameter perhitungan trail. */
 export const RRG_DEFAULTS = {
   /** Lookback (bars) untuk RS-Ratio. */
-  rsLookback: 14,
+  rsLookback: 21,
   /** Lookback (bars) untuk membandingkan RS sekarang vs RS lampau (momentum). */
-  momLookback: 5,
-  /** Jumlah titik trail (selain titik terakhir) yang akan digambar. */
-  pointsBack: 5,
-  /** Jarak (bars) antar titik trail — 5 ≈ 1 minggu trading. */
-  stepBars: 5,
+  momLookback: 10,
+  /**
+   * Jumlah titik trail (selain titik terakhir). Lebih banyak titik + step harian
+   * → ekor mulus melengkung (seperti RRG profesional), bukan zig-zag mingguan.
+   */
+  pointsBack: 10,
+  /** Jarak (bars) antar titik trail — 1 = harian (ekor rapat & halus). */
+  stepBars: 1,
+  /** Span EMA untuk menghaluskan RS-Ratio sebelum di-plot (redam noise/outlier). */
+  smoothSpan: 5,
   /** Minimum bars yang dibutuhkan agar trail valid. */
-  minBars: 30,
+  minBars: 40,
 } as const;
+
+/**
+ * Exponential moving average sederhana atas deret angka.
+ * Dipakai menghaluskan RS-Ratio supaya ekor RRG tidak patah-patah / outlier.
+ */
+function ema(values: number[], span: number): number[] {
+  if (span <= 1 || values.length === 0) return values.slice();
+  const k = 2 / (span + 1);
+  const out: number[] = [values[0]!];
+  for (let i = 1; i < values.length; i += 1) {
+    out.push(values[i]! * k + out[i - 1]! * (1 - k));
+  }
+  return out;
+}
 
 /**
  * Klasifikasikan satu titik ke kuadran berdasar RS-Ratio & RS-Momentum.
@@ -92,7 +111,7 @@ export function computeTrail(
   opts: Partial<typeof RRG_DEFAULTS> = {},
   dates?: string[],
 ): RotationPoint[] {
-  const { rsLookback, momLookback, pointsBack, stepBars, minBars } = {
+  const { rsLookback, momLookback, pointsBack, stepBars, minBars, smoothSpan } = {
     ...RRG_DEFAULTS,
     ...opts,
   };
@@ -103,24 +122,36 @@ export function computeTrail(
 
   const end = entityCloses.length - 1;
 
-  // Daftar index titik (lama → baru): end - pointsBack*step ... end
+  // 1. Hitung RS-Ratio mentah untuk SEMUA bar yang punya cukup history, lalu
+  //    haluskan dengan EMA. Smoothing meredam noise/outlier → ekor melengkung
+  //    mulus seperti RRG profesional, bukan zig-zag patah-patah.
+  const rawRs: number[] = [];
+  const rsIndex: number[] = []; // bar index untuk tiap entri rawRs
+  for (let idx = rsLookback; idx <= end; idx += 1) {
+    rawRs.push(rsRatioAt(entityCloses, benchmarkCloses, idx, rsLookback));
+    rsIndex.push(idx);
+  }
+  if (rawRs.length < momLookback + 2) return trail;
+  const smoothRs = ema(rawRs, smoothSpan);
+
+  // Map bar index → posisi di array smoothRs (untuk ambil nilai & momentum).
+  const posOfIdx = new Map<number, number>();
+  rsIndex.forEach((bi, pos) => posOfIdx.set(bi, pos));
+
+  // 2. Daftar index titik trail (lama → baru): end - pointsBack*step ... end
   const indices: number[] = [];
   for (let i = pointsBack; i >= 0; i -= 1) {
     indices.push(end - i * stepBars);
   }
 
-  // Titik paling lama harus punya cukup history untuk RS-Ratio + momentum.
-  const oldestIdx = indices[0]!;
-  if (oldestIdx < rsLookback + momLookback) return trail;
-
   for (const idx of indices) {
-    if (idx < rsLookback + momLookback) continue;
+    const pos = posOfIdx.get(idx);
+    const prevPos = posOfIdx.get(idx - momLookback);
+    if (pos === undefined || prevPos === undefined) continue;
 
-    const rsRatio = rsRatioAt(entityCloses, benchmarkCloses, idx, rsLookback);
-
-    // RS-Momentum: perbandingan RS-Ratio sekarang vs `momLookback` bars lalu.
-    const rsPrev = rsRatioAt(entityCloses, benchmarkCloses, idx - momLookback, rsLookback);
-    const rsMomentum = 100 * (1 + (rsRatio - rsPrev) / 100);
+    const rsRatio = smoothRs[pos]!;
+    // RS-Momentum: perubahan RS-Ratio (sudah dihaluskan) vs `momLookback` bar lalu.
+    const rsMomentum = 100 * (1 + (rsRatio - smoothRs[prevPos]!) / 100);
 
     trail.push({
       date: dates?.[idx] ?? `bar-${idx}`,

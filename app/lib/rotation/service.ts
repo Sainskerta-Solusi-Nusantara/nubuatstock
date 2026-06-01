@@ -41,7 +41,7 @@ interface Bar {
   close: number;
 }
 
-async function getEntityCloses(kode: string, days = 60): Promise<Bar[]> {
+async function getEntityCloses(kode: string, days = 90): Promise<Bar[]> {
   const rows = await db
     .select({ date: quotesEod.tradeDate, close: quotesEod.close })
     .from(quotesEod)
@@ -55,7 +55,7 @@ async function getEntityCloses(kode: string, days = 60): Promise<Bar[]> {
  * Bulk fetch close prices untuk multiple emiten in single SQL query (eliminate N+1).
  * Returns Map kode → Bar[] chronological.
  */
-async function getBulkEntityCloses(kodes: string[], days = 60): Promise<Map<string, Bar[]>> {
+async function getBulkEntityCloses(kodes: string[], days = 90): Promise<Map<string, Bar[]>> {
   if (kodes.length === 0) return new Map();
 
   // Fetch all records, kemudian filter "latest N per kode" di JS (Postgres ROW_NUMBER bisa tapi pricier).
@@ -94,7 +94,7 @@ async function getBulkEntityCloses(kodes: string[], days = 60): Promise<Map<stri
  * Compute synthetic IHSG benchmark dari weighted average of top market cap emiten.
  * In production, use actual IHSG index data; for MVP this proxy works.
  */
-async function getBenchmarkCloses(days = 60): Promise<Bar[]> {
+async function getBenchmarkCloses(days = 90): Promise<Bar[]> {
   // Get top 30 emiten by market cap
   const topCompanies = await db
     .select({ kode: companies.kode, marketCap: companyFundamentals.marketCapIdr })
