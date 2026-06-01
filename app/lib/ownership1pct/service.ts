@@ -154,6 +154,94 @@ export async function searchInvestor(name: string, limit = 200): Promise<Ownersh
     .limit(limit);
 }
 
+// ---- Dashboard ala klinikpenyesalan (semua data ke client) ----
+
+export interface DashHolder {
+  name: string;
+  type: string;
+  lf: string; // D / F
+  domicile: string;
+  shares: number;
+  scrip: number;
+  pct: number;
+  value: number; // shares * price KSEI
+}
+export interface DashEmiten {
+  kode: string;
+  name: string;
+  sector: string;
+  holderCount: number;
+  freeFloat: number;
+  ccs: number;
+  ownershipType: string;
+  price: number;
+  marketCap: number;
+  holders: DashHolder[];
+}
+export interface DashData {
+  emiten: DashEmiten[];
+  sectors: string[];
+  snapshotDate: string | null;
+  fetchedAt: string | null;
+}
+
+/** Rakit seluruh data untuk dashboard review (digabung harga dari KSEI). */
+export async function getKlinikDashboardData(): Promise<DashData> {
+  const { kseiOwnership } = await import("@/db/schema/ksei");
+  const { getLatestPosDate } = await import("@/lib/ksei/service");
+  const latestKsei = await getLatestPosDate();
+
+  const [emitenRows, holderRows, priceRows] = await Promise.all([
+    db.select().from(ownership1pctEmiten),
+    db.select().from(ownership1pctHolder).orderBy(asc(ownership1pctHolder.rank)),
+    latestKsei
+      ? db.select({ kode: kseiOwnership.kode, price: kseiOwnership.priceIdr, secNum: kseiOwnership.secNum }).from(kseiOwnership).where(eq(kseiOwnership.posDate, latestKsei))
+      : Promise.resolve([] as { kode: string; price: number; secNum: number }[]),
+  ]);
+
+  const priceMap = new Map(priceRows.map((p) => [p.kode, p]));
+  const holdersByKode = new Map<string, DashHolder[]>();
+  for (const h of holderRows) {
+    const price = priceMap.get(h.kode)?.price ?? 0;
+    const arr = holdersByKode.get(h.kode) ?? [];
+    arr.push({
+      name: h.investorName,
+      type: h.investorType || "",
+      lf: h.localForeign || "D",
+      domicile: h.domicile || "",
+      shares: h.totalShares,
+      scrip: h.holdingsScrip,
+      pct: h.percentage,
+      value: h.totalShares * price,
+    });
+    holdersByKode.set(h.kode, arr);
+  }
+
+  const emiten: DashEmiten[] = emitenRows.map((e) => {
+    const p = priceMap.get(e.kode);
+    const price = p?.price ?? 0;
+    const secNum = p?.secNum ?? 0;
+    return {
+      kode: e.kode,
+      name: e.issuerName,
+      sector: e.sector ?? "",
+      holderCount: e.holderCount,
+      freeFloat: e.freeFloat,
+      ccs: Math.round(e.ccs),
+      ownershipType: e.ownershipType ?? "",
+      price,
+      marketCap: price * secNum,
+      holders: holdersByKode.get(e.kode) ?? [],
+    };
+  }).sort((a, b) => a.kode.localeCompare(b.kode));
+
+  const sectors = [...new Set(emiten.map((e) => e.sector).filter(Boolean))].sort();
+  const fetchedAt = emitenRows[0]?.fetchedAt ? new Date(emitenRows[0].fetchedAt).toISOString() : null;
+  const snapshotDate = emitenRows[0]?.snapshotDate ?? null;
+
+  return { emiten, sectors, snapshotDate, fetchedAt };
+}
+
 export async function getSectors(): Promise<string[]> {
   const rows = await db
     .selectDistinct({ s: ownership1pctEmiten.sector })

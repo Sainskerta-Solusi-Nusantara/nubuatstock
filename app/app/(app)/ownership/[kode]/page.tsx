@@ -4,6 +4,7 @@ import { ArrowLeft, Globe2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getOwnershipByKode } from "@/lib/ksei/service";
 import { KSEI_TYPE_LABELS } from "@/lib/ksei/parse";
+import { fmtDateId } from "@/lib/utils/date-id";
 import type { KseiBreakdown } from "@/db/schema/ksei";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +34,7 @@ export default async function OwnershipDetailPage({ params }: { params: Promise<
           {row.kode}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Komposisi kepemilikan KSEI · posisi <strong>{row.posDate}</strong> · harga Rp{" "}
+          Komposisi kepemilikan KSEI · posisi <strong>{fmtDateId(row.posDate)}</strong> · harga Rp{" "}
           {row.priceIdr.toLocaleString("id-ID")}
         </p>
       </header>

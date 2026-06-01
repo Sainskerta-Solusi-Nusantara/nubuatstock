@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Search, ArrowRight, Building2, Globe2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { listOwnership } from "@/lib/ksei/service";
+import { fmtDateId } from "@/lib/utils/date-id";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +80,7 @@ export default async function OwnershipPage({
         <p className="mt-1 text-sm text-muted-foreground">
           Komposisi kepemilikan tiap emiten dari data resmi KSEI — porsi <strong>Lokal vs Asing</strong>{" "}
           dan rincian per tipe investor.{" "}
-          {posDate ? <>Posisi per <strong>{posDate}</strong>.</> : null}
+          {posDate ? <>Posisi per <strong>{fmtDateId(posDate)}</strong>.</> : null}
         </p>
       </header>
 
