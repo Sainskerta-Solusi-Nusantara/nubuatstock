@@ -637,6 +637,20 @@ const KSEI_COLOR: Record<string, string> = {
 };
 const kColor = (k: string) => KSEI_COLOR[k] ?? "#94a3b8";
 
+/** Petakan tipe investor detail (≥1%) → ember 9-tipe KSEI. */
+function kseiBucket(type: string): string {
+  const t = (type || "").toUpperCase();
+  if (/INDIVID/.test(t)) return "ID";
+  if (/PENSION|DANA PENSIUN/.test(t)) return "PF";
+  if (/INSURAN|ASURANSI/.test(t)) return "IS";
+  if (/SECURIT|BROKER|SEKURITAS/.test(t)) return "SC";
+  if (/MUTUAL|HEDGE|ASSET MANAG|INVESTMENT MANAG|FUND MANAG|ADVISOR|REKSA/.test(t)) return "MF";
+  if (/BANK|FINANCIAL INST/.test(t)) return "IB";
+  if (/FOUNDATION|YAYASAN|ENDOWMENT/.test(t)) return "FD";
+  if (/CORPORAT|STATE OWNED|BUMN|PRIVATE EQUITY|VENTURE|FIRM|HOLDING|PERSEROAN|LIMITED/.test(t)) return "CP";
+  return "OT";
+}
+
 function StackedBar({ types }: { types: { key: string; pct: number; label: string }[] }) {
   return (
     <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-secondary">
@@ -721,21 +735,47 @@ function KlasifikasiTab({ data }: { data: DashData }) {
                 <div className="text-muted-foreground">Lokal {k.localPct.toFixed(1)}% · Asing {k.foreignPct.toFixed(1)}%</div>
               </div>
             </button>
-            {open.has(e.kode) && (
-              <div className="space-y-2 border-t border-border p-3">
-                {k.types.map((t) => (
-                  <div key={t.key} className="text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm" style={{ background: kColor(t.key) }} />{t.label}</span>
-                      <span className="font-mono">{t.pct.toFixed(2)}% <span className="text-muted-foreground">({fmtShares(t.shares)})</span></span>
-                    </div>
-                    {(t.localShares > 0 || t.foreignShares > 0) && (
-                      <div className="pl-4 text-[10px] text-muted-foreground">Lokal {fmtShares(t.localShares)} · Asing {fmtShares(t.foreignShares)}</div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            {open.has(e.kode) && (() => {
+              const byBucket = new Map<string, DashHolder[]>();
+              for (const h of e.holders) {
+                const b = kseiBucket(h.type);
+                const arr = byBucket.get(b) ?? []; arr.push(h); byBucket.set(b, arr);
+              }
+              return (
+                <div className="space-y-2.5 border-t border-border p-3">
+                  <p className="text-[10px] text-muted-foreground">Porsi resmi KSEI per tipe (100% saham) + nama pemegang ≥1% yang teridentifikasi di tiap tipe.</p>
+                  {k.types.map((t) => {
+                    const named = (byBucket.get(t.key) ?? []).slice().sort((a, b) => b.pct - a.pct);
+                    const namedSum = named.reduce((s, h) => s + h.pct, 0);
+                    const rest = t.pct - namedSum;
+                    return (
+                      <div key={t.key} className="text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm" style={{ background: kColor(t.key) }} />{t.label}</span>
+                          <span className="font-mono">{t.pct.toFixed(2)}% <span className="text-muted-foreground">({fmtShares(t.shares)})</span></span>
+                        </div>
+                        {named.length > 0 ? (
+                          <div className="mt-1 space-y-0.5 border-l-2 pl-2.5" style={{ borderColor: kColor(t.key) }}>
+                            {named.map((h, i) => (
+                              <div key={i} className="flex items-center justify-between gap-2 text-[11px]">
+                                <span className="flex min-w-0 items-center gap-1.5">
+                                  <span className="truncate">{h.name}</span>
+                                  <StatusBadge lf={h.lf} type={h.type} domicile={h.domicile} />
+                                </span>
+                                <span className="whitespace-nowrap font-mono text-muted-foreground">{h.pct.toFixed(2)}%</span>
+                              </div>
+                            ))}
+                            {rest > 0.3 && <div className="text-[10px] text-muted-foreground italic">+ pemegang &lt;1% (ritel/lainnya): ~{rest.toFixed(2)}%</div>}
+                          </div>
+                        ) : (
+                          <div className="pl-4 text-[10px] text-muted-foreground italic">semua pemegang &lt;1% · Lokal {fmtShares(t.localShares)} · Asing {fmtShares(t.foreignShares)}</div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         );
       })}
