@@ -144,7 +144,7 @@ export const DEMO_SCENES: DemoScene[] = [
     index: 6,
     title: "AI Buddy dengan 10 Tools",
     narration:
-      "Tanyakan apa saja: kenapa BBRI turun hari ini, bandingkan BMRI dengan BBCA, atau backtest strategi RSI 30 70 untuk GOTO. AI Buddy pakai DeepSeek dengan 10 tools yang akses live data — bukan jawaban generic. Setiap output cite sumber data.",
+      "Tanyakan apa saja: kenapa BBRI turun hari ini, bandingkan BMRI dengan BBCA, atau backtest strategi RSI 30 70 untuk GOTO. AI Buddy memakai 10 tools yang akses live data — bukan jawaban generic. Setiap output cite sumber data.",
     durationMs: 17000,
     visual: "ai_copilot",
     keyActions: [

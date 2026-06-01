@@ -121,7 +121,7 @@ const FEATURES: FeatureCard[] = [
     title: "AI Buddy",
     description: "LLM-powered chatbot dengan 10 tools: harga, fundamental, news, backtest, screener, dan lainnya.",
     category: "AI",
-    highlights: ["DeepSeek + tool use", "Conversational backtest", "Vector RAG research search", "Multi-step queries"],
+    highlights: ["AI + tool use", "Conversational backtest", "Vector RAG research search", "Multi-step queries"],
   },
   {
     icon: Wallet,

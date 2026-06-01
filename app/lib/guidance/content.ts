@@ -313,7 +313,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
     icon: "Newspaper",
     summary: "Berita keuangan dari 4 sumber publik (CNBC ID, Detik, Antara, Investing.com) dengan sentiment scoring AI per artikel.",
     contents: [
-      { type: "paragraph", text: "RSS feed di-ingest tiap 15 menit. Setiap artikel di-score sentimen (bullish / neutral / bearish) oleh DeepSeek." },
+      { type: "paragraph", text: "RSS feed di-ingest tiap 15 menit. Setiap artikel di-score sentimen (bullish / neutral / bearish) oleh model AI." },
       { type: "heading", level: 3, text: "Cara baca card berita" },
       {
         type: "list",
@@ -524,7 +524,7 @@ export const GUIDANCE_SECTIONS: GuidanceSection[] = [
     icon: "Bot",
     summary: "LLM-powered chatbot dengan tool access ke data Nubuat. Bisa jawab kompleks, multi-step, dengan kutipan sumber.",
     contents: [
-      { type: "paragraph", text: "AI Buddy pakai DeepSeek dengan 9 tools yang akses live data: harga, fundamentals, watchlist, picks, news, screener, dll." },
+      { type: "paragraph", text: "AI Buddy memakai 9 tools yang akses live data: harga, fundamentals, watchlist, picks, news, screener, dll." },
       { type: "heading", level: 3, text: "Contoh prompt yang bekerja baik" },
       {
         type: "list",
