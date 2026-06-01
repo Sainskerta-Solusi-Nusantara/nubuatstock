@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import {
   Card,
   CardContent,
@@ -7,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { requireSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { DELETION_GRACE_DAYS } from "@/lib/account/delete";
 import {
   DeleteAccountButton,
@@ -26,9 +24,26 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function AccountSettingsPage() {
-  const session = await requireSession().catch(() => null);
+  // Halaman ini di bawah (app) layout yang SUDAH menjamin sesi. JANGAN redirect
+  // ke /login dari sini — getSession di RSC sesekali bisa null (race cookie-cache)
+  // sehingga user yang sebenarnya login malah "terlempar" ke halaman login.
+  // Kalau null, tampilkan prompt muat ulang yang aman.
+  const session = await getSession();
   if (!session) {
-    redirect("/login?next=/settings/account");
+    return (
+      <div className="container mx-auto max-w-3xl px-4 py-16 text-center">
+        <h1 className="text-xl font-bold">Sesi belum termuat</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Coba muat ulang halaman ini. Kamu tidak perlu login lagi.
+        </p>
+        <a
+          href="/settings/account"
+          className="mt-4 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
+        >
+          Muat ulang
+        </a>
+      </div>
+    );
   }
   const u = session.user as { name?: string; email?: string };
 
