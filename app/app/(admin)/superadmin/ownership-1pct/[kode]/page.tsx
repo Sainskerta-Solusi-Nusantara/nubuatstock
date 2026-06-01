@@ -102,7 +102,7 @@ export default async function Pct1DetailPage({ params }: { params: Promise<{ kod
       </CardContent></Card>
 
       <p className="text-[11px] text-muted-foreground">
-        Sumber: 1pct.klinikpenyesalan.com (olahan KSEI). Nilai (Rp) memakai harga dari KSEI BalancePos bila tersedia. Review internal.
+        Sumber: KSEI. Nilai (Rp) memakai harga dari KSEI BalancePos bila tersedia. Review internal.
       </p>
     </div>
   );

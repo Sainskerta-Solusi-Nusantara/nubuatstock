@@ -1,4 +1,5 @@
-import { getKlinikDashboardData, PCT1_SOURCE_URL } from "@/lib/ownership1pct/service";
+import { getKlinikDashboardData } from "@/lib/ownership1pct/service";
+import { getFreeFloatDashboard } from "@/lib/freefloat/service";
 import { fmtDateId } from "@/lib/utils/date-id";
 import { RefreshButton } from "./refresh-button";
 import { KlinikDashboard } from "./klinik-dashboard";
@@ -6,7 +7,7 @@ import { KlinikDashboard } from "./klinik-dashboard";
 export const dynamic = "force-dynamic";
 
 export default async function Pct1Page() {
-  const data = await getKlinikDashboardData();
+  const [data, ff] = await Promise.all([getKlinikDashboardData(), getFreeFloatDashboard()]);
 
   return (
     <div className="space-y-4">
@@ -17,8 +18,7 @@ export default async function Pct1Page() {
             Kepemilikan ≥1% <span className="text-sm font-normal text-muted-foreground">(review)</span>
           </h1>
           <p className="mt-1 text-xs text-muted-foreground">
-            Per {fmtDateId(data.snapshotDate) || "—"} · Sumber: KSEI (via{" "}
-            <a href={PCT1_SOURCE_URL} target="_blank" rel="noopener noreferrer" className="text-primary underline">klinikpenyesalan</a>)
+            Per {fmtDateId(data.snapshotDate) || "—"} · Sumber: KSEI &amp; BEI
             {data.fetchedAt ? ` · diambil ${new Date(data.fetchedAt).toLocaleString("id-ID")}` : ""}
           </p>
         </div>
@@ -30,7 +30,7 @@ export default async function Pct1Page() {
           Belum ada data. Klik &ldquo;Refresh dari sumber&rdquo;.
         </div>
       ) : (
-        <KlinikDashboard data={data} />
+        <KlinikDashboard data={data} ff={ff} />
       )}
     </div>
   );
