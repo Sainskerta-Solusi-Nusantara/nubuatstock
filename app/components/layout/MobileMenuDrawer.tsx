@@ -77,7 +77,7 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    label: "AI & Belajar",
+    label: "Ruang Belajar",
     items: [
       { href: "/academy", label: "Academy", icon: GraduationCap },
       { href: "/guidance", label: "Guidance", icon: BookOpen },

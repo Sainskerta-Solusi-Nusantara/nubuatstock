@@ -89,6 +89,8 @@ export async function listOwnership(opts: {
   sort?: "kode" | "foreign" | "local" | "price";
   page?: number;
   pageSize?: number;
+  /** Hanya emiten saham (kode 4 huruf) — kecualikan obligasi/sukuk/ETF/struktur. Default true. */
+  stocksOnly?: boolean;
 }): Promise<OwnershipListResult> {
   const posDate = await getLatestPosDate();
   if (!posDate) return { posDate: null, total: 0, rows: [] };
@@ -98,9 +100,10 @@ export async function listOwnership(opts: {
   const page = Math.max(1, opts.page ?? 1);
   const offset = (page - 1) * pageSize;
 
-  const where = q
-    ? and(eq(kseiOwnership.posDate, posDate), ilike(kseiOwnership.kode, `${q}%`))
-    : eq(kseiOwnership.posDate, posDate);
+  const conds = [eq(kseiOwnership.posDate, posDate)];
+  if (q) conds.push(ilike(kseiOwnership.kode, `${q}%`));
+  if (opts.stocksOnly !== false) conds.push(sql`${kseiOwnership.kode} ~ '^[A-Z]{4}$'`);
+  const where = and(...conds);
 
   const orderBy =
     opts.sort === "foreign"

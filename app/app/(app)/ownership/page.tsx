@@ -40,20 +40,22 @@ const fmtShares = (n: number) => new Intl.NumberFormat("id-ID", { notation: "com
 export default async function OwnershipPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; sort?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string; page?: string; all?: string }>;
 }) {
   const sp = await searchParams;
   const q = (sp.q ?? "").trim();
   const sort = (sp.sort as "kode" | "foreign" | "local" | "price" | undefined) ?? "kode";
   const page = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
+  const showAll = sp.all === "1";
 
-  const { posDate, total, rows } = await listOwnership({ q, sort, page, pageSize: PAGE_SIZE });
+  const { posDate, total, rows } = await listOwnership({ q, sort, page, pageSize: PAGE_SIZE, stocksOnly: !showAll });
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const buildHref = (params: Record<string, string | number | undefined>) => {
     const u = new URLSearchParams();
     if (q) u.set("q", q);
     if (sort) u.set("sort", sort);
+    if (showAll) u.set("all", "1");
     for (const [k, v] of Object.entries(params)) {
       if (v === undefined || v === "") u.delete(k);
       else u.set(k, String(v));
@@ -65,9 +67,18 @@ export default async function OwnershipPage({
     const u = new URLSearchParams();
     if (letter) u.set("q", letter);
     if (sort) u.set("sort", sort);
+    if (showAll) u.set("all", "1");
     const s = u.toString();
     return s ? `/ownership?${s}` : "/ownership";
   };
+  const toggleAllHref = (() => {
+    const u = new URLSearchParams();
+    if (q) u.set("q", q);
+    if (sort) u.set("sort", sort);
+    if (!showAll) u.set("all", "1");
+    const s = u.toString();
+    return s ? `/ownership?${s}` : "/ownership";
+  })();
   const activeLetter = q.length === 1 ? q.toUpperCase() : "";
 
   return (
@@ -82,6 +93,15 @@ export default async function OwnershipPage({
           dan rincian per tipe investor.{" "}
           {posDate ? <>Posisi per <strong>{fmtDateId(posDate)}</strong>.</> : null}
         </p>
+        {posDate && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Menampilkan {showAll ? "semua efek" : "saham saja (kode 4 huruf)"} ·{" "}
+            <strong>{total.toLocaleString("id-ID")}</strong>.{" "}
+            <Link href={toggleAllHref} className="font-medium text-primary underline">
+              {showAll ? "Tampilkan hanya saham" : "Tampilkan semua efek (obligasi, sukuk, ETF, dll)"}
+            </Link>
+          </p>
+        )}
       </header>
 
       {!posDate ? (

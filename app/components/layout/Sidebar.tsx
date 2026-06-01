@@ -90,7 +90,7 @@ const GROUPS: SidebarGroup[] = [
     ],
   },
   {
-    label: "AI & Belajar",
+    label: "Ruang Belajar",
     items: [
       { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
       { href: "/guidance", label: "Guidance", icon: BookOpen },
