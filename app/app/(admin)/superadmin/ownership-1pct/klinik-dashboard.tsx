@@ -15,6 +15,33 @@ function fmtRp(n: number): string {
 }
 const pct = (n: number) => `${n.toFixed(2)}%`;
 
+const LIST_PAGE = 50;
+function pageNums(cur: number, total: number): (number | "…")[] {
+  if (total <= 9) return Array.from({ length: total }, (_, i) => i + 1);
+  const out: (number | "…")[] = [1];
+  const lo = Math.max(2, cur - 2), hi = Math.min(total - 1, cur + 2);
+  if (lo > 2) out.push("…");
+  for (let i = lo; i <= hi; i++) out.push(i);
+  if (hi < total - 1) out.push("…");
+  out.push(total);
+  return out;
+}
+function Pager({ page, total, onPage }: { page: number; total: number; onPage: (p: number) => void }) {
+  const totalPages = Math.max(1, Math.ceil(total / LIST_PAGE));
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-1 pt-1">
+      <button onClick={() => onPage(Math.max(1, page - 1))} disabled={page <= 1} className="inline-flex h-8 items-center rounded-md border border-input px-2.5 text-sm disabled:opacity-40 hover:bg-accent">‹</button>
+      {pageNums(page, totalPages).map((n, i) => n === "…" ? (
+        <span key={`e${i}`} className="px-1.5 text-muted-foreground">…</span>
+      ) : (
+        <button key={n} onClick={() => onPage(n)} className={`inline-flex h-8 min-w-[2rem] items-center justify-center rounded-md border px-2 text-sm font-medium ${n === page ? "border-primary bg-primary text-primary-foreground" : "border-input hover:bg-accent"}`}>{n}</button>
+      ))}
+      <button onClick={() => onPage(Math.min(totalPages, page + 1))} disabled={page >= totalPages} className="inline-flex h-8 items-center rounded-md border border-input px-2.5 text-sm disabled:opacity-40 hover:bg-accent">›</button>
+    </div>
+  );
+}
+
 const TYPE_LABEL: Record<string, string> = {
   "": "Unknown", CORPORATE: "Corporate", INDIVIDUAL: "Individual",
   "STATE OWNED ENTERPRISES": "BUMN", INSURANCE: "Insurance", "MUTUAL FUND": "Reksa Dana",
@@ -70,6 +97,7 @@ function RingkasanTab({ data }: { data: DashData }) {
   const [sector, setSector] = React.useState("");
   const [ffMax, setFfMax] = React.useState(100);
   const [open, setOpen] = React.useState<Set<string>>(new Set());
+  const [page, setPage] = React.useState(1);
 
   const filtered = React.useMemo(() => {
     const s = q.trim().toUpperCase();
@@ -84,7 +112,9 @@ function RingkasanTab({ data }: { data: DashData }) {
     return rows;
   }, [data.emiten, q, sort, sector, ffMax]);
 
-  const shown = filtered.slice(0, 150);
+  const totalP = Math.max(1, Math.ceil(filtered.length / LIST_PAGE));
+  const p = Math.min(page, totalP);
+  const shown = filtered.slice((p - 1) * LIST_PAGE, p * LIST_PAGE);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); n.has(k) ? n.delete(k) : n.add(k); return n; });
 
   return (
@@ -111,7 +141,7 @@ function RingkasanTab({ data }: { data: DashData }) {
       </div>
 
       {shown.map((e) => <EmitenCard key={e.kode} e={e} open={open.has(e.kode)} onToggle={() => toggle(e.kode)} />)}
-      {filtered.length > shown.length && <p className="py-2 text-center text-xs text-muted-foreground">Menampilkan 150 dari {filtered.length}. Persempit pencarian untuk lihat lainnya.</p>}
+      <Pager page={p} total={filtered.length} onPage={setPage} />
     </div>
   );
 }
@@ -179,6 +209,7 @@ function PerInvestorTab({ data }: { data: DashData }) {
   const [q, setQ] = React.useState("");
   const [sort, setSort] = React.useState<"name" | "shares">("shares");
   const [open, setOpen] = React.useState<Set<string>>(new Set());
+  const [page, setPage] = React.useState(1);
 
   const investors = React.useMemo(() => {
     const map = new Map<string, InvAgg>();
@@ -203,7 +234,9 @@ function PerInvestorTab({ data }: { data: DashData }) {
     return rows;
   }, [investors, q, sort]);
 
-  const shown = filtered.slice(0, 150);
+  const totalP = Math.max(1, Math.ceil(filtered.length / LIST_PAGE));
+  const p = Math.min(page, totalP);
+  const shown = filtered.slice((p - 1) * LIST_PAGE, p * LIST_PAGE);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); n.has(k) ? n.delete(k) : n.add(k); return n; });
 
   return (
@@ -259,7 +292,7 @@ function PerInvestorTab({ data }: { data: DashData }) {
           )}
         </div>
       ))}
-      {filtered.length > shown.length && <p className="py-2 text-center text-xs text-muted-foreground">Menampilkan 150 dari {filtered.length}. Persempit pencarian.</p>}
+      <Pager page={p} total={filtered.length} onPage={setPage} />
     </div>
   );
 }
