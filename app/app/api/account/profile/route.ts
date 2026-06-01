@@ -14,6 +14,26 @@ const bodySchema = z.object({
 });
 
 /**
+ * GET /api/account/profile — data profil user yang sedang login (untuk seed form).
+ *
+ * Sengaja di route handler (bukan Server Component): di sini cookie/sesi dibaca
+ * andal, beda dengan getSession di RSC yang bisa flaky kalau dipanggil ganda.
+ */
+export async function GET() {
+  try {
+    const session = await requireSession();
+    const [row] = await db
+      .select({ name: users.name, email: users.email })
+      .from(users)
+      .where(eq(users.id, session.userId))
+      .limit(1);
+    return ok({ name: row?.name ?? "", email: row?.email ?? "" });
+  } catch (err) {
+    return handleError(err);
+  }
+}
+
+/**
  * POST /api/account/profile — update profil milik user yang sedang login.
  *
  * Pakai requireSession + update DB langsung (bukan better-auth client updateUser)

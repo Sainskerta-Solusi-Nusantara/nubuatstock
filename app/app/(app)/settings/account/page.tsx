@@ -5,7 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getSession } from "@/lib/auth";
 import { DELETION_GRACE_DAYS } from "@/lib/account/delete";
 import {
   DeleteAccountButton,
@@ -23,30 +22,11 @@ import {
  */
 export const dynamic = "force-dynamic";
 
-export default async function AccountSettingsPage() {
-  // Halaman ini di bawah (app) layout yang SUDAH menjamin sesi. JANGAN redirect
-  // ke /login dari sini — getSession di RSC sesekali bisa null (race cookie-cache)
-  // sehingga user yang sebenarnya login malah "terlempar" ke halaman login.
-  // Kalau null, tampilkan prompt muat ulang yang aman.
-  const session = await getSession();
-  if (!session) {
-    return (
-      <div className="container mx-auto max-w-3xl px-4 py-16 text-center">
-        <h1 className="text-xl font-bold">Sesi belum termuat</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Coba muat ulang halaman ini. Kamu tidak perlu login lagi.
-        </p>
-        <a
-          href="/settings/account"
-          className="mt-4 inline-flex h-9 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
-        >
-          Muat ulang
-        </a>
-      </div>
-    );
-  }
-  const u = session.user as { name?: string; email?: string };
-
+export default function AccountSettingsPage() {
+  // Halaman ini di bawah (app) layout yang SUDAH menjamin sesi — jadi TIDAK perlu
+  // (dan tidak boleh) baca sesi lagi di sini. getSession di RSC yang dipanggil
+  // ganda dalam satu render bisa balik null & melempar user keluar. Data profil
+  // di-fetch ProfileForm via route handler (GET /api/account/profile) yang andal.
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8 space-y-8 sm:py-10">
       <header>
@@ -62,7 +42,7 @@ export default async function AccountSettingsPage() {
           <CardDescription>Ubah nama tampilan kamu di Nubuat.</CardDescription>
         </CardHeader>
         <CardContent>
-          <ProfileForm initialName={u.name ?? ""} email={u.email ?? ""} />
+          <ProfileForm />
         </CardContent>
       </Card>
 

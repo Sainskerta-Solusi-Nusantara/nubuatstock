@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Download, Loader2, Trash2, Save, KeyRound } from "lucide-react";
@@ -21,20 +21,37 @@ import {
 const inputCls =
   "h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60";
 
-/** Form edit profil — ubah nama tampilan. Email tidak bisa diubah di sini. */
-export function ProfileForm({
-  initialName,
-  email,
-}: {
-  initialName: string;
-  email: string;
-}) {
-  const [name, setName] = useState(initialName);
+/**
+ * Form edit profil — ubah nama tampilan. Data awal di-fetch dari route handler
+ * GET /api/account/profile (bukan dari Server Component) supaya sesi dibaca andal.
+ */
+export function ProfileForm() {
+  const [name, setName] = useState("");
+  const [initialName, setInitialName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/account/profile", { credentials: "include" })
+      .then((r) => r.json())
+      .then((j) => {
+        if (!alive || !j?.ok) return;
+        setName(j.data.name ?? "");
+        setInitialName(j.data.name ?? "");
+        setEmail(j.data.email ?? "");
+      })
+      .catch(() => {})
+      .finally(() => alive && setLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const dirty = name.trim() !== initialName.trim();
-  const canSave = dirty && name.trim().length >= 2 && !saving;
+  const canSave = dirty && name.trim().length >= 2 && !saving && !loading;
 
   const handleSave = async () => {
     if (!canSave) return;
