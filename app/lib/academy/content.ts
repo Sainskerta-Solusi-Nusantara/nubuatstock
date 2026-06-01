@@ -61,7 +61,7 @@ export interface AcademyModule {
   /** Lucide icon name (di-resolve di komponen). */
   icon: string;
   /** Level untuk badge. */
-  level: "Pemula" | "Menengah";
+  level: "Pemula" | "Menengah" | "Lanjutan";
   description: string;
   lessons: AcademyLesson[];
 }

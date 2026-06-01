@@ -81,6 +81,14 @@ const ICONS: Record<string, LucideIcon> = {
 
 const ALL_SLUGS = ACADEMY_LESSON_ORDER.map((ref) => ref.lesson.slug);
 
+// Urutan & metadata level untuk pengelompokan modul (dasar → mahir).
+const LEVEL_ORDER = ["Pemula", "Menengah", "Lanjutan"] as const;
+const LEVEL_META: Record<string, { step: string; label: string; hint: string; badgeCls: string }> = {
+  Pemula: { step: "1", label: "Pemula", hint: "mulai dari sini", badgeCls: "bg-bull/15 text-bull" },
+  Menengah: { step: "2", label: "Menengah", hint: "setelah paham dasar", badgeCls: "bg-amber-500/15 text-amber-600" },
+  Lanjutan: { step: "3", label: "Lanjutan", hint: "untuk yang sudah mahir", badgeCls: "bg-bear/15 text-bear" },
+};
+
 export function AcademyModuleList() {
   const read = useReadLessons(ALL_SLUGS);
   const [query, setQuery] = React.useState("");
@@ -135,12 +143,33 @@ export function AcademyModuleList() {
         />
       </div>
 
-      {/* Grid modul belajar */}
+      {/* Grid modul belajar — dikelompokkan per level (Pemula → Menengah → Lanjutan)
+          biar urutan belajar jelas dari dasar ke mahir. */}
       {filteredLearning.length > 0 ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredLearning.map((mod) => (
-            <ModuleCard key={mod.slug} mod={mod} read={read} />
-          ))}
+        <div className="space-y-6">
+          {LEVEL_ORDER.map((level) => {
+            const mods = filteredLearning.filter((m) => m.level === level);
+            const meta = LEVEL_META[level];
+            if (mods.length === 0 || !meta) return null;
+            return (
+              <div key={level} className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className={cn("inline-flex size-5 items-center justify-center rounded-full text-[10px] font-bold", meta.badgeCls)}>
+                    {meta.step}
+                  </span>
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    {meta.label}
+                  </h2>
+                  <span className="text-xs text-muted-foreground">· {meta.hint}</span>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {mods.map((mod) => (
+                    <ModuleCard key={mod.slug} mod={mod} read={read} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <p className="py-8 text-center text-sm text-muted-foreground">
