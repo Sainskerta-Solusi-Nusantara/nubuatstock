@@ -68,6 +68,8 @@ Kalau salah satu tidak terpenuhi → day trading bukan untukmu (belum). Tidak ap
 - **Batasi jumlah trade/hari** — overtrading = fee + emosi naik. Kualitas > kuantitas.
 - **Stop trading setelah X loss beruntun** — "circuit breaker" pribadi biar tidak balas dendam (revenge trading).
 
+![Daily max loss sebagai rem pribadi: berhenti trading setelah rugi capai batas harian](/academy/scalping/daily-max-loss.svg)
+
 ## Manajemen risiko intraday
 
 - Risiko per trade lebih kecil (mis. 0,5–1%) karena frekuensi tinggi.

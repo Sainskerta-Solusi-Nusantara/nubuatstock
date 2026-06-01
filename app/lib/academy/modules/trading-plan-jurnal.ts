@@ -110,6 +110,8 @@ Tanpa catatan, kamu mengulang kesalahan yang sama tanpa sadar. **Jurnal** mengub
 - **Emosi/kondisi** saat trade (tenang? FOMO? ngantuk?).
 - **Pelajaran**: apa yang benar/salah, apakah ikut plan?
 
+![Expectancy: win rate rendah tetap untung jika reward jauh lebih besar dari risk](/academy/trading-plan/rr-expectancy.svg)
+
 ## Metrik yang dievaluasi (mingguan/bulanan)
 
 - **Win rate** — % trade menang.

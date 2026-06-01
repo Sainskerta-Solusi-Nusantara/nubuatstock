@@ -53,6 +53,8 @@ Di **Full Call Auction (FCA)**, transaksi **TIDAK** terus-menerus. Order dikumpu
 
 > Itu sebabnya di saham FCA, harga "diam" cukup lama lalu **loncat** saat sesi lelang. Kamu tidak bisa langsung "sikat offer" kapan saja seperti saham biasa.
 
+![Beda continuous auction (transaksi terus-menerus) vs Full Call Auction (match serentak per sesi lelang)](/academy/corpaction/fca-auction.svg)
+
 ## Implikasi praktis
 
 1. **Eksekusi tidak instan** — order kamu antri sampai sesi lelang berikutnya. Mau cepat keluar? Belum tentu bisa.

@@ -24,6 +24,8 @@ Beli saham individual butuh waktu: analisis tiap emiten, pantau berita, atur div
 
 Contoh: 1 lot ETF yang melacak LQ45 = kamu sudah punya eksposur ke 45 saham terbesar IDX dalam satu transaksi.
 
+![Diversifikasi instan: satu ETF atau reksa dana berisi puluhan saham sekaligus](/academy/etf/diversifikasi.svg)
+
 ## Dua instrumen utama
 
 | | **ETF** | **Reksa Dana** |

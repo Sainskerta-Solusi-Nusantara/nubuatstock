@@ -30,6 +30,8 @@ export const studiKasusIdxModule: AcademyModule = {
 5. **Didorong "info orang dalam"** di grup/medsos: "pasti naik, masuk sekarang!"
 6. **Broker tertentu mendominasi** transaksi (lihat modul Analisis Transaksi).
 
+![Anatomi pump and dump: akumulasi diam-diam, markup ARA dengan pom-pom, distribusi ke ritel di puncak, markdown ARB](/academy/studi-kasus/pump-dump.svg)
+
 ## Mekanisme pom-pom
 
 1. **Akumulasi diam-diam** di harga bawah.
@@ -57,6 +59,8 @@ export const studiKasusIdxModule: AcademyModule = {
 Bursa memberi tanda **UMA** saat ada aktivitas tidak wajar (harga/volume di luar kebiasaan). Ini **peringatan** ke investor agar berhati-hati & mencermati — sering muncul di saham yang sedang "panas"/digoreng.
 
 > UMA bukan vonis, tapi **lampu kuning**. Banyak saham yang kena UMA tak lama kemudian ambruk. Jangan masuk hanya karena "lagi ramai".
+
+![Eskalasi lampu bahaya: UMA, suspensi, papan khusus, sampai delisting](/academy/studi-kasus/uma-timeline.svg)
 
 ## Suspensi (penghentian sementara)
 

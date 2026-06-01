@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Circuit breaker day trading: berhenti setelah mencapai batas rugi harian">
+  <text x="360" y="32" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Daily Max Loss = Rem Pribadi</text>
+
+  <!-- equity curve declining hitting limit -->
+  <line x1="70" y1="90" x2="680" y2="90" stroke="#9ca3af" stroke-width="1" stroke-dasharray="3,3" /><text x="75" y="84" fill="#9ca3af" font-size="10">modal awal hari</text>
+  <line x1="70" y1="200" x2="680" y2="200" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3" /><text x="75" y="218" fill="#dc2626" font-size="11" font-weight="700">batas rugi harian (&#8722;3%)</text>
+
+  <polyline points="70,95 140,110 210,100 280,140 350,130 420,175 470,200" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round" />
+  <circle cx="470" cy="200" r="8" fill="#dc2626" />
+  <text x="485" y="195" fill="#dc2626" font-size="12" font-weight="700">STOP trading hari ini</text>
+
+  <!-- what happens without it (ghost) -->
+  <polyline points="470,200 540,250 610,235 670,275" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="4,4" />
+  <text x="560" y="295" fill="#6b7280" font-size="10.5">tanpa rem: revenge trading &#8594; makin dalam</text>
+
+  <text x="70" y="255" fill="#999" font-size="11.5">Lindungi modal &amp; mental: kalau rugi capai batas, berhenti. Besok ada hari baru.</text>
+</svg>
