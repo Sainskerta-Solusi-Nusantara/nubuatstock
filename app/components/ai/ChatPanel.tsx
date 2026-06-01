@@ -3,9 +3,9 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChatMessage } from "./ChatMessage";
+import { Loader2, Check, Wrench } from "lucide-react";
+import { ChatMessage, TOOL_LABELS } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
-import { ToolCallCard } from "./ToolCallCard";
 import type { AiCitation, AiMessageDTO, ChatStreamChunk } from "@/lib/types/ai";
 
 interface ChatPanelProps {
@@ -35,6 +35,49 @@ interface UiToolCall {
   args: Record<string, unknown>;
   status: "pending" | "ok" | "error";
   latencyMs?: number;
+}
+
+/**
+ * Indikator aktivitas tool saat streaming. SENGAJA hanya menampilkan label ramah
+ * (Bahasa Indonesia) dan di-dedup — nama tool mentah, argumen JSON, status, dan
+ * latency TIDAK ditampilkan ke user (rahasia dapur). Banyak panggilan tool sejenis
+ * (mis. 20× harga) jadi satu baris saja supaya tidak spam.
+ */
+function ToolActivity({ calls }: { calls: UiToolCall[] }) {
+  if (calls.length === 0) return null;
+
+  // Dedup per label ramah, pertahankan urutan kemunculan.
+  const seen = new Set<string>();
+  const items: { label: string; pending: boolean }[] = [];
+  for (const c of calls) {
+    const label = TOOL_LABELS[c.toolName] ?? "Menganalisis data";
+    if (seen.has(label)) {
+      // Kalau ada yang masih pending untuk label ini, tandai pending.
+      const existing = items.find((it) => it.label === label);
+      if (existing && c.status === "pending") existing.pending = true;
+      continue;
+    }
+    seen.add(label);
+    items.push({ label, pending: c.status === "pending" });
+  }
+
+  return (
+    <div className="my-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-muted-foreground">
+      <span className="inline-flex items-center gap-1 font-medium">
+        <Wrench className="h-3 w-3" aria-hidden /> Menganalisis
+      </span>
+      {items.map((it) => (
+        <span key={it.label} className="inline-flex items-center gap-1">
+          {it.pending ? (
+            <Loader2 className="h-3 w-3 animate-spin text-primary" aria-hidden />
+          ) : (
+            <Check className="h-3 w-3 text-bull" aria-hidden />
+          )}
+          {it.label}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 export function ChatPanel({
@@ -315,15 +358,7 @@ export function ChatPanel({
             />
           );
         })}
-        {activeToolCalls.map((t) => (
-          <ToolCallCard
-            key={t.id}
-            toolName={t.toolName}
-            args={t.args}
-            status={t.status}
-            latencyMs={t.latencyMs}
-          />
-        ))}
+        <ToolActivity calls={activeToolCalls} />
         {error && (
           <div className="my-3 rounded-md border border-bear/40 bg-bear-soft p-3 text-xs text-bear">
             <div className="flex items-start gap-2">
@@ -397,9 +432,9 @@ function EmptyState({
         {
           title: "💡 Strategy & Backtest",
           items: [
-            'Backtest BBRI: beli saat RSI < 30 jual saat RSI > 70, 1 tahun terakhir',
-            "Screen saham coal dengan ROE > 15% dan PE < 12",
-            "Saham apa yang Wave 3 Elliott sekarang?",
+            "Backtest BBRI pakai RSI 30/70, 1 tahun terakhir",
+            "Backtest SMA 20/50 crossover di TLKM, 1 tahun terakhir",
+            "Apa setup teknikal BBCA sekarang?",
           ],
         },
         {

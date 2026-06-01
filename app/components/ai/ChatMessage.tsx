@@ -19,7 +19,7 @@ interface ChatMessageProps {
   onRegenerate?: () => void;
 }
 
-const TOOL_LABELS: Record<string, string> = {
+export const TOOL_LABELS: Record<string, string> = {
   get_quote: "Harga real-time",
   get_ohlcv: "Historical OHLCV",
   get_company_info: "Profil emiten",
