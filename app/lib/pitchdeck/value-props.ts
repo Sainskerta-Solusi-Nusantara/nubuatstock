@@ -10,7 +10,7 @@ export const UNIQUE_VALUE_PROPS = [
     moat: "Track record realtime visible di /picks/performance — trust dari hit rate transparant",
   },
   {
-    title: "AI Buddy DeepSeek Bilingual",
+    title: "AI Buddy Bilingual (ID/EN)",
     desc: "Tanya bahasa Indonesia, jawab dengan source citation + tool calls real. Cost 90% lebih rendah dari GPT-4.",
     moat: "Indonesia-tuned context (Bandarmology, terminologi BEI) + prompt caching custom",
   },
@@ -29,7 +29,7 @@ export const UNIQUE_VALUE_PROPS = [
 export const KEY_FEATURES = [
   { category: "Data Coverage", items: ["980+ emiten BEI", "12 sektor IDX-IC", "18 indeks", "5,041 direksi profile", "Logo + fundamental 90%+ coverage"] },
   { category: "Analisis Real-time", items: ["Multi-lens scoring", "Daily Picks dengan SR/SL/TP", "Track record T+1/T+5/T+20", "Backtest engine 4 strategi", "Vector RAG semantic search"] },
-  { category: "AI Capabilities", items: ["DeepSeek chat", "7 tools tersedia", "Prompt caching 86% hit", "Tier-based quota", "Audit & cost tracking"] },
+  { category: "AI Capabilities", items: ["AI chat (LLM)", "7 tools tersedia", "Prompt caching 86% hit", "Tier-based quota", "Audit & cost tracking"] },
   { category: "Workflow", items: ["Watchlist unlimited", "Alerts multi-channel", "Command palette Cmd+K", "Riset PDF download", "Paper trading (Q2 2026)"] },
   { category: "Compliance", items: ["Disclaimer accept gate", "UU PDP Indonesia template", "Audit log immutable", "OJK Penasihat Investasi (in process)", "AES-256-GCM secret encryption"] },
 ];

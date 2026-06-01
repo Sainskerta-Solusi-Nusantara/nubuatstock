@@ -47,6 +47,7 @@ import { konstruksiPortofolioModule } from "./modules/konstruksi-portofolio";
 import { quantSistematisModule } from "./modules/quant-sistematis";
 import { derivatifHedgingModule } from "./modules/derivatif-hedging";
 import { marketMicrostructureModule } from "./modules/market-microstructure";
+import { indeksGlobalModule } from "./modules/indeks-global";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -922,6 +923,7 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
   quantSistematisModule,
   derivatifHedgingModule,
   marketMicrostructureModule,
+  indeksGlobalModule,
 ];
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Keluarga indeks IDX: IHSG sebagai komposit, lalu indeks turunan LQ45, IDX30, IDX80, tematik, dan syariah">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Keluarga Indeks IDX</text>
+
+  <!-- IHSG top -->
+  <rect x="260" y="52" width="200" height="46" rx="10" fill="#059669"/>
+  <text x="360" y="74" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">IHSG / IDX Composite</text>
+  <text x="360" y="90" text-anchor="middle" font-size="10" fill="#d1fae5">seluruh saham tercatat</text>
+
+  <line x1="360" y1="98" x2="360" y2="120" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="130" y1="120" x2="610" y2="120" stroke="#94a3b8" stroke-width="2"/>
+  <g stroke="#94a3b8" stroke-width="2">
+    <line x1="130" y1="120" x2="130" y2="140"/>
+    <line x1="360" y1="120" x2="360" y2="140"/>
+    <line x1="610" y1="120" x2="610" y2="140"/>
+  </g>
+
+  <!-- Likuiditas/size -->
+  <rect x="40" y="140" width="180" height="86" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="130" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#065f46">Likuiditas &amp; Ukuran</text>
+  <text x="130" y="184" text-anchor="middle" font-size="11" fill="#047857">LQ45 (45 saham)</text>
+  <text x="130" y="202" text-anchor="middle" font-size="11" fill="#047857">IDX30 · IDX80</text>
+  <text x="130" y="220" text-anchor="middle" font-size="11" fill="#047857">IDX High Dividend 20</text>
+
+  <!-- Tematik -->
+  <rect x="270" y="140" width="180" height="86" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="360" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">Tematik / Faktor</text>
+  <text x="360" y="184" text-anchor="middle" font-size="11" fill="#1d4ed8">IDXBUMN20</text>
+  <text x="360" y="202" text-anchor="middle" font-size="11" fill="#1d4ed8">IDXValue30 · Growth30</text>
+  <text x="360" y="220" text-anchor="middle" font-size="11" fill="#1d4ed8">IDXQuality30 · sektoral</text>
+
+  <!-- Syariah -->
+  <rect x="500" y="140" width="180" height="86" rx="8" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="590" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">Syariah</text>
+  <text x="590" y="184" text-anchor="middle" font-size="11" fill="#6d28d9">ISSI (semua syariah)</text>
+  <text x="590" y="202" text-anchor="middle" font-size="11" fill="#6d28d9">JII (30 likuid)</text>
+  <text x="590" y="220" text-anchor="middle" font-size="11" fill="#6d28d9">JII70</text>
+
+  <rect x="40" y="250" width="640" height="92" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="56" y="276" font-size="13" font-weight="700" fill="#0f172a">Untuk apa indeks domestik?</text>
+  <text x="56" y="298" font-size="12" fill="#475569">• Tolok ukur (benchmark) kinerja portofolio &amp; reksa dana.</text>
+  <text x="56" y="318" font-size="12" fill="#475569">• Dasar produk pasif: reksa dana indeks &amp; ETF (mis. yang melacak LQ45/IDX30).</text>
+  <text x="56" y="338" font-size="12" fill="#475569">• Masuk LQ45/IDX30 → naik pamor &amp; likuiditas; sering jadi incaran institusi.</text>
+</svg>

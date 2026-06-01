@@ -131,7 +131,7 @@ export const WHY_NOW = [
   },
   {
     title: "AI sudah cukup baik & murah",
-    body: "DeepSeek (2024+) menawarkan kualitas mendekati GPT-4 dengan harga 90% lebih murah. Memungkinkan AI Buddy dengan unit economics yang viable untuk B2C Indonesia.",
+    body: "LLM generasi baru (2024+) menawarkan kualitas mendekati GPT-4 dengan harga 90% lebih murah. Memungkinkan AI Buddy dengan unit economics yang viable untuk B2C Indonesia.",
   },
   {
     title: "Kompetitor lokal stagnan",

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Penyedia indeks global MSCI, FTSE Russell, dan IDX beserta contoh indeks dan dana pasif yang mengikutinya">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Penyedia Indeks &amp; Dana yang Mengikutinya</text>
+
+  <!-- three columns -->
+  <g>
+    <!-- MSCI -->
+    <rect x="36" y="64" width="196" height="40" rx="8" fill="#1d4ed8"/>
+    <text x="134" y="90" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">MSCI</text>
+    <rect x="36" y="116" width="196" height="92" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="50" y="140" font-size="12" fill="#1e3a8a">• MSCI Emerging Markets</text>
+    <text x="50" y="162" font-size="12" fill="#1e3a8a">• MSCI Indonesia (Standard)</text>
+    <text x="50" y="184" font-size="12" fill="#1e3a8a">• MSCI Small Cap</text>
+
+    <!-- FTSE -->
+    <rect x="262" y="64" width="196" height="40" rx="8" fill="#7c3aed"/>
+    <text x="360" y="90" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">FTSE Russell</text>
+    <rect x="262" y="116" width="196" height="92" rx="8" fill="#f5f3ff" stroke="#ddd6fe"/>
+    <text x="276" y="140" font-size="12" fill="#5b21b6">• FTSE GEIS</text>
+    <text x="276" y="162" font-size="12" fill="#5b21b6">• Secondary Emerging</text>
+    <text x="276" y="184" font-size="12" fill="#5b21b6">• FTSE Indonesia</text>
+
+    <!-- IDX -->
+    <rect x="488" y="64" width="196" height="40" rx="8" fill="#059669"/>
+    <text x="586" y="90" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">IDX (domestik)</text>
+    <rect x="488" y="116" width="196" height="92" rx="8" fill="#ecfdf5" stroke="#a7f3d0"/>
+    <text x="502" y="140" font-size="12" fill="#065f46">• IHSG (komposit)</text>
+    <text x="502" y="162" font-size="12" fill="#065f46">• LQ45 · IDX30 · IDX80</text>
+    <text x="502" y="184" font-size="12" fill="#065f46">• Syariah: JII · ISSI</text>
+  </g>
+
+  <!-- arrows down -->
+  <g stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)">
+    <line x1="134" y1="210" x2="134" y2="250"/>
+    <line x1="360" y1="210" x2="360" y2="250"/>
+    <line x1="586" y1="210" x2="586" y2="250"/>
+  </g>
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#94a3b8"/></marker>
+  </defs>
+
+  <rect x="36" y="256" width="648" height="76" rx="10" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="360" y="284" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">Dana pasif (ETF &amp; index fund) — triliunan USD</text>
+  <text x="360" y="308" text-anchor="middle" font-size="12" fill="#9a3412">Wajib meniru bobot indeks. Saham masuk indeks = otomatis dibeli; keluar = otomatis dijual.</text>
+  <text x="360" y="326" text-anchor="middle" font-size="11" fill="#b45309">Inilah kenapa keputusan MSCI/FTSE menggerakkan harga saham IDX.</text>
+</svg>

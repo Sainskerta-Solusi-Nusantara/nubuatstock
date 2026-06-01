@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Emas sebagai safe haven: saat risk-off harga emas naik berlawanan dengan dolar dan yield, mengangkat saham tambang emas">
+  <rect x="0" y="0" width="720" height="360" fill="#ffffff"/>
+  <text x="360" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Emas: Safe Haven &amp; Saham Tambang</text>
+
+  <!-- chart area -->
+  <rect x="48" y="56" width="624" height="180" rx="8" fill="#fffbeb" stroke="#fde68a"/>
+  <line x1="360" y1="64" x2="360" y2="228" stroke="#d6d3d1" stroke-dasharray="4 4"/>
+  <text x="200" y="80" text-anchor="middle" font-size="12" font-weight="700" fill="#16a34a">RISK-ON</text>
+  <text x="520" y="80" text-anchor="middle" font-size="12" font-weight="700" fill="#dc2626">RISK-OFF (panik)</text>
+
+  <!-- gold line up on right -->
+  <polyline points="64,170 140,168 220,172 300,166 360,160 420,140 500,116 580,98 656,86" fill="none" stroke="#d97706" stroke-width="3"/>
+  <text x="600" y="78" font-size="12" font-weight="700" fill="#b45309">Emas ↑</text>
+  <!-- dollar/yield... actually DXY/yield down on right -->
+  <polyline points="64,150 140,152 220,148 300,154 360,158 420,176 500,196 580,208 656,214" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <text x="600" y="208" font-size="12" font-weight="700" fill="#0369a1">Saham berisiko ↓</text>
+  <text x="64" y="222" font-size="10" fill="#92400e">Saat investor cari aman, dana lari ke emas.</text>
+
+  <!-- bottom: IDX gold miners -->
+  <rect x="48" y="252" width="624" height="92" rx="10" fill="#fefce8" stroke="#fde68a"/>
+  <text x="64" y="278" font-size="13" font-weight="700" fill="#854d0e">Kaitan ke saham IDX</text>
+  <text x="64" y="300" font-size="12" fill="#713f12">Harga emas naik → margin emiten emas/tambang membaik → saham seperti ANTM, MDKA, AMMN,</text>
+  <text x="64" y="318" font-size="12" fill="#713f12">BRMS, ARCI, HRTA cenderung ikut terangkat (tidak otomatis — cek biaya produksi &amp; hedging).</text>
+  <text x="64" y="336" font-size="11" fill="#a16207">Pendorong emas: real yield turun, dolar (DXY) melemah, ketidakpastian geopolitik, inflasi.</text>
+</svg>

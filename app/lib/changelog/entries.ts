@@ -28,7 +28,7 @@ export const changelogEntries: ChangelogEntry[] = [
       "Kepemilikan Saham: lihat komposisi pemegang saham (lokal vs asing) tiap emiten dari data KSEI — ada di menu Analisis paling bawah, bisa dicari & diurutkan A-Z.",
       "Menu \"AI & Belajar\" kini bernama \"Ruang Belajar\" biar lebih jelas.",
       "Edit nama profil & ganti password langsung dari Pengaturan → Akun.",
-      "Modul Academy lanjutan baru: korelasi intermarket, konstruksi portofolio, strategi quant, derivatif & hedging, dan market microstructure.",
+      "Modul Academy lanjutan baru: korelasi intermarket, konstruksi portofolio, strategi quant, derivatif & hedging, market microstructure, plus Indeks Global (MSCI, FTSE, emas & free float).",
     ],
   },
   {
