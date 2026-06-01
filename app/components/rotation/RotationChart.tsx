@@ -30,18 +30,26 @@ export function RotationChart({ entities, variant = "sector" }: Props) {
     return <div className="rounded-md border border-border p-8 text-center text-sm text-muted-foreground">Tidak ada data rotation untuk ditampilkan.</div>;
   }
 
+  // Domain sumbu di-BATASI di sekitar 100 supaya satu titik outlier (artefak
+  // warm-up normalisasi di awal trail) tidak meregangkan seluruh skala — gejala
+  // "garis melintang + sektor berdesakan di tengah". Kita ambil rentang simetris
+  // di 100 berbasis deviasi terbesar yang masih wajar (di-cap pada DOMAIN_CAP).
   const allRs = allPoints.map((p) => p.rsRatio);
   const allMom = allPoints.map((p) => p.rsMomentum);
-  const minRs = Math.min(100, ...allRs);
-  const maxRs = Math.max(100, ...allRs);
-  const minMom = Math.min(100, ...allMom);
-  const maxMom = Math.max(100, ...allMom);
-  const rsPad = (maxRs - minRs) * 0.1 + 0.5;
-  const momPad = (maxMom - minMom) * 0.1 + 0.5;
-  const xMin = minRs - rsPad;
-  const xMax = maxRs + rsPad;
-  const yMin = minMom - momPad;
-  const yMax = maxMom + momPad;
+  const DOMAIN_CAP = 12; // maksimum jarak dari 100 yang dipetakan ke dalam frame
+  const MIN_HALF = 3; // pastikan tidak terlalu zoom saat data sangat rapat
+  const devRs = Math.min(
+    DOMAIN_CAP,
+    Math.max(MIN_HALF, ...allRs.map((v) => Math.abs(v - 100))),
+  );
+  const devMom = Math.min(
+    DOMAIN_CAP,
+    Math.max(MIN_HALF, ...allMom.map((v) => Math.abs(v - 100))),
+  );
+  const xMin = 100 - devRs;
+  const xMax = 100 + devRs;
+  const yMin = 100 - devMom;
+  const yMax = 100 + devMom;
 
   const WIDTH = 640;
   const HEIGHT = 480;
@@ -49,8 +57,13 @@ export function RotationChart({ entities, variant = "sector" }: Props) {
   const innerW = WIDTH - MARGIN * 2;
   const innerH = HEIGHT - MARGIN * 2;
 
-  const xScale = (v: number) => MARGIN + ((v - xMin) / (xMax - xMin)) * innerW;
-  const yScale = (v: number) => MARGIN + innerH - ((v - yMin) / (yMax - yMin)) * innerH; // inverted
+  // Klamp output ke dalam frame: titik di luar domain (outlier ekstrem) ditarik
+  // ke tepi, bukan kabur ke pojok kanvas / membuat garis melintang panjang.
+  const clamp = (val: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, val));
+  const xScale = (v: number) =>
+    clamp(MARGIN + ((v - xMin) / (xMax - xMin)) * innerW, MARGIN, WIDTH - MARGIN);
+  const yScale = (v: number) =>
+    clamp(MARGIN + innerH - ((v - yMin) / (yMax - yMin)) * innerH, MARGIN, HEIGHT - MARGIN); // inverted
 
   // Center axis at 100
   const centerX = xScale(100);
