@@ -28,6 +28,7 @@ export * from "./fundamentals"; // Enrichment (Yahoo Finance)
 export type { Dividend } from "./fundamentals";
 export type { Dividend as CompanyDividend } from "./companies";
 export * from "./ksei"; // KSEI ownership composition (holding composition)
+export * from "./ownership1pct"; // 1% ownership (klinikpenyesalan, review)
 export * from "./legal-acceptance"; // Legal compliance audit
 export * from "./market"; // Agent 5
 export * from "./news"; // News & sentiment
