@@ -102,9 +102,12 @@ export function TrialFeedbackGate({ trialEndsAt }: { trialEndsAt: string | null 
           </DialogDescription>
         </DialogHeader>
 
-        {/* Rating bintang 1–5 */}
+        {/* Rating bintang 1–5 — WAJIB */}
         <div className="flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating 1 sampai 5 bintang">
+          <span className="text-sm font-medium">
+            Beri rating pengalamanmu <span className="text-bear">*</span>
+          </span>
+          <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating 1 sampai 5 bintang (wajib)">
             {PROMPTS.map((p) => (
               <button
                 key={p.value}
@@ -127,7 +130,7 @@ export function TrialFeedbackGate({ trialEndsAt }: { trialEndsAt: string | null 
             ))}
           </div>
           <span className="h-4 text-xs text-muted-foreground">
-            {active ? PROMPTS[active - 1]?.label : "Pilih jumlah bintang"}
+            {active ? PROMPTS[active - 1]?.label : "Wajib — pilih 1 sampai 5 bintang"}
           </span>
         </div>
 
