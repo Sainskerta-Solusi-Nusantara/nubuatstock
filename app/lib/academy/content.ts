@@ -42,6 +42,11 @@ import { sahamFcaModule } from "./modules/saham-fca";
 import { insiderIntegritasModule } from "./modules/insider-integritas";
 import { waranLengkapModule } from "./modules/waran-lengkap";
 import { moneyFlowTimingModule } from "./modules/money-flow-timing";
+import { intermarketKorelasiModule } from "./modules/intermarket-korelasi";
+import { konstruksiPortofolioModule } from "./modules/konstruksi-portofolio";
+import { quantSistematisModule } from "./modules/quant-sistematis";
+import { derivatifHedgingModule } from "./modules/derivatif-hedging";
+import { marketMicrostructureModule } from "./modules/market-microstructure";
 
 export interface AcademyLesson {
   /** Slug unik global (dipakai di URL /academy/[slug] & key localStorage). */
@@ -912,6 +917,11 @@ Untuk berkarier di industri pengelolaan investasi (fund manager, wealth/asset ma
   insiderIntegritasModule,
   waranLengkapModule,
   moneyFlowTimingModule,
+  intermarketKorelasiModule,
+  konstruksiPortofolioModule,
+  quantSistematisModule,
+  derivatifHedgingModule,
+  marketMicrostructureModule,
 ];
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400" font-family="sans-serif">
+  <rect x="0" y="0" width="800" height="400" fill="#ffffff"/>
+
+  <text x="400" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2937">Alokasi Portofolio: Core - Satellite</text>
+
+  <!-- Connector lines from core to satellites -->
+  <g stroke="#cbd5e1" stroke-width="2">
+    <line x1="300" y1="200" x2="170" y2="110"/>
+    <line x1="300" y1="200" x2="170" y2="290"/>
+    <line x1="300" y1="200" x2="440" y2="100"/>
+    <line x1="300" y1="200" x2="440" y2="300"/>
+  </g>
+
+  <!-- Satellites -->
+  <g>
+    <circle cx="150" cy="100" r="48" fill="#22c55e" opacity="0.9"/>
+    <text x="150" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Satelit</text>
+    <text x="150" y="112" text-anchor="middle" font-size="10" fill="#ffffff">Growth</text>
+
+    <circle cx="150" cy="300" r="48" fill="#22c55e" opacity="0.9"/>
+    <text x="150" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Satelit</text>
+    <text x="150" y="312" text-anchor="middle" font-size="10" fill="#ffffff">Tematik</text>
+
+    <circle cx="460" cy="90" r="48" fill="#22c55e" opacity="0.9"/>
+    <text x="460" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Satelit</text>
+    <text x="460" y="102" text-anchor="middle" font-size="10" fill="#ffffff">Siklikal</text>
+
+    <circle cx="460" cy="310" r="48" fill="#22c55e" opacity="0.9"/>
+    <text x="460" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Satelit</text>
+    <text x="460" y="322" text-anchor="middle" font-size="10" fill="#ffffff">Growth</text>
+  </g>
+
+  <!-- Core -->
+  <circle cx="300" cy="200" r="92" fill="#0ea5e9"/>
+  <text x="300" y="190" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">INTI</text>
+  <text x="300" y="212" text-anchor="middle" font-size="12" fill="#ffffff">Blue chip</text>
+  <text x="300" y="230" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">60-70%</text>
+
+  <!-- Satellite group label -->
+  <text x="305" y="378" text-anchor="middle" font-size="12" fill="#1f2937">Satelit - Growth / Tematik (20-30%)</text>
+
+  <!-- Peredam box (separate) -->
+  <rect x="600" y="120" width="170" height="160" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="3"/>
+  <rect x="600" y="120" width="170" height="40" rx="12" fill="#f59e0b"/>
+  <text x="685" y="146" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">PEREDAM</text>
+  <text x="685" y="190" text-anchor="middle" font-size="12" fill="#1f2937">Kas</text>
+  <text x="685" y="212" text-anchor="middle" font-size="12" fill="#1f2937">Obligasi / SBN</text>
+  <text x="685" y="234" text-anchor="middle" font-size="12" fill="#1f2937">Emas</text>
+  <text x="685" y="266" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">10-15%</text>
+</svg>

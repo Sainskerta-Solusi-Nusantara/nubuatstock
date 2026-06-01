@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" font-family="sans-serif">
+  <rect x="0" y="0" width="700" height="420" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="350" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#1f2937">Ilustrasi Order Book (Kedalaman Pasar)</text>
+
+  <!-- Column headers -->
+  <text x="175" y="78" text-anchor="middle" font-size="18" font-weight="bold" fill="#22c55e">BID (Permintaan)</text>
+  <text x="525" y="78" text-anchor="middle" font-size="18" font-weight="bold" fill="#ef4444">OFFER/ASK (Penawaran)</text>
+
+  <!-- Sub headers -->
+  <text x="95" y="104" text-anchor="middle" font-size="13" fill="#1f2937">Harga</text>
+  <text x="255" y="104" text-anchor="middle" font-size="13" fill="#1f2937">Volume (lot)</text>
+  <text x="445" y="104" text-anchor="middle" font-size="13" fill="#1f2937">Harga</text>
+  <text x="605" y="104" text-anchor="middle" font-size="13" fill="#1f2937">Volume (lot)</text>
+
+  <!-- BID rows (green) -->
+  <g>
+    <rect x="30" y="116" width="290" height="34" rx="4" fill="#dcfce7"/>
+    <text x="95" y="139" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.250</text>
+    <text x="255" y="139" text-anchor="middle" font-size="15" fill="#1f2937">3.200</text>
+
+    <rect x="30" y="154" width="290" height="34" rx="4" fill="#dcfce7"/>
+    <text x="95" y="177" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.245</text>
+    <text x="255" y="177" text-anchor="middle" font-size="15" fill="#1f2937">1.800</text>
+
+    <rect x="30" y="192" width="290" height="34" rx="4" fill="#dcfce7"/>
+    <text x="95" y="215" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.240</text>
+    <text x="255" y="215" text-anchor="middle" font-size="15" fill="#1f2937">5.400</text>
+
+    <rect x="30" y="230" width="290" height="34" rx="4" fill="#dcfce7"/>
+    <text x="95" y="253" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.235</text>
+    <text x="255" y="253" text-anchor="middle" font-size="15" fill="#1f2937">2.100</text>
+  </g>
+
+  <!-- ASK rows (red) -->
+  <g>
+    <rect x="380" y="116" width="290" height="34" rx="4" fill="#fee2e2"/>
+    <text x="445" y="139" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.255</text>
+    <text x="605" y="139" text-anchor="middle" font-size="15" fill="#1f2937">2.700</text>
+
+    <rect x="380" y="154" width="290" height="34" rx="4" fill="#fee2e2"/>
+    <text x="445" y="177" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.260</text>
+    <text x="605" y="177" text-anchor="middle" font-size="15" fill="#1f2937">4.100</text>
+
+    <rect x="380" y="192" width="290" height="34" rx="4" fill="#fee2e2"/>
+    <text x="445" y="215" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.265</text>
+    <text x="605" y="215" text-anchor="middle" font-size="15" fill="#1f2937">1.500</text>
+
+    <rect x="380" y="230" width="290" height="34" rx="4" fill="#fee2e2"/>
+    <text x="445" y="253" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f2937">1.270</text>
+    <text x="605" y="253" text-anchor="middle" font-size="15" fill="#1f2937">6.000</text>
+  </g>
+
+  <!-- Center spread band -->
+  <rect x="30" y="300" width="640" height="64" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="350" y="328" text-anchor="middle" font-size="16" font-weight="bold" fill="#1f2937">Bid-Ask Spread</text>
+  <text x="350" y="350" text-anchor="middle" font-size="13" fill="#1f2937">Best Bid 1.250  &#8596;  Best Ask 1.255  (selisih 5 = biaya tersembunyi)</text>
+
+  <!-- Arrows pointing into spread -->
+  <text x="180" y="290" text-anchor="middle" font-size="12" fill="#22c55e">harga tertinggi yang mau dibeli &#8595;</text>
+  <text x="525" y="290" text-anchor="middle" font-size="12" fill="#ef4444">harga terendah yang mau dijual &#8595;</text>
+
+  <!-- Footnote -->
+  <text x="350" y="396" text-anchor="middle" font-size="11" fill="#6b7280">Angka hanya ilustrasi. Aturan & tampilan order book dapat berbeda antar sekuritas.</text>
+</svg>

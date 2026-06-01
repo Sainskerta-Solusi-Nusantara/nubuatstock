@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360" font-family="sans-serif">
+  <rect x="0" y="0" width="800" height="360" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#0ea5e9"/>
+    </marker>
+  </defs>
+
+  <text x="400" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#1f2937">Transmisi Intermarket ke IHSG</text>
+
+  <!-- Left column -->
+  <rect x="30" y="80" width="200" height="64" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="130" y="108" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2937">Suku Bunga Global</text>
+  <text x="130" y="128" text-anchor="middle" font-size="13" fill="#1f2937">US 10Y</text>
+
+  <rect x="30" y="216" width="200" height="64" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="130" y="244" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2937">Harga Komoditas</text>
+  <text x="130" y="264" text-anchor="middle" font-size="13" fill="#1f2937">CPO, batubara, nikel, emas, minyak</text>
+
+  <!-- Middle column -->
+  <rect x="300" y="80" width="200" height="64" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="400" y="118" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2937">Arus Dana Asing</text>
+
+  <rect x="300" y="216" width="200" height="64" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="400" y="254" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2937">USD/IDR</text>
+
+  <!-- Right column -->
+  <rect x="570" y="80" width="200" height="64" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="670" y="118" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2937">IHSG</text>
+
+  <rect x="570" y="216" width="200" height="64" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="670" y="248" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f2937">Emiten Komoditas</text>
+  <text x="670" y="268" text-anchor="middle" font-size="13" fill="#1f2937">IDX</text>
+
+  <!-- Arrows left -> middle -->
+  <line x1="230" y1="112" x2="298" y2="112" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="230" y1="248" x2="298" y2="248" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="230" y1="130" x2="298" y2="232" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Arrows middle -> right -->
+  <line x1="500" y1="112" x2="568" y2="112" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="500" y1="248" x2="568" y2="248" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="500" y1="130" x2="568" y2="100" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="500" y1="230" x2="568" y2="128" stroke="#0ea5e9" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <text x="400" y="334" text-anchor="middle" font-size="12" fill="#1f2937">Edukasi, bukan ajakan jual/beli. Korelasi historis bisa berubah.</text>
+</svg>
