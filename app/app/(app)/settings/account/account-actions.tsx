@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { Download, Loader2, Trash2, Save, KeyRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,9 +40,15 @@ export function ProfileForm({
     if (!canSave) return;
     setSaving(true);
     try {
-      const { error } = await authClient.updateUser({ name: name.trim() });
-      if (error) {
-        toast.error(error.message ?? "Gagal menyimpan nama.");
+      const res = await fetch("/api/account/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name: name.trim() }),
+      });
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.ok) {
+        toast.error(json?.error?.message ?? "Gagal menyimpan nama.");
         return;
       }
       toast.success("Nama berhasil diperbarui.");
@@ -106,17 +111,15 @@ export function ChangePasswordForm() {
     }
     setSaving(true);
     try {
-      const { error } = await authClient.changePassword({
-        currentPassword: current,
-        newPassword: next,
-        revokeOtherSessions: true,
+      const res = await fetch("/api/account/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ currentPassword: current, newPassword: next }),
       });
-      if (error) {
-        // Akun Google-only belum punya password → arahkan ke reset via email.
-        const msg = /password|credential|invalid/i.test(error.message ?? "")
-          ? "Password lama salah, atau akunmu daftar lewat Google sehingga belum punya password. Gunakan 'Lupa password' di halaman login untuk membuat password."
-          : (error.message ?? "Gagal mengubah password.");
-        toast.error(msg);
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.ok) {
+        toast.error(json?.error?.message ?? "Gagal mengubah password.");
         return;
       }
       toast.success("Password berhasil diubah. Sesi lain telah dikeluarkan.");
