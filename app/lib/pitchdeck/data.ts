@@ -8,6 +8,7 @@
 export * from "./problem";
 export * from "./market";
 export * from "./architecture";
+export * from "./tech-stack";
 export * from "./value-props";
 export * from "./financials";
 export * from "./risks";

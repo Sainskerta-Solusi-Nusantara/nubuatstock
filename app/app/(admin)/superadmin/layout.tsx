@@ -50,6 +50,7 @@ export default async function SuperadminLayout({ children }: { children: React.R
               <span>🎯 Pitchdeck</span>
               <span className="rounded-full bg-bull px-1.5 py-0.5 text-[9px] font-bold text-white">NEW</span>
             </Link>
+            <SuperadminNavLink href="/superadmin/architecture">🏗️ Arsitektur Teknis</SuperadminNavLink>
           </nav>
           <div className="mt-8 border-t border-border pt-4">
             <div className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
