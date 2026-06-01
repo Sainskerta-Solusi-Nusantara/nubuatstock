@@ -132,8 +132,25 @@ export function ChatPanel({
           signal: controller.signal,
         });
         if (!res.ok || !res.body) {
+          // Tampilkan pesan ramah dari API (mis. kuota harian habis → ajak upgrade)
+          // alih-alih dump JSON mentah.
           const errText = await res.text();
-          throw new Error(`HTTP ${res.status}: ${errText.slice(0, 200)}`);
+          let friendly = `HTTP ${res.status}`;
+          try {
+            const j = JSON.parse(errText) as { error?: { code?: string; message?: string } };
+            if (j.error?.message) friendly = j.error.message;
+            if (j.error?.code === "QUOTA_EXCEEDED") {
+              friendly =
+                (j.error.message ?? "Kuota harian kamu sudah habis.") +
+                " Upgrade paket di menu Subscription untuk kuota lebih besar.";
+            }
+            if (res.status === 429 && j.error?.code !== "QUOTA_EXCEEDED") {
+              friendly = j.error?.message ?? "Terlalu banyak permintaan. Coba lagi sebentar.";
+            }
+          } catch {
+            friendly = `HTTP ${res.status}: ${errText.slice(0, 160)}`;
+          }
+          throw new Error(friendly);
         }
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
