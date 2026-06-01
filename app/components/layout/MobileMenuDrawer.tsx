@@ -55,6 +55,7 @@ const GROUPS: Group[] = [
   {
     label: "Analisis",
     items: [
+      { href: "/copilot", label: "AI Buddy", icon: Bot },
       { href: "/watchlist", label: "Watchlist", icon: Star },
       { href: "/screener", label: "Screener", icon: Search },
       { href: "/compare", label: "Compare", icon: GitCompareArrows },
@@ -76,7 +77,6 @@ const GROUPS: Group[] = [
   {
     label: "AI & Belajar",
     items: [
-      { href: "/copilot", label: "AI Buddy", icon: Bot },
       { href: "/academy", label: "Academy", icon: GraduationCap },
       { href: "/guidance", label: "Guidance", icon: BookOpen },
       { href: "/help", label: "Help Center", icon: LifeBuoy },

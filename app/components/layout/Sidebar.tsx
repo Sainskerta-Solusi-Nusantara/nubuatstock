@@ -68,6 +68,7 @@ const GROUPS: SidebarGroup[] = [
   {
     label: "Analisis",
     items: [
+      { href: "/copilot", label: "AI Buddy", icon: Bot },
       { href: "/watchlist", label: "Watchlist", icon: Star },
       { href: "/screener", label: "Screener", icon: Search, badge: "NEW" },
       { href: "/compare", label: "Compare", icon: GitCompareArrows, badge: "NEW" },
@@ -89,7 +90,6 @@ const GROUPS: SidebarGroup[] = [
   {
     label: "AI & Belajar",
     items: [
-      { href: "/copilot", label: "AI Buddy", icon: Bot },
       { href: "/academy", label: "Academy", icon: GraduationCap, badge: "NEW" },
       { href: "/guidance", label: "Guidance", icon: BookOpen },
       { href: "/help", label: "Help Center", icon: LifeBuoy, badge: "NEW" },
