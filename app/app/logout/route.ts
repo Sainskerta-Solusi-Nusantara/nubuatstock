@@ -8,7 +8,8 @@ import { recordAuthEvent } from "@/lib/auth/audit";
  * (mis. user mengetik /logout). Sign out via better-auth lalu redirect ke landing.
  *
  * Logout "normal" lewat UI tetap pakai POST /api/auth/logout; route ini cadangan
- * untuk akses URL langsung supaya tidak 404.
+ * untuk akses URL langsung supaya tidak 404. Redirect membawa ?loggedout=1
+ * supaya landing memunculkan toast "Logout berhasil" (lihat LogoutToast).
  */
 export async function GET(req: NextRequest) {
   const base = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin;
@@ -27,5 +28,5 @@ export async function GET(req: NextRequest) {
   } catch {
     // Abaikan error sign-out (mis. sesi sudah invalid) — tetap redirect.
   }
-  return NextResponse.redirect(new URL("/", base));
+  return NextResponse.redirect(new URL("/?loggedout=1", base));
 }

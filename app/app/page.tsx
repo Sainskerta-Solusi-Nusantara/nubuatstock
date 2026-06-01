@@ -12,6 +12,7 @@ import { TrialCTA } from "@/components/landing/TrialCTA";
 import { FAQ } from "@/components/landing/FAQ";
 import { Footer } from "@/components/landing/Footer";
 import { PublicNav } from "@/components/landing/PublicNav";
+import { LogoutToast } from "@/components/landing/LogoutToast";
 import type {
   Stat,
   PainpointItem,
@@ -104,6 +105,7 @@ export default async function LandingPage() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
+      <LogoutToast />
       <PublicNav appName={c.appName} ctaText={c.heroCta1} />
       <Hero
         appName={c.appName}

@@ -43,7 +43,13 @@ import { recordAuthEvent } from "./audit";
  *   cache instance-nya — initial call membaca DB sekali.
  */
 
+// Instance di-rebuild tiap AUTH_TTL_MS supaya perubahan config/secret (mis.
+// kredensial Google OAuth, durasi sesi) kepakai TANPA perlu redeploy. Sebelum
+// ini instance singleton permanen, jadi secret yang di-set setelah cold-start
+// tidak pernah ke-wire sampai instance di-recycle / redeploy.
+const AUTH_TTL_MS = 5 * 60_000;
 let cachedAuth: ReturnType<typeof buildAuth> | null = null;
+let cachedAuthAt = 0;
 let initPromise: Promise<ReturnType<typeof buildAuth>> | null = null;
 
 async function buildAuthAsync() {
@@ -390,21 +396,39 @@ function buildAuth(input: BuildAuthInput) {
   });
 }
 
-export async function getAuth() {
-  if (cachedAuth) return cachedAuth;
+function rebuildAuth() {
   if (!initPromise) {
     initPromise = buildAuthAsync()
       .then((inst) => {
         cachedAuth = inst;
+        cachedAuthAt = Date.now();
         return inst;
       })
       .catch((err) => {
-        initPromise = null;
         logger.error({ err }, "Failed to init better-auth");
         throw err;
+      })
+      .finally(() => {
+        // Lepas dedup promise agar rebuild berikutnya (setelah TTL) bisa jalan.
+        initPromise = null;
       });
   }
   return initPromise;
+}
+
+export async function getAuth() {
+  // Instance masih segar → langsung pakai.
+  if (cachedAuth && Date.now() - cachedAuthAt < AUTH_TTL_MS) return cachedAuth;
+
+  // Instance basi tapi ada → refresh di background (stale-while-revalidate),
+  // request ini tetap dilayani instance lama supaya tak ada lonjakan latensi.
+  if (cachedAuth) {
+    void rebuildAuth().catch(() => {});
+    return cachedAuth;
+  }
+
+  // Belum ada instance sama sekali (cold start) → harus tunggu build pertama.
+  return rebuildAuth();
 }
 
 /**
