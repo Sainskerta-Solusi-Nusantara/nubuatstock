@@ -66,7 +66,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "1.5.0",
-    date: "2026-05-31",
+    date: "2026-05-30",
     title: "Terminal Pro, Paper Trading, Ajak Teman & lainnya",
     items: [
       "Terminal Pro: workspace multi-chart untuk pantau banyak emiten sekaligus.",
@@ -77,7 +77,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "1.4.0",
-    date: "2026-05-29",
+    date: "2026-05-30",
     title: "Elliott Wave & teman-temannya",
     items: [
       "Analisis Elliott Wave per emiten: kamu bisa lihat hitungan wave langsung di chart, lengkap dengan narasi AI yang menjelaskan posisi gelombang saat ini.",
@@ -87,7 +87,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "1.3.0",
-    date: "2026-05-20",
+    date: "2026-05-30",
     title: "Tampil lebih rapi & cepat dikenali",
     items: [
       "Logo emiten kini muncul di daftar dan halaman detail, jadi lebih gampang kamu kenali.",
@@ -96,7 +96,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "1.2.0",
-    date: "2026-05-10",
+    date: "2026-05-30",
     title: "Nyaman dipakai kapan pun",
     items: [
       "Dark mode hadir! Mata kamu aman walau analisis sampai larut malam.",
@@ -105,7 +105,7 @@ export const changelogEntries: ChangelogEntry[] = [
   },
   {
     version: "1.1.0",
-    date: "2026-04-28",
+    date: "2026-05-30",
     title: "Jejak rekomendasi yang transparan",
     items: [
       "Arsip picks: kamu bisa menengok kembali semua rekomendasi sebelumnya beserta hasilnya.",
