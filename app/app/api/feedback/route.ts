@@ -9,6 +9,9 @@ const bodySchema = z.object({
   category: z.enum(["bug", "feature", "billing", "other", "feedback"]).optional(),
   rating: z.number().int().min(1).max(5).optional().nullable(),
   contextUrl: z.string().url().optional().nullable(),
+  // Penanda asal feedback (mis. "trial_gate") — dipakai untuk mendeteksi apakah
+  // user trial sudah memenuhi syarat feedback wajib hari ke-3.
+  source: z.string().max(40).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -51,6 +54,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         userAgent: req.headers.get("user-agent") ?? "unknown",
         referer: req.headers.get("referer"),
+        ...(parsed.source ? { source: parsed.source } : {}),
       },
     });
 

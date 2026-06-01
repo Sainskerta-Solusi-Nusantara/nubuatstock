@@ -8,6 +8,8 @@ import { getConfig, hasSecret } from "@/lib/config";
 import { getUserTier } from "@/lib/billing/entitlements";
 import { AcceptDisclaimerGate } from "@/components/legal/AcceptDisclaimerGate";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
+import { TrialFeedbackGate } from "@/components/trial/TrialFeedbackGate";
+import { getTrialFeedbackGate } from "@/lib/trial/feedback-gate";
 
 // Semua route (app)/* butuh session — tidak boleh statically prerendered.
 export const dynamic = "force-dynamic";
@@ -70,6 +72,13 @@ export default async function AppLayout({
   // Resolve tier aktif user untuk badge "Paket" di Sidebar (fallback "free").
   const tier = userId ? await getUserTier(userId).catch(() => "free") : "free";
 
+  // Gate feedback wajib hari ke-3 untuk user trial (hanya dievaluasi kalau gate
+  // legal sudah lewat — legal punya prioritas). Soft-fail kalau error.
+  const trialFeedback =
+    userId && !needsAcceptance
+      ? await getTrialFeedbackGate(userId).catch(() => ({ required: false, trialEndsAt: null }))
+      : { required: false, trialEndsAt: null };
+
   return (
     <>
       <ThemeScript />
@@ -83,6 +92,9 @@ export default async function AppLayout({
           version={acceptVersion}
           isReAccept={isReAccept}
         />
+      ) : trialFeedback.required ? (
+        // Gate feedback trial hari ke-3 — blocking, tampil di atas onboarding.
+        <TrialFeedbackGate trialEndsAt={trialFeedback.trialEndsAt} />
       ) : (
         // Onboarding tour first-time user — hanya saat gate legal sudah lewat
         // supaya tidak menutupi disclaimer wajib. Tampil sekali via localStorage.
