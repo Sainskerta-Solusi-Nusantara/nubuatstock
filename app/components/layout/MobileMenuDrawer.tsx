@@ -22,6 +22,7 @@ import {
   Menu,
   MessageCircleQuestion,
   Newspaper,
+  PieChart,
   Search,
   Shield,
   Star,
@@ -63,6 +64,7 @@ const GROUPS: Group[] = [
       { href: "/sectors", label: "Sectors", icon: Layers },
       { href: "/rotation", label: "Rotation (RRG)", icon: LineChart },
       { href: "/capital-flow", label: "Capital Flow", icon: Activity },
+      { href: "/ownership", label: "Kepemilikan KSEI", icon: PieChart },
     ],
   },
   {

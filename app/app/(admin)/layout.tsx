@@ -27,6 +27,7 @@ const NAV = [
   { href: "/admin/pricing", label: "Pricing", icon: "•" },
   { href: "/admin/ai-prompts", label: "AI Prompts", icon: "•" },
   { href: "/admin/glossary", label: "Glossary", icon: "•" },
+  { href: "/admin/ksei-ownership", label: "KSEI Ownership", icon: "•" },
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {

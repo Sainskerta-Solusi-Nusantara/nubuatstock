@@ -27,6 +27,7 @@ export * from "./fundamentals"; // Enrichment (Yahoo Finance)
 // - `companies.Dividend` is re-exported under the alias `CompanyDividend`.
 export type { Dividend } from "./fundamentals";
 export type { Dividend as CompanyDividend } from "./companies";
+export * from "./ksei"; // KSEI ownership composition (holding composition)
 export * from "./legal-acceptance"; // Legal compliance audit
 export * from "./market"; // Agent 5
 export * from "./news"; // News & sentiment
