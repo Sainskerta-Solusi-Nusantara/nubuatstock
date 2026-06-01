@@ -204,7 +204,7 @@ export default async function PricingPage() {
               },
               {
                 q: "Apakah ada limit query AI Buddy?",
-                a: "Free: 5 query/hari. Starter: 50 query/hari. Pro: 500 query/hari. Elite: unlimited (fair use policy). Institutional: custom quota.",
+                a: "Free: 5 query/hari. Starter: 30 query/hari. Pro: 100 query/hari. Elite: 300 query/hari. Institutional: custom quota. Reset tiap hari (waktu WIB).",
               },
               {
                 q: "Data real-time atau delayed?",
