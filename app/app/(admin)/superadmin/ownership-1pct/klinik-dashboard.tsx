@@ -264,6 +264,141 @@ function PerInvestorTab({ data }: { data: DashData }) {
   );
 }
 
+/* ---------- Metrik ---------- */
+function titleCase(s: string) {
+  return s ? s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()) : "Unknown";
+}
+
+function MetrikTab({ data }: { data: DashData }) {
+  const m = React.useMemo(() => {
+    let holders = 0, foreign = 0, local = 0;
+    const byType = new Map<string, number>();
+    const inv = new Map<string, { shares: number; value: number; type: string; lf: string; stocks: number }>();
+    for (const e of data.emiten) {
+      for (const h of e.holders) {
+        holders++;
+        if (h.lf === "F") foreign++; else local++;
+        const t = titleCase(h.type);
+        byType.set(t, (byType.get(t) ?? 0) + h.shares);
+        const cur = inv.get(h.name) ?? { shares: 0, value: 0, type: h.type, lf: h.lf, stocks: 0 };
+        cur.shares += h.shares; cur.value += h.value; cur.stocks += 1;
+        inv.set(h.name, cur);
+      }
+    }
+    const types = [...byType.entries()].sort((a, b) => b[1] - a[1]);
+    const totalShares = types.reduce((s, [, v]) => s + v, 0);
+    const topInv = [...inv.entries()].map(([name, v]) => ({ name, ...v })).sort((a, b) => b.shares - a.shares).slice(0, 20);
+    return { holders, foreign, local, unique: inv.size, types, totalShares, topInv };
+  }, [data.emiten]);
+
+  const kpi = [
+    { l: "Total Emiten", v: nf.format(data.emiten.length) },
+    { l: "Record ≥1%", v: nf.format(m.holders) },
+    { l: "Investor Unik", v: nf.format(m.unique) },
+    { l: "Lokal / Asing", v: `${nf.format(m.local)} / ${nf.format(m.foreign)}` },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-4">
+        {kpi.map((k) => (
+          <div key={k.l} className="rounded-lg border border-border bg-card p-3">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{k.l}</div>
+            <div className="mt-0.5 font-mono text-xl font-bold">{k.v}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-lg border border-border bg-card p-3">
+          <div className="mb-2 text-sm font-semibold">Distribusi per Tipe Investor (saham)</div>
+          <div className="space-y-1.5">
+            {m.types.slice(0, 14).map(([t, v]) => {
+              const p = m.totalShares > 0 ? (v / m.totalShares) * 100 : 0;
+              return (
+                <div key={t} className="text-xs">
+                  <div className="flex justify-between"><span>{t}</span><span className="font-mono text-muted-foreground">{p.toFixed(2)}%</span></div>
+                  <div className="mt-0.5 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full bg-primary" style={{ width: `${Math.min(100, p)}%` }} /></div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-border bg-card p-3">
+          <div className="mb-2 text-sm font-semibold">Top 20 Investor (total saham)</div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead className="text-left text-[10px] uppercase text-muted-foreground"><tr><th className="py-1">#</th><th className="py-1">Investor</th><th className="py-1 text-right">Saham</th><th className="py-1 text-right">Nilai</th></tr></thead>
+              <tbody>
+                {m.topInv.map((iv, i) => (
+                  <tr key={iv.name} className="border-t border-border/60">
+                    <td className="py-1 text-muted-foreground">{i + 1}</td>
+                    <td className="py-1 max-w-[14rem] truncate">{iv.name}</td>
+                    <td className="py-1 text-right font-mono">{fmtShares(iv.shares)}</td>
+                    <td className="py-1 text-right font-mono">{iv.value > 0 ? fmtRp(iv.value) : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Klasifikasi (per emiten, % per kategori) ---------- */
+function KlasifikasiTab({ data }: { data: DashData }) {
+  const [q, setQ] = React.useState("");
+  const [open, setOpen] = React.useState<Set<string>>(new Set());
+
+  const rows = React.useMemo(() => {
+    const s = q.trim().toUpperCase();
+    return data.emiten.filter((e) => !s || e.kode.includes(s) || e.name.toUpperCase().includes(s)).slice(0, 150);
+  }, [data.emiten, q]);
+
+  const catOf = (e: DashEmiten) => {
+    const map = new Map<string, number>();
+    for (const h of e.holders) map.set(titleCase(h.type), (map.get(titleCase(h.type)) ?? 0) + h.pct);
+    return [...map.entries()].sort((a, b) => b[1] - a[1]);
+  };
+  const toggle = (k: string) => setOpen((o) => { const n = new Set(o); n.has(k) ? n.delete(k) : n.add(k); return n; });
+
+  return (
+    <div className="space-y-3">
+      <div className="rounded-lg border border-border bg-card p-2">
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari emiten…" className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" />
+      </div>
+      <p className="text-xs text-muted-foreground">% kepemilikan per kategori investor (posisi sekarang). Kolom &ldquo;Sebelumnya/Δ%&rdquo; tersedia setelah ada 2 snapshot.</p>
+      {rows.map((e) => {
+        const cats = catOf(e);
+        const top = cats[0];
+        return (
+          <div key={e.kode} className="overflow-hidden rounded-lg border border-border bg-card">
+            <button onClick={() => toggle(e.kode)} className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-accent/40">
+              <span className="text-muted-foreground">{open.has(e.kode) ? "▼" : "▶"}</span>
+              <span className="rounded bg-bull px-1.5 py-0.5 font-mono text-xs font-bold text-white">{e.kode}</span>
+              <span className="min-w-0 flex-1 truncate text-sm">{e.name}</span>
+              {top && <span className="text-xs text-muted-foreground">{top[0]} <strong className="text-foreground">{top[1].toFixed(2)}%</strong></span>}
+            </button>
+            {open.has(e.kode) && (
+              <div className="space-y-1.5 border-t border-border p-3">
+                {cats.map(([c, p]) => (
+                  <div key={c} className="text-xs">
+                    <div className="flex justify-between"><span>{c}</span><span className="font-mono text-muted-foreground">{p.toFixed(2)}%</span></div>
+                    <div className="mt-0.5 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full bg-bull" style={{ width: `${Math.min(100, p)}%` }} /></div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 /* ---------- Shell ---------- */
 const TABS = ["Ringkasan Saham", "Per Investor", "Konglo Stocks", "Metrik", "Perubahan Data", "Klasifikasi"] as const;
 
@@ -278,9 +413,14 @@ export function KlinikDashboard({ data }: { data: DashData }) {
       </div>
       {tab === "Ringkasan Saham" && <RingkasanTab data={data} />}
       {tab === "Per Investor" && <PerInvestorTab data={data} />}
-      {tab !== "Ringkasan Saham" && tab !== "Per Investor" && (
+      {tab === "Metrik" && <MetrikTab data={data} />}
+      {tab === "Klasifikasi" && <KlasifikasiTab data={data} />}
+      {(tab === "Konglo Stocks" || tab === "Perubahan Data") && (
         <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Tab <strong>{tab}</strong> segera tersedia (Konglo butuh data grup konglomerat; Perubahan butuh 2 snapshot).
+          Tab <strong>{tab}</strong> segera:{" "}
+          {tab === "Konglo Stocks"
+            ? "butuh data mapping grup konglomerat (akan diekstrak dari sumber)."
+            : "butuh minimal 2 snapshot periode KSEI (saat ini baru 1; akan aktif setelah refresh periode berikutnya)."}
         </div>
       )}
     </div>
