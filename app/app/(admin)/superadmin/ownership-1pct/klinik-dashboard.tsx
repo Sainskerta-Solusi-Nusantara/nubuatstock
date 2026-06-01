@@ -85,6 +85,243 @@ function MiniGraph({ center, nodes }: { center: string; nodes: { label: string }
   );
 }
 
+/* ---------- interactive network graph (zoom / pan / hover / fullscreen) ---------- */
+type CrossIndex = Map<string, { kode: string; pct: number }[]>;
+
+function holderColor(h: { type: string; lf: string }): string {
+  if (isBUMN(h.type)) return "#ef4444"; // BUMN
+  if (/INDIVIDUAL/i.test(h.type)) return "#f97316"; // individu
+  if (h.lf === "F") return "#eab308"; // asing
+  return "#10b981"; // korporasi/institusi lokal
+}
+
+function NetworkGraph({
+  center,
+  holders,
+  index,
+}: {
+  center: string;
+  holders: DashHolder[];
+  index: CrossIndex;
+}) {
+  const VB_W = 640, VB_H = 480, cx = VB_W / 2, cy = VB_H / 2;
+  const [scale, setScale] = React.useState(1);
+  const [tr, setTr] = React.useState({ x: 0, y: 0 });
+  const [hover, setHover] = React.useState<string | null>(null);
+  const [full, setFull] = React.useState(false);
+  const drag = React.useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
+  const svgRef = React.useRef<SVGSVGElement>(null);
+
+  // --- layout ---
+  const layout = React.useMemo(() => {
+    const H = holders.slice(0, 16);
+    const R1 = 130;
+    const holderPos = H.map((h, i) => {
+      const a = (i / Math.max(1, H.length)) * Math.PI * 2 - Math.PI / 2;
+      return { x: cx + Math.cos(a) * R1, y: cy + Math.sin(a) * R1, h };
+    });
+    const conn = new Map<string, number>();
+    const hStocks = holderPos.map((hp) => {
+      const list = (index.get(hp.h.name) ?? []).filter((s) => s.kode !== center);
+      const top = [...list].sort((a, b) => b.pct - a.pct).slice(0, 6);
+      top.forEach((s) => conn.set(s.kode, (conn.get(s.kode) ?? 0) + 1));
+      return { hp, stocks: top.map((s) => s.kode) };
+    });
+    const codes = [...conn.keys()].sort((a, b) => (conn.get(b) ?? 0) - (conn.get(a) ?? 0)).slice(0, 30);
+    const codeSet = new Set(codes);
+    const R2 = 215;
+    const stockPos = new Map<string, { x: number; y: number }>();
+    codes.forEach((k, i) => {
+      const a = (i / Math.max(1, codes.length)) * Math.PI * 2 - Math.PI / 2;
+      stockPos.set(k, { x: cx + Math.cos(a) * R2, y: cy + Math.sin(a) * R2 });
+    });
+    return { holderPos, hStocks, codes, codeSet, stockPos };
+  }, [holders, index, center, cx, cy]);
+
+  // --- highlight set when hovering ---
+  const active = React.useMemo(() => {
+    if (!hover) return null;
+    const set = new Set<string>([hover]);
+    if (hover === `c:${center}`) {
+      layout.holderPos.forEach((hp) => set.add(`h:${hp.h.name}`));
+    } else if (hover.startsWith("h:")) {
+      const name = hover.slice(2);
+      set.add(`c:${center}`);
+      layout.hStocks.find((x) => x.hp.h.name === name)?.stocks.forEach((k) => layout.codeSet.has(k) && set.add(`s:${k}`));
+    } else if (hover.startsWith("s:")) {
+      const kode = hover.slice(2);
+      layout.hStocks.forEach((x) => { if (x.stocks.includes(kode)) set.add(`h:${x.hp.h.name}`); });
+    }
+    return set;
+  }, [hover, center, layout]);
+  const dim = (id: string) => active != null && !active.has(id) ? 0.12 : 1;
+
+  // --- interactions ---
+  const toVB = () => {
+    const r = svgRef.current?.getBoundingClientRect();
+    if (!r) return { sx: 1, sy: 1 };
+    return { sx: VB_W / r.width, sy: VB_H / r.height };
+  };
+  const onWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    setScale((s) => Math.min(3, Math.max(0.4, s * (e.deltaY < 0 ? 1.12 : 0.89))));
+  };
+  const onDown = (e: React.PointerEvent) => {
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    drag.current = { x: e.clientX, y: e.clientY, tx: tr.x, ty: tr.y };
+  };
+  const onMove = (e: React.PointerEvent) => {
+    if (!drag.current) return;
+    const { sx, sy } = toVB();
+    setTr({ x: drag.current.tx + (e.clientX - drag.current.x) * sx, y: drag.current.ty + (e.clientY - drag.current.y) * sy });
+  };
+  const onUp = () => { drag.current = null; };
+  const reset = () => { setScale(1); setTr({ x: 0, y: 0 }); };
+
+  const tip = React.useMemo(() => {
+    if (!hover) return null;
+    if (hover.startsWith("h:")) {
+      const name = hover.slice(2);
+      const h = holders.find((x) => x.name === name);
+      if (!h) return null;
+      const others = (index.get(name) ?? []).filter((s) => s.kode !== center).length;
+      const pos = layout.holderPos.find((p) => p.h.name === name)!;
+      return { x: pos.x, y: pos.y, lines: [name, `${typeLabel(h.type)} · ${h.lf === "F" ? "Asing" : "Lokal"}`, `${pct(h.pct)} di ${center}`, others ? `+${others} saham lain` : "hanya di sini"] };
+    }
+    if (hover.startsWith("s:")) {
+      const kode = hover.slice(2);
+      const pos = layout.stockPos.get(kode);
+      if (!pos) return null;
+      const via = layout.hStocks.filter((x) => x.stocks.includes(kode)).map((x) => x.hp.h.name);
+      return { x: pos.x, y: pos.y, lines: [kode, `terhubung via ${via.length} pemegang`, ...via.slice(0, 3).map((n) => "• " + (n.length > 22 ? n.slice(0, 21) + "…" : n))] };
+    }
+    return null;
+  }, [hover, holders, index, center, layout]);
+
+  const graph = (
+    <svg
+      ref={svgRef}
+      viewBox={`0 0 ${VB_W} ${VB_H}`}
+      className="h-full w-full touch-none select-none"
+      style={{ cursor: drag.current ? "grabbing" : "grab" }}
+      onWheel={onWheel}
+      onPointerDown={onDown}
+      onPointerMove={onMove}
+      onPointerUp={onUp}
+      onPointerLeave={() => { onUp(); setHover(null); }}
+    >
+      <g transform={`translate(${tr.x} ${tr.y}) scale(${scale})`}>
+        {/* edges: holder -> stock (dashed) */}
+        {layout.hStocks.flatMap((x) =>
+          x.stocks.filter((k) => layout.codeSet.has(k)).map((k) => {
+            const sp = layout.stockPos.get(k)!;
+            const on = active == null || (active.has(`h:${x.hp.h.name}`) && active.has(`s:${k}`));
+            return <line key={`hs${x.hp.h.name}-${k}`} x1={x.hp.x} y1={x.hp.y} x2={sp.x} y2={sp.y} stroke="currentColor" strokeOpacity={on ? 0.35 : 0.05} strokeDasharray="3 3" />;
+          }),
+        )}
+        {/* edges: center -> holder (solid) */}
+        {layout.holderPos.map((hp, i) => {
+          const on = active == null || (active.has(`c:${center}`) && active.has(`h:${hp.h.name}`));
+          return <line key={`ch${i}`} x1={cx} y1={cy} x2={hp.x} y2={hp.y} stroke="currentColor" strokeOpacity={on ? 0.45 : 0.07} strokeWidth={1.2} />;
+        })}
+        {/* stock pills */}
+        {layout.codes.map((k) => {
+          const p = layout.stockPos.get(k)!;
+          const w = 8 + k.length * 7;
+          return (
+            <g key={`s${k}`} opacity={dim(`s:${k}`)} style={{ cursor: "pointer" }}
+               onPointerEnter={() => setHover(`s:${k}`)} onPointerLeave={() => setHover(null)}>
+              <rect x={p.x - w / 2} y={p.y - 9} width={w} height={18} rx={9} className="fill-sky-500" />
+              <text x={p.x} y={p.y + 3} textAnchor="middle" className="fill-white text-[10px] font-semibold font-mono">{k}</text>
+            </g>
+          );
+        })}
+        {/* holder nodes */}
+        {layout.holderPos.map((hp, i) => {
+          const lab = hp.h.name.length > 22 ? hp.h.name.slice(0, 21) + "…" : hp.h.name;
+          const r = 7 + Math.min(9, hp.h.pct / 4);
+          return (
+            <g key={`h${i}`} opacity={dim(`h:${hp.h.name}`)} style={{ cursor: "pointer" }}
+               onPointerEnter={() => setHover(`h:${hp.h.name}`)} onPointerLeave={() => setHover(null)}>
+              <circle cx={hp.x} cy={hp.y} r={r} fill={holderColor(hp.h)} />
+              <text x={hp.x + r + 3} y={hp.y + 3} className="fill-current text-[9px]">{lab}</text>
+            </g>
+          );
+        })}
+        {/* center */}
+        <g onPointerEnter={() => setHover(`c:${center}`)} onPointerLeave={() => setHover(null)} style={{ cursor: "pointer" }}>
+          <circle cx={cx} cy={cy} r={24} className="fill-primary" />
+          <text x={cx} y={cy + 4} textAnchor="middle" className="fill-primary-foreground text-[11px] font-bold font-mono">{center}</text>
+        </g>
+      </g>
+      {/* tooltip overlay (constant size) */}
+      {tip && (() => {
+        const px = tr.x + tip.x * scale, py = tr.y + tip.y * scale;
+        const w = Math.max(120, ...tip.lines.map((l) => l.length * 5.6)) + 16;
+        const h = 14 + tip.lines.length * 13;
+        const ox = Math.min(VB_W - w - 4, Math.max(4, px + 12));
+        const oy = Math.min(VB_H - h - 4, Math.max(4, py - h / 2));
+        return (
+          <g pointerEvents="none">
+            <rect x={ox} y={oy} width={w} height={h} rx={6} className="fill-popover stroke-border" strokeWidth={1} fillOpacity={0.97} />
+            {tip.lines.map((l, i) => (
+              <text key={i} x={ox + 8} y={oy + 15 + i * 13} className={i === 0 ? "fill-foreground text-[10px] font-bold" : "fill-muted-foreground text-[9.5px]"}>{l}</text>
+            ))}
+          </g>
+        );
+      })()}
+    </svg>
+  );
+
+  const controls = (
+    <div className="absolute right-2 top-2 flex flex-col gap-1">
+      {[
+        { k: "+", fn: () => setScale((s) => Math.min(3, s * 1.2)), t: "Perbesar" },
+        { k: "−", fn: () => setScale((s) => Math.max(0.4, s / 1.2)), t: "Perkecil" },
+        { k: "⟳", fn: reset, t: "Reset" },
+        { k: full ? "✕" : "⛶", fn: () => setFull((f) => !f), t: full ? "Tutup" : "Layar penuh" },
+      ].map((b) => (
+        <button key={b.t} title={b.t} onClick={b.fn}
+          className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card text-sm text-muted-foreground shadow-sm hover:bg-accent hover:text-foreground">
+          {b.k}
+        </button>
+      ))}
+    </div>
+  );
+
+  if (full) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col bg-background/95 p-4 backdrop-blur">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="text-sm font-semibold">Peta Jaringan · {center}</div>
+          <Legend />
+        </div>
+        <div className="relative flex-1 overflow-hidden rounded-lg border border-border text-muted-foreground">
+          {graph}
+          {controls}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="relative h-full min-h-[280px] overflow-hidden rounded-md border border-border text-muted-foreground">
+      {graph}
+      {controls}
+    </div>
+  );
+}
+
+function Legend() {
+  const items = [["#10b981", "Korporasi"], ["#f97316", "Individu"], ["#eab308", "Asing"], ["#ef4444", "BUMN"], ["#0ea5e9", "Saham lain"]];
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground">
+      {items.map(([c, l]) => (
+        <span key={l} className="inline-flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full" style={{ background: c }} />{l}</span>
+      ))}
+    </div>
+  );
+}
+
 /* ---------- Ringkasan Saham ---------- */
 function ffBadge(ff: number) {
   const c = ff < 10 ? "bg-bear/15 text-bear" : ff < 25 ? "bg-amber-500/15 text-amber-600" : "bg-bull/15 text-bull";
@@ -98,6 +335,17 @@ function RingkasanTab({ data }: { data: DashData }) {
   const [ffMax, setFfMax] = React.useState(100);
   const [open, setOpen] = React.useState<Set<string>>(new Set());
   const [page, setPage] = React.useState(1);
+
+  // Index lintas-kepemilikan: nama investor → daftar saham yang dipegang.
+  const investorIndex = React.useMemo<CrossIndex>(() => {
+    const m: CrossIndex = new Map();
+    for (const e of data.emiten) for (const h of e.holders) {
+      const arr = m.get(h.name) ?? [];
+      arr.push({ kode: e.kode, pct: h.pct });
+      m.set(h.name, arr);
+    }
+    return m;
+  }, [data.emiten]);
 
   const filtered = React.useMemo(() => {
     const s = q.trim().toUpperCase();
@@ -140,13 +388,13 @@ function RingkasanTab({ data }: { data: DashData }) {
         <button onClick={() => setOpen(new Set())} className="h-8 rounded-md border border-border px-2.5 text-xs hover:bg-accent">Tutup Semua</button>
       </div>
 
-      {shown.map((e) => <EmitenCard key={e.kode} e={e} open={open.has(e.kode)} onToggle={() => toggle(e.kode)} />)}
+      {shown.map((e) => <EmitenCard key={e.kode} e={e} index={investorIndex} open={open.has(e.kode)} onToggle={() => toggle(e.kode)} />)}
       <Pager page={p} total={filtered.length} onPage={setPage} />
     </div>
   );
 }
 
-function EmitenCard({ e, open, onToggle }: { e: DashEmiten; open: boolean; onToggle: () => void }) {
+function EmitenCard({ e, index, open, onToggle }: { e: DashEmiten; index: CrossIndex; open: boolean; onToggle: () => void }) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-card">
       <button onClick={onToggle} className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-accent/40">
@@ -189,8 +437,9 @@ function EmitenCard({ e, open, onToggle }: { e: DashEmiten; open: boolean; onTog
               </tbody>
             </table>
           </div>
-          <div className="min-h-[280px] rounded-md border border-border text-muted-foreground">
-            <MiniGraph center={e.kode} nodes={e.holders.map((h) => ({ label: h.name }))} />
+          <div className="flex flex-col gap-2">
+            <NetworkGraph center={e.kode} holders={e.holders} index={index} />
+            <Legend />
           </div>
         </div>
       )}

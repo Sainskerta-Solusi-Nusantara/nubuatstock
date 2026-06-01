@@ -422,7 +422,8 @@
       "Bash(sed -i '' 's/text-right font-mono/whitespace-nowrap text-right font-mono/g' \"app/\\(admin\\)/superadmin/ownership-1pct/[kode]/page.tsx\")",
       "Bash([ -f \"$d/.env\" ])",
       "Bash(ls app/node_modules/postgres)",
-      "Bash(ls node_modules/postgres)"
+      "Bash(ls node_modules/postgres)",
+      "Bash(DATABASE_URL='postgres://d:d@d.invalid/d?sslmode=disable' APP_MASTER_KEY='0000000000000000000000000000000000000000000000000000000000000000' BETTER_AUTH_SECRET='x' NEXT_PUBLIC_APP_URL='http://localhost:3000' npx next build)"
     ]
   }
 }
