@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PrintButton } from "@/components/superadmin/PrintButton";
 import { FeaturePdfButton } from "@/components/superadmin/FeaturePdfButton";
+import { ShareLinkCard } from "@/components/pitchdeck/ShareLinkCard";
+import { getPublicPitchdeckUrl } from "@/lib/pitchdeck/share";
 import {
   ARCHITECTURE_LAYERS,
   USER_SCALES,
@@ -34,6 +36,7 @@ export const dynamic = "force-dynamic";
 export default function PitchdeckPage() {
   const projections = buildProjections();
   const breakEvenScale = projections.find((p) => p.netMonthlyIdr >= 0);
+  const shareUrl = getPublicPitchdeckUrl();
 
   return (
     <div className="space-y-8 print:space-y-6">
@@ -51,6 +54,9 @@ export default function PitchdeckPage() {
           <PrintButton />
         </div>
       </div>
+
+      {/* Link berbagi publik — mode slide 16:9 */}
+      <ShareLinkCard url={shareUrl} />
 
       {/* ───────── 0. Problem ───────── */}
       <section>

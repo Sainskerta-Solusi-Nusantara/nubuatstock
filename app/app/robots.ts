@@ -31,7 +31,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", "/saham", "/research", "/privacy", "/terms", "/disclaimer", "/login", "/signup"],
-        disallow: ["/api/", "/admin/", "/superadmin/", "/dashboard", "/watchlist", "/picks", "/alerts", "/copilot", "/subscription"],
+        disallow: ["/api/", "/admin/", "/superadmin/", "/pitchdeck", "/dashboard", "/watchlist", "/picks", "/alerts", "/copilot", "/subscription"],
       },
       // Blokir bot AI/scraper dari seluruh situs.
       { userAgent: aiBots, disallow: "/" },
