@@ -1,5 +1,5 @@
 import { bigint, index, integer, pgTable, real, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
-import { ulid, withTimestamps } from "./_base";
+import { jsonbT, ulid, withTimestamps } from "./_base";
 
 /**
  * Data kepemilikan ≥1% per emiten (sumber: dashboard 1pct.klinikpenyesalan.com,
@@ -64,3 +64,23 @@ export const ownership1pctHolder = pgTable(
 
 export type Ownership1pctEmiten = typeof ownership1pctEmiten.$inferSelect;
 export type Ownership1pctHolder = typeof ownership1pctHolder.$inferSelect;
+
+/**
+ * Data perubahan antar-periode (changelog) dari klinikpenyesalan — disimpan RAW
+ * (jsonb) supaya semua data tersimpan dulu, pemetaan menyusul. Berisi:
+ * changelog{new_stocks,removed_stocks,changes}, summary{topGainers,topLosers,
+ * topHolders,topBoughtStocks,topSoldStocks}, newInvestorNames.
+ */
+export const ownership1pctChangelog = pgTable(
+  "ownership_1pct_changelog",
+  {
+    id: ulid(),
+    currentDate: text("current_date").notNull(),
+    prevDate: text("prev_date"),
+    raw: jsonbT<unknown>("raw").notNull(),
+    fetchedAt: timestamp("fetched_at", { withTimezone: true, mode: "date" }),
+    ...withTimestamps,
+  },
+  (t) => [uniqueIndex("ownership_1pct_changelog_date_uq").on(t.currentDate)],
+);
+export type Ownership1pctChangelog = typeof ownership1pctChangelog.$inferSelect;

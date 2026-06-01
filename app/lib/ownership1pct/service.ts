@@ -2,13 +2,15 @@ import { and, asc, desc, eq, ilike, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import {
+  ownership1pctChangelog,
   ownership1pctEmiten,
   ownership1pctHolder,
+  type Ownership1pctChangelog,
   type Ownership1pctEmiten,
   type Ownership1pctHolder,
 } from "@/db/schema/ownership1pct";
 import { logger } from "@/lib/logger";
-import { fetchOwnership1pct, type Pct1Emiten } from "./fetch";
+import { fetchOwnership1pctAll, type ChangelogData, type Pct1Emiten } from "./fetch";
 
 export const PCT1_SOURCE_URL = "https://1pct.klinikpenyesalan.com/";
 
@@ -80,10 +82,42 @@ export async function ingestOwnership1pct(
   return { emitenCount: emitenRows.length, holderCount: holderRows.length, fetchedAt: now.toISOString() };
 }
 
-/** Fetch dari sumber + ingest. */
-export async function refreshOwnership1pct(): Promise<IngestResult> {
-  const data = await fetchOwnership1pct();
-  return ingestOwnership1pct(data);
+/** Simpan changelog (data perubahan) RAW — idempotent per currentDate. */
+export async function storeChangelog(cl: ChangelogData | null): Promise<boolean> {
+  if (!cl?.currentDate) return false;
+  const now = new Date();
+  await db
+    .insert(ownership1pctChangelog)
+    .values({
+      currentDate: cl.currentDate,
+      prevDate: (cl.prevDate as string | undefined) ?? null,
+      raw: cl,
+      fetchedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: ownership1pctChangelog.currentDate,
+      set: { prevDate: (cl.prevDate as string | undefined) ?? null, raw: cl, fetchedAt: now, updatedAt: now },
+    });
+  logger.info({ currentDate: cl.currentDate }, "ownership1pct changelog stored");
+  return true;
+}
+
+/** Fetch dari sumber + ingest emiten + simpan changelog. */
+export async function refreshOwnership1pct(): Promise<IngestResult & { changelog: boolean }> {
+  const { emiten, changelog } = await fetchOwnership1pctAll();
+  const result = await ingestOwnership1pct(emiten);
+  const stored = await storeChangelog(changelog);
+  return { ...result, changelog: stored };
+}
+
+/** Ambil changelog terbaru (atau per tanggal). */
+export async function getLatestChangelog(): Promise<Ownership1pctChangelog | null> {
+  const rows = await db
+    .select()
+    .from(ownership1pctChangelog)
+    .orderBy(desc(ownership1pctChangelog.currentDate))
+    .limit(1);
+  return rows[0] ?? null;
 }
 
 export interface EmitenListResult {

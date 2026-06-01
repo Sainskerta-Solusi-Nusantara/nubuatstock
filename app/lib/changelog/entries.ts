@@ -21,6 +21,17 @@ export interface ChangelogEntry {
 /** Entry changelog, urut terbaru dulu. */
 export const changelogEntries: ChangelogEntry[] = [
   {
+    version: "1.9.0",
+    date: "2026-06-02",
+    title: "Kepemilikan Saham + Ruang Belajar",
+    items: [
+      "Kepemilikan Saham: lihat komposisi pemegang saham (lokal vs asing) tiap emiten dari data KSEI — ada di menu Analisis paling bawah, bisa dicari & diurutkan A-Z.",
+      "Menu \"AI & Belajar\" kini bernama \"Ruang Belajar\" biar lebih jelas.",
+      "Edit nama profil & ganti password langsung dari Pengaturan → Akun.",
+      "Modul Academy lanjutan baru: korelasi intermarket, konstruksi portofolio, strategi quant, derivatif & hedging, dan market microstructure.",
+    ],
+  },
+  {
     version: "1.8.0",
     date: "2026-05-31",
     title: "Academy makin lengkap + diagram di mana-mana",

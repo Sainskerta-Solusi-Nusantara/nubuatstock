@@ -2,6 +2,7 @@ import { and, desc, eq, ilike, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { kseiOwnership, kseiOwnershipImport, type KseiOwnership } from "@/db/schema/ksei";
+import { ownership1pctEmiten } from "@/db/schema/ownership1pct";
 import { logger } from "@/lib/logger";
 import { parseBalancePos } from "./parse";
 
@@ -89,7 +90,11 @@ export async function listOwnership(opts: {
   sort?: "kode" | "foreign" | "local" | "price";
   page?: number;
   pageSize?: number;
-  /** Hanya emiten saham (kode 4 huruf) — kecualikan obligasi/sukuk/ETF/struktur. Default true. */
+  /**
+   * Hanya emiten saham — kecualikan obligasi/sukuk/ETF/DIRE/EBA. Default true.
+   * Memakai daftar universe saham IDX (tabel ownership_1pct_emiten, ±960 emiten)
+   * agar akurat; fallback ke heuristik kode 4 huruf bila universe kosong.
+   */
   stocksOnly?: boolean;
 }): Promise<OwnershipListResult> {
   const posDate = await getLatestPosDate();
@@ -102,7 +107,17 @@ export async function listOwnership(opts: {
 
   const conds = [eq(kseiOwnership.posDate, posDate)];
   if (q) conds.push(ilike(kseiOwnership.kode, `${q}%`));
-  if (opts.stocksOnly !== false) conds.push(sql`${kseiOwnership.kode} ~ '^[A-Z]{4}$'`);
+  if (opts.stocksOnly !== false) {
+    // Daftar universe saham IDX (jika ada datanya); else fallback heuristik 4 huruf.
+    const hasUniverse = await db
+      .select({ n: sql<number>`count(*)::int` })
+      .from(ownership1pctEmiten);
+    if ((hasUniverse[0]?.n ?? 0) > 0) {
+      conds.push(sql`${kseiOwnership.kode} IN (SELECT kode FROM ownership_1pct_emiten)`);
+    } else {
+      conds.push(sql`${kseiOwnership.kode} ~ '^[A-Z]{4}$'`);
+    }
+  }
   const where = and(...conds);
 
   const orderBy =

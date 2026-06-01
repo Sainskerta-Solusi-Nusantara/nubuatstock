@@ -95,7 +95,7 @@ export default async function OwnershipPage({
         </p>
         {posDate && (
           <p className="mt-1 text-xs text-muted-foreground">
-            Menampilkan {showAll ? "semua efek" : "saham saja (kode 4 huruf)"} ·{" "}
+            Menampilkan {showAll ? "semua efek" : "saham saja"} ·{" "}
             <strong>{total.toLocaleString("id-ID")}</strong>.{" "}
             <Link href={toggleAllHref} className="font-medium text-primary underline">
               {showAll ? "Tampilkan hanya saham" : "Tampilkan semua efek (obligasi, sukuk, ETF, dll)"}
