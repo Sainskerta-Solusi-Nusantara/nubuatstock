@@ -44,7 +44,9 @@ Total ±0,15% beli & ±0,25% jual (beda tiap sekuritas). Selalu cek struktur fee
       title: "Pajak Dividen & Lapor SPT",
       readMinutes: 7,
       summary: "Dividen bisa bebas pajak kalau diinvestasikan kembali; tetap wajib lapor di SPT.",
-      body: `## Pajak dividen (individu dalam negeri)
+      body: `![Ringkas pajak investor: PPh final 0,1% saat jual, dividen 0% jika reinvest atau 10% jika tidak, dan kewajiban lapor SPT](/academy/syariah/pajak-investor.svg)
+
+## Pajak dividen (individu dalam negeri)
 
 Sejak UU Cipta Kerja, **dividen yang diterima Wajib Pajak orang pribadi dalam negeri dapat DIKECUALIKAN dari PPh** dengan syarat **diinvestasikan kembali di Indonesia** dalam jangka waktu & instrumen tertentu sesuai ketentuan.
 

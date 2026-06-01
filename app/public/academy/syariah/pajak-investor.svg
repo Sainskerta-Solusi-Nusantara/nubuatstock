@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Ringkasan pajak investor: PPh final jual, dividen bebas pajak jika reinvest, dan kewajiban lapor SPT">
+  <text x="360" y="32" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Pajak Investor Saham (Ringkas)</text>
+
+  <rect x="40" y="65" width="200" height="150" rx="8" fill="#3b82f6" opacity="0.08" stroke="#3b82f6" stroke-width="1.5" />
+  <text x="140" y="92" fill="#3b82f6" font-size="12.5" font-weight="700" text-anchor="middle">Saat JUAL</text>
+  <text x="140" y="125" fill="#16a34a" font-size="18" font-weight="700" text-anchor="middle">0,1%</text>
+  <text x="140" y="148" fill="#e5e7eb" font-size="11" text-anchor="middle">PPh final dari nilai jual</text>
+  <text x="140" y="172" fill="#999" font-size="10.5" text-anchor="middle">otomatis dipotong</text>
+  <text x="140" y="190" fill="#999" font-size="10.5" text-anchor="middle">tak ada pajak capital</text>
+  <text x="140" y="205" fill="#999" font-size="10.5" text-anchor="middle">gain terpisah</text>
+
+  <rect x="260" y="65" width="200" height="150" rx="8" fill="#16a34a" opacity="0.08" stroke="#16a34a" stroke-width="1.5" />
+  <text x="360" y="92" fill="#16a34a" font-size="12.5" font-weight="700" text-anchor="middle">DIVIDEN</text>
+  <text x="360" y="122" fill="#16a34a" font-size="13" font-weight="700" text-anchor="middle">0% jika reinvest</text>
+  <text x="360" y="142" fill="#e5e7eb" font-size="11" text-anchor="middle">(diinvestasikan kembali</text>
+  <text x="360" y="157" fill="#e5e7eb" font-size="11" text-anchor="middle">sesuai syarat)</text>
+  <text x="360" y="185" fill="#dc2626" font-size="12" font-weight="700" text-anchor="middle">10% jika tidak</text>
+
+  <rect x="480" y="65" width="200" height="150" rx="8" fill="#f59e0b" opacity="0.08" stroke="#f59e0b" stroke-width="1.5" />
+  <text x="580" y="92" fill="#f59e0b" font-size="12.5" font-weight="700" text-anchor="middle">LAPOR SPT</text>
+  <text x="580" y="122" fill="#e5e7eb" font-size="11" text-anchor="middle">Tetap WAJIB lapor:</text>
+  <text x="580" y="146" fill="#999" font-size="10.5" text-anchor="middle">&#8226; harta (nilai portofolio)</text>
+  <text x="580" y="166" fill="#999" font-size="10.5" text-anchor="middle">&#8226; penghasilan final</text>
+  <text x="580" y="190" fill="#f59e0b" font-size="10.5" text-anchor="middle" font-weight="700">lapor &#8800; bayar lagi</text>
+
+  <text x="360" y="265" fill="#999" font-size="11" text-anchor="middle">Edukasi umum — tarif &amp; syarat bisa berubah. Rujuk DJP (pajak.go.id) untuk kepastian.</text>
+</svg>

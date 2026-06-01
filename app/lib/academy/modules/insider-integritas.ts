@@ -34,6 +34,8 @@ Contoh **informasi material**: rencana akuisisi, laporan laba yang belum dirilis
 
 Pelanggaran bisa kena **sanksi administratif (denda besar oleh OJK), pengembalian keuntungan, sampai pidana** (penjara & denda) sesuai UU. Termasuk yang **menyebarkan bocoran** maupun yang **memanfaatkannya**.
 
+![Beda analisis legal berbasis info publik dengan insider trading ilegal berbasis info rahasia](/academy/studi-kasus/insider-legal-illegal.svg)
+
 ## Beda dengan analisis legal
 
 - **Legal:** menganalisis info **publik** (laporan keuangan, berita, data transaksi) — ini yang Academy ajarkan.

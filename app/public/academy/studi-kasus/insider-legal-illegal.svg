@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Beda analisis legal berbasis info publik dengan insider trading ilegal berbasis info rahasia">
+  <text x="360" y="32" fill="#e5e7eb" font-size="14" font-weight="700" text-anchor="middle">Legal vs Ilegal</text>
+
+  <rect x="40" y="60" width="300" height="180" rx="8" fill="#16a34a" opacity="0.08" stroke="#16a34a" stroke-width="2" />
+  <text x="190" y="90" fill="#16a34a" font-size="13" font-weight="700" text-anchor="middle">&#10003; LEGAL — Analisis</text>
+  <text x="60" y="120" fill="#e5e7eb" font-size="11.5">Berbasis info PUBLIK:</text>
+  <text x="70" y="144" fill="#999" font-size="11">&#8226; laporan keuangan</text>
+  <text x="70" y="166" fill="#999" font-size="11">&#8226; berita &amp; keterbukaan</text>
+  <text x="70" y="188" fill="#999" font-size="11">&#8226; data transaksi/broker</text>
+  <text x="70" y="210" fill="#999" font-size="11">&#8226; analisis teknikal</text>
+
+  <rect x="380" y="60" width="300" height="180" rx="8" fill="#dc2626" opacity="0.08" stroke="#dc2626" stroke-width="2" />
+  <text x="530" y="90" fill="#dc2626" font-size="13" font-weight="700" text-anchor="middle">&#10007; ILEGAL — Insider</text>
+  <text x="400" y="120" fill="#e5e7eb" font-size="11.5">Berbasis info RAHASIA:</text>
+  <text x="410" y="144" fill="#999" font-size="11">&#8226; bocoran orang dalam</text>
+  <text x="410" y="166" fill="#999" font-size="11">&#8226; info material belum publik</text>
+  <text x="410" y="192" fill="#dc2626" font-size="11" font-weight="700">Sanksi: denda OJK + pidana</text>
+  <text x="410" y="212" fill="#dc2626" font-size="11" font-weight="700">(penerima bocoran juga kena)</text>
+
+  <text x="360" y="270" fill="#999" font-size="11.5" text-anchor="middle">"Bisikan orang dalam" di grup: kalau benar = kamu ikut melanggar; kalau bohong = kamu dijebak. Abaikan.</text>
+</svg>
