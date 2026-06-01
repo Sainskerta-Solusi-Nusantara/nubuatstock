@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Download, Loader2, Trash2 } from "lucide-react";
+import { Download, Loader2, Trash2, Save, KeyRound } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +18,142 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
+const inputCls =
+  "h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60";
+
+/** Form edit profil — ubah nama tampilan. Email tidak bisa diubah di sini. */
+export function ProfileForm({
+  initialName,
+  email,
+}: {
+  initialName: string;
+  email: string;
+}) {
+  const [name, setName] = useState(initialName);
+  const [saving, setSaving] = useState(false);
+  const router = useRouter();
+
+  const dirty = name.trim() !== initialName.trim();
+  const canSave = dirty && name.trim().length >= 2 && !saving;
+
+  const handleSave = async () => {
+    if (!canSave) return;
+    setSaving(true);
+    try {
+      const { error } = await authClient.updateUser({ name: name.trim() });
+      if (error) {
+        toast.error(error.message ?? "Gagal menyimpan nama.");
+        return;
+      }
+      toast.success("Nama berhasil diperbarui.");
+      router.refresh();
+    } catch {
+      toast.error("Terjadi kesalahan saat menyimpan.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1.5">
+        <label htmlFor="profile-name" className="text-sm font-medium">
+          Nama tampilan
+        </label>
+        <input
+          id="profile-name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          maxLength={80}
+          placeholder="Nama kamu"
+          className={inputCls}
+        />
+      </div>
+      <div className="space-y-1.5">
+        <label htmlFor="profile-email" className="text-sm font-medium">
+          Email
+        </label>
+        <input id="profile-email" value={email} readOnly disabled className={inputCls} />
+        <p className="text-xs text-muted-foreground">Email tidak dapat diubah.</p>
+      </div>
+      <Button onClick={handleSave} disabled={!canSave}>
+        {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+        Simpan perubahan
+      </Button>
+    </div>
+  );
+}
+
+/** Form ganti password (akun email/password). User Google-only akan dapat pesan jelas. */
+export function ChangePasswordForm() {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const canSave =
+    current.length >= 1 && next.length >= 8 && confirm.length >= 1 && !saving;
+
+  const handleSave = async () => {
+    if (next !== confirm) {
+      toast.error("Konfirmasi password tidak cocok.");
+      return;
+    }
+    if (next.length < 8) {
+      toast.error("Password baru minimal 8 karakter.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const { error } = await authClient.changePassword({
+        currentPassword: current,
+        newPassword: next,
+        revokeOtherSessions: true,
+      });
+      if (error) {
+        // Akun Google-only belum punya password → arahkan ke reset via email.
+        const msg = /password|credential|invalid/i.test(error.message ?? "")
+          ? "Password lama salah, atau akunmu daftar lewat Google sehingga belum punya password. Gunakan 'Lupa password' di halaman login untuk membuat password."
+          : (error.message ?? "Gagal mengubah password.");
+        toast.error(msg);
+        return;
+      }
+      toast.success("Password berhasil diubah. Sesi lain telah dikeluarkan.");
+      setCurrent("");
+      setNext("");
+      setConfirm("");
+    } catch {
+      toast.error("Terjadi kesalahan saat mengubah password.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1.5">
+        <label htmlFor="pw-current" className="text-sm font-medium">Password saat ini</label>
+        <input id="pw-current" type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} className={inputCls} />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <label htmlFor="pw-new" className="text-sm font-medium">Password baru</label>
+          <input id="pw-new" type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} className={inputCls} />
+          <p className="text-xs text-muted-foreground">Minimal 8 karakter.</p>
+        </div>
+        <div className="space-y-1.5">
+          <label htmlFor="pw-confirm" className="text-sm font-medium">Ulangi password baru</label>
+          <input id="pw-confirm" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inputCls} />
+        </div>
+      </div>
+      <Button onClick={handleSave} disabled={!canSave}>
+        {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <KeyRound className="mr-2 h-4 w-4" />}
+        Ubah password
+      </Button>
+    </div>
+  );
+}
 
 /** Tombol "Ekspor data saya" — mengunduh dump JSON dari /api/account/export. */
 export function ExportDataButton() {

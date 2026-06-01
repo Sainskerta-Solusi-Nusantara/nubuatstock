@@ -12,6 +12,8 @@ import { DELETION_GRACE_DAYS } from "@/lib/account/delete";
 import {
   DeleteAccountButton,
   ExportDataButton,
+  ProfileForm,
+  ChangePasswordForm,
 } from "./account-actions";
 
 /**
@@ -28,15 +30,38 @@ export default async function AccountSettingsPage() {
   if (!session) {
     redirect("/login?next=/settings/account");
   }
+  const u = session.user as { name?: string; email?: string };
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8 space-y-8 sm:py-10">
       <header>
-        <h1 className="text-2xl font-bold sm:text-3xl">Akun &amp; Privasi</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Profil &amp; Akun</h1>
         <p className="text-muted-foreground">
-          Kelola data pribadi kamu sesuai UU Perlindungan Data Pribadi.
+          Kelola profil, keamanan, dan data pribadi kamu.
         </p>
       </header>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Profil</CardTitle>
+          <CardDescription>Ubah nama tampilan kamu di Nubuat.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProfileForm initialName={u.name ?? ""} email={u.email ?? ""} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Keamanan — Ubah password</CardTitle>
+          <CardDescription>
+            Ganti password akun kamu. Demi keamanan, sesi lain akan otomatis dikeluarkan.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ChangePasswordForm />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
