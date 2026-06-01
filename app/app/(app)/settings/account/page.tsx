@@ -5,10 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { headers } from "next/headers";
 import { DELETION_GRACE_DAYS } from "@/lib/account/delete";
 import { getSession } from "@/lib/auth";
-import { DiagSession } from "@/components/DiagSession";
 import {
   DeleteAccountButton,
   ExportDataButton,
@@ -31,22 +29,8 @@ export default async function AccountSettingsPage() {
   // lintas user (beda dengan endpoint GET yang sempat bocorkan data user lain).
   const session = await getSession();
   const u = (session?.user ?? {}) as { name?: string; email?: string };
-  const hdrs = await headers();
-  const cookieHeader = hdrs.get("cookie") ?? "";
-  const rscCookieNames = cookieHeader
-    .split(";")
-    .map((c) => c.split("=")[0]?.trim())
-    .filter(Boolean);
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8 space-y-8 sm:py-10">
-      <div className="rounded-md border border-amber-500 bg-amber-50 p-3 text-[11px] font-mono text-amber-900">
-        <div className="font-semibold">DIAG SEMENTARA (akan dihapus)</div>
-        <div className="break-all">
-          RSC getSession: hasSession={String(!!session)} · email={u.email ?? "-"} ·
-          cookies[{rscCookieNames.length}]={rscCookieNames.join(", ") || "(kosong)"}
-        </div>
-        <DiagSession />
-      </div>
       <header>
         <h1 className="text-2xl font-bold sm:text-3xl">Profil &amp; Akun</h1>
         <p className="text-muted-foreground">

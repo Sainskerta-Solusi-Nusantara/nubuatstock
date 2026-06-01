@@ -13,6 +13,17 @@ import { recordAuthEvent } from "@/lib/auth/audit";
  */
 export async function GET(req: NextRequest) {
   const base = process.env.NEXT_PUBLIC_APP_URL ?? new URL(req.url).origin;
+
+  // PENTING: jangan logout untuk request PREFETCH/speculative (Next.js Link
+  // prefetch, browser speculation rules). Tanpa guard ini, sekadar membuka
+  // dropdown akun (link logout masuk viewport) memicu prefetch GET /logout →
+  // user ter-logout tanpa klik. Hanya navigasi NYATA yang boleh sign-out.
+  const purpose = (req.headers.get("sec-purpose") ?? req.headers.get("purpose") ?? "").toLowerCase();
+  const isPrefetch = purpose.includes("prefetch") || req.headers.get("next-router-prefetch") === "1";
+  if (isPrefetch) {
+    return NextResponse.redirect(new URL("/", base));
+  }
+
   try {
     const session = await getSession();
     const auth = await getAuth();

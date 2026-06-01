@@ -137,7 +137,9 @@ export function Header({ user, locale = "id" }: HeaderProps) {
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/logout">
+            {/* prefetch={false} WAJIB: tanpa ini Next.js mem-prefetch GET /logout
+                saat dropdown terbuka → user otomatis ter-logout (cookie sesi dihapus). */}
+            <Link href="/logout" prefetch={false}>
               <LogOut aria-hidden /> Logout
             </Link>
           </DropdownMenuItem>
