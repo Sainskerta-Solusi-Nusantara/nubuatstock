@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" role="img" aria-label="Dua keluarga instrumen emas: pelacak harga emas (GLD, spot, futures) dan pelacak saham penambang (GDX, GDXJ, HUI, XAU), serta kaitannya ke saham emas IDX">
+  <rect x="0" y="0" width="720" height="400" fill="#ffffff"/>
+  <text x="360" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Dua Keluarga Instrumen Emas</text>
+  <text x="360" y="50" text-anchor="middle" font-size="12" fill="#64748b">"Indeks emas" bisa berarti dua hal yang berbeda</text>
+
+  <!-- LEFT: tracks gold PRICE -->
+  <rect x="32" y="68" width="312" height="190" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="188" y="94" text-anchor="middle" font-size="14" font-weight="700" fill="#b45309">A. Melacak HARGA emas</text>
+  <text x="188" y="112" text-anchor="middle" font-size="11" fill="#a16207">naik-turun ≈ persis harga emas</text>
+  <g font-size="12" fill="#713f12">
+    <text x="50" y="138">• Spot XAU/USD — harga pasar global</text>
+    <text x="50" y="160">• LBMA Gold Price — fixing London (AM/PM)</text>
+    <text x="50" y="182">• COMEX Gold Futures (GC) — kontrak berjangka</text>
+    <text x="50" y="204">• GLD (SPDR Gold Shares) — ETF emas fisik</text>
+    <text x="50" y="226">• IAU (iShares Gold Trust) — ETF emas fisik</text>
+  </g>
+  <text x="188" y="248" text-anchor="middle" font-size="10" fill="#a16207">Pergerakan relatif lebih kalem</text>
+
+  <!-- RIGHT: tracks MINER stocks -->
+  <rect x="376" y="68" width="312" height="190" rx="10" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="532" y="94" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">B. Melacak SAHAM penambang</text>
+  <text x="532" y="112" text-anchor="middle" font-size="11" fill="#a16207">indeks/ETF saham produsen emas</text>
+  <g font-size="12" fill="#713f12">
+    <text x="394" y="138">• GDX (VanEck Gold Miners) ← yang kamu maksud</text>
+    <text x="394" y="160">• GDXJ (VanEck Junior Gold Miners)</text>
+    <text x="394" y="182">• HUI (NYSE Arca Gold BUGS Index)</text>
+    <text x="394" y="204">• XAU (PHLX Gold/Silver Sector Index)</text>
+    <text x="394" y="226">• NYSE Arca Gold Miners Index (acuan GDX)</text>
+  </g>
+  <text x="532" y="248" text-anchor="middle" font-size="10" fill="#b45309">Lebih volatil (operating leverage)</text>
+
+  <!-- arrows down to IDX -->
+  <g stroke="#d97706" stroke-width="2" marker-end="url(#ag)">
+    <line x1="188" y1="258" x2="300" y2="296"/>
+    <line x1="532" y1="258" x2="420" y2="296"/>
+  </g>
+  <defs><marker id="ag" markerWidth="9" markerHeight="9" refX="5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#d97706"/></marker></defs>
+
+  <rect x="120" y="300" width="480" height="80" rx="10" fill="#fefce8" stroke="#fde68a"/>
+  <text x="360" y="326" text-anchor="middle" font-size="13" font-weight="700" fill="#854d0e">Proxy untuk saham emas IDX</text>
+  <text x="360" y="348" text-anchor="middle" font-size="12" fill="#713f12">GDX/HUI = barometer sentimen global penambang emas →</text>
+  <text x="360" y="366" text-anchor="middle" font-size="12" fill="#713f12">bandingkan dengan ANTM, MDKA, AMMN, BRMS, ARCI, HRTA.</text>
+</svg>

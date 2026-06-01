@@ -80,6 +80,7 @@ MSCI meninjau indeksnya secara berkala: **review besar tiap Mei & November**, da
 
 ## Kaitan dengan Arus Asing IDX
 
+
 Pergerakan dana asing (foreign net buy/sell) di IDX sebagian besar didorong oleh keputusan alokasi EM global — yang berpatokan ke MSCI. Saat Indonesia dapat **kenaikan bobot** di MSCI EM, arus masuk cenderung deras; saat bobot dipangkas, sebaliknya.`,
     },
     {
@@ -152,8 +153,8 @@ Free float = sisi lain dari **konsentrasi kepemilikan**. Makin terkonsentrasi di
     {
       slug: "ig-emas-komoditas",
       title: "Indeks Emas & Komoditas: Safe Haven",
-      readMinutes: 7,
-      summary: "Emas naik saat pasar panik (risk-off); pahami pendorongnya dan kaitannya ke saham tambang emas IDX.",
+      readMinutes: 9,
+      summary: "Emas naik saat panik (risk-off); kenali instrumennya (GLD vs GDX/VanEck Gold Miners) dan kaitannya ke saham tambang emas IDX.",
       body: `## Emas Sebagai "Safe Haven"
 
 Saat pasar gelisah, investor global lari ke aset yang dianggap aman — terutama **emas**. Harga emas internasional diacu lewat **harga spot XAU/USD** (London/LBMA), dan komoditas lain dirangkum indeks seperti **S&P GSCI** atau **Bloomberg Commodity Index**.
@@ -171,6 +172,31 @@ Saat pasar gelisah, investor global lari ke aset yang dianggap aman — terutama
 2. **Dolar AS (DXY)** — emas dihargai dalam dolar; dolar **melemah** → emas cenderung **naik**.
 3. **Geopolitik & ketidakpastian** — perang, krisis, ketegangan dagang menaikkan permintaan safe haven.
 4. **Inflasi** — emas sering dipakai lindung nilai (hedge) terhadap inflasi.
+
+## "Indeks Emas" Itu yang Mana? (GLD vs GDX)
+
+Hati-hati — istilah "indeks emas" sering rancu, karena ada **dua keluarga instrumen** yang berbeda perilakunya:
+
+![Dua keluarga instrumen emas: pelacak harga emas (GLD, spot, futures) vs pelacak saham penambang (GDX, GDXJ, HUI, XAU), dan kaitannya ke saham emas IDX](/academy/indeks/emas-instrumen.svg)
+
+### A. Melacak HARGA emas (logam fisik)
+
+- **Spot XAU/USD** — harga pasar emas global, real-time.
+- **LBMA Gold Price** — harga acuan resmi (fixing London, sesi AM & PM).
+- **COMEX Gold Futures (GC)** — kontrak berjangka emas (AS).
+- **GLD (SPDR Gold Shares)** & **IAU (iShares Gold Trust)** — ETF yang memegang emas fisik; harganya ≈ persis mengikuti harga emas.
+
+### B. Melacak SAHAM penambang emas
+
+- **GDX (VanEck Gold Miners ETF)** — **inilah yang sering disebut "indeks emas".** Padahal GDX melacak **NYSE Arca Gold Miners Index**, isinya **saham produsen emas besar dunia** (Newmont, Barrick, Agnico, dll) — bukan emasnya, tapi perusahaannya.
+- **GDXJ (VanEck Junior Gold Miners ETF)** — penambang skala kecil/menengah; lebih agresif & volatil.
+- **HUI (NYSE Arca Gold BUGS Index)** & **XAU (PHLX Gold/Silver Sector Index)** — indeks saham penambang emas/perak.
+
+> **Beda penting:** GDX bergerak **lebih liar** daripada harga emas itu sendiri. Saat emas naik 5%, laba penambang bisa melonjak jauh lebih besar (*operating leverage*) — tapi juga jatuh lebih dalam saat emas turun. GDX juga kena faktor biaya produksi, utang, dan risiko negara lokasi tambang. Jadi GDX ≠ GLD.
+
+### Kenapa berguna buat investor IDX
+
+**GDX/HUI adalah barometer sentimen global** terhadap saham penambang emas. Saat GDX tren naik, selera global pada saham emas (termasuk emiten IDX) biasanya ikut hangat. Pakai sebagai **konteks**, lalu tetap cek fundamental emiten lokalnya.
 
 ## Kaitan ke Saham IDX
 
