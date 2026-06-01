@@ -241,7 +241,14 @@ function buildAuth(input: BuildAuthInput) {
         secure: env.NODE_ENV === "production",
       },
       cookiePrefix: "nubuat",
-      useSecureCookies: env.NODE_ENV === "production",
+      // useSecureCookies DIMATIKAN: ini menambah prefix `__Secure-` ke nama cookie,
+      // yang punya syarat ketat & ternyata bikin sebagian browser/proxy diam-diam
+      // TIDAK menyimpan cookie sesi (server kirim valid, tapi browser tolak → user
+      // "belum login" padahal sudah login). Cookie tetap Secure via
+      // defaultCookieAttributes.secure di atas — hanya namanya tanpa prefix
+      // (nubuat.session_token). Mengubah ini meng-invalidate cookie lama → user
+      // login ulang sekali.
+      useSecureCookies: false,
     },
     user: {
       additionalFields: {
