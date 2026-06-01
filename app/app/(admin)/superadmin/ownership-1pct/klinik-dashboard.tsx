@@ -630,46 +630,108 @@ function MetrikTab({ data }: { data: DashData }) {
   );
 }
 
-/* ---------- Klasifikasi (per emiten, % per kategori) ---------- */
+/* ---------- Klasifikasi (komposisi 9-tipe investor KSEI) ---------- */
+const KSEI_COLOR: Record<string, string> = {
+  ID: "#f97316", CP: "#10b981", MF: "#6366f1", IB: "#0ea5e9", IS: "#ec4899",
+  PF: "#14b8a6", SC: "#eab308", FD: "#a855f7", OT: "#94a3b8",
+};
+const kColor = (k: string) => KSEI_COLOR[k] ?? "#94a3b8";
+
+function StackedBar({ types }: { types: { key: string; pct: number; label: string }[] }) {
+  return (
+    <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-secondary">
+      {types.map((t) => (
+        <div key={t.key} title={`${t.label} ${t.pct.toFixed(2)}%`} style={{ width: `${t.pct}%`, background: kColor(t.key) }} />
+      ))}
+    </div>
+  );
+}
+
 function KlasifikasiTab({ data }: { data: DashData }) {
   const [q, setQ] = React.useState("");
+  const [page, setPage] = React.useState(1);
   const [open, setOpen] = React.useState<Set<string>>(new Set());
 
-  const rows = React.useMemo(() => {
-    const s = q.trim().toUpperCase();
-    return data.emiten.filter((e) => !s || e.kode.includes(s) || e.name.toUpperCase().includes(s)).slice(0, 150);
-  }, [data.emiten, q]);
+  const withKsei = React.useMemo(() => data.emiten.filter((e) => e.ksei), [data.emiten]);
 
-  const catOf = (e: DashEmiten) => {
-    const map = new Map<string, number>();
-    for (const h of e.holders) map.set(titleCase(h.type), (map.get(titleCase(h.type)) ?? 0) + h.pct);
-    return [...map.entries()].sort((a, b) => b[1] - a[1]);
-  };
+  // Agregat pasar: gabung saham per tipe lintas semua emiten.
+  const agg = React.useMemo(() => {
+    const m = new Map<string, { label: string; shares: number }>();
+    let grand = 0;
+    for (const e of withKsei) for (const t of e.ksei!.types) {
+      const cur = m.get(t.key) ?? { label: t.label, shares: 0 };
+      cur.shares += t.shares; m.set(t.key, cur); grand += t.shares;
+    }
+    return [...m.entries()]
+      .map(([key, v]) => ({ key, label: v.label, pct: grand ? (v.shares / grand) * 100 : 0, shares: v.shares }))
+      .sort((a, b) => b.pct - a.pct);
+  }, [withKsei]);
+
+  const filtered = React.useMemo(() => {
+    const s = q.trim().toUpperCase();
+    return withKsei.filter((e) => !s || e.kode.includes(s) || e.name.toUpperCase().includes(s));
+  }, [withKsei, q]);
+  const totalP = Math.max(1, Math.ceil(filtered.length / LIST_PAGE));
+  const p = Math.min(page, totalP);
+  const shown = filtered.slice((p - 1) * LIST_PAGE, p * LIST_PAGE);
   const toggle = (k: string) => setOpen((o) => { const n = new Set(o); n.has(k) ? n.delete(k) : n.add(k); return n; });
+
+  if (withKsei.length === 0) {
+    return <p className="rounded-lg border border-border bg-card p-6 text-center text-sm text-muted-foreground">Data komposisi KSEI belum tersedia. Unggah file BalancePos dulu.</p>;
+  }
 
   return (
     <div className="space-y-3">
-      <div className="rounded-lg border border-border bg-card p-2">
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari emiten…" className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" />
+      <p className="text-xs text-muted-foreground">
+        Komposisi <strong>9 tipe investor KSEI</strong> (sumber: BalancePos) — mencakup <strong>100% saham</strong>, beda dengan tab lain yang hanya pemegang ≥1%. % dari total saham tercatat di KSEI.
+      </p>
+
+      {/* Agregat pasar */}
+      <div className="rounded-lg border border-border bg-card p-3">
+        <div className="mb-2 text-sm font-semibold">Komposisi Agregat ({withKsei.length} emiten)</div>
+        <StackedBar types={agg} />
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
+          {agg.map((t) => (
+            <span key={t.key} className="inline-flex items-center gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-sm" style={{ background: kColor(t.key) }} />
+              {t.label} <strong className="font-mono">{t.pct.toFixed(1)}%</strong>
+            </span>
+          ))}
+        </div>
       </div>
-      <p className="text-xs text-muted-foreground">% kepemilikan per kategori investor (posisi sekarang). Kolom &ldquo;Sebelumnya/Δ%&rdquo; tersedia setelah ada 2 snapshot.</p>
-      {rows.map((e) => {
-        const cats = catOf(e);
-        const top = cats[0];
+
+      <div className="rounded-lg border border-border bg-card p-2">
+        <input value={q} onChange={(e) => { setQ(e.target.value); setPage(1); }} placeholder="Cari emiten…" className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" />
+      </div>
+
+      {shown.map((e) => {
+        const k = e.ksei!;
+        const top = k.types[0];
         return (
           <div key={e.kode} className="overflow-hidden rounded-lg border border-border bg-card">
             <button onClick={() => toggle(e.kode)} className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-accent/40">
               <span className="text-muted-foreground">{open.has(e.kode) ? "▼" : "▶"}</span>
               <span className="rounded bg-bull px-1.5 py-0.5 font-mono text-xs font-bold text-white">{e.kode}</span>
-              <span className="min-w-0 flex-1 truncate text-sm">{e.name}</span>
-              {top && <span className="text-xs text-muted-foreground">{top[0]} <strong className="text-foreground">{top[1].toFixed(2)}%</strong></span>}
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm">{e.name}</div>
+                <div className="mt-1"><StackedBar types={k.types} /></div>
+              </div>
+              <div className="hidden text-right text-[11px] sm:block">
+                {top && <div>{top.label} <strong className="text-foreground">{top.pct.toFixed(1)}%</strong></div>}
+                <div className="text-muted-foreground">Lokal {k.localPct.toFixed(1)}% · Asing {k.foreignPct.toFixed(1)}%</div>
+              </div>
             </button>
             {open.has(e.kode) && (
-              <div className="space-y-1.5 border-t border-border p-3">
-                {cats.map(([c, p]) => (
-                  <div key={c} className="text-xs">
-                    <div className="flex justify-between"><span>{c}</span><span className="font-mono text-muted-foreground">{p.toFixed(2)}%</span></div>
-                    <div className="mt-0.5 h-1.5 overflow-hidden rounded-full bg-secondary"><div className="h-full bg-bull" style={{ width: `${Math.min(100, p)}%` }} /></div>
+              <div className="space-y-2 border-t border-border p-3">
+                {k.types.map((t) => (
+                  <div key={t.key} className="text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm" style={{ background: kColor(t.key) }} />{t.label}</span>
+                      <span className="font-mono">{t.pct.toFixed(2)}% <span className="text-muted-foreground">({fmtShares(t.shares)})</span></span>
+                    </div>
+                    {(t.localShares > 0 || t.foreignShares > 0) && (
+                      <div className="pl-4 text-[10px] text-muted-foreground">Lokal {fmtShares(t.localShares)} · Asing {fmtShares(t.foreignShares)}</div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -677,6 +739,7 @@ function KlasifikasiTab({ data }: { data: DashData }) {
           </div>
         );
       })}
+      <Pager page={p} total={filtered.length} onPage={setPage} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   type Ownership1pctEmiten,
   type Ownership1pctHolder,
 } from "@/db/schema/ownership1pct";
+import type { KseiBreakdown } from "@/db/schema/ksei";
 import { logger } from "@/lib/logger";
 import { fetchOwnership1pctAll, type ChangelogData, type Pct1Emiten } from "./fetch";
 
@@ -200,6 +201,21 @@ export interface DashHolder {
   pct: number;
   value: number; // shares * price KSEI
 }
+/** Komposisi 9-tipe investor KSEI (sumber: BalancePos), % dari total saham. */
+export interface KseiCompType {
+  key: string; // ID/CP/MF/IB/IS/PF/SC/FD/OT
+  label: string;
+  shares: number; // lokal + asing
+  localShares: number;
+  foreignShares: number;
+  pct: number; // % dari total komposisi
+}
+export interface KseiComp {
+  total: number; // total saham (lokal+asing) di komposisi KSEI
+  localPct: number;
+  foreignPct: number;
+  types: KseiCompType[]; // urut % desc
+}
 export interface DashEmiten {
   kode: string;
   name: string;
@@ -211,6 +227,7 @@ export interface DashEmiten {
   price: number;
   marketCap: number;
   holders: DashHolder[];
+  ksei: KseiComp | null; // komposisi 9-tipe KSEI (Klasifikasi)
 }
 export interface DashData {
   emiten: DashEmiten[];
@@ -223,15 +240,42 @@ export interface DashData {
 export async function getKlinikDashboardData(): Promise<DashData> {
   const { kseiOwnership } = await import("@/db/schema/ksei");
   const { getLatestPosDate } = await import("@/lib/ksei/service");
+  const { KSEI_TYPE_LABELS } = await import("@/lib/ksei/parse");
   const latestKsei = await getLatestPosDate();
 
   const [emitenRows, holderRows, priceRows] = await Promise.all([
     db.select().from(ownership1pctEmiten),
     db.select().from(ownership1pctHolder).orderBy(asc(ownership1pctHolder.rank)),
     latestKsei
-      ? db.select({ kode: kseiOwnership.kode, price: kseiOwnership.priceIdr, secNum: kseiOwnership.secNum }).from(kseiOwnership).where(eq(kseiOwnership.posDate, latestKsei))
-      : Promise.resolve([] as { kode: string; price: number; secNum: number }[]),
+      ? db.select({
+          kode: kseiOwnership.kode, price: kseiOwnership.priceIdr, secNum: kseiOwnership.secNum,
+          local: kseiOwnership.local, foreign: kseiOwnership.foreign,
+          localTotal: kseiOwnership.localTotal, foreignTotal: kseiOwnership.foreignTotal,
+        }).from(kseiOwnership).where(eq(kseiOwnership.posDate, latestKsei))
+      : Promise.resolve([] as {
+          kode: string; price: number; secNum: number;
+          local: KseiBreakdown; foreign: KseiBreakdown; localTotal: number; foreignTotal: number;
+        }[]),
   ]);
+
+  // Urutan tampil tipe KSEI (key) — KSEI_TYPE_LABELS sudah punya label ID.
+  const TYPE_KEYS = Object.keys(KSEI_TYPE_LABELS) as (keyof typeof KSEI_TYPE_LABELS)[];
+  const buildComp = (r: { local: KseiBreakdown; foreign: KseiBreakdown; localTotal: number; foreignTotal: number }): KseiComp | null => {
+    const total = (r.localTotal ?? 0) + (r.foreignTotal ?? 0);
+    if (total <= 0) return null;
+    const types: KseiCompType[] = TYPE_KEYS.map((k) => {
+      const localShares = r.local?.[k] ?? 0;
+      const foreignShares = r.foreign?.[k] ?? 0;
+      const shares = localShares + foreignShares;
+      return { key: k, label: KSEI_TYPE_LABELS[k], shares, localShares, foreignShares, pct: (shares / total) * 100 };
+    }).filter((t) => t.shares > 0).sort((a, b) => b.pct - a.pct);
+    return {
+      total,
+      localPct: (r.localTotal / total) * 100,
+      foreignPct: (r.foreignTotal / total) * 100,
+      types,
+    };
+  };
 
   const priceMap = new Map(priceRows.map((p) => [p.kode, p]));
   const holdersByKode = new Map<string, DashHolder[]>();
@@ -266,6 +310,7 @@ export async function getKlinikDashboardData(): Promise<DashData> {
       price,
       marketCap: price * secNum,
       holders: holdersByKode.get(e.kode) ?? [],
+      ksei: p ? buildComp(p) : null,
     };
   }).sort((a, b) => a.kode.localeCompare(b.kode));
 
