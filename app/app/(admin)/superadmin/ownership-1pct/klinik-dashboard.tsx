@@ -151,9 +151,9 @@ function EmitenCard({ e, open, onToggle }: { e: DashEmiten; open: boolean; onTog
                     <td className="px-2 py-1.5 font-medium">{h.name}</td>
                     <td className="px-2 py-1.5 text-xs text-muted-foreground">{typeLabel(h.type)}</td>
                     <td className="px-2 py-1.5"><StatusBadge lf={h.lf} type={h.type} domicile={h.domicile} /></td>
-                    <td className="px-2 py-1.5 text-right font-mono">{fmtShares(h.shares)}</td>
-                    <td className="px-2 py-1.5 text-right font-mono">{h.value > 0 ? fmtRp(h.value) : "—"}</td>
-                    <td className="px-2 py-1.5 text-right font-mono font-semibold">{pct(h.pct)}</td>
+                    <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono">{fmtShares(h.shares)}</td>
+                    <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono">{h.value > 0 ? fmtRp(h.value) : "—"}</td>
+                    <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono font-semibold">{pct(h.pct)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -243,9 +243,9 @@ function PerInvestorTab({ data }: { data: DashData }) {
                           <td className="px-2 py-1.5 text-muted-foreground">{i + 1}</td>
                           <td className="px-2 py-1.5"><span className="rounded bg-bull px-1.5 py-0.5 font-mono text-xs font-bold text-white">{h.kode}</span></td>
                           <td className="px-2 py-1.5 max-w-[14rem] truncate">{h.emiten}</td>
-                          <td className="px-2 py-1.5 text-right font-mono">{fmtShares(h.shares)}</td>
-                          <td className="px-2 py-1.5 text-right font-mono">{h.value > 0 ? fmtRp(h.value) : "—"}</td>
-                          <td className="px-2 py-1.5 text-right font-mono font-semibold">{pct(h.pct)}</td>
+                          <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono">{fmtShares(h.shares)}</td>
+                          <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono">{h.value > 0 ? fmtRp(h.value) : "—"}</td>
+                          <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono font-semibold">{pct(h.pct)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -335,8 +335,8 @@ function MetrikTab({ data }: { data: DashData }) {
                   <tr key={iv.name} className="border-t border-border/60">
                     <td className="py-1 text-muted-foreground">{i + 1}</td>
                     <td className="py-1 max-w-[14rem] truncate">{iv.name}</td>
-                    <td className="py-1 text-right font-mono">{fmtShares(iv.shares)}</td>
-                    <td className="py-1 text-right font-mono">{iv.value > 0 ? fmtRp(iv.value) : "—"}</td>
+                    <td className="py-1 whitespace-nowrap text-right font-mono">{fmtShares(iv.shares)}</td>
+                    <td className="py-1 whitespace-nowrap text-right font-mono">{iv.value > 0 ? fmtRp(iv.value) : "—"}</td>
                   </tr>
                 ))}
               </tbody>

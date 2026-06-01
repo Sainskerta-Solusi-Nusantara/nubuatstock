@@ -88,12 +88,12 @@ export default async function Pct1DetailPage({ params }: { params: Promise<{ kod
                   <td className="px-3 py-2">
                     <Badge variant="outline" className="text-[10px]">{h.localForeign === "F" ? "Asing" : "Lokal"}</Badge>
                   </td>
-                  <td className="px-3 py-2 text-right font-mono">
+                  <td className="px-3 py-2 whitespace-nowrap text-right font-mono">
                     {fmt(h.totalShares)}
                     {h.holdingsScrip > 0 && <div className="text-[10px] text-muted-foreground">Scrip: {fmt(h.holdingsScrip)}</div>}
                   </td>
-                  {price > 0 && <td className="px-3 py-2 text-right font-mono">{fmtIdr(h.totalShares * price)}</td>}
-                  <td className="px-3 py-2 text-right font-mono font-semibold">{h.percentage.toFixed(2)}%</td>
+                  {price > 0 && <td className="px-3 py-2 whitespace-nowrap text-right font-mono">{fmtIdr(h.totalShares * price)}</td>}
+                  <td className="px-3 py-2 whitespace-nowrap text-right font-mono font-semibold">{h.percentage.toFixed(2)}%</td>
                 </tr>
               ))}
             </tbody>
