@@ -42,6 +42,7 @@ export default async function SuperadminLayout({ children }: { children: React.R
             <SuperadminNavLink href="/superadmin/landing">🎨 Landing Content</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/users">👥 Users & Roles</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/system">🩺 System Health</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/ai-moderation">🛡️ AI Moderation</SuperadminNavLink>
             <Link
               href="/superadmin/pitchdeck"
               className="flex items-center justify-between rounded-md border border-primary/40 bg-primary/10 px-3 py-2 font-semibold text-primary transition hover:bg-primary hover:text-primary-foreground"

@@ -98,6 +98,15 @@ export const aiMessages = pgTable(
     latencyMs: integer("latency_ms").notNull().default(0),
     finishReason: text("finish_reason"),
     model: text("model"),
+    /**
+     * Moderasi keamanan: risiko prompt-injection/jailbreak terdeteksi pada pesan
+     * user (none/low/medium/high). Diisi oleh scanForInjection saat persist.
+     */
+    injectionRisk: text("injection_risk"),
+    /** Pola yang terdeteksi (untuk audit Superadmin), mis. ["Direct system override"]. */
+    flagReasons: jsonbT<string[]>("flag_reasons").notNull().default([]),
+    /** True kalau pesan diblokir karena risiko tinggi. */
+    blocked: boolean("blocked").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
       .notNull()
       .default(sql`now()`),
@@ -106,6 +115,7 @@ export const aiMessages = pgTable(
     index("ai_messages_conversation_idx").on(t.conversationId),
     index("ai_messages_conversation_created_idx").on(t.conversationId, t.createdAt),
     index("ai_messages_role_idx").on(t.role),
+    index("ai_messages_injection_idx").on(t.injectionRisk),
   ],
 );
 

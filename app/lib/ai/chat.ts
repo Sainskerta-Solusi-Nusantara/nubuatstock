@@ -194,6 +194,10 @@ export async function* streamChat(
       role: "user",
       content: opts.userMessage,
       contentFormat: "text",
+      // Moderasi keamanan: simpan risiko injection untuk audit Superadmin.
+      injectionRisk: scanResult.risk,
+      flagReasons: scanResult.matchedPatterns,
+      blocked: scanResult.rejected,
     })
     .returning({ id: aiMessages.id });
   const userMessageId = userMsg!.id;
