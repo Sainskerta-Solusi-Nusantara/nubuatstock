@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { headers } from "next/headers";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -448,7 +449,10 @@ export { getAuth as auth };
 
 // =================== Session Helpers ===================
 
-export async function getSession(): Promise<AppSession | null> {
+// Dibungkus React cache(): memoize PER-REQUEST. Layout + page + helper bisa
+// memanggil getSession berkali-kali dalam satu render tanpa eksekusi ganda —
+// menghindari bug "panggilan kedua balik null" + hemat 1 query DB.
+export const getSession = cache(async (): Promise<AppSession | null> => {
   try {
     const a = await getAuth();
     const hdrs = await headers();
@@ -461,7 +465,7 @@ export async function getSession(): Promise<AppSession | null> {
     logger.warn({ err }, "getSession failed");
     return null;
   }
-}
+});
 
 export async function requireSession(): Promise<AppSession> {
   const s = await getSession();

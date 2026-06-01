@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Toaster } from "sonner";
 import { getSession } from "@/lib/auth/server";
 import type { UserRole } from "@/lib/auth/roles";
 import { getConfig } from "@/lib/config";
@@ -79,7 +78,6 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         </aside>
         <main className="flex-1 p-8">{children}</main>
       </div>
-      <Toaster position="top-right" />
     </div>
   );
 }

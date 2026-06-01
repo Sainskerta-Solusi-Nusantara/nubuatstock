@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { DELETION_GRACE_DAYS } from "@/lib/account/delete";
+import { getSession } from "@/lib/auth";
 import {
   DeleteAccountButton,
   ExportDataButton,
@@ -22,11 +23,12 @@ import {
  */
 export const dynamic = "force-dynamic";
 
-export default function AccountSettingsPage() {
-  // Halaman ini di bawah (app) layout yang SUDAH menjamin sesi — jadi TIDAK perlu
-  // (dan tidak boleh) baca sesi lagi di sini. getSession di RSC yang dipanggil
-  // ganda dalam satu render bisa balik null & melempar user keluar. Data profil
-  // di-fetch ProfileForm via route handler (GET /api/account/profile) yang andal.
+export default async function AccountSettingsPage() {
+  // getSession dibungkus React cache() → aman dipanggil lagi di sini (dedupe
+  // dengan layout, satu eksekusi per request). Data per-request, TIDAK di-cache
+  // lintas user (beda dengan endpoint GET yang sempat bocorkan data user lain).
+  const session = await getSession();
+  const u = (session?.user ?? {}) as { name?: string; email?: string };
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8 space-y-8 sm:py-10">
       <header>
@@ -42,7 +44,7 @@ export default function AccountSettingsPage() {
           <CardDescription>Ubah nama tampilan kamu di Nubuat.</CardDescription>
         </CardHeader>
         <CardContent>
-          <ProfileForm />
+          <ProfileForm initialName={u.name ?? ""} email={u.email ?? ""} />
         </CardContent>
       </Card>
 

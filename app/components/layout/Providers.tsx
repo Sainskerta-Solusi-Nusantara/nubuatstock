@@ -4,7 +4,8 @@ import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/toast";
+// Toaster TIDAK di-mount di sini — sudah ada satu di root layout (top-right).
+// Dua Toaster bikin toast muncul dobel (atas & bawah).
 
 /**
  * Client providers untuk shell `(app)`.
@@ -35,7 +36,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={client}>
         <TooltipProvider delayDuration={150}>
           {children}
-          <Toaster />
         </TooltipProvider>
       </QueryClientProvider>
     </NuqsAdapter>
