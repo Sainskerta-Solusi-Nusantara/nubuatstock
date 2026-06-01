@@ -46,7 +46,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <div className="bg-amber-500 text-amber-950 text-xs font-medium px-4 py-2 text-center border-b border-amber-600">
+      <div className="bg-emerald-600 text-white text-xs font-medium px-4 py-2 text-center border-b border-emerald-700">
         ADMIN MODE — Perubahan config berdampak ke seluruh user. Selalu review diff sebelum save.
       </div>
       <div className="flex">
