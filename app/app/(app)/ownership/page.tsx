@@ -26,7 +26,7 @@ function pageNumbers(current: number, total: number): (number | "…")[] {
   return out;
 }
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 20;
 
 function pctColor(p: number): string {
   if (p >= 50) return "text-bear";
