@@ -204,7 +204,12 @@ function buildAuth(input: BuildAuthInput) {
     session: {
       expiresIn: input.sessionDurationSec,
       updateAge: Math.min(input.sessionDurationSec, 60 * 60 * 24),
-      cookieCache: { enabled: true, maxAge: 60 },
+      // cookieCache DIMATIKAN: di server-render (RSC) cache cookie ini bikin
+      // getSession tidak deterministik — pemanggilan kedua dalam satu render bisa
+      // balik null (cookie hanya bisa ditulis di Server Action/Route Handler),
+      // sehingga user yang login malah "terlempar". Tanpa cache, getSession selalu
+      // validasi token ke DB (read-only) → andal di mana pun.
+      cookieCache: { enabled: false },
     },
     // Rate-limit bawaan better-auth (berbasis IP) untuk melindungi endpoint auth
     // dari brute-force & abuse. Default storage = in-memory (cukup untuk single
