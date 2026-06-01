@@ -77,7 +77,7 @@ const GROUPS: SidebarGroup[] = [
       { href: "/sectors", label: "Sectors", icon: Layers },
       { href: "/rotation", label: "Rotation (RRG)", icon: LineChart, badge: "NEW" },
       { href: "/capital-flow", label: "Capital Flow", icon: Activity },
-      { href: "/ownership", label: "Kepemilikan KSEI", icon: PieChart, badge: "NEW" },
+      { href: "/ownership", label: "Kepemilikan Saham", icon: PieChart, badge: "NEW" },
     ],
   },
   {

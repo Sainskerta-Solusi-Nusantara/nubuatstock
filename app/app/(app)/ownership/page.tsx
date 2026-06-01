@@ -6,9 +6,24 @@ import { listOwnership } from "@/lib/ksei/service";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Kepemilikan Saham (KSEI) — Nubuat",
+  title: "Kepemilikan Saham — Nubuat",
   description: "Komposisi kepemilikan saham IDX dari KSEI: porsi Lokal vs Asing per tipe investor, per emiten.",
 };
+
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+/** Daftar nomor halaman dengan elipsis: 1 … 4 5 [6] 7 8 … 20 */
+function pageNumbers(current: number, total: number): (number | "…")[] {
+  if (total <= 9) return Array.from({ length: total }, (_, i) => i + 1);
+  const out: (number | "…")[] = [1];
+  const lo = Math.max(2, current - 2);
+  const hi = Math.min(total - 1, current + 2);
+  if (lo > 2) out.push("…");
+  for (let i = lo; i <= hi; i++) out.push(i);
+  if (hi < total - 1) out.push("…");
+  out.push(total);
+  return out;
+}
 
 const PAGE_SIZE = 50;
 
@@ -28,7 +43,7 @@ export default async function OwnershipPage({
 }) {
   const sp = await searchParams;
   const q = (sp.q ?? "").trim();
-  const sort = (sp.sort as "kode" | "foreign" | "local" | "price" | undefined) ?? "foreign";
+  const sort = (sp.sort as "kode" | "foreign" | "local" | "price" | undefined) ?? "kode";
   const page = Math.max(1, Number.parseInt(sp.page ?? "1", 10) || 1);
 
   const { posDate, total, rows } = await listOwnership({ q, sort, page, pageSize: PAGE_SIZE });
@@ -45,13 +60,21 @@ export default async function OwnershipPage({
     const s = u.toString();
     return s ? `/ownership?${s}` : "/ownership";
   };
+  const letterHref = (letter: string) => {
+    const u = new URLSearchParams();
+    if (letter) u.set("q", letter);
+    if (sort) u.set("sort", sort);
+    const s = u.toString();
+    return s ? `/ownership?${s}` : "/ownership";
+  };
+  const activeLetter = q.length === 1 ? q.toUpperCase() : "";
 
   return (
     <div className="mx-auto max-w-5xl space-y-5 p-4 sm:p-6">
       <header>
         <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight sm:text-3xl">
           <Globe2 className="h-6 w-6 text-primary" />
-          Kepemilikan Saham (KSEI)
+          Kepemilikan Saham
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Komposisi kepemilikan tiap emiten dari data resmi KSEI — porsi <strong>Lokal vs Asing</strong>{" "}
@@ -105,6 +128,25 @@ export default async function OwnershipPage({
             ))}
           </div>
 
+          {/* Lompat ke huruf */}
+          <div className="flex flex-wrap gap-1">
+            <Link
+              href={letterHref("")}
+              className={`rounded px-2 py-0.5 text-xs font-medium ${!q ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}
+            >
+              Semua
+            </Link>
+            {ALPHABET.map((L) => (
+              <Link
+                key={L}
+                href={letterHref(L)}
+                className={`rounded px-2 py-0.5 text-xs font-mono ${activeLetter === L ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent"}`}
+              >
+                {L}
+              </Link>
+            ))}
+          </div>
+
           <Card>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -147,17 +189,40 @@ export default async function OwnershipPage({
           </Card>
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-xs text-muted-foreground">
-                {total.toLocaleString("id-ID")} emiten · halaman {page}/{totalPages}
-              </span>
-              <div className="flex gap-2">
-                {page > 1 && (
-                  <Link href={buildHref({ page: page - 1 })} className="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm hover:bg-accent">← Sebelumnya</Link>
+            <div className="space-y-2">
+              <div className="text-center text-xs text-muted-foreground">
+                {total.toLocaleString("id-ID")} emiten · halaman {page} dari {totalPages}
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-1">
+                <Link
+                  href={buildHref({ page: Math.max(1, page - 1) })}
+                  aria-label="Sebelumnya"
+                  className={`inline-flex h-8 items-center rounded-md border border-input px-2.5 text-sm ${page <= 1 ? "pointer-events-none opacity-40" : "hover:bg-accent"}`}
+                >
+                  ‹
+                </Link>
+                {pageNumbers(page, totalPages).map((n, i) =>
+                  n === "…" ? (
+                    <span key={`e${i}`} className="px-1.5 text-muted-foreground">…</span>
+                  ) : (
+                    <Link
+                      key={n}
+                      href={buildHref({ page: n })}
+                      className={`inline-flex h-8 min-w-[2rem] items-center justify-center rounded-md border px-2 text-sm font-medium ${
+                        n === page ? "border-primary bg-primary text-primary-foreground" : "border-input hover:bg-accent"
+                      }`}
+                    >
+                      {n}
+                    </Link>
+                  ),
                 )}
-                {page < totalPages && (
-                  <Link href={buildHref({ page: page + 1 })} className="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm hover:bg-accent">Berikutnya →</Link>
-                )}
+                <Link
+                  href={buildHref({ page: Math.min(totalPages, page + 1) })}
+                  aria-label="Berikutnya"
+                  className={`inline-flex h-8 items-center rounded-md border border-input px-2.5 text-sm ${page >= totalPages ? "pointer-events-none opacity-40" : "hover:bg-accent"}`}
+                >
+                  ›
+                </Link>
               </div>
             </div>
           )}
