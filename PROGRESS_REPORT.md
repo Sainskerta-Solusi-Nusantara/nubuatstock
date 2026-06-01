@@ -805,6 +805,24 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 
 ---
 
+### Week of 1–7 Jun 2026
+
+**Highlights**
+- 🟢 Fitur **Kepemilikan Saham** (publik, data KSEI BalancePos) live: komposisi Lokal vs Asing per emiten, cari + urut A-Z + pagination angka & lompat huruf. Filter "saham saja" kini pakai universe IDX (956 emiten) — bukan heuristik kode 4 huruf yang ikut hitung ETF/DIRE/EBA (1.040).
+- 🟢 **Review ≥1% Ownership** ala klinikpenyesalan di superadmin: tab Ringkasan/Per Investor/Metrik + **peta jaringan interaktif** (zoom/pan/hover/fullscreen, lintas-kepemilikan emiten↔pemegang↔saham lain).
+- 🟢 **Ambil semua data ke DB** (arahan founder): holders 7.161 + emiten 956 + data Perubahan (changelog 523 changes, summary top gainers/losers/holders/bought/sold, 68 investor baru) tersimpan RAW di `ownership_1pct_changelog`.
+- 🟢 Changelog bell "Apa yang baru" v1.9.0 (Kepemilikan Saham, Ruang Belajar, edit profil, modul Academy lanjutan). Rename "AI & Belajar" → "Ruang Belajar".
+- 🟢 tsc 0 error, build hijau, deploy prod.
+
+**Lowlights**
+- 🟡 **Klasifikasi** komposisi penuh (~30 kategori incl <1%) belum bisa direplikasi — datanya TIDAK ada di payload klinikpenyesalan (dihitung sisi server mereka). Opsi: pakai komposisi KSEI 9-tipe (100% coverage) atau ≥1% saja.
+- 🟡 Konglo Stocks & multi-snapshot Perubahan (12 Mar, 5 Mar) belum dibangun.
+
+**Next Week**
+- UI tab Perubahan Data dari `ownership_1pct_changelog`; pertimbangkan Klasifikasi pakai KSEI 9-tipe; Konglo Stocks (mapping grup).
+
+---
+
 ### Week of 11–17 Mei 2026 (Sprint 0)
 
 **Highlights**
