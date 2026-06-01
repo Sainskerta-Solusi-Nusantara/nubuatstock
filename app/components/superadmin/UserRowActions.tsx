@@ -21,17 +21,39 @@ interface Props {
   name: string | null;
   whatsapp: string | null;
   telegram: string | null;
+  emailVerified: boolean;
+  locale: string | null;
+  timezone: string | null;
+  /** Sumber login (mis. "Google", "Email", "Google · Email"). Read-only. */
+  provider: string;
   isSelf: boolean;
 }
 
-export function UserRowActions({ userId, email, name, whatsapp, telegram, isSelf }: Props) {
+const inputCls = "h-9 w-full rounded-md border border-input bg-background px-3 text-sm";
+
+export function UserRowActions({
+  userId,
+  email,
+  name,
+  whatsapp,
+  telegram,
+  emailVerified,
+  locale,
+  timezone,
+  provider,
+  isSelf,
+}: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     name: name ?? "",
+    email,
+    emailVerified,
     whatsapp: whatsapp ?? "",
     telegram: telegram ?? "",
+    locale: locale ?? "",
+    timezone: timezone ?? "",
   });
 
   async function save() {
@@ -44,7 +66,7 @@ export function UserRowActions({ userId, email, name, whatsapp, telegram, isSelf
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data?.error?.message ?? "Gagal menyimpan");
-      toast.success(`Profil ${email} tersimpan`);
+      toast.success(`Profil ${form.email} tersimpan`);
       setOpen(false);
       router.refresh();
     } catch (err) {
@@ -73,7 +95,7 @@ export function UserRowActions({ userId, email, name, whatsapp, telegram, isSelf
 
   return (
     <div className="inline-flex items-center gap-1">
-      <Button size="sm" variant="ghost" onClick={() => setOpen(true)} title="Edit profil">
+      <Button size="sm" variant="ghost" onClick={() => setOpen(true)} title="Edit profil lengkap">
         <Pencil className="h-3.5 w-3.5" />
       </Button>
       <Button
@@ -88,25 +110,40 @@ export function UserRowActions({ userId, email, name, whatsapp, telegram, isSelf
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription className="truncate font-mono text-xs">{email}</DialogDescription>
+            <DialogDescription className="font-mono text-xs">
+              ID: {userId} · Login via: {provider}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 py-2">
             <Field label="Nama">
+              <input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className={inputCls} />
+            </Field>
+            <Field label="Email">
               <input
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                className={inputCls}
               />
             </Field>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.emailVerified}
+                onChange={(e) => setForm((f) => ({ ...f, emailVerified: e.target.checked }))}
+                className="size-4 rounded border-input"
+              />
+              Email terverifikasi
+            </label>
             <Field label="Nomor WhatsApp">
               <input
                 value={form.whatsapp}
                 onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))}
                 placeholder="08xxxxxxxxxx"
-                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                className={inputCls}
               />
             </Field>
             <Field label="Telegram (opsional)">
@@ -114,9 +151,31 @@ export function UserRowActions({ userId, email, name, whatsapp, telegram, isSelf
                 value={form.telegram}
                 onChange={(e) => setForm((f) => ({ ...f, telegram: e.target.value }))}
                 placeholder="@username"
-                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                className={inputCls}
               />
             </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Locale">
+                <input
+                  value={form.locale}
+                  onChange={(e) => setForm((f) => ({ ...f, locale: e.target.value }))}
+                  placeholder="id-ID"
+                  className={inputCls}
+                />
+              </Field>
+              <Field label="Timezone">
+                <input
+                  value={form.timezone}
+                  onChange={(e) => setForm((f) => ({ ...f, timezone: e.target.value }))}
+                  placeholder="Asia/Jakarta"
+                  className={inputCls}
+                />
+              </Field>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Role &amp; Tier diubah lewat kontrol khusus di baris tabel. Perubahan di sini
+              ter-audit.
+            </p>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving}>

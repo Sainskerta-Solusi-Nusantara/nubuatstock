@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { sql } from "drizzle-orm";
+import { inArray, sql } from "drizzle-orm";
+import { accounts } from "@/db/schema/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UsersRoleEditor } from "@/components/superadmin/UsersRoleEditor";
@@ -19,9 +20,19 @@ interface UserRow {
   status: string | null;
   phone: string | null;
   telegram: string | null;
+  emailVerified: boolean;
+  locale: string | null;
+  timezone: string | null;
+  provider: string;
   createdAt: Date;
   lastLoginAt: Date | null;
 }
+
+const PROVIDER_LABEL: Record<string, string> = {
+  credential: "Email",
+  email: "Email",
+  google: "Google",
+};
 
 const PAGE_SIZE = 25;
 
@@ -48,7 +59,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
     total = Number((countRows as unknown as Array<Record<string, unknown>>)[0]?.n ?? 0);
 
     const rows = await db.execute(sql`
-      SELECT u.id, u.email, u.name, u.role, u.phone, u.telegram, u.created_at, u.last_login_at,
+      SELECT u.id, u.email, u.name, u.role, u.phone, u.telegram, u.email_verified, u.locale, u.timezone, u.created_at, u.last_login_at,
              us.tier_kode AS tier, us.status AS status
       FROM users u
       LEFT JOIN user_subscriptions us ON us.user_id = u.id AND us.status IN ('active','trialing')
@@ -67,9 +78,32 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
       status: r.status as string | null,
       phone: (r.phone as string | null) ?? null,
       telegram: (r.telegram as string | null) ?? null,
+      emailVerified: Boolean(r.email_verified),
+      locale: (r.locale as string | null) ?? null,
+      timezone: (r.timezone as string | null) ?? null,
+      provider: "—",
       createdAt: new Date(String(r.created_at)),
       lastLoginAt: r.last_login_at ? new Date(String(r.last_login_at)) : null,
     }));
+
+    // Sumber login per user (accounts.provider): credential=Email, google=Google.
+    if (users.length > 0) {
+      const ids = users.map((u) => u.id);
+      const accRows = await db
+        .select({ userId: accounts.userId, provider: accounts.providerId })
+        .from(accounts)
+        .where(inArray(accounts.userId, ids));
+      const provMap = new Map<string, Set<string>>();
+      for (const a of accRows) {
+        const set = provMap.get(a.userId) ?? new Set<string>();
+        set.add(PROVIDER_LABEL[a.provider] ?? a.provider);
+        provMap.set(a.userId, set);
+      }
+      users = users.map((u) => ({
+        ...u,
+        provider: provMap.has(u.id) ? [...provMap.get(u.id)!].sort().join(" · ") : "—",
+      }));
+    }
   } catch {
     users = [];
     total = 0;
@@ -136,6 +170,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
                     <th className="px-4 py-2">Nama</th>
                     <th className="px-4 py-2">Role</th>
                     <th className="px-4 py-2">Tier</th>
+                    <th className="px-4 py-2">Login via</th>
                     <th className="px-4 py-2">Daftar</th>
                     <th className="px-4 py-2">Last login</th>
                     <th className="px-4 py-2 text-right">Aksi</th>
@@ -159,6 +194,11 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
                           )}
                         </div>
                       </td>
+                      <td className="px-4 py-2">
+                        <span className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground">
+                          {u.provider}
+                        </span>
+                      </td>
                       <td className="px-4 py-2 text-xs text-muted-foreground">
                         {u.createdAt.toLocaleDateString("id-ID")}
                       </td>
@@ -174,6 +214,10 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
                             name={u.name}
                             whatsapp={u.phone}
                             telegram={u.telegram}
+                            emailVerified={u.emailVerified}
+                            locale={u.locale}
+                            timezone={u.timezone}
+                            provider={u.provider}
                             isSelf={u.id === selfId}
                           />
                         </div>
