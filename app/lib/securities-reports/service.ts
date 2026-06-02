@@ -52,6 +52,41 @@ export async function refreshSecuritiesReports(limit = 60): Promise<ReportsInges
   return { fetched: rows.length, upserted, errors };
 }
 
+/** Tambah/kurasi riset manual (sumber tanpa fetcher). Idempotent per securities+externalId. */
+export async function addManualReport(input: {
+  securities: string;
+  title: string;
+  category?: string | null;
+  publishedAt?: Date | null;
+  sourceUrl?: string | null;
+  pdfUrl?: string | null;
+}): Promise<void> {
+  const now = new Date();
+  const externalId = `manual:${input.securities.toLowerCase().replace(/\s+/g, "-")}:${(input.sourceUrl || input.title).slice(0, 120)}`;
+  await db
+    .insert(securitiesReports)
+    .values({
+      securities: input.securities.trim(),
+      externalId,
+      title: input.title.trim(),
+      category: input.category?.trim() || null,
+      categoryType: "Manual",
+      publishedAt: input.publishedAt ?? now,
+      pdfUrl: input.pdfUrl?.trim() || null,
+      sourceUrl: input.sourceUrl?.trim() || null,
+      isMemberOnly: 0,
+      fetchedAt: now,
+    })
+    .onConflictDoUpdate({
+      target: [securitiesReports.securities, securitiesReports.externalId],
+      set: { title: input.title.trim(), category: input.category?.trim() || null, publishedAt: input.publishedAt ?? now, pdfUrl: input.pdfUrl?.trim() || null, sourceUrl: input.sourceUrl?.trim() || null, updatedAt: now },
+    });
+}
+
+export async function deleteReport(id: string): Promise<void> {
+  await db.delete(securitiesReports).where(eq(securitiesReports.id, id));
+}
+
 export async function listSecuritiesReports(opts: {
   q?: string;
   securities?: string;

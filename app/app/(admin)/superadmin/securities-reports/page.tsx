@@ -1,7 +1,7 @@
-import { FileText, ExternalLink, Lock } from "lucide-react";
+import { FileText } from "lucide-react";
 import { listSecuritiesReports, countSecuritiesReports } from "@/lib/securities-reports/service";
-import { formatDateTimeId } from "@/lib/utils/datetime";
 import { ReportsRefreshButton } from "./refresh-button";
+import { ReportAdmin } from "./report-admin";
 
 export const dynamic = "force-dynamic";
 
@@ -35,40 +35,10 @@ export default async function SecuritiesReportsPage({
         <button className="h-9 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground hover:opacity-90">Cari</button>
       </form>
 
-      <div className="overflow-x-auto rounded-lg border border-border bg-card">
-        <table className="w-full min-w-[760px] text-sm">
-          <thead className="border-b border-border bg-secondary/50 text-left text-[10px] uppercase tracking-wider text-muted-foreground">
-            <tr>
-              <th className="px-3 py-2">Terbit</th><th className="px-3 py-2">Sumber</th><th className="px-3 py-2">Judul</th>
-              <th className="px-3 py-2">Kategori</th><th className="px-3 py-2 text-right">Buka</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.length === 0 ? (
-              <tr><td colSpan={5} className="px-3 py-8 text-center text-muted-foreground">Belum ada riset. Klik &ldquo;Refresh dari sumber&rdquo;.</td></tr>
-            ) : reports.map((r) => (
-              <tr key={r.id} className="border-b border-border/60 last:border-0 hover:bg-accent/40">
-                <td className="px-3 py-2 whitespace-nowrap text-xs text-muted-foreground">{r.publishedAt ? formatDateTimeId(r.publishedAt) : "—"}</td>
-                <td className="px-3 py-2 whitespace-nowrap text-xs font-medium">{r.securities}</td>
-                <td className="px-3 py-2">
-                  <span className="flex items-center gap-1.5">
-                    {r.isMemberOnly ? <Lock className="h-3 w-3 shrink-0 text-amber-600" /> : null}
-                    <span className="max-w-[420px] truncate" title={r.title}>{r.title}</span>
-                  </span>
-                </td>
-                <td className="px-3 py-2 text-xs text-muted-foreground">{r.category ?? "—"}{r.categoryType ? ` · ${r.categoryType}` : ""}</td>
-                <td className="px-3 py-2 text-right">
-                  <a href={(r.isMemberOnly ? r.sourceUrl : r.pdfUrl) ?? r.sourceUrl ?? "#"} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                    {r.isMemberOnly ? "Sumber" : "PDF"} <ExternalLink className="h-3 w-3" />
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ReportAdmin rows={reports} />
+
       <p className="text-[11px] text-muted-foreground">
-        Review internal. Konten milik masing-masing sekuritas; Nubuat hanya mengagregasi tautan publik. PDF gated (🔒) hanya menautkan ke halaman sumber.
+        Review internal. Henan = fetch otomatis (Strapi). Sekuritas lain umumnya tanpa feed publik → tambah manual (judul + tautan). Konten milik masing-masing sekuritas; Nubuat hanya mengagregasi tautan publik.
       </p>
     </div>
   );
