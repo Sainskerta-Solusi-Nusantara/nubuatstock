@@ -70,9 +70,10 @@ export default async function DashboardPage() {
               Nubuat masih tahap awal (early access) — terus kami kembangkan
             </p>
             <p className="text-amber-700/90 dark:text-amber-300/90">
-              Sebagian fitur &amp; data masih dalam penyempurnaan. <strong>Daily Picks</strong> dan
-              mayoritas data harga/analitik saat ini berbasis <strong>End-of-Day (EOD)</strong> —
-              belum real-time. Semua sinyal bersifat <strong>edukasi &amp; riset</strong>, bukan ajakan jual/beli.
+              Sebagian fitur &amp; data masih dalam penyempurnaan. Harga saham umumnya{" "}
+              <strong>delayed (±15 menit)</strong>, sedangkan <strong>Daily Picks</strong> &amp;
+              sebagian analitik masih berbasis <strong>End-of-Day (EOD)</strong> — belum real-time penuh.
+              Semua sinyal bersifat <strong>edukasi &amp; riset</strong>, bukan ajakan jual/beli.
             </p>
             <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
               📅 Data emiten diperbarui s/d{" "}
