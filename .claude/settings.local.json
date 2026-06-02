@@ -425,7 +425,9 @@
       "Bash(ls node_modules/postgres)",
       "Bash(DATABASE_URL='postgres://d:d@d.invalid/d?sslmode=disable' APP_MASTER_KEY='0000000000000000000000000000000000000000000000000000000000000000' BETTER_AUTH_SECRET='x' NEXT_PUBLIC_APP_URL='http://localhost:3000' npx next build)",
       "Bash(sed -n '5p' lib/pitchdeck/traction.ts)",
-      "Bash(sed -n '128,140p' lib/pitchdeck/market.ts)"
+      "Bash(sed -n '128,140p' lib/pitchdeck/market.ts)",
+      "Bash(sed -n '1,20p' lib/picks/narrative.ts)",
+      "Bash(sed -n '45,70p' lib/picks/narrative.ts)"
     ]
   }
 }

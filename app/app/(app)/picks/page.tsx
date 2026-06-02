@@ -38,6 +38,19 @@ export default async function PicksPage() {
           <span className="text-sm text-muted-foreground">{today}</span>
         </div>
         <PickDisclaimer variant="banner" text={disclaimer} withLink />
+        <details className="rounded-lg border border-border bg-card/50 px-3 py-2 text-xs text-muted-foreground">
+          <summary className="cursor-pointer font-medium text-foreground">Cara baca: Skor &amp; Confidence</summary>
+          <div className="mt-2 space-y-1.5">
+            <p><strong>Skor (0–100)</strong> — nilai komposit gabungan beberapa faktor (Teknikal, Bandarmologi, Fundamental, Sentimen, Makro). Makin tinggi, makin kuat setup-nya secara keseluruhan.</p>
+            <p><strong>Confidence</strong> — tingkat keyakinan pada kekuatan sinyal teknikal setup (a.l. kekuatan tren/ADX &amp; momentum/RSI):</p>
+            <ul className="ml-4 list-disc space-y-0.5">
+              <li><strong className="text-bull">High</strong> — sinyal kuat &amp; selaras; setup paling meyakinkan.</li>
+              <li><strong>Medium</strong> — sinyal cukup, tetap perlu konfirmasi.</li>
+              <li><strong className="text-bear">Low</strong> — sinyal lemah/ragu; ekstra hati-hati.</li>
+            </ul>
+            <p>Confidence ≠ jaminan hasil. Selalu pakai stop loss &amp; kelola risiko sendiri.</p>
+          </div>
+        </details>
       </header>
 
       {visible.length === 0 ? (

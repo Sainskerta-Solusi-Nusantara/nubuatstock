@@ -4,4 +4,5 @@ export { loadActivePrompt, applyVariables, invalidatePromptCache } from "./promp
 export { allTools, getTool, listOpenAiTools } from "./tools";
 export { recordUsage, getUserDailyUsage } from "./usage";
 export { retrieveContext } from "./rag";
+export { generatePickNarrative } from "./narrative";
 export type { ToolDefinition, ToolContext, ToolResult } from "./tools";
