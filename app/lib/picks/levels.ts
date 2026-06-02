@@ -155,6 +155,16 @@ export function computeLevels({ bars, setup, minRrRatio }: ComputeLevelsArgs): C
     }
   }
 
+  // Jamin zona entry punya lebar minimal (~0.25 ATR). Pivot support/resistance
+  // bisa berupa harga tunggal → entryLow == entryHigh (zona nol). Lebarkan
+  // simetris di sekitar titik tengah agar zona entry bermakna.
+  const minZone = 0.25 * atr14;
+  if (entryHigh - entryLow < minZone) {
+    const mid = (entryLow + entryHigh) / 2;
+    entryLow = mid - minZone / 2;
+    entryHigh = mid + minZone / 2;
+  }
+
   const entry = (entryLow + entryHigh) / 2;
   const risk = entry - stopLoss;
   if (risk <= 0) {

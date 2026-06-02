@@ -35,6 +35,27 @@ function fmt(n: number, frac = 2): string {
   }).format(n);
 }
 
+/** Harga saham IDX = bilangan bulat rupiah (tanpa desimal). */
+function price(n: number): string {
+  return new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(Math.round(n));
+}
+
+/** Zona entry: satu angka bila low≈high (dibulatkan), selain itu rentang. */
+function entryRange(low: number, high: number): string {
+  const lo = Math.round(low);
+  const hi = Math.round(high);
+  return lo === hi ? price(lo) : `${price(lo)} – ${price(hi)}`;
+}
+
+/** Potensi gain % dari titik entry ke target. */
+function gainPct(entry: number, target: number): number {
+  return entry > 0 ? ((target - entry) / entry) * 100 : 0;
+}
+
+function signedPct(n: number): string {
+  return `${n >= 0 ? "+" : ""}${n.toFixed(1)}%`;
+}
+
 export function PickCard({ pick }: PickCardProps) {
   const conf = CONFIDENCE_LABEL[pick.confidence] ?? CONFIDENCE_LABEL.low!;
   const scorePct = Math.max(0, Math.min(100, pick.score));
@@ -58,22 +79,43 @@ export function PickCard({ pick }: PickCardProps) {
       </CardHeader>
       <CardContent className="space-y-3 pt-0">
         <ScoreGauge value={scorePct} />
-        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-          <Field label="Entry" value={`${fmt(pick.entryZoneLow)} – ${fmt(pick.entryZoneHigh)}`} />
-          <Field label="Stop Loss" value={fmt(pick.stopLoss)} tone="bear" />
-          <Field label="TP1" value={fmt(pick.tp1)} tone="bull" />
-          <Field
-            label="TP2"
-            value={pick.tp2 === null ? "—" : fmt(pick.tp2)}
-            tone={pick.tp2 === null ? "muted" : "bull"}
-          />
-          <Field
-            label="TP3"
-            value={pick.tp3 === null ? "—" : fmt(pick.tp3)}
-            tone={pick.tp3 === null ? "muted" : "bull"}
-          />
-          <Field label="R/R" value={`${fmt(pick.rewardRiskRatio)}x`} />
-        </div>
+        {(() => {
+          const entryMid = (pick.entryZoneLow + pick.entryZoneHigh) / 2;
+          const gainTp1 = gainPct(entryMid, pick.tp1);
+          const gainTp2 = pick.tp2 === null ? null : gainPct(entryMid, pick.tp2);
+          return (
+            <>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                <Field label="Entry" value={entryRange(pick.entryZoneLow, pick.entryZoneHigh)} />
+                <Field label="Stop Loss" value={price(pick.stopLoss)} tone="bear" />
+                <Field label="TP1" value={price(pick.tp1)} tone="bull" />
+                <Field
+                  label="TP2"
+                  value={pick.tp2 === null ? "—" : price(pick.tp2)}
+                  tone={pick.tp2 === null ? "muted" : "bull"}
+                />
+                <Field
+                  label="TP3"
+                  value={pick.tp3 === null ? "—" : price(pick.tp3)}
+                  tone={pick.tp3 === null ? "muted" : "bull"}
+                />
+                <Field label="R/R" value={`${fmt(pick.rewardRiskRatio)}x`} />
+              </div>
+              {/* Potensi gain dari titik tengah entry ke target */}
+              <div className="flex items-center justify-between rounded-md bg-bull-soft px-2.5 py-1.5 text-xs">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Potensi Gain
+                </span>
+                <span className="flex items-center gap-2 font-semibold tabular-nums text-bull">
+                  <span>{signedPct(gainTp1)}<span className="ml-0.5 text-[9px] font-normal text-muted-foreground">TP1</span></span>
+                  {gainTp2 !== null && (
+                    <span>{signedPct(gainTp2)}<span className="ml-0.5 text-[9px] font-normal text-muted-foreground">TP2</span></span>
+                  )}
+                </span>
+              </div>
+            </>
+          );
+        })()}
         <div className="flex items-center justify-between border-t pt-2">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
             {pick.timeHorizon.replace(/_/g, " ")}
