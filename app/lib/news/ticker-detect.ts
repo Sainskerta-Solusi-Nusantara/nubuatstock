@@ -96,6 +96,44 @@ const NEVER_TICKERS = new Set([
   "WHO", "WTO", "IMF", "PBB",
 ]);
 
+/**
+ * Pemetaan TEMA/SEKTOR → emiten representatif. Untuk berita makro/komoditas
+ * yang tak menyebut kode/nama emiten langsung (mis. "harga timah naik" → TINS).
+ * Match via kata kunci (lowercase substring). Relevance rendah (0.45 = tematik).
+ * Hanya emiten yang ADA di universe yang dipakai (dicek via index.codes).
+ */
+const THEME_MAP: { keywords: string[]; tickers: string[] }[] = [
+  { keywords: ["timah"], tickers: ["TINS"] },
+  { keywords: ["nikel", "nickel", "feronikel", "bijih nikel"], tickers: ["ANTM", "INCO", "NCKL", "MBMA", "NICL"] },
+  { keywords: ["batu bara", "batubara", "coal"], tickers: ["ADRO", "PTBA", "ITMG", "INDY", "HRUM", "BUMI", "ADMR"] },
+  { keywords: ["emas", "gold"], tickers: ["ANTM", "MDKA", "AMMN", "BRMS", "ARCI", "HRTA"] },
+  { keywords: ["tembaga", "copper"], tickers: ["AMMN", "MDKA", "BRMS"] },
+  { keywords: ["sawit", "kelapa sawit", "cpo", "minyak goreng", "perkebunan"], tickers: ["AALI", "LSIP", "SSMS", "DSNG", "TAPG", "SIMP"] },
+  { keywords: ["perbankan", "bank sentral", "suku bunga", "kredit perbankan"], tickers: ["BBRI", "BBCA", "BMRI", "BBNI"] },
+  { keywords: ["semen"], tickers: ["SMGR", "INTP"] },
+  { keywords: ["rokok", "tembakau", "cukai"], tickers: ["GGRM", "HMSP", "WIIM"] },
+  { keywords: ["otomotif", "kendaraan", "mobil listrik", "ev"], tickers: ["ASII", "AUTO", "DRMA"] },
+  { keywords: ["properti", "real estat", "perumahan"], tickers: ["BSDE", "CTRA", "PWON", "SMRA"] },
+  { keywords: ["telekomunikasi", "operator seluler", "telco"], tickers: ["TLKM", "ISAT", "EXCL"] },
+  { keywords: ["ritel", "peritel"], tickers: ["ACES", "MAPI", "AMRT", "MIDI"] },
+  { keywords: ["unggas", "ayam", "pakan ternak", "perunggasan"], tickers: ["CPIN", "JPFA", "MAIN"] },
+  { keywords: ["migas", "minyak mentah", "minyak bumi", "gas bumi", "lpg", "bbm"], tickers: ["MEDC", "PGAS", "ELSA", "AKRA"] },
+  { keywords: ["farmasi", "obat", "kesehatan"], tickers: ["KLBF", "SIDO", "KAEF", "INAF"] },
+  { keywords: ["konstruksi", "infrastruktur", "tol"], tickers: ["WIKA", "WSKT", "PTPP", "ADHI"] },
+  { keywords: ["konsumer", "barang konsumsi", "fmcg"], tickers: ["UNVR", "ICBP", "INDF", "MYOR"] },
+];
+
+function detectThemeTickers(text: string): { kode: string; relevance: number }[] {
+  const lower = text.toLowerCase();
+  const out: { kode: string; relevance: number }[] = [];
+  for (const theme of THEME_MAP) {
+    if (theme.keywords.some((k) => lower.includes(k))) {
+      for (const kode of theme.tickers) out.push({ kode, relevance: 0.45 });
+    }
+  }
+  return out;
+}
+
 export function detectTickers(
   title: string,
   summary: string,
@@ -152,6 +190,13 @@ export function detectTickers(
     if (!index.codes.has(candidate)) continue;
     const cur = found.get(candidate) ?? 0;
     if (cur < 0.5) found.set(candidate, 0.5);
+  }
+
+  // Pattern 5 — tema/sektor (makro & komoditas). Relevance rendah (0.45).
+  for (const t of detectThemeTickers(`${title} ${summary}`)) {
+    if (NEVER_TICKERS.has(t.kode) || !index.codes.has(t.kode)) continue;
+    const cur = found.get(t.kode) ?? 0;
+    if (t.relevance > cur) found.set(t.kode, t.relevance);
   }
 
   return Array.from(found.entries()).map(([kode, relevance]) => ({ kode, relevance }));

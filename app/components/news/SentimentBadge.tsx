@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Minus, Loader2 } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 interface SentimentBadgeProps {
@@ -11,9 +11,12 @@ interface SentimentBadgeProps {
 export function SentimentBadge({ sentiment, score, reason, size = "sm" }: SentimentBadgeProps) {
   if (!sentiment) {
     return (
-      <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-        <Loader2 className="h-3 w-3 animate-spin" />
-        Analyzing
+      <span
+        title="Sentimen otomatis belum dinilai untuk artikel ini."
+        className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+      >
+        <Minus className="h-3 w-3" />
+        Belum dinilai
       </span>
     );
   }
