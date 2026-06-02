@@ -816,14 +816,22 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - 🟢 **Sumber riset Telegram publik** di admin securities-reports: scraper `t.me/s/<channel>` tanpa token/API key (parse HTML preview, decode entitas, ambil judul/tanggal/URL pesan). 4 channel (Samuel Sekuritas, Dapur Saham, Creative Trader, Saham Pemenang) — live-tested OK; upsert idempotent per `tg:<user>:<msgId>`; sumber error tak menggagalkan sumber lain. Parser dipindah ke util bersama `lib/securities/telegram.ts`.
 - 🟢 **Auto-fetch Rekomendasi Sekuritas** (sebelumnya 100% manual): pipeline `fetch Telegram → prefilter heuristik → ekstraksi AI (DeepSeek JSON) → upsert `securities_picks``. AI hanya ambil call eksplisit (kode+aksi+entry/target/SL), mengabaikan market-update/berita/edukasi. Tombol "Refresh dari sumber" di admin + **Vercel Cron harian** (`/api/cron/securities-picks`, weekday 09:00 WIB); idempotent per tgl+sumber+kode. **Live-tested**: 13 kandidat → 2 pick valid (BMRI, WIFI dari Dapur Saham) dalam 26 dtk, 0 error.
 - 🟢 **Daily Picks**: confidence Low kini ikut tampil (sebelumnya disembunyikan), diurut setelah High & Medium (stable sort, skor desc dalam tier).
-- 🟢 tsc 0 error, lint bersih, build hijau, deploy prod.
+- 🟢 **Perubahan Data multi-periode**: `extractChangelogAll()` simpan semua periode array sumber (bukan arr[0]) + akumulasi antar waktu; UI dropdown selektor periode.
+- 🟢 **Biggest Risk #1 ditutup — Worker→Vercel Cron (15 cron)**: data prod self-refresh tanpa BullMQ worker. Tier-1 (evaluate-outcomes, paper-leaderboard, trial-drip, expire-trial, renew-subscriptions, account-deletion-sweep) + Tier-2 rantai EOD (ingest-eod → technical-snapshots → detect-patterns → analyze-elliott → analysis-snapshots → daily-digest, maxDuration 300). Helper `lib/cron/helpers.ts` (auth CRON_SECRET/superadmin, panggil Processor inline).
+- 🟢 **Users & Roles**: last login kini tercatat (`databaseHooks.session.create.after` tulis `lastLoginAt`+IP; sebelumnya better-auth tak nulis) + panel **Statistik Registrasi** (kartu + bar chart pendaftaran/hari 14h + distribusi tier).
+- 🟢 **Securities-reports**: `normalizeCategory()` (Daily/Weekly/Monthly/Company/Economic/Technical/Telegram/Lainnya) badge+filter; 3 sumber baru (Samuel RSS, NH Korindo, KB Valbury) + cutoff 2 tahun. IDX BEI ❌ blocked Cloudflare (manual saja).
+- 🟢 **Elliott Wave P2**: `projection.ts` (target Fibonacci + guidelineScore 0-100 + degree) + `narrative.ts` (AI DeepSeek). Wired ke kartu UI: proyeksi target, bar kualitas count, **tombol Penjelasan AI on-demand** (`/api/elliott/narrative`). 16 test.
+- 🟢 **Screener NL** (BETA): `parseNlQuery()` query bahasa natural → DeepSeek JSON → ScreenerFilters (zod), route `/api/screener/nl`, section "Cari dengan AI". Live-tested.
+- 🟢 **Klasifikasi KSEI 9-tipe**: terverifikasi sudah live (956/956 emiten, agregat pasar + per-emiten); item lama di doc ternyata stale.
+- 🟢 Unit test modul baru (40 test: htmlToText, prefilter picks, extractChangelogAll, elliott projection). tsc 0, lint bersih, build hijau (136/136).
 
 **Lowlights**
-- 🟡 **Klasifikasi** komposisi penuh (~30 kategori incl <1%) belum bisa direplikasi — datanya TIDAK ada di payload klinikpenyesalan (dihitung sisi server mereka). Opsi: pakai komposisi KSEI 9-tipe (100% coverage) atau ≥1% saja.
-- 🟡 Multi-snapshot Perubahan (riwayat antar tanggal) masih single-changelog terbaru — butuh akumulasi snapshot berkala.
+- 🟡 IDX BEI research feed terblokir Cloudflare (perlu headless/proxy) — di luar pola fetch publik.
+- 🟡 Next.js drift (pkg 15.1.11 vs node_modules 15.5.18) — prod hijau; rekonsiliasi ditunda (risiko > nilai).
+- 🟡 AI narrative Elliott masih on-demand per-klik (belum di-cache; worker tak generate massal demi hemat AI).
 
 **Next Week**
-- Klasifikasi pakai KSEI 9-tipe; multi-snapshot history Perubahan; tambah sumber riset (channel/feed publik lain).
+- (opsional) cache narasi Elliott (Redis); IDX BEI via pendekatan alternatif; tambah sumber riset lain.
 
 ---
 
