@@ -1,6 +1,7 @@
 import { listChangelogsForClient, getKlinikDashboardData, getOwnershipValidation } from "@/lib/ownership1pct/service";
 import { fmtDateId } from "@/lib/utils/date-id";
 import { RefreshButton } from "./refresh-button";
+import { OwnershipReadGuide } from "./read-guide";
 import { KlinikDashboard } from "./klinik-dashboard";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +26,10 @@ export default async function Pct1Page() {
             {data.fetchedAt ? ` · diambil ${new Date(data.fetchedAt).toLocaleString("id-ID")}` : ""}
           </p>
         </div>
-        <RefreshButton />
+        <div className="flex items-center gap-2">
+          <OwnershipReadGuide />
+          <RefreshButton />
+        </div>
       </div>
 
       {data.emiten.length === 0 ? (
