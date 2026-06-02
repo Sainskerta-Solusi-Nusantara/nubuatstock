@@ -20,7 +20,7 @@ export default async function Pct1Page() {
             Kepemilikan ≥1% <span className="text-sm font-normal text-muted-foreground">(review)</span>
           </h1>
           <p className="mt-1 text-xs text-muted-foreground">
-            Per {fmtDateId(data.snapshotDate) || "—"} · Sumber data ≥1%: <span title="Agregator pihak ketiga yang mengolah data registri KSEI; bukan tarikan langsung dari KSEI.">klinikpenyesalan.com (turunan KSEI)</span> · komposisi 9-tipe: KSEI BalancePos
+            Per {fmtDateId(data.snapshotDate) || "—"} · Sumber: KSEI &amp; BEI
             {data.fetchedAt ? ` · diambil ${new Date(data.fetchedAt).toLocaleString("id-ID")}` : ""}
           </p>
         </div>
