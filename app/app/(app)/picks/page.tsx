@@ -22,11 +22,13 @@ export default async function PicksPage() {
     getConfig<string>("app.disclaimer_text", { defaultValue: "" }),
   ]);
   const today = formatDateInTz(new Date(), tz);
-  const [picks, dailyVisible, latestRun] = await Promise.all([
+  const isStaff = session.role === "superadmin" || session.role === "admin";
+  const [picks, entVisible, latestRun] = await Promise.all([
     getTodayPicks({ tradeDate: today }),
     resolveDailyVisibleEntitlement(session.userId),
     getLatestRun(),
   ]);
+  const dailyVisible = isStaff ? picks.length : entVisible;
   const visible = picks.slice(0, dailyVisible);
   const hiddenCount = Math.max(0, picks.length - visible.length);
 

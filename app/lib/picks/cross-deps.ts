@@ -48,12 +48,13 @@ export async function resolveDailyVisibleEntitlement(userId: string): Promise<nu
   const mod: unknown = await import("@/lib/billing").catch(() => null);
   if (!mod) return 3;
   const fn = (mod as {
-    resolveEntitlement?: (uid: string, key: string) => Promise<number | boolean | null>;
-  }).resolveEntitlement;
+    getEntitlement?: (uid: string, key: string) => Promise<unknown>;
+  }).getEntitlement;
   if (typeof fn !== "function") return 3;
   try {
-    const result = await fn(userId, "picks.daily_visible");
-    if (typeof result === "number" && Number.isFinite(result) && result > 0) return result;
+    const raw = await fn(userId, "picks.daily_visible");
+    const result = typeof raw === "number" ? raw : Number(raw);
+    if (Number.isFinite(result) && result > 0) return result;
     return 3;
   } catch {
     return 3;

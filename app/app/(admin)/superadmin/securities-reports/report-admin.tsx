@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { ExternalLink, Lock, Plus, Trash2, Loader2 } from "lucide-react";
 import type { SecuritiesReport } from "@/db/schema/securities-reports";
 import { formatDateTimeId } from "@/lib/utils/datetime";
+import { securitiesSiteUrl } from "@/lib/securities/sites";
 
 const SECURITIES = [
   "Mirae Asset Sekuritas", "Indo Premier Sekuritas", "BRI Danareksa Sekuritas",
@@ -90,7 +91,13 @@ export function ReportAdmin({ rows }: { rows: SecuritiesReport[] }) {
             ) : rows.map((r) => (
               <tr key={r.id} className="border-b border-border/60 last:border-0 hover:bg-accent/40">
                 <td className="px-3 py-2 whitespace-nowrap text-xs text-muted-foreground">{r.publishedAt ? formatDateTimeId(r.publishedAt) : "—"}</td>
-                <td className="px-3 py-2 whitespace-nowrap text-xs font-medium">{r.securities}</td>
+                <td className="px-3 py-2 whitespace-nowrap text-xs font-medium">
+                  {securitiesSiteUrl(r.securities) ? (
+                    <a href={securitiesSiteUrl(r.securities)!} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 hover:text-primary hover:underline">
+                      {r.securities} <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  ) : r.securities}
+                </td>
                 <td className="px-3 py-2"><span className="flex items-center gap-1.5">{r.isMemberOnly ? <Lock className="h-3 w-3 shrink-0 text-amber-600" /> : null}<span className="max-w-[380px] truncate" title={r.title}>{r.title}</span></span></td>
                 <td className="px-3 py-2 text-xs text-muted-foreground">{r.category ?? "—"}</td>
                 <td className="px-3 py-2 text-right">

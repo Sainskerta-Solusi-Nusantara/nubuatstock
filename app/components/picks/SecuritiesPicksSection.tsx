@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Building2, ExternalLink } from "lucide-react";
 import { listSecuritiesPicksGrouped } from "@/lib/securities-picks/service";
+import { securitiesSiteUrl } from "@/lib/securities/sites";
 import { fmtDateId } from "@/lib/utils/date-id";
 
 const nf = new Intl.NumberFormat("id-ID");
@@ -41,7 +42,13 @@ export async function SecuritiesPicksSection() {
           <tbody>
             {rows.map((p) => (
               <tr key={p.id} className="border-b border-border/60 last:border-0 hover:bg-accent/40">
-                <td className="px-3 py-2 whitespace-nowrap text-xs text-muted-foreground">{p.securities}</td>
+                <td className="px-3 py-2 whitespace-nowrap text-xs text-muted-foreground">
+                  {securitiesSiteUrl(p.securities) ? (
+                    <a href={securitiesSiteUrl(p.securities)!} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 hover:text-primary hover:underline">
+                      {p.securities} <ExternalLink className="h-2.5 w-2.5" />
+                    </a>
+                  ) : p.securities}
+                </td>
                 <td className="px-3 py-2"><Link href={`/ticker/${p.kode}`} className="font-mono font-bold text-primary hover:underline">{p.kode}</Link></td>
                 <td className="px-3 py-2">{p.action ? <span className="rounded bg-bull/15 px-1.5 py-0.5 text-[10px] font-semibold text-bull">{p.action}</span> : "—"}</td>
                 <td className="px-3 py-2 whitespace-nowrap text-right font-mono">{p.entryLow != null ? `${fmt(p.entryLow)}${p.entryHigh ? `–${fmt(p.entryHigh)}` : ""}` : "—"}</td>
