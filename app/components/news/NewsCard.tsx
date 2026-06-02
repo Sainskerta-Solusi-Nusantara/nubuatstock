@@ -4,7 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { SentimentBadge } from "./SentimentBadge";
 import type { NewsListItem } from "@/lib/news/service";
-import { timeAgoId } from "@/lib/utils/datetime";
+import { formatDateTimeId, timeAgoId } from "@/lib/utils/datetime";
 
 export function NewsCard({ article }: { article: NewsListItem }) {
   return (
@@ -44,7 +44,7 @@ export function NewsCard({ article }: { article: NewsListItem }) {
               )}
               <span className="font-semibold uppercase tracking-wide">{article.sourceName}</span>
               <span>·</span>
-              <span>{timeAgoId(article.publishedAt)}</span>
+              <span title={`${timeAgoId(article.publishedAt)} lalu`}>{formatDateTimeId(article.publishedAt)} WIB</span>
               <span className="ml-auto">
                 <SentimentBadge
                   sentiment={article.sentiment}
