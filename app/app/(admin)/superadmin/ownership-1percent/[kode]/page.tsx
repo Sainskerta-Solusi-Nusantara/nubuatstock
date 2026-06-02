@@ -29,7 +29,7 @@ export default async function Pct1DetailPage({ params }: { params: Promise<{ kod
 
   return (
     <div className="space-y-5">
-      <Link href="/superadmin/ownership-1pct" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link href="/superadmin/ownership-1percent" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4" /> Semua emiten
       </Link>
 

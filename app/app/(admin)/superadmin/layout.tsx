@@ -53,7 +53,7 @@ export default async function SuperadminLayout({ children }: { children: React.R
             <SuperadminNavLink href="/superadmin/system">🩺 System Health</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/ai-moderation">🛡️ AI Moderation</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/referral">🎁 Program Referral</SuperadminNavLink>
-            <SuperadminNavLink href="/superadmin/ownership-1pct">📊 Kepemilikan ≥1% (review)</SuperadminNavLink>
+            <SuperadminNavLink href="/superadmin/ownership-1percent">📊 Kepemilikan ≥1% (review)</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/free-float">📋 Free Float BEI</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/securities-picks">🎯 Rekomendasi Sekuritas</SuperadminNavLink>
             <SuperadminNavLink href="/superadmin/securities-reports">📄 Riset Sekuritas</SuperadminNavLink>

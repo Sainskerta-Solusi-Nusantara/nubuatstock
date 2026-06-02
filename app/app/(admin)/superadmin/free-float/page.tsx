@@ -1,6 +1,6 @@
 import { getFreeFloatDashboard } from "@/lib/freefloat/service";
 import { fmtDateId } from "@/lib/utils/date-id";
-import { RefreshButton } from "../ownership-1pct/refresh-button";
+import { RefreshButton } from "../ownership-1percent/refresh-button";
 import { FreeFloatPanel } from "./free-float-panel";
 
 export const dynamic = "force-dynamic";
