@@ -24,18 +24,18 @@ export default async function SuperadminLayout({ children }: { children: React.R
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b border-bear/30 bg-bear-soft/50">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-6 py-2 text-xs font-medium text-bear">
-          <span className="flex items-center gap-2">
-            <ShieldAlert className="h-4 w-4" />
-            <span>Mode Super Admin — perubahan di sini berdampak ke seluruh sistem & user.</span>
-          </span>
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-6 py-2 text-xs font-medium text-bear">
           <Link
             href="/dashboard"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-bear/40 bg-background/60 px-2.5 py-1 font-semibold text-bear transition hover:bg-bear hover:text-white"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 font-semibold text-foreground transition hover:bg-primary hover:text-primary-foreground hover:border-primary"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Kembali ke Dashboard
           </Link>
+          <span className="flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4" />
+            <span>Mode Super Admin — perubahan di sini berdampak ke seluruh sistem & user.</span>
+          </span>
         </div>
       </div>
 
