@@ -2,8 +2,11 @@
  * Fetcher riset sekuritas per-sumber.
  *
  * Tiap sumber = satu fungsi yang mengembalikan baris ternormalisasi. Tambah
- * sumber baru dengan menambah entry di SOURCES. Saat ini: Henan (Strapi publik).
+ * sumber baru dengan menambah entry di SOURCES. Saat ini: Henan (Strapi publik)
+ * + channel Telegram publik.
  */
+
+import { fetchTelegramMessages } from "@/lib/securities/telegram";
 
 export interface ReportRow {
   securities: string;
@@ -61,6 +64,35 @@ async function fetchHenan(limit = 60): Promise<ReportRow[]> {
   return rows;
 }
 
+/**
+ * Channel Telegram PUBLIK via halaman preview web (https://t.me/s/<username>).
+ * Tidak butuh token/API key. Judul = baris pertama pesan. Throw kalau gagal
+ * supaya fetchAllReports bisa menangkap per-sumber.
+ */
+export async function fetchTelegramChannel(
+  username: string,
+  displayName: string,
+  limit = 20,
+): Promise<ReportRow[]> {
+  const messages = await fetchTelegramMessages(username, limit);
+  return messages.map((m) => {
+    const firstLine = m.text.split("\n").map((l) => l.trim()).find((l) => l.length > 0) ?? m.text;
+    const title = firstLine.length > 140 ? `${firstLine.slice(0, 137)}...` : firstLine;
+    return {
+      securities: displayName,
+      externalId: `tg:${username}:${m.messageId}`,
+      title,
+      category: "Telegram",
+      categoryType: "Telegram",
+      publishedAt: m.publishedAt,
+      pdfUrl: null,
+      thumbnailUrl: null,
+      sourceUrl: m.link,
+      isMemberOnly: false,
+    } satisfies ReportRow;
+  });
+}
+
 export interface ReportSource {
   key: string;
   securities: string;
@@ -69,7 +101,27 @@ export interface ReportSource {
 
 export const REPORT_SOURCES: ReportSource[] = [
   { key: "henan", securities: "Henan Putihrai Sekuritas", fetch: fetchHenan },
-  // Sumber lain menyusul saat ditemukan feed/API publik yang sah.
+  // Channel Telegram publik sekuritas/riset saham IDX (preview web, tanpa token).
+  {
+    key: "tg-samuelsekuritas",
+    securities: "Samuel Sekuritas",
+    fetch: (limit) => fetchTelegramChannel("samuelsekuritas", "Samuel Sekuritas", limit),
+  },
+  {
+    key: "tg-dapursaham",
+    securities: "Dapur Saham",
+    fetch: (limit) => fetchTelegramChannel("dapursaham", "Dapur Saham", limit),
+  },
+  {
+    key: "tg-creativetrader",
+    securities: "Creative Trader",
+    fetch: (limit) => fetchTelegramChannel("creativetrader", "Creative Trader", limit),
+  },
+  {
+    key: "tg-sahampemenang",
+    securities: "Saham Pemenang",
+    fetch: (limit) => fetchTelegramChannel("sahampemenang", "Saham Pemenang", limit),
+  },
 ];
 
 /** Fetch semua sumber; sumber yang error tidak menggagalkan yang lain. */

@@ -2,6 +2,7 @@ import { and, asc, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { securitiesPicks, type SecuritiesPick, type NewSecuritiesPick } from "@/db/schema/securities-picks";
+import { fetchSecuritiesPicks } from "./fetch";
 
 /** Daftar sekuritas yang umum jadi sumber (untuk dropdown admin). */
 export const COMMON_SECURITIES = [
@@ -58,12 +59,36 @@ export async function listSecuritiesPicksGrouped(date?: string): Promise<{ date:
 }
 
 /** Semua picks (admin), urut tanggal desc lalu sekuritas. */
-export async function listAllSecuritiesPicks(limit = 300): Promise<SecuritiesPick[]> {
+export async function listAllSecuritiesPicks(limit = 2000): Promise<SecuritiesPick[]> {
   return db
     .select()
     .from(securitiesPicks)
     .orderBy(desc(securitiesPicks.pickDate), asc(securitiesPicks.securities), asc(securitiesPicks.kode))
     .limit(limit);
+}
+
+export interface RefreshPicksResult {
+  inserted: number;
+  candidates: number;
+  errors: string[];
+}
+
+/**
+ * Auto-fetch rekomendasi dari sumber sekuritas (Telegram) + ekstraksi AI, lalu
+ * upsert ke DB. Idempotent: pick yang sama (tgl+sumber+kode) di-update, bukan dobel.
+ */
+export async function refreshSecuritiesPicksFromSources(): Promise<RefreshPicksResult> {
+  const { rows, errors, candidates } = await fetchSecuritiesPicks();
+  let inserted = 0;
+  for (const r of rows) {
+    try {
+      await addSecuritiesPick(r);
+      inserted += 1;
+    } catch (err) {
+      errors.push(`${r.securities} ${r.kode}: ${(err as Error).message}`);
+    }
+  }
+  return { inserted, candidates, errors };
 }
 
 /** Upsert satu pick (idempotent per tanggal+sekuritas+kode). */

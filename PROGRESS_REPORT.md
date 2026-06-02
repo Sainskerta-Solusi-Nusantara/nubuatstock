@@ -8,8 +8,8 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v0.2 |
-| **Last updated** | 30 Mei 2026 |
+| **Version** | v0.3 |
+| **Last updated** | 2 Jun 2026 |
 | **Owner** | dobeon.com@gmail.com (Founder/CEO/PM) |
 | **Cadence** | Weekly update (setiap Jumat 17:00 WIB) |
 | **Sumber** | `ANALISIS_APLIKASI_SAHAM.md`, `PLAN_UIUX_WIREFRAME.md` |
@@ -812,14 +812,18 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 - 🟢 **Review ≥1% Ownership** ala klinikpenyesalan di superadmin: tab Ringkasan/Per Investor/Metrik + **peta jaringan interaktif** (zoom/pan/hover/fullscreen, lintas-kepemilikan emiten↔pemegang↔saham lain).
 - 🟢 **Ambil semua data ke DB** (arahan founder): holders 7.161 + emiten 956 + data Perubahan (changelog 523 changes, summary top gainers/losers/holders/bought/sold, 68 investor baru) tersimpan RAW di `ownership_1pct_changelog`.
 - 🟢 Changelog bell "Apa yang baru" v1.9.0 (Kepemilikan Saham, Ruang Belajar, edit profil, modul Academy lanjutan). Rename "AI & Belajar" → "Ruang Belajar".
-- 🟢 tsc 0 error, build hijau, deploy prod.
+- 🟢 **Tab Perubahan Data live** (sebelumnya stub): konsumsi `ownership_1pct_changelog` RAW → Saham Baru/Keluar, Top Diborong/Dilepas (net flow), Top Gainers/Losers per investor-saham, Top Holders, Investor Baru. Panel expandable (25/60 row), label periode `prevDate → currentDate`, fallback rapi saat snapshot <2 atau tanpa perubahan.
+- 🟢 **Sumber riset Telegram publik** di admin securities-reports: scraper `t.me/s/<channel>` tanpa token/API key (parse HTML preview, decode entitas, ambil judul/tanggal/URL pesan). 4 channel (Samuel Sekuritas, Dapur Saham, Creative Trader, Saham Pemenang) — live-tested OK; upsert idempotent per `tg:<user>:<msgId>`; sumber error tak menggagalkan sumber lain. Parser dipindah ke util bersama `lib/securities/telegram.ts`.
+- 🟢 **Auto-fetch Rekomendasi Sekuritas** (sebelumnya 100% manual): pipeline `fetch Telegram → prefilter heuristik → ekstraksi AI (DeepSeek JSON) → upsert `securities_picks``. AI hanya ambil call eksplisit (kode+aksi+entry/target/SL), mengabaikan market-update/berita/edukasi. Tombol "Refresh dari sumber" di admin; idempotent per tgl+sumber+kode. **Live-tested**: 13 kandidat → 2 pick valid (BMRI, WIFI dari Dapur Saham) dalam 26 dtk, 0 error.
+- 🟢 **Daily Picks**: confidence Low kini ikut tampil (sebelumnya disembunyikan), diurut setelah High & Medium (stable sort, skor desc dalam tier).
+- 🟢 tsc 0 error, lint bersih, build hijau, deploy prod.
 
 **Lowlights**
 - 🟡 **Klasifikasi** komposisi penuh (~30 kategori incl <1%) belum bisa direplikasi — datanya TIDAK ada di payload klinikpenyesalan (dihitung sisi server mereka). Opsi: pakai komposisi KSEI 9-tipe (100% coverage) atau ≥1% saja.
-- 🟡 Konglo Stocks & multi-snapshot Perubahan (12 Mar, 5 Mar) belum dibangun.
+- 🟡 Multi-snapshot Perubahan (riwayat antar tanggal) masih single-changelog terbaru — butuh akumulasi snapshot berkala.
 
 **Next Week**
-- UI tab Perubahan Data dari `ownership_1pct_changelog`; pertimbangkan Klasifikasi pakai KSEI 9-tipe; Konglo Stocks (mapping grup).
+- Klasifikasi pakai KSEI 9-tipe; multi-snapshot history Perubahan; tambah sumber riset (channel/feed publik lain).
 
 ---
 
@@ -998,7 +1002,8 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 |---|---|---|---|
 | v0.1 | 11 Mei 2026 | Founder | Initial draft. Status snapshot, milestone tracker M0–M24, workstream status, feature matrix (96 fitur), KPI tracker, hiring tracker, budget template, risk register (15 risiko), decision log (5 keputusan), weekly status template, sprint schedule. |
 | v0.2 | 29 Mei 2026 | Founder + Claude | Update snapshot: phase → MVP/pre-closed-beta, progress MVP ~88% / launch-readiness ~85% (sebelumnya stale "5%"). Log sesi 29 Mei di Minggu 25–31 Mei: tutup launch-blocker P0/P1 (email-gate, webhook sig, rate-limit, UU PDP, audit immutability, cookie consent, market-auth fix), diferensiator (Elliott P0+P1, pattern, screener Swing Santai), UI/UX (tagline, nada "kamu", kontras teks), About Us + Glossary, pipeline logo Vercel Blob. 121 unit test, tsc 0, build hijau. |
-| v0.3 | TBD | TBD | TBD |
+| v0.3 | 2 Jun 2026 | Founder + Claude | Tab **Perubahan Data** ownership ≥1% live (Saham Baru/Keluar, Top Diborong/Dilepas, Top Gainers/Losers, Top Holders, Investor Baru) dari `ownership_1pct_changelog`. **Sumber riset Telegram publik** (scraper `t.me/s/` tanpa token, 4 channel, live-tested). **Auto-fetch Rekomendasi Sekuritas** via ekstraksi AI DeepSeek (prefilter→JSON→upsert, live-tested 13 kandidat→2 pick). **Daily Picks** confidence Low ikut tampil (diurut setelah High/Medium). tsc 0, lint bersih. |
+| v0.4 | TBD | TBD | TBD |
 
 ---
 

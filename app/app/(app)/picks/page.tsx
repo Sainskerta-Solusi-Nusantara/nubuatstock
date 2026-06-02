@@ -29,10 +29,12 @@ export default async function PicksPage() {
     getLatestRun(),
   ]);
   const dailyVisible = isStaff ? picks.length : entVisible;
-  // (a) Utamakan confidence Medium/High; kalau tak ada sama sekali, tampilkan apa adanya.
-  const strong = picks.filter((p) => p.confidence !== "low");
-  const pool = strong.length > 0 ? strong : picks;
-  const lowHidden = picks.length - pool.length;
+  // Urutkan High → Medium → Low (Low tetap ditampilkan, tapi paling bawah).
+  // Stable sort menjaga urutan skor desc dari query di dalam tiap tier.
+  const confRank: Record<string, number> = { high: 0, medium: 1, low: 2 };
+  const pool = [...picks].sort(
+    (a, b) => (confRank[a.confidence] ?? 99) - (confRank[b.confidence] ?? 99),
+  );
   const visible = pool.slice(0, dailyVisible);
   const hiddenCount = Math.max(0, pool.length - visible.length);
 
@@ -68,11 +70,6 @@ export default async function PicksPage() {
               <PickCard key={p.id} pick={p} />
             ))}
           </div>
-          {lowHidden > 0 ? (
-            <p className="text-xs text-muted-foreground">
-              Menampilkan pick dengan confidence Medium/High. <strong>{lowHidden}</strong> pick confidence rendah disembunyikan agar fokus ke setup terkuat.
-            </p>
-          ) : null}
           {hiddenCount > 0 ? (
             <div className="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground">
               <strong>{hiddenCount}</strong> pick lainnya tersedia di paket lebih

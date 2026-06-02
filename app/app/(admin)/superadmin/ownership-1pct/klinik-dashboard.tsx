@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import type { DashData, DashEmiten, DashHolder } from "@/lib/ownership1pct/service";
+import type {
+  ChangelogResult,
+  DashData,
+  DashEmiten,
+  DashHolder,
+  SummaryGainerLoser,
+  SummaryHolder,
+  SummaryStockFlow,
+} from "@/lib/ownership1pct/service";
+import { fmtDateId } from "@/lib/utils/date-id";
 
 /* ---------- format helpers ---------- */
 const nf = new Intl.NumberFormat("id-ID");
@@ -861,10 +870,291 @@ function KongloTab({ data }: { data: DashData }) {
   );
 }
 
+/* ---------- Perubahan Data (changelog antar periode) ---------- */
+const fmtSignedShares = (n: number) => `${n > 0 ? "+" : ""}${nf.format(n)}`;
+const fmtSignedPct = (n: number) => `${n > 0 ? "+" : ""}${n.toFixed(2)}%`;
+const tickerPill = (kode: string) => (
+  <span className="rounded bg-bull px-1.5 py-0.5 font-mono text-xs font-bold text-white">{kode}</span>
+);
+
+function GainerLoserTable({ rows, kind }: { rows: SummaryGainerLoser[]; kind: "gain" | "loss" }) {
+  const color = kind === "gain" ? "text-bull" : "text-bear";
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[420px] text-xs">
+        <thead className="border-b border-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+          <tr>
+            <th className="px-2 py-1.5">#</th>
+            <th className="px-2 py-1.5">Kode</th>
+            <th className="px-2 py-1.5">Investor</th>
+            <th className="px-2 py-1.5 text-right">Δ Saham</th>
+            <th className="px-2 py-1.5 text-right">Δ %</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={`${r.share_code}-${r.investor_name}-${i}`} className="border-b border-border/60 last:border-0">
+              <td className="px-2 py-1.5 text-muted-foreground">{i + 1}</td>
+              <td className="px-2 py-1.5">{tickerPill(r.share_code)}</td>
+              <td className="px-2 py-1.5 max-w-[16rem] truncate" title={`${r.investor_name} · ${r.issuer_name}`}>{r.investor_name}</td>
+              <td className={`px-2 py-1.5 whitespace-nowrap text-right font-mono ${color}`}>{fmtSignedShares(r.share_diff)}</td>
+              <td className={`px-2 py-1.5 whitespace-nowrap text-right font-mono font-semibold ${color}`}>{fmtSignedPct(r.pct_diff)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function StockFlowTable({ rows, kind }: { rows: SummaryStockFlow[]; kind: "buy" | "sell" }) {
+  const color = kind === "buy" ? "text-bull" : "text-bear";
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[380px] text-xs">
+        <thead className="border-b border-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+          <tr>
+            <th className="px-2 py-1.5">#</th>
+            <th className="px-2 py-1.5">Kode</th>
+            <th className="px-2 py-1.5">Emiten</th>
+            <th className="px-2 py-1.5 text-right">Δ Saham (net)</th>
+            <th className="px-2 py-1.5 text-right">Δ % (net)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={`${r.share_code}-${i}`} className="border-b border-border/60 last:border-0">
+              <td className="px-2 py-1.5 text-muted-foreground">{i + 1}</td>
+              <td className="px-2 py-1.5">{tickerPill(r.share_code)}</td>
+              <td className="px-2 py-1.5 max-w-[16rem] truncate" title={r.issuer_name}>{r.issuer_name}</td>
+              <td className={`px-2 py-1.5 whitespace-nowrap text-right font-mono ${color}`}>{fmtSignedShares(r.net_share_change)}</td>
+              <td className={`px-2 py-1.5 whitespace-nowrap text-right font-mono font-semibold ${color}`}>{fmtSignedPct(r.net_pct_change)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function HolderTable({ rows }: { rows: SummaryHolder[] }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[320px] text-xs">
+        <thead className="border-b border-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+          <tr>
+            <th className="px-2 py-1.5">#</th>
+            <th className="px-2 py-1.5">Investor</th>
+            <th className="px-2 py-1.5 text-right">Total Saham</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={`${r.investor_name}-${i}`} className="border-b border-border/60 last:border-0">
+              <td className="px-2 py-1.5 text-muted-foreground">{i + 1}</td>
+              <td className="px-2 py-1.5 max-w-[18rem] truncate" title={r.investor_name}>{r.investor_name}</td>
+              <td className="px-2 py-1.5 whitespace-nowrap text-right font-mono font-semibold">{fmtShares(r.total_shares)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const SUMMARY_LIMIT = 25;
+function SummaryPanel<T>({
+  title,
+  subtitle,
+  rows,
+  render,
+}: {
+  title: string;
+  subtitle?: string;
+  rows: T[];
+  render: (rows: T[]) => React.ReactNode;
+}) {
+  const [all, setAll] = React.useState(false);
+  if (!rows || rows.length === 0) return null;
+  const shown = all ? rows : rows.slice(0, SUMMARY_LIMIT);
+  return (
+    <div className="rounded-lg border border-border bg-card p-3">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div>
+          <div className="text-sm font-semibold">{title}</div>
+          {subtitle && <div className="text-[11px] text-muted-foreground">{subtitle}</div>}
+        </div>
+        <span className="rounded-full bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">{rows.length}</span>
+      </div>
+      {render(shown)}
+      {rows.length > SUMMARY_LIMIT && (
+        <button
+          onClick={() => setAll((a) => !a)}
+          className="mt-2 h-7 rounded-md border border-border px-2.5 text-xs hover:bg-accent"
+        >
+          {all ? "Tampilkan lebih sedikit" : `Selengkapnya (${rows.length - SUMMARY_LIMIT} lagi)`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+const INVESTOR_CHIP_LIMIT = 60;
+function NewInvestors({ names }: { names: string[] }) {
+  const [all, setAll] = React.useState(false);
+  if (!names || names.length === 0) return null;
+  const shown = all ? names : names.slice(0, INVESTOR_CHIP_LIMIT);
+  return (
+    <div className="rounded-lg border border-border bg-card p-3">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="text-sm font-semibold">Investor Baru</div>
+        <span className="rounded-full bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">{names.length}</span>
+      </div>
+      <p className="mb-2 text-[11px] text-muted-foreground">Nama pemegang ≥1% yang baru muncul di periode ini.</p>
+      <div className="flex flex-wrap gap-1.5">
+        {shown.map((n, i) => (
+          <span key={`${n}-${i}`} className="rounded-md border border-border bg-background px-2 py-1 text-xs">{n}</span>
+        ))}
+      </div>
+      {names.length > INVESTOR_CHIP_LIMIT && (
+        <button
+          onClick={() => setAll((a) => !a)}
+          className="mt-2 h-7 rounded-md border border-border px-2.5 text-xs hover:bg-accent"
+        >
+          {all ? "Tampilkan lebih sedikit" : `Selengkapnya (${names.length - INVESTOR_CHIP_LIMIT} lagi)`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function StockList({ title, subtitle, rows }: { title: string; subtitle: string; rows: { share_code: string; issuer_name: string }[] }) {
+  if (!rows || rows.length === 0) return null;
+  return (
+    <div className="rounded-lg border border-border bg-card p-3">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div>
+          <div className="text-sm font-semibold">{title}</div>
+          <div className="text-[11px] text-muted-foreground">{subtitle}</div>
+        </div>
+        <span className="rounded-full bg-secondary px-2 py-0.5 text-[11px] text-muted-foreground">{rows.length}</span>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {rows.map((r) => (
+          <span key={r.share_code} title={r.issuer_name} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 text-xs">
+            <span className="font-mono font-bold text-primary">{r.share_code}</span>
+            <span className="max-w-[12rem] truncate text-muted-foreground">{r.issuer_name}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PerubahanDataTab({ changelog }: { changelog: ChangelogResult | null }) {
+  if (!changelog || !changelog.raw) {
+    return (
+      <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+        Belum ada data perubahan. Dibutuhkan minimal 2 snapshot periode. Coba klik &ldquo;Refresh dari sumber&rdquo; lagi nanti.
+      </div>
+    );
+  }
+
+  const { raw } = changelog;
+  const summary = raw.summary ?? {};
+  const cl = raw.changelog ?? {};
+  const newStocks = cl.new_stocks ?? [];
+  const removedStocks = cl.removed_stocks ?? [];
+  const newInvestorNames = raw.newInvestorNames ?? [];
+
+  const periodLabel = `${fmtDateId(changelog.prevDate) || "—"} → ${fmtDateId(changelog.currentDate) || "—"}`;
+
+  const hasAnything =
+    (summary.topGainers?.length ?? 0) > 0 ||
+    (summary.topLosers?.length ?? 0) > 0 ||
+    (summary.topHolders?.length ?? 0) > 0 ||
+    (summary.topBoughtStocks?.length ?? 0) > 0 ||
+    (summary.topSoldStocks?.length ?? 0) > 0 ||
+    newStocks.length > 0 ||
+    removedStocks.length > 0 ||
+    newInvestorNames.length > 0;
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-lg border border-border bg-card p-3">
+        <div className="text-sm font-semibold">Perubahan {periodLabel}</div>
+        <p className="mt-0.5 text-[11px] text-muted-foreground">
+          Perbandingan kepemilikan ≥1% antara dua periode snapshot.
+          {changelog.fetchedAt ? ` · diambil ${new Date(changelog.fetchedAt).toLocaleString("id-ID")}` : ""}
+        </p>
+      </div>
+
+      {!hasAnything ? (
+        <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          Tidak ada perubahan signifikan yang tercatat untuk periode ini.
+        </div>
+      ) : (
+        <>
+          {/* Saham baru & keluar */}
+          {(newStocks.length > 0 || removedStocks.length > 0) && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <StockList title="Saham Baru" subtitle="Emiten yang baru punya pemegang ≥1%." rows={newStocks} />
+              <StockList title="Saham Keluar" subtitle="Emiten yang tidak lagi punya pemegang ≥1%." rows={removedStocks} />
+            </div>
+          )}
+
+          {/* Ringkasan flow per saham */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <SummaryPanel
+              title="Top Saham Diborong"
+              subtitle="Net penambahan saham terbesar (akumulasi)."
+              rows={summary.topBoughtStocks ?? []}
+              render={(r) => <StockFlowTable rows={r} kind="buy" />}
+            />
+            <SummaryPanel
+              title="Top Saham Dilepas"
+              subtitle="Net pengurangan saham terbesar (distribusi)."
+              rows={summary.topSoldStocks ?? []}
+              render={(r) => <StockFlowTable rows={r} kind="sell" />}
+            />
+          </div>
+
+          {/* Ringkasan per investor-saham */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <SummaryPanel
+              title="Top Gainers"
+              subtitle="Kenaikan kepemilikan per investor di satu saham."
+              rows={summary.topGainers ?? []}
+              render={(r) => <GainerLoserTable rows={r} kind="gain" />}
+            />
+            <SummaryPanel
+              title="Top Losers"
+              subtitle="Penurunan kepemilikan per investor di satu saham."
+              rows={summary.topLosers ?? []}
+              render={(r) => <GainerLoserTable rows={r} kind="loss" />}
+            />
+          </div>
+
+          {/* Top holders & investor baru */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <SummaryPanel
+              title="Top Holders"
+              subtitle="Pemegang dengan total saham terbesar."
+              rows={summary.topHolders ?? []}
+              render={(r) => <HolderTable rows={r} />}
+            />
+            <NewInvestors names={newInvestorNames} />
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ---------- Shell ---------- */
 const TABS = ["Ringkasan Saham", "Per Investor", "Konglo Stocks", "Metrik", "Perubahan Data", "Klasifikasi"] as const;
 
-export function KlinikDashboard({ data }: { data: DashData }) {
+export function KlinikDashboard({ data, changelog }: { data: DashData; changelog: ChangelogResult | null }) {
   const [tab, setTab] = React.useState<(typeof TABS)[number]>("Ringkasan Saham");
   return (
     <div className="space-y-3">
@@ -878,11 +1168,7 @@ export function KlinikDashboard({ data }: { data: DashData }) {
       {tab === "Metrik" && <MetrikTab data={data} />}
       {tab === "Klasifikasi" && <KlasifikasiTab data={data} />}
       {tab === "Konglo Stocks" && <KongloTab data={data} />}
-      {tab === "Perubahan Data" && (
-        <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Tab <strong>Perubahan Data</strong> segera: butuh minimal 2 snapshot periode (changelog sudah tersimpan, UI menyusul).
-        </div>
-      )}
+      {tab === "Perubahan Data" && <PerubahanDataTab changelog={changelog} />}
     </div>
   );
 }

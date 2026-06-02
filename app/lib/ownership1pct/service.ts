@@ -121,6 +121,86 @@ export async function getLatestChangelog(): Promise<Ownership1pctChangelog | nul
   return rows[0] ?? null;
 }
 
+/* ---- Bentuk RAW changelog (hasil inspeksi data prod) ---- */
+export interface ChangelogInvestor {
+  investor_name: string;
+  investor_type: string;
+  local_foreign: string; // "D" | "F"
+  shares: number;
+  percentage: number;
+  holdings_scrip?: number;
+  holdings_scripless?: number;
+  prev_shares?: number;
+  prev_percentage?: number;
+}
+export interface ChangelogNewStock {
+  share_code: string;
+  issuer_name: string;
+  investors: ChangelogInvestor[];
+}
+export interface ChangelogStockChange {
+  share_code: string;
+  issuer_name: string;
+  new_investors: ChangelogInvestor[];
+  removed_investors: ChangelogInvestor[];
+  share_changes: ChangelogInvestor[];
+}
+export interface SummaryGainerLoser {
+  share_code: string;
+  issuer_name: string;
+  investor_name: string;
+  shares: number;
+  prev_shares: number;
+  share_diff: number;
+  pct_diff: number;
+}
+export interface SummaryStockFlow {
+  share_code: string;
+  issuer_name: string;
+  net_share_change: number;
+  net_pct_change: number;
+}
+export interface SummaryHolder {
+  investor_name: string;
+  total_shares: number;
+}
+export interface ChangelogRaw {
+  currentDate: string;
+  prevDate?: string;
+  changelog?: {
+    changes?: ChangelogStockChange[];
+    new_stocks?: ChangelogNewStock[];
+    removed_stocks?: ChangelogNewStock[];
+  };
+  summary?: {
+    topGainers?: SummaryGainerLoser[];
+    topLosers?: SummaryGainerLoser[];
+    topHolders?: SummaryHolder[];
+    topBoughtStocks?: SummaryStockFlow[];
+    topSoldStocks?: SummaryStockFlow[];
+  };
+  newInvestorNames?: string[];
+}
+
+export interface ChangelogResult {
+  currentDate: string;
+  prevDate: string | null;
+  fetchedAt: string | null;
+  raw: ChangelogRaw;
+}
+
+/** Ambil changelog terbaru sebagai bentuk rapi untuk dipakai client. */
+export async function getChangelogForClient(): Promise<ChangelogResult | null> {
+  const row = await getLatestChangelog();
+  if (!row) return null;
+  return {
+    currentDate: row.currentDate,
+    prevDate: row.prevDate ?? null,
+    fetchedAt: row.fetchedAt ? new Date(row.fetchedAt).toISOString() : null,
+    raw: row.raw as ChangelogRaw,
+  };
+}
+
 export interface EmitenListResult {
   total: number;
   rows: Ownership1pctEmiten[];
