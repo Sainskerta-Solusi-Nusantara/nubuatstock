@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { ingestAllNewsInline } from "@/lib/news/ingest-inline";
+import { scoreUnanalyzed } from "@/lib/news/sentiment";
 import { getSession } from "@/lib/auth/server";
 import { requireSuperadmin } from "@/lib/auth/roles";
 import { logger } from "@/lib/logger";
@@ -40,8 +41,15 @@ async function run(req: NextRequest) {
   }
   try {
     const result = await ingestAllNewsInline();
-    logger.info(result, "cron news ingest");
-    return NextResponse.json({ ok: true, ...result });
+    // Skor sentimen artikel yang belum dinilai (bounded; jangan gagalkan ingest).
+    let sentiment: { scored: number; failed: number } | null = null;
+    try {
+      sentiment = await scoreUnanalyzed(40);
+    } catch (err) {
+      logger.warn({ err: (err as Error).message }, "cron sentiment scoring skipped");
+    }
+    logger.info({ ...result, sentiment }, "cron news ingest");
+    return NextResponse.json({ ok: true, ...result, sentiment });
   } catch (err) {
     logger.error({ err: (err as Error).message }, "cron news ingest failed");
     return NextResponse.json({ ok: false, error: (err as Error).message }, { status: 500 });

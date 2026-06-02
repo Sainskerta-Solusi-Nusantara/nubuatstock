@@ -21,6 +21,17 @@ export interface ChangelogEntry {
 /** Entry changelog, urut terbaru dulu. */
 export const changelogEntries: ChangelogEntry[] = [
   {
+    version: "1.10.0",
+    date: "2026-06-02",
+    title: "Berita pintar + AI Buddy lebih sigap",
+    items: [
+      "Setiap berita kini ditandai kode saham terkait — termasuk dari tema/sektor (mis. berita timah → TINS, nikel → ANTM/INCO/NCKL). Klik kodenya untuk buka halaman emiten.",
+      "News Feed: tanggal terbit ditampilkan jelas (mis. \"2 Jun 2026 03:29 WIB\") & berita di-refresh otomatis.",
+      "AI Buddy diperbaiki — sekarang menjawab lebih andal; cukup ketik kode saham (mis. HRUM) untuk ringkasan cepat.",
+      "Rekomendasi sekuritas mulai diagregasi (bertahap) sebagai pelengkap Daily Picks.",
+    ],
+  },
+  {
     version: "1.9.0",
     date: "2026-06-02",
     title: "Kepemilikan Saham + Ruang Belajar",
