@@ -84,16 +84,24 @@ export const ingestEodProcessor: Processor<IngestEodJobData, IngestEodJobResult>
       try {
         const bars = await adapter.fetchOhlcv(c.kode, from, to, "1d");
         if (bars.length > 0) {
-          const values = bars.map((b) => ({
-            tradeDate: b.date,
-            companyKode: c.kode,
-            open: b.open,
-            high: b.high,
-            low: b.low,
-            close: b.close,
-            volume: BigInt(b.volume || "0"),
-            valueIdr: b.valueIdr ?? "0",
-          }));
+          const values = bars.map((b) => {
+            // Banyak adapter (mis. Yahoo) tak menyediakan nilai transaksi (turnover).
+            // Estimasi value_idr = close × volume agar filter likuiditas & scoring jalan.
+            const vol = Number(b.volume || "0");
+            const close = Number(b.close || "0");
+            const estValue = vol > 0 && close > 0 ? Math.round(close * vol) : 0;
+            const provided = Number(b.valueIdr ?? "0");
+            return {
+              tradeDate: b.date,
+              companyKode: c.kode,
+              open: b.open,
+              high: b.high,
+              low: b.low,
+              close: b.close,
+              volume: BigInt(b.volume || "0"),
+              valueIdr: String(provided > 0 ? provided : estValue),
+            };
+          });
           await db
             .insert(quotesEod)
             .values(values)

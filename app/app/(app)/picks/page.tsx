@@ -29,8 +29,12 @@ export default async function PicksPage() {
     getLatestRun(),
   ]);
   const dailyVisible = isStaff ? picks.length : entVisible;
-  const visible = picks.slice(0, dailyVisible);
-  const hiddenCount = Math.max(0, picks.length - visible.length);
+  // (a) Utamakan confidence Medium/High; kalau tak ada sama sekali, tampilkan apa adanya.
+  const strong = picks.filter((p) => p.confidence !== "low");
+  const pool = strong.length > 0 ? strong : picks;
+  const lowHidden = picks.length - pool.length;
+  const visible = pool.slice(0, dailyVisible);
+  const hiddenCount = Math.max(0, pool.length - visible.length);
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -64,6 +68,11 @@ export default async function PicksPage() {
               <PickCard key={p.id} pick={p} />
             ))}
           </div>
+          {lowHidden > 0 ? (
+            <p className="text-xs text-muted-foreground">
+              Menampilkan pick dengan confidence Medium/High. <strong>{lowHidden}</strong> pick confidence rendah disembunyikan agar fokus ke setup terkuat.
+            </p>
+          ) : null}
           {hiddenCount > 0 ? (
             <div className="rounded-md border border-dashed bg-muted/40 p-4 text-sm text-muted-foreground">
               <strong>{hiddenCount}</strong> pick lainnya tersedia di paket lebih
