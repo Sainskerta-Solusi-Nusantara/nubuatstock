@@ -5,6 +5,7 @@ import { PickCard } from "@/components/picks/PickCard";
 import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { getTodayPicks, getLatestRun } from "@/lib/picks/service";
 import { requireSession, resolveDailyVisibleEntitlement } from "@/lib/picks/cross-deps";
+import { SecuritiesPicksSection } from "@/components/picks/SecuritiesPicksSection";
 
 export const dynamic = "force-dynamic";
 
@@ -60,6 +61,8 @@ export default async function PicksPage() {
           ) : null}
         </>
       )}
+
+      <SecuritiesPicksSection />
 
       <footer className="border-t pt-4">
         <PickDisclaimer variant="footer" text={disclaimer} withLink />
