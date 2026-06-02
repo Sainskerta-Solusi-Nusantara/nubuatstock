@@ -4,6 +4,7 @@ import { formatNumber } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 import type { ElliottAnalysisDTO } from "@/lib/elliott/service";
 import { projectTargets, guidelineScore } from "@/lib/elliott/projection";
+import { ElliottAiNarrative } from "./ElliottAiNarrative";
 
 interface Props {
   analysis: ElliottAnalysisDTO;
@@ -264,6 +265,11 @@ export function ElliottWaveCard({ analysis }: Props) {
               Pedoman lunak Elliott (proporsi, alternasi) — bukan aturan keras; skor tinggi = count lebih rapi.
             </p>
           </div>
+        )}
+
+        {/* P2: Penjelasan AI on-demand */}
+        {analysis.waveType !== "unknown" && (
+          <ElliottAiNarrative kode={analysis.kode} timeframe={analysis.timeframe} />
         )}
 
         {/* Reasoning */}
