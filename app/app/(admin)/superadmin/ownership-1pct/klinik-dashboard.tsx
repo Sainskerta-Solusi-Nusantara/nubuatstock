@@ -1051,8 +1051,10 @@ function StockList({ title, subtitle, rows }: { title: string; subtitle: string;
   );
 }
 
-function PerubahanDataTab({ changelog }: { changelog: ChangelogResult | null }) {
-  if (!changelog || !changelog.raw) {
+function PerubahanDataTab({ changelogs }: { changelogs: ChangelogResult[] }) {
+  const [idx, setIdx] = React.useState(0);
+
+  if (changelogs.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
         Belum ada data perubahan. Dibutuhkan minimal 2 snapshot periode. Coba klik &ldquo;Refresh dari sumber&rdquo; lagi nanti.
@@ -1060,6 +1062,7 @@ function PerubahanDataTab({ changelog }: { changelog: ChangelogResult | null }) 
     );
   }
 
+  const changelog = changelogs[Math.min(idx, changelogs.length - 1)]!;
   const { raw } = changelog;
   const summary = raw.summary ?? {};
   const cl = raw.changelog ?? {};
@@ -1081,12 +1084,30 @@ function PerubahanDataTab({ changelog }: { changelog: ChangelogResult | null }) 
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border bg-card p-3">
-        <div className="text-sm font-semibold">Perubahan {periodLabel}</div>
-        <p className="mt-0.5 text-[11px] text-muted-foreground">
-          Perbandingan kepemilikan ≥1% antara dua periode snapshot.
-          {changelog.fetchedAt ? ` · diambil ${new Date(changelog.fetchedAt).toLocaleString("id-ID")}` : ""}
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card p-3">
+        <div>
+          <div className="text-sm font-semibold">Perubahan {periodLabel}</div>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            Perbandingan kepemilikan ≥1% antara dua periode snapshot.
+            {changelog.fetchedAt ? ` · diambil ${new Date(changelog.fetchedAt).toLocaleString("id-ID")}` : ""}
+          </p>
+        </div>
+        {changelogs.length > 1 && (
+          <label className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            Periode
+            <select
+              value={idx}
+              onChange={(e) => setIdx(Number(e.target.value))}
+              className="h-8 rounded-md border border-input bg-background px-2 text-xs text-foreground"
+            >
+              {changelogs.map((c, i) => (
+                <option key={c.currentDate} value={i}>
+                  {fmtDateId(c.prevDate) || "—"} → {fmtDateId(c.currentDate) || "—"}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
 
       {!hasAnything ? (
@@ -1154,7 +1175,7 @@ function PerubahanDataTab({ changelog }: { changelog: ChangelogResult | null }) 
 /* ---------- Shell ---------- */
 const TABS = ["Ringkasan Saham", "Per Investor", "Konglo Stocks", "Metrik", "Perubahan Data", "Klasifikasi"] as const;
 
-export function KlinikDashboard({ data, changelog }: { data: DashData; changelog: ChangelogResult | null }) {
+export function KlinikDashboard({ data, changelogs }: { data: DashData; changelogs: ChangelogResult[] }) {
   const [tab, setTab] = React.useState<(typeof TABS)[number]>("Ringkasan Saham");
   return (
     <div className="space-y-3">
@@ -1168,7 +1189,7 @@ export function KlinikDashboard({ data, changelog }: { data: DashData; changelog
       {tab === "Metrik" && <MetrikTab data={data} />}
       {tab === "Klasifikasi" && <KlasifikasiTab data={data} />}
       {tab === "Konglo Stocks" && <KongloTab data={data} />}
-      {tab === "Perubahan Data" && <PerubahanDataTab changelog={changelog} />}
+      {tab === "Perubahan Data" && <PerubahanDataTab changelogs={changelogs} />}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export function RefreshButton() {
         toast.error(json?.error?.message ?? "Gagal refresh.");
         return;
       }
-      toast.success(`Berhasil: ${json.data.emitenCount} emiten, ${json.data.holderCount} pemegang saham.`);
+      toast.success(`Berhasil: ${json.data.emitenCount} emiten, ${json.data.holderCount} pemegang saham, ${json.data.changelogs ?? 0} periode perubahan.`);
       router.refresh();
     } catch {
       toast.error("Terjadi kesalahan saat refresh.");

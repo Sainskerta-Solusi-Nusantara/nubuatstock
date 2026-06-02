@@ -130,17 +130,23 @@ export interface ChangelogData {
   [k: string]: unknown;
 }
 
-/** Ekstrak data perubahan (changelog) dari HTML. */
-export function extractChangelog(html: string): ChangelogData | null {
+/** Ekstrak SEMUA periode changelog dari HTML (sumber mengirim array periode). */
+export function extractChangelogAll(html: string): ChangelogData[] {
   const all = joinPayload(html);
   const s = all.indexOf('[{"currentDate"');
-  if (s < 0) return null;
+  if (s < 0) return [];
   try {
     const arr = JSON.parse(arrayAt(all, s));
-    return Array.isArray(arr) && arr[0] ? (arr[0] as ChangelogData) : null;
+    if (!Array.isArray(arr)) return [];
+    return (arr as ChangelogData[]).filter((c) => c && typeof c.currentDate === "string");
   } catch {
-    return null;
+    return [];
   }
+}
+
+/** Ekstrak data perubahan (changelog) periode terbaru saja. */
+export function extractChangelog(html: string): ChangelogData | null {
+  return extractChangelogAll(html)[0] ?? null;
 }
 
 const FETCH_HEADERS = {
@@ -149,15 +155,15 @@ const FETCH_HEADERS = {
   Accept: "text/html",
 };
 
-/** Fetch + ekstrak emiten DAN changelog sekaligus. */
-export async function fetchOwnership1pctAll(): Promise<{ emiten: Pct1Emiten[]; changelog: ChangelogData | null }> {
+/** Fetch + ekstrak emiten DAN semua periode changelog sekaligus. */
+export async function fetchOwnership1pctAll(): Promise<{ emiten: Pct1Emiten[]; changelogs: ChangelogData[] }> {
   const res = await fetch(SOURCE_URL, { headers: FETCH_HEADERS, cache: "no-store" });
   if (!res.ok) throw new Error(`Gagal fetch sumber (HTTP ${res.status})`);
   const html = await res.text();
   const emiten = extractFromHtml(html);
-  const changelog = extractChangelog(html);
+  const changelogs = extractChangelogAll(html);
   if (emiten.length === 0) throw new Error("Tidak menemukan data terstruktur di sumber (format mungkin berubah).");
-  return { emiten, changelog };
+  return { emiten, changelogs };
 }
 
 export async function fetchOwnership1pct(): Promise<Pct1Emiten[]> {

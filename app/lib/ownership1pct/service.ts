@@ -103,12 +103,21 @@ export async function storeChangelog(cl: ChangelogData | null): Promise<boolean>
   return true;
 }
 
-/** Fetch dari sumber + ingest emiten + simpan changelog. */
-export async function refreshOwnership1pct(): Promise<IngestResult & { changelog: boolean }> {
-  const { emiten, changelog } = await fetchOwnership1pctAll();
+/** Simpan banyak periode changelog sekaligus (idempotent per currentDate). */
+export async function storeChangelogs(cls: ChangelogData[]): Promise<number> {
+  let stored = 0;
+  for (const cl of cls) {
+    if (await storeChangelog(cl)) stored += 1;
+  }
+  return stored;
+}
+
+/** Fetch dari sumber + ingest emiten + simpan SEMUA periode changelog. */
+export async function refreshOwnership1pct(): Promise<IngestResult & { changelogs: number }> {
+  const { emiten, changelogs } = await fetchOwnership1pctAll();
   const result = await ingestOwnership1pct(emiten);
-  const stored = await storeChangelog(changelog);
-  return { ...result, changelog: stored };
+  const stored = await storeChangelogs(changelogs);
+  return { ...result, changelogs: stored };
 }
 
 /** Ambil changelog terbaru (atau per tanggal). */
@@ -119,6 +128,15 @@ export async function getLatestChangelog(): Promise<Ownership1pctChangelog | nul
     .orderBy(desc(ownership1pctChangelog.currentDate))
     .limit(1);
   return rows[0] ?? null;
+}
+
+/** Ambil semua periode changelog (terbaru → terlama). */
+export async function listChangelogs(limit = 60): Promise<Ownership1pctChangelog[]> {
+  return db
+    .select()
+    .from(ownership1pctChangelog)
+    .orderBy(desc(ownership1pctChangelog.currentDate))
+    .limit(limit);
 }
 
 /* ---- Bentuk RAW changelog (hasil inspeksi data prod) ---- */
@@ -189,16 +207,25 @@ export interface ChangelogResult {
   raw: ChangelogRaw;
 }
 
-/** Ambil changelog terbaru sebagai bentuk rapi untuk dipakai client. */
-export async function getChangelogForClient(): Promise<ChangelogResult | null> {
-  const row = await getLatestChangelog();
-  if (!row) return null;
+function toChangelogResult(row: Ownership1pctChangelog): ChangelogResult {
   return {
     currentDate: row.currentDate,
     prevDate: row.prevDate ?? null,
     fetchedAt: row.fetchedAt ? new Date(row.fetchedAt).toISOString() : null,
     raw: row.raw as ChangelogRaw,
   };
+}
+
+/** Ambil changelog terbaru sebagai bentuk rapi untuk dipakai client. */
+export async function getChangelogForClient(): Promise<ChangelogResult | null> {
+  const row = await getLatestChangelog();
+  return row ? toChangelogResult(row) : null;
+}
+
+/** Ambil SEMUA periode changelog (terbaru → terlama) untuk client. */
+export async function listChangelogsForClient(): Promise<ChangelogResult[]> {
+  const rows = await listChangelogs();
+  return rows.map(toChangelogResult);
 }
 
 export interface EmitenListResult {
