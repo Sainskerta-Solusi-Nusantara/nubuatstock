@@ -394,6 +394,19 @@ function buildAuth(input: BuildAuthInput) {
       session: {
         create: {
           after: async (session) => {
+            // better-auth tidak menulis last login otomatis — update manual saat
+            // session dibuat (= setiap login/signup). Best-effort, jangan blokir.
+            try {
+              const { db } = await import("@/lib/db");
+              const { users } = await import("@/db/schema/auth");
+              const { eq } = await import("drizzle-orm");
+              await db
+                .update(users)
+                .set({ lastLoginAt: new Date(), lastLoginIp: session.ipAddress ?? null })
+                .where(eq(users.id, session.userId));
+            } catch (err) {
+              logger.error({ err, userId: session.userId }, "update lastLoginAt failed");
+            }
             await recordAuthEvent({
               actorUserId: session.userId,
               action: "login_success",

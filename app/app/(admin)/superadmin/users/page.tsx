@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { UsersRoleEditor } from "@/components/superadmin/UsersRoleEditor";
 import { UserTierEditor } from "@/components/superadmin/UserTierEditor";
 import { UserRowActions } from "@/components/superadmin/UserRowActions";
+import { RegistrationStats } from "@/components/superadmin/RegistrationStats";
 import { getSession } from "@/lib/auth/server";
 
 export const dynamic = "force-dynamic";
@@ -127,6 +128,8 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
           Grant/revoke role admin & superadmin. Setiap perubahan ter-audit di <code className="rounded bg-secondary px-1 text-xs">audit_log</code>.
         </p>
       </div>
+
+      <RegistrationStats />
 
       <form className="flex flex-wrap gap-3" method="get">
         <input
