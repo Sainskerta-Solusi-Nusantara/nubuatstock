@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatNumber } from "@/lib/utils/format";
 import { cn } from "@/lib/utils/cn";
 import type { ElliottAnalysisDTO } from "@/lib/elliott/service";
+import { projectTargets, guidelineScore } from "@/lib/elliott/projection";
 
 interface Props {
   analysis: ElliottAnalysisDTO;
@@ -39,6 +40,10 @@ export function ElliottWaveCard({ analysis }: Props) {
   const config = WAVE_TYPE_CONFIG[analysis.waveType];
   const Icon = config.Icon;
   const confPct = Math.round(analysis.confidence * 100);
+
+  // P2: proyeksi target Fibonacci & skor pedoman (guideline) — fungsi pure.
+  const targets = projectTargets(analysis.sequence);
+  const guide = analysis.sequence.length > 0 ? guidelineScore(analysis.sequence) : null;
 
   const isCorrective = analysis.waveType === "corrective";
   // Detect corrective subtype dari currentWave string (worker menyimpannya di sana).
@@ -203,6 +208,61 @@ export function ElliottWaveCard({ analysis }: Props) {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* P2: Proyeksi Target (Fibonacci) berdasarkan posisi wave saat ini */}
+        {targets.length > 0 && (
+          <div>
+            <div className="mb-2 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Proyeksi Target
+              <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[9px] font-bold normal-case text-primary">P2</span>
+            </div>
+            <div className="space-y-1">
+              {targets.map((t) => (
+                <div key={t.label} className="flex items-center justify-between rounded-md border border-border bg-card/40 px-2 py-1 text-[11px]">
+                  <span className="text-muted-foreground">{t.label}</span>
+                  <span className="font-mono font-semibold">{formatNumber(t.price, 0)}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-1 text-[9px] italic text-muted-foreground">
+              Proyeksi rasio Fibonacci dari panjang wave sebelumnya — perkiraan, bukan kepastian.
+            </p>
+          </div>
+        )}
+
+        {/* P2: Skor pedoman (guideline) kualitas wave count */}
+        {guide && (
+          <div>
+            <div className="mb-1.5 flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                Kualitas Wave Count
+                <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[9px] font-bold normal-case text-primary">P2</span>
+              </span>
+              <span className="font-mono text-foreground">{Math.round(guide.score)}/100</span>
+            </div>
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className={cn("h-full rounded-full", guide.score >= 66 ? "bg-bull" : guide.score >= 40 ? "bg-yellow-500" : "bg-bear")}
+                style={{ width: `${Math.max(2, Math.min(100, guide.score))}%` }}
+              />
+            </div>
+            {guide.checks.length > 0 && (
+              <ul className="mt-1.5 space-y-0.5">
+                {guide.checks.map((c) => (
+                  <li key={c.name} className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span className={cn("flex items-center gap-1", c.passed ? "text-bull" : "")}>
+                      {c.passed ? "✓" : "·"} {c.name}
+                    </span>
+                    <span className="font-mono">{c.points}/{c.maxPoints}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-1 text-[9px] italic text-muted-foreground">
+              Pedoman lunak Elliott (proporsi, alternasi) — bukan aturan keras; skor tinggi = count lebih rapi.
+            </p>
           </div>
         )}
 
