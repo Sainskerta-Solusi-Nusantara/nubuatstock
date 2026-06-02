@@ -1,4 +1,4 @@
-import { listChangelogsForClient, getKlinikDashboardData } from "@/lib/ownership1pct/service";
+import { listChangelogsForClient, getKlinikDashboardData, getOwnershipValidation } from "@/lib/ownership1pct/service";
 import { fmtDateId } from "@/lib/utils/date-id";
 import { RefreshButton } from "./refresh-button";
 import { KlinikDashboard } from "./klinik-dashboard";
@@ -6,9 +6,10 @@ import { KlinikDashboard } from "./klinik-dashboard";
 export const dynamic = "force-dynamic";
 
 export default async function Pct1Page() {
-  const [data, changelogs] = await Promise.all([
+  const [data, changelogs, validation] = await Promise.all([
     getKlinikDashboardData(),
     listChangelogsForClient(),
+    getOwnershipValidation().catch(() => null),
   ]);
 
   return (
@@ -32,7 +33,7 @@ export default async function Pct1Page() {
           Belum ada data. Klik &ldquo;Refresh dari sumber&rdquo;.
         </div>
       ) : (
-        <KlinikDashboard data={data} changelogs={changelogs} />
+        <KlinikDashboard data={data} changelogs={changelogs} validation={validation} />
       )}
     </div>
   );

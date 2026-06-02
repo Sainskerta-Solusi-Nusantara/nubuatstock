@@ -228,6 +228,75 @@ export async function listChangelogsForClient(): Promise<ChangelogResult[]> {
   return rows.map(toChangelogResult);
 }
 
+/* ---------------- Validasi data ≥1% vs KSEI resmi ---------------- */
+export interface OwnershipValidationRow {
+  kode: string;
+  holders: number;
+  pct1Total: number;
+  pct1Foreign: number;
+  kseiForeign: number;
+  foreignGap: number;
+}
+export interface OwnershipValidationResult {
+  compared: number;
+  consistentForeign: number; // ≥1% asing ≤ KSEI asing (+2pp toleransi)
+  within2pp: number; // |gap asing| ≤ 2pp
+  avgAbsGap: number; // rata-rata |gap asing| (pp)
+  impossibleTotal: number; // total ≥1% > 102% (mustahil)
+  anomalies: OwnershipValidationRow[];
+  kseiPosDate: string | null;
+}
+
+/**
+ * Bandingkan agregat kepemilikan ≥1% (sumber turunan) dengan KSEI BalancePos
+ * resmi. ≥1% asing seharusnya ≤ total asing KSEI (karena subset); selisih besar
+ * = anomali (umumnya beda definisi "asing": pemilik manfaat vs domisili akun KSEI).
+ */
+export async function getOwnershipValidation(): Promise<OwnershipValidationResult> {
+  const rows = (await db.execute(sql`
+    WITH p1 AS (
+      SELECT kode,
+             SUM(percentage) AS pct1_total,
+             SUM(percentage) FILTER (WHERE local_foreign='F') AS pct1_foreign,
+             COUNT(*) AS holders
+      FROM ownership_1pct_holder GROUP BY kode
+    )
+    SELECT p1.kode, p1.holders::int AS holders,
+           p1.pct1_total AS p1_total,
+           COALESCE(p1.pct1_foreign,0) AS p1_foreign,
+           k.foreign_pct AS ksei_foreign,
+           (COALESCE(p1.pct1_foreign,0) - k.foreign_pct) AS foreign_gap,
+           k.pos_date AS pos_date
+    FROM p1 JOIN ksei_ownership k ON k.kode = p1.kode
+  `)) as unknown as Array<Record<string, unknown>>;
+
+  const all: OwnershipValidationRow[] = rows.map((r) => ({
+    kode: String(r.kode),
+    holders: Number(r.holders),
+    pct1Total: Number(r.p1_total),
+    pct1Foreign: Number(r.p1_foreign),
+    kseiForeign: Number(r.ksei_foreign),
+    foreignGap: Number(r.foreign_gap),
+  }));
+
+  const n = all.length;
+  const consistentForeign = all.filter((r) => r.pct1Foreign <= r.kseiForeign + 2).length;
+  const within2pp = all.filter((r) => Math.abs(r.foreignGap) <= 2).length;
+  const impossibleTotal = all.filter((r) => r.pct1Total > 102).length;
+  const avgAbsGap = n > 0 ? all.reduce((a, r) => a + Math.abs(r.foreignGap), 0) / n : 0;
+  const anomalies = [...all].sort((a, b) => Math.abs(b.foreignGap) - Math.abs(a.foreignGap)).slice(0, 30);
+
+  return {
+    compared: n,
+    consistentForeign,
+    within2pp,
+    avgAbsGap,
+    impossibleTotal,
+    anomalies,
+    kseiPosDate: rows[0]?.pos_date ? String(rows[0].pos_date) : null,
+  };
+}
+
 export interface EmitenListResult {
   total: number;
   rows: Ownership1pctEmiten[];

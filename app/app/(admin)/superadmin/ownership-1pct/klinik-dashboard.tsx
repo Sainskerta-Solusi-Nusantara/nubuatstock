@@ -6,6 +6,7 @@ import type {
   DashData,
   DashEmiten,
   DashHolder,
+  OwnershipValidationResult,
   SummaryGainerLoser,
   SummaryHolder,
   SummaryStockFlow,
@@ -1172,10 +1173,95 @@ function PerubahanDataTab({ changelogs }: { changelogs: ChangelogResult[] }) {
   );
 }
 
-/* ---------- Shell ---------- */
-const TABS = ["Ringkasan Saham", "Per Investor", "Konglo Stocks", "Metrik", "Perubahan Data", "Klasifikasi"] as const;
+/* ---------- Validasi vs KSEI resmi ---------- */
+function ValidasiTab({ validation }: { validation: OwnershipValidationResult | null }) {
+  if (!validation || validation.compared === 0) {
+    return (
+      <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+        Validasi butuh data ≥1% DAN komposisi KSEI BalancePos. Unggah BalancePos & refresh ≥1% dulu.
+      </div>
+    );
+  }
+  const v = validation;
+  const consistentPct = (v.consistentForeign / v.compared) * 100;
+  const within2Pct = (v.within2pp / v.compared) * 100;
+  const verdict =
+    consistentPct >= 90
+      ? { label: "Valid (broadly consistent)", tone: "text-bull", bg: "bg-bull-soft" }
+      : consistentPct >= 75
+        ? { label: "Cukup — ada deviasi", tone: "text-yellow-700 dark:text-yellow-300", bg: "bg-yellow-500/15" }
+        : { label: "Banyak deviasi — tinjau", tone: "text-bear", bg: "bg-bear-soft" };
 
-export function KlinikDashboard({ data, changelogs }: { data: DashData; changelogs: ChangelogResult[] }) {
+  const cards = [
+    { label: "Emiten dibandingkan", value: nf.format(v.compared) },
+    { label: "Konsisten (≥1% asing ≤ KSEI)", value: `${consistentPct.toFixed(1)}%` },
+    { label: "|gap asing| ≤ 2pp", value: `${within2Pct.toFixed(1)}%` },
+    { label: "Rata² |gap asing|", value: `${v.avgAbsGap.toFixed(2)} pp` },
+    { label: "Total ≥1% mustahil (>102%)", value: nf.format(v.impossibleTotal) },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className={`rounded-lg border border-border p-3 ${verdict.bg}`}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm font-semibold">
+            Validasi data ≥1% vs KSEI resmi — <span className={verdict.tone}>{verdict.label}</span>
+          </div>
+          <span className="text-[11px] text-muted-foreground">KSEI BalancePos {fmtDateId(v.kseiPosDate) || "—"}</span>
+        </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          Subset ≥1% asing seharusnya ≤ total asing KSEI. Selisih besar biasanya beda definisi
+          &ldquo;asing&rdquo; (pemilik manfaat vs domisili akun KSEI), bukan selalu galat. Pembanding resmi BEI
+          belum bisa otomatis (situs IDX di balik proteksi Cloudflare).
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {cards.map((c) => (
+          <div key={c.label} className="rounded-md border border-border bg-card p-2.5">
+            <div className="text-[11px] text-muted-foreground">{c.label}</div>
+            <div className="mt-0.5 text-lg font-bold tabular-nums">{c.value}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-lg border border-border bg-card p-3">
+        <div className="mb-2 text-sm font-semibold">Anomali terbesar (gap asing) — perlu tinjau manual</div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[480px] text-xs">
+            <thead className="border-b border-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+              <tr>
+                <th className="px-2 py-1.5">Kode</th>
+                <th className="px-2 py-1.5 text-right">Holder ≥1%</th>
+                <th className="px-2 py-1.5 text-right">Asing (kita)</th>
+                <th className="px-2 py-1.5 text-right">Asing (KSEI)</th>
+                <th className="px-2 py-1.5 text-right">Gap</th>
+              </tr>
+            </thead>
+            <tbody>
+              {v.anomalies.map((r) => (
+                <tr key={r.kode} className="border-b border-border/60 last:border-0">
+                  <td className="px-2 py-1.5">{tickerPill(r.kode)}</td>
+                  <td className="px-2 py-1.5 text-right tabular-nums text-muted-foreground">{r.holders}</td>
+                  <td className="px-2 py-1.5 text-right font-mono">{r.pct1Foreign.toFixed(1)}%</td>
+                  <td className="px-2 py-1.5 text-right font-mono">{r.kseiForeign.toFixed(1)}%</td>
+                  <td className={`px-2 py-1.5 text-right font-mono font-semibold ${Math.abs(r.foreignGap) > 2 ? "text-bear" : "text-muted-foreground"}`}>
+                    {r.foreignGap > 0 ? "+" : ""}{r.foreignGap.toFixed(1)}pp
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Shell ---------- */
+const TABS = ["Ringkasan Saham", "Per Investor", "Konglo Stocks", "Metrik", "Perubahan Data", "Klasifikasi", "Validasi"] as const;
+
+export function KlinikDashboard({ data, changelogs, validation }: { data: DashData; changelogs: ChangelogResult[]; validation: OwnershipValidationResult | null }) {
   const [tab, setTab] = React.useState<(typeof TABS)[number]>("Ringkasan Saham");
   return (
     <div className="space-y-3">
@@ -1190,6 +1276,7 @@ export function KlinikDashboard({ data, changelogs }: { data: DashData; changelo
       {tab === "Klasifikasi" && <KlasifikasiTab data={data} />}
       {tab === "Konglo Stocks" && <KongloTab data={data} />}
       {tab === "Perubahan Data" && <PerubahanDataTab changelogs={changelogs} />}
+      {tab === "Validasi" && <ValidasiTab validation={validation} />}
     </div>
   );
 }
