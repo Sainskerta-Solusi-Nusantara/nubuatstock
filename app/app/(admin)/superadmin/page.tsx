@@ -10,6 +10,7 @@ import {
 } from "@/lib/superadmin/stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { GrowthChart } from "@/components/superadmin/GrowthChart";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function SuperadminOverviewPage() {
     getGrowthSnapshot(),
     getRevenueSnapshot(),
     getTierBreakdown(),
-    getDailyGrowth(30),
+    getDailyGrowth(90),
     getSystemHealth(),
   ]);
 
@@ -111,7 +112,7 @@ export default async function SuperadminOverviewPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <DailyGrowthChart points={daily} />
+          <GrowthChart points={daily} />
         </CardContent>
       </Card>
 
