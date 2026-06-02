@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import {
   ArrowRight,
   Bell,
   Bot,
   CommandIcon,
   ListChecks,
+  Rocket,
   Sparkles,
   Star,
   TrendingUp,
@@ -38,6 +39,8 @@ import {
 import { getSectorRotation, type RotationEntity } from "@/lib/rotation/service";
 import { db } from "@/lib/db";
 import { aiConversations } from "@/db/schema/ai";
+import { quotesEod } from "@/db/schema/market";
+import { fmtDateId } from "@/lib/utils/date-id";
 import type { PickListItemDTO } from "@/lib/types/picks";
 import type { WatchlistItemView } from "@/lib/types/watchlist";
 
@@ -47,16 +50,38 @@ export default async function DashboardPage() {
   const userId = session.user.id;
 
   // Parallel fetch — each wrapped in try/catch via helper so one failure doesn't 500 the page.
-  const [subInfo, picks, watchlistItems, sectors, recentChats] = await Promise.all([
+  const [subInfo, picks, watchlistItems, sectors, recentChats, eodDate] = await Promise.all([
     safeGetSubInfo(userId),
     safeGetTopPicks(),
     safeGetWatchlistItems(userId),
     safeGetSectorRotation(),
     safeGetRecentConversations(userId),
+    safeGetEodDate(),
   ]);
 
   return (
     <div className="space-y-6">
+      {/* Pemberitahuan early access — atur ekspektasi user soal kebaruan data. */}
+      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+        <div className="flex items-start gap-3">
+          <Rocket className="mt-0.5 size-5 shrink-0 text-amber-600" aria-hidden />
+          <div className="space-y-1 text-sm">
+            <p className="font-semibold text-amber-700 dark:text-amber-400">
+              Nubuat masih tahap awal (early access) — terus kami kembangkan
+            </p>
+            <p className="text-amber-700/90 dark:text-amber-300/90">
+              Sebagian fitur &amp; data masih dalam penyempurnaan. <strong>Daily Picks</strong> dan
+              mayoritas data harga/analitik saat ini berbasis <strong>End-of-Day (EOD)</strong> —
+              belum real-time. Semua sinyal bersifat <strong>edukasi &amp; riset</strong>, bukan ajakan jual/beli.
+            </p>
+            <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
+              📅 Data emiten diperbarui s/d{" "}
+              <strong>{eodDate ? `${fmtDateId(eodDate)} (EOD)` : "—"}</strong>. Terima kasih sudah ikut menemani perjalanan awal kami 🙏
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Upgrade nudge kontekstual: banner trial (client, dismissable harian).
           Hanya render saat user benar-benar sedang trial. */}
       {subInfo.trialEndsAt && (
@@ -177,6 +202,15 @@ async function safeGetTopPicks(): Promise<PickListItemDTO[]> {
     return hist.items.slice(0, 5);
   } catch {
     return [];
+  }
+}
+
+async function safeGetEodDate(): Promise<string | null> {
+  try {
+    const r = await db.select({ d: sql<string>`max(${quotesEod.tradeDate})` }).from(quotesEod);
+    return r[0]?.d ?? null;
+  } catch {
+    return null;
   }
 }
 

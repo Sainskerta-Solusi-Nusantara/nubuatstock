@@ -784,6 +784,83 @@ function KlasifikasiTab({ data }: { data: DashData }) {
   );
 }
 
+/* ---------- Konglo Stocks (pemetaan grup konglomerat — kurasi) ---------- */
+interface KongloGroup { id: string; label: string; re: RegExp }
+const KONGLO_GROUPS: KongloGroup[] = [
+  { id: "adaro-saratoga", label: "Adaro / Saratoga (Thohir – Soeryadjaya)", re: /ADARO|SARATOGA|PERSADA CAPITAL|GARIBALDI THOHIR|EDWIN SOERYADJAYA/ },
+  { id: "djarum", label: "Djarum / Hartono", re: /DWIMURIA|DJARUM|GLOBAL DIGITAL NIAGA/ },
+  { id: "sinarmas", label: "Sinarmas / Widjaja", re: /SINAR ?MAS|GOLDEN AGRI|PURADELTA|DSSA|EKA TJIPTA/ },
+  { id: "salim", label: "Salim", re: /ANTHONI SALIM|FIRST PACIFIC|INDOFOOD|CAB HOLDING|PT SALIM/ },
+  { id: "barito-prajogo", label: "Barito / Prajogo Pangestu", re: /PRAJOGO|BARITO PACIFIC|PETRINDO|RIMBA/ },
+  { id: "lippo", label: "Lippo / Riady", re: /LIPPO|RIADY/ },
+  { id: "bakrie", label: "Bakrie", re: /BAKRIE/ },
+  { id: "mnc", label: "MNC / Hary Tanoesoedibjo", re: /BHAKTI INVESTAMA|MEDIA NUSANTARA|HARY TANOE| MNC/ },
+  { id: "emtek", label: "Emtek / Sariaatmadja", re: /ELANG MAHKOTA|SARIAATMADJA/ },
+  { id: "astra", label: "Astra / Jardine", re: /JARDINE|CYCLE ?& ?CARRIAGE|ASTRA INTERNATIONAL/ },
+  { id: "triputra", label: "Triputra / TP Rachmat", re: /TRIPUTRA|PERMADI RACHMAT/ },
+  { id: "rajawali", label: "Rajawali / Peter Sondakh", re: /RAJAWALI|PETER SONDAKH/ },
+  { id: "mayapada", label: "Mayapada / Dato Tahir", re: /MAYAPADA/ },
+  { id: "sungai-budi", label: "Sungai Budi / Widarto", re: /SUNGAI BUDI/ },
+  { id: "pakuwon", label: "Pakuwon / Tedja", re: /PAKUWON/ },
+  { id: "ctcorp", label: "CT Corp / Chairul Tanjung", re: /CHAIRUL TANJUNG|CT CORP|TRANS RETAIL|MEGA CORPORA/ },
+  { id: "sampoerna", label: "Sampoerna", re: /PT SAMPOERNA|PUTERA SAMPOERNA|SAMPOERNA STRATEGIC/ },
+];
+
+function KongloTab({ data }: { data: DashData }) {
+  const [q, setQ] = React.useState("");
+  const [open, setOpen] = React.useState<Set<string>>(new Set());
+
+  const groups = React.useMemo(() => {
+    return KONGLO_GROUPS.map((g) => {
+      const stocks: { kode: string; name: string; holder: string; pct: number }[] = [];
+      for (const e of data.emiten) {
+        const match = e.holders.find((h) => g.re.test(h.name.toUpperCase()));
+        if (match) stocks.push({ kode: e.kode, name: e.name, holder: match.name, pct: match.pct });
+      }
+      stocks.sort((a, b) => b.pct - a.pct);
+      return { ...g, stocks };
+    }).filter((g) => g.stocks.length > 0).sort((a, b) => b.stocks.length - a.stocks.length);
+  }, [data.emiten]);
+
+  const s = q.trim().toUpperCase();
+  const shown = s
+    ? groups.map((g) => ({ ...g, stocks: g.stocks.filter((x) => x.kode.includes(s) || g.label.toUpperCase().includes(s)) })).filter((g) => g.stocks.length > 0)
+    : groups;
+
+  const totalMapped = new Set(groups.flatMap((g) => g.stocks.map((x) => x.kode))).size;
+  const toggle = (id: string) => setOpen((o) => { const n = new Set(o); n.has(id) ? n.delete(id) : n.add(id); return n; });
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">
+        Saham yang terdeteksi dikendalikan/dipegang grup konglomerat besar (dari pemegang ≥1%). <strong>Pemetaan kurasi</strong> berbasis nama entitas/pendiri — bisa ada saham yang belum tercakup atau false positive. {groups.length} grup · {totalMapped} emiten ter-mapping.
+      </p>
+      <div className="rounded-lg border border-border bg-card p-2">
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari grup atau kode saham…" className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm" />
+      </div>
+      {shown.map((g) => (
+        <div key={g.id} className="overflow-hidden rounded-lg border border-border bg-card">
+          <button onClick={() => toggle(g.id)} className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-accent/40">
+            <span className="text-muted-foreground">{open.has(g.id) || s ? "▼" : "▶"}</span>
+            <span className="flex-1 font-semibold">{g.label}</span>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">{g.stocks.length} saham</span>
+          </button>
+          {(open.has(g.id) || s) && (
+            <div className="flex flex-wrap gap-1.5 border-t border-border p-3">
+              {g.stocks.map((x) => (
+                <span key={x.kode} title={`${x.name} · via ${x.holder} (${x.pct.toFixed(2)}%)`} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 text-xs">
+                  <span className="font-mono font-bold text-primary">{x.kode}</span>
+                  <span className="text-muted-foreground">{x.pct.toFixed(1)}%</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ---------- Shell ---------- */
 const TABS = ["Ringkasan Saham", "Per Investor", "Konglo Stocks", "Metrik", "Perubahan Data", "Klasifikasi"] as const;
 
@@ -800,12 +877,10 @@ export function KlinikDashboard({ data }: { data: DashData }) {
       {tab === "Per Investor" && <PerInvestorTab data={data} />}
       {tab === "Metrik" && <MetrikTab data={data} />}
       {tab === "Klasifikasi" && <KlasifikasiTab data={data} />}
-      {(tab === "Konglo Stocks" || tab === "Perubahan Data") && (
+      {tab === "Konglo Stocks" && <KongloTab data={data} />}
+      {tab === "Perubahan Data" && (
         <div className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          Tab <strong>{tab}</strong> segera:{" "}
-          {tab === "Konglo Stocks"
-            ? "butuh data mapping grup konglomerat (akan diekstrak dari sumber)."
-            : "butuh minimal 2 snapshot periode KSEI (saat ini baru 1; akan aktif setelah refresh periode berikutnya)."}
+          Tab <strong>Perubahan Data</strong> segera: butuh minimal 2 snapshot periode (changelog sudah tersimpan, UI menyusul).
         </div>
       )}
     </div>
