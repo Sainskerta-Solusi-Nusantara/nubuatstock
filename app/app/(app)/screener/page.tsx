@@ -3,6 +3,7 @@ import { Search, Sparkles, RotateCcw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResultsTable } from "@/components/screener/ResultsTable";
 import { SavedScreensManager } from "@/components/screener/SavedScreensManager";
+import { NlSearch } from "@/components/screener/NlSearch";
 import { runScreener, listSectors, listPapan, type ScreenerFilters, type SortField } from "@/lib/screener/service";
 import { SCREENER_PRESETS, getPreset } from "@/lib/screener/presets";
 
@@ -102,6 +103,26 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
         </div>
         <SavedScreensManager />
       </header>
+
+      {/* Cari dengan AI (Natural Language) */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Sparkles className="h-4 w-4 text-primary" />
+            Cari dengan AI
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+              BETA
+            </span>
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Ketik kriteria dalam Bahasa Indonesia biasa — AI menerjemahkannya ke filter teknikal
+            dan fundamental, lalu menjalankan screener.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <NlSearch />
+        </CardContent>
+      </Card>
 
       {/* Presets */}
       <Card>
