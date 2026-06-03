@@ -1,22 +1,3 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "crons": [
-    { "path": "/api/cron/news-ingest", "schedule": "0 * * * *" },
-    { "path": "/api/cron/picks-generate", "schedule": "0 10 * * 1-5" },
-    { "path": "/api/cron/securities-picks", "schedule": "0 2 * * 1-5" },
-    { "path": "/api/cron/evaluate-outcomes", "schedule": "30 10 * * 1-5" },
-    { "path": "/api/cron/paper-leaderboard", "schedule": "45 10 * * 1-5" },
-    { "path": "/api/cron/trial-drip", "schedule": "15 2 * * *" },
-    { "path": "/api/cron/expire-trial", "schedule": "0 18 * * *" },
-    { "path": "/api/cron/renew-subscriptions", "schedule": "0 19 * * *" },
-    { "path": "/api/cron/account-deletion-sweep", "schedule": "0 20 * * *" },
-    { "path": "/api/cron/ingest-eod", "schedule": "10 9 * * 1-5" },
-    { "path": "/api/cron/technical-snapshots", "schedule": "30 9 * * 1-5" },
-    { "path": "/api/cron/detect-patterns", "schedule": "40 9 * * 1-5" },
-    { "path": "/api/cron/analyze-elliott", "schedule": "50 9 * * 1-5" },
-    { "path": "/api/cron/analysis-snapshots", "schedule": "5 10 * * 1-5" },
-    { "path": "/api/cron/daily-digest", "schedule": "0 11 * * 1-5" },
-    { "path": "/api/cron/securities-reports", "schedule": "20 2 * * 1-5" },
-    { "path": "/api/cron/ownership-1pct", "schedule": "0 1 * * 1" }
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json"
 }
