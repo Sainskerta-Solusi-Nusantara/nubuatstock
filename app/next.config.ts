@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
     // tapi WAJIB untuk type-check `next build`. Jadi: aktif saat build (webpack,
     // TURBOPACK unset), nonaktif saat dev turbo (TURBOPACK=1) supaya dev jalan +
     // Tailwind v4 CSS ter-compile dengan benar di Turbopack.
+    ppr: true,
     typedRoutes: !process.env.TURBOPACK,
     serverActions: {
       bodySizeLimit: "2mb",
@@ -42,7 +43,7 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ["pino", "postgres", "@anthropic-ai/sdk", "openai", "bullmq"],
   images: {
-    formats: ["image/avif", "image/webp"],
+    formats: ["image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", port: "", pathname: "/**" },
       { protocol: "https", hostname: "plus.unsplash.com", port: "", pathname: "/**" },
