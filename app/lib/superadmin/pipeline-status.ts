@@ -1,0 +1,69 @@
+import { sql } from "drizzle-orm";
+
+import { db } from "@/lib/db";
+import { newsArticles } from "@/db/schema/news";
+import { quotesEod } from "@/db/schema/market";
+import { dailyPicks } from "@/db/schema/picks";
+
+/**
+ * Status terakhir tiap pipeline data, untuk ditampilkan di panel pemicu manual
+ * (superadmin/system). Tujuannya: superadmin tahu data kapan terakhir masuk,
+ * supaya tidak menjalankan ingest dua kali sia-sia.
+ */
+export interface PipelineStepStatus {
+  /** Waktu data terakhir tersimpan/diingest (wall-clock). */
+  lastAt: string | null;
+  /** Penanda "tanggal data" (mis. tanggal EOD/picks) bila relevan. */
+  dataDate: string | null;
+  /** Jumlah baris untuk tanggal/periode terbaru — konteks ringkas. */
+  count: number;
+}
+
+export type PipelineStatus = Record<"news" | "eod" | "picks", PipelineStepStatus>;
+
+export async function getPipelineStatus(): Promise<PipelineStatus> {
+  const [news, eod, picks] = await Promise.all([
+    // News: kapan artikel terakhir di-fetch + jumlah 24 jam terakhir.
+    db
+      .select({
+        lastAt: sql<string | null>`max(${newsArticles.fetchedAt})`,
+        count: sql<number>`count(*) filter (where ${newsArticles.fetchedAt} >= now() - interval '24 hours')`,
+      })
+      .from(newsArticles),
+    // EOD: tanggal perdagangan terbaru + kapan baris itu terakhir di-update +
+    // jumlah emiten pada tanggal tsb.
+    db
+      .select({
+        dataDate: sql<string | null>`max(${quotesEod.tradeDate})`,
+        lastAt: sql<string | null>`max(${quotesEod.updatedAt})`,
+        count: sql<number>`count(*) filter (where ${quotesEod.tradeDate} = (select max(trade_date) from quotes_eod))`,
+      })
+      .from(quotesEod),
+    // Daily Picks: tanggal pick terbaru + kapan dipublikasikan + jumlah pick.
+    db
+      .select({
+        dataDate: sql<string | null>`max(${dailyPicks.tradeDate})`,
+        lastAt: sql<string | null>`max(${dailyPicks.publishedAt})`,
+        count: sql<number>`count(*) filter (where ${dailyPicks.tradeDate} = (select max(trade_date) from daily_picks))`,
+      })
+      .from(dailyPicks),
+  ]);
+
+  return {
+    news: {
+      lastAt: news[0]?.lastAt ?? null,
+      dataDate: null,
+      count: Number(news[0]?.count ?? 0),
+    },
+    eod: {
+      lastAt: eod[0]?.lastAt ?? null,
+      dataDate: eod[0]?.dataDate ?? null,
+      count: Number(eod[0]?.count ?? 0),
+    },
+    picks: {
+      lastAt: picks[0]?.lastAt ?? null,
+      dataDate: picks[0]?.dataDate ?? null,
+      count: Number(picks[0]?.count ?? 0),
+    },
+  };
+}

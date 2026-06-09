@@ -7,6 +7,7 @@ import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target } from "
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { PipelineStatus, PipelineStepStatus } from "@/lib/superadmin/pipeline-status";
 
 /**
  * Pemicu manual pipeline data (inline, tanpa worker). Setiap tombol memanggil
@@ -15,13 +16,41 @@ import { Badge } from "@/components/ui/badge";
  * kosong). Endpoint cron menerima sesi superadmin (lihat lib/cron/helpers.ts).
  */
 
+type StepKey = "news" | "eod" | "picks";
+
 type Step = {
-  key: string;
+  key: StepKey;
   label: string;
   path: string;
   icon: React.ComponentType<{ className?: string }>;
   desc: string;
 };
+
+function timeAgo(d: string | null): string {
+  if (!d) return "belum pernah";
+  const t = new Date(d).getTime();
+  if (Number.isNaN(t)) return "—";
+  const mins = Math.floor((Date.now() - t) / 60000);
+  if (mins < 1) return "baru saja";
+  if (mins < 60) return `${mins} menit lalu`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} jam lalu`;
+  const days = Math.floor(hrs / 24);
+  return `${days} hari lalu`;
+}
+
+function statusLine(key: StepKey, s: PipelineStepStatus | undefined): { text: string; stale: boolean } {
+  if (!s || !s.lastAt) return { text: "Belum ada data", stale: true };
+  const ago = timeAgo(s.lastAt);
+  const stale = Date.now() - new Date(s.lastAt).getTime() > 24 * 3600_000;
+  if (key === "news") {
+    return { text: `Terakhir ambil ${ago} · ${s.count} berita (24j)`, stale };
+  }
+  if (key === "eod") {
+    return { text: `Data ${s.dataDate ?? "—"} · ${s.count} emiten · update ${ago}`, stale };
+  }
+  return { text: `Data ${s.dataDate ?? "—"} · ${s.count} picks · publish ${ago}`, stale };
+}
 
 // Urutan = urutan dependensi rantai data harian.
 const STEPS: Step[] = [
@@ -66,7 +95,7 @@ function summarize(j: Record<string, unknown> | null): string {
   return parts.length ? parts.slice(0, 4).join(" · ") : "selesai";
 }
 
-export function DataPipelineTriggers() {
+export function DataPipelineTriggers({ status }: { status: PipelineStatus }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [last, setLast] = useState<Record<string, { ok: boolean; msg: string }>>({});
@@ -137,6 +166,7 @@ export function DataPipelineTriggers() {
             const Icon = step.icon;
             const r = last[step.key];
             const running = busy === step.key || busy === "all";
+            const st = statusLine(step.key, status[step.key]);
             return (
               <li
                 key={step.key}
@@ -146,12 +176,18 @@ export function DataPipelineTriggers() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{step.label}</span>
+                    <Badge
+                      variant={st.stale ? "outline" : "secondary"}
+                      className={`text-[10px] ${st.stale ? "text-amber-600 dark:text-amber-500" : "text-emerald-600 dark:text-emerald-500"}`}
+                    >
+                      {st.text}
+                    </Badge>
                     {r && (
                       <Badge
                         variant={r.ok ? "secondary" : "destructive"}
                         className="text-[10px]"
                       >
-                        {r.ok ? r.msg : `gagal: ${r.msg}`}
+                        {r.ok ? `→ ${r.msg}` : `gagal: ${r.msg}`}
                       </Badge>
                     )}
                   </div>

@@ -3,6 +3,7 @@ import { getSystemHealth, formatIdr } from "@/lib/superadmin/stats";
 import { listFeedback, listAllTickets } from "@/lib/support/service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getPipelineStatus } from "@/lib/superadmin/pipeline-status";
 import { DataPipelineTriggers } from "./data-pipeline-triggers";
 
 export const dynamic = "force-dynamic";
@@ -28,10 +29,15 @@ function timeAgo(d: Date | string | null): string {
 }
 
 export default async function SuperadminSystemPage() {
-  const [system, feedback, tickets] = await Promise.all([
+  const [system, feedback, tickets, pipeline] = await Promise.all([
     getSystemHealth(),
     listFeedback(50).catch(() => []),
     listAllTickets(50).catch(() => []),
+    getPipelineStatus().catch(() => ({
+      news: { lastAt: null, dataDate: null, count: 0 },
+      eod: { lastAt: null, dataDate: null, count: 0 },
+      picks: { lastAt: null, dataDate: null, count: 0 },
+    })),
   ]);
 
   return (
@@ -62,7 +68,7 @@ export default async function SuperadminSystemPage() {
       </Card>
 
       {/* Pemicu manual pipeline data */}
-      <DataPipelineTriggers />
+      <DataPipelineTriggers status={pipeline} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Feedback dari user */}
