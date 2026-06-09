@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search, Sparkles, RotateCcw } from "lucide-react";
+import { Search, Sparkles, RotateCcw, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResultsTable } from "@/components/screener/ResultsTable";
 import { SavedScreensManager } from "@/components/screener/SavedScreensManager";
@@ -22,6 +22,15 @@ function parseNum(v: string | undefined): number | undefined {
   if (v === undefined || v === "") return undefined;
   const n = Number(v);
   return Number.isFinite(n) ? n : undefined;
+}
+
+// Pilihan jumlah baris per halaman. Default 10 (ringkas untuk pemula).
+const PER_PAGE_OPTIONS = [10, 25, 50, 100] as const;
+const DEFAULT_PER_PAGE = 10;
+
+function perPageFromQuery(sp: Record<string, string | undefined>): number {
+  const n = parseNum(sp.limit);
+  return n && (PER_PAGE_OPTIONS as readonly number[]).includes(n) ? n : DEFAULT_PER_PAGE;
 }
 
 function filtersFromQuery(sp: Record<string, string | undefined>): ScreenerFilters {
@@ -61,7 +70,7 @@ function filtersFromQuery(sp: Record<string, string | undefined>): ScreenerFilte
   if (sp.sort) base.sort = sp.sort as SortField;
   if (sp.sortDir) base.sortDir = sp.sortDir as "asc" | "desc";
 
-  base.limit = 50;
+  base.limit = perPageFromQuery(sp);
   base.offset = parseNum(sp.offset) ?? 0;
   return base;
 }
@@ -78,6 +87,7 @@ function buildBaseHref(sp: Record<string, string | undefined>): string {
 export default async function ScreenerPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   const filters = filtersFromQuery(sp);
+  const perPage = perPageFromQuery(sp);
   const activePreset = sp.preset ? getPreset(sp.preset) : undefined;
 
   const [{ rows, total, filtersApplied }, sectors, papan] = await Promise.all([
@@ -169,21 +179,27 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
         </CardContent>
       </Card>
 
-      {/* Filter form */}
+      {/* Filter form — collapsible (tersembunyi default; tetap berfungsi untuk
+          power user). Preset & hasil di bawah tidak bergantung pada panel ini. */}
       <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center justify-between text-base">
-            <span>Custom Filter</span>
-            {filtersApplied > 0 && (
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                {filtersApplied} aktif
-              </span>
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+        <details open={filtersApplied > 0} className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 p-6 [&::-webkit-details-marker]:hidden">
+            <span className="flex items-center gap-2 text-base font-semibold">
+              <SlidersHorizontal className="h-4 w-4 text-primary" />
+              Filter Lanjutan
+              <span className="text-xs font-normal text-muted-foreground">(opsional)</span>
+              {filtersApplied > 0 && (
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                  {filtersApplied} aktif
+                </span>
+              )}
+            </span>
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="px-6 pb-6">
           <form method="get" className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {sp.preset && <input type="hidden" name="preset" value={sp.preset} />}
+            {sp.limit && <input type="hidden" name="limit" value={sp.limit} />}
 
             <FilterField label="Cari (kode / nama)">
               <input type="text" name="q" defaultValue={sp.q ?? ""} placeholder="BBRI, Bank" className="filter-input" />
@@ -346,8 +362,18 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
               </span>
             </div>
           </form>
-        </CardContent>
+          </div>
+        </details>
       </Card>
+
+      {/* Results header: ringkasan + pemilih jumlah baris */}
+      <ResultsToolbar
+        total={total}
+        shown={rows.length}
+        offset={filters.offset ?? 0}
+        perPage={perPage}
+        baseHref={baseHref}
+      />
 
       {/* Results */}
       <ResultsTable
@@ -357,10 +383,8 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
         baseHref={baseHref}
       />
 
-      {/* Pagination */}
-      {total > rows.length && (
-        <Pagination total={total} offset={filters.offset ?? 0} limit={50} baseHref={baseHref} />
-      )}
+      {/* Pagination bernomor */}
+      <Pagination total={total} offset={filters.offset ?? 0} limit={perPage} baseHref={baseHref} />
 
       <p className="rounded-md border border-border bg-card/40 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong>Catatan:</strong> Data fundamental dari Yahoo Finance snapshot (update periodik).
@@ -395,6 +419,69 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
+/** Bangun URL dari baseHref dengan override param tertentu. */
+function withParams(baseHref: string, params: Record<string, string | number>): string {
+  const url = new URL(baseHref, "http://x");
+  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
+  return url.pathname + url.search;
+}
+
+/** Toolbar di atas tabel: ringkasan "menampilkan X–Y dari N" + pemilih jumlah baris. */
+function ResultsToolbar({
+  total,
+  shown,
+  offset,
+  perPage,
+  baseHref,
+}: {
+  total: number;
+  shown: number;
+  offset: number;
+  perPage: number;
+  baseHref: string;
+}) {
+  const from = total === 0 ? 0 : offset + 1;
+  const to = offset + shown;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-card px-3 py-2 text-xs">
+      <span className="text-muted-foreground">
+        Menampilkan <strong className="text-foreground">{from.toLocaleString("id-ID")}–{to.toLocaleString("id-ID")}</strong> dari{" "}
+        {total.toLocaleString("id-ID")} emiten
+      </span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-muted-foreground">Baris:</span>
+        {PER_PAGE_OPTIONS.map((n) => (
+          <Link
+            key={n}
+            // Ganti jumlah baris → kembali ke halaman 1 (offset 0).
+            href={withParams(baseHref, { limit: n, offset: 0 })}
+            className={`rounded-md border px-2 py-0.5 font-medium ${
+              n === perPage
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:bg-accent"
+            }`}
+          >
+            {n}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Daftar nomor halaman dengan elipsis: 1 … 4 5 [6] 7 8 … 20 */
+function pageWindow(current: number, totalPages: number): Array<number | "…"> {
+  const out: Array<number | "…"> = [];
+  for (let p = 1; p <= totalPages; p++) {
+    if (p === 1 || p === totalPages || (p >= current - 1 && p <= current + 1)) {
+      out.push(p);
+    } else if (out[out.length - 1] !== "…") {
+      out.push("…");
+    }
+  }
+  return out;
+}
+
 function Pagination({
   total,
   offset,
@@ -406,37 +493,48 @@ function Pagination({
   limit: number;
   baseHref: string;
 }) {
-  const page = Math.floor(offset / limit) + 1;
   const totalPages = Math.ceil(total / limit);
+  if (totalPages <= 1) return null;
+  const page = Math.floor(offset / limit) + 1;
 
-  const nextOffset = offset + limit;
-  const prevOffset = Math.max(0, offset - limit);
-
-  const makeUrl = (off: number): string => {
-    const url = new URL(baseHref, "http://x");
-    url.searchParams.set("offset", String(off));
-    return url.pathname + url.search;
-  };
+  const urlForPage = (p: number) => withParams(baseHref, { limit, offset: (p - 1) * limit });
+  const items = pageWindow(page, totalPages);
 
   return (
-    <div className="flex items-center justify-between rounded-md border border-border bg-card p-2 text-sm">
-      <span className="text-muted-foreground">
-        Page {page} / {totalPages} ({total.toLocaleString("id-ID")} total)
-      </span>
-      <div className="flex gap-1">
-        <Link
-          href={makeUrl(prevOffset)}
-          className={`rounded-md border border-border px-3 py-1 text-xs ${offset === 0 ? "pointer-events-none opacity-40" : "hover:bg-accent"}`}
-        >
-          Prev
-        </Link>
-        <Link
-          href={makeUrl(nextOffset)}
-          className={`rounded-md border border-border px-3 py-1 text-xs ${nextOffset >= total ? "pointer-events-none opacity-40" : "hover:bg-accent"}`}
-        >
-          Next
-        </Link>
-      </div>
+    <div className="flex flex-wrap items-center justify-center gap-1 rounded-md border border-border bg-card p-2 text-sm">
+      <Link
+        href={urlForPage(Math.max(1, page - 1))}
+        aria-label="Sebelumnya"
+        className={`rounded-md border border-border px-2.5 py-1 text-xs ${page === 1 ? "pointer-events-none opacity-40" : "hover:bg-accent"}`}
+      >
+        ‹
+      </Link>
+      {items.map((it, i) =>
+        it === "…" ? (
+          <span key={`e${i}`} className="px-1.5 text-xs text-muted-foreground">
+            …
+          </span>
+        ) : (
+          <Link
+            key={it}
+            href={urlForPage(it)}
+            className={`min-w-[2rem] rounded-md border px-2 py-1 text-center text-xs ${
+              it === page
+                ? "border-primary bg-primary text-primary-foreground font-semibold"
+                : "border-border hover:bg-accent"
+            }`}
+          >
+            {it}
+          </Link>
+        ),
+      )}
+      <Link
+        href={urlForPage(Math.min(totalPages, page + 1))}
+        aria-label="Berikutnya"
+        className={`rounded-md border border-border px-2.5 py-1 text-xs ${page === totalPages ? "pointer-events-none opacity-40" : "hover:bg-accent"}`}
+      >
+        ›
+      </Link>
     </div>
   );
 }
