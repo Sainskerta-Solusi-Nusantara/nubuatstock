@@ -23,7 +23,7 @@ const PROMPTS = [
 ];
 
 /**
- * Modal feedback WAJIB untuk user trial di hari ke-3. Tidak bisa ditutup
+ * Modal feedback WAJIB untuk user trial di hari ke-1. Tidak bisa ditutup
  * (hideClose, ESC & klik luar dinonaktifkan) sampai user submit rating 1–5 +
  * pesan. Setelah sukses, server gate akan menilai ulang (router.refresh) dan
  * modal hilang — trial lanjut sampai 7 hari.
@@ -90,7 +90,7 @@ export function TrialFeedbackGate({ trialEndsAt }: { trialEndsAt: string | null 
           </div>
           <DialogTitle className="text-center">Bagaimana pengalamanmu sejauh ini?</DialogTitle>
           <DialogDescription className="text-center">
-            Kamu sudah 3 hari mencoba Nubuat.{" "}
+            Kamu sudah 1 hari mencoba Nubuat.{" "}
             {daysLeft != null && daysLeft > 0 ? (
               <>
                 Beri feedback singkat untuk <strong>melanjutkan trial sampai hari ke-7</strong>{" "}

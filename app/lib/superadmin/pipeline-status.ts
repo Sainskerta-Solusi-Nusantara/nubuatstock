@@ -5,6 +5,7 @@ import { newsArticles } from "@/db/schema/news";
 import { quotesEod } from "@/db/schema/market";
 import { dailyPicks } from "@/db/schema/picks";
 import { securitiesPicks } from "@/db/schema/securities-picks";
+import { technicalSnapshots } from "@/db/schema/technical";
 
 /**
  * Status terakhir tiap pipeline data, untuk ditampilkan di panel pemicu manual
@@ -20,10 +21,13 @@ export interface PipelineStepStatus {
   count: number;
 }
 
-export type PipelineStatus = Record<"news" | "eod" | "picks" | "securities", PipelineStepStatus>;
+export type PipelineStatus = Record<
+  "news" | "eod" | "technical" | "picks" | "securities",
+  PipelineStepStatus
+>;
 
 export async function getPipelineStatus(): Promise<PipelineStatus> {
-  const [news, eod, picks, securities] = await Promise.all([
+  const [news, eod, technical, picks, securities] = await Promise.all([
     // News: kapan artikel terakhir di-fetch + jumlah 24 jam terakhir.
     db
       .select({
@@ -40,6 +44,15 @@ export async function getPipelineStatus(): Promise<PipelineStatus> {
         count: sql<number>`count(*) filter (where ${quotesEod.tradeDate} = (select max(trade_date) from quotes_eod))`,
       })
       .from(quotesEod),
+    // Technical snapshots: tanggal snapshot terbaru + kapan dihitung + jumlah
+    // emiten yang punya snapshot pada tanggal tsb (dipakai preset teknikal screener).
+    db
+      .select({
+        dataDate: sql<string | null>`max(${technicalSnapshots.tradeDate})`,
+        lastAt: sql<string | null>`max(${technicalSnapshots.updatedAt})`,
+        count: sql<number>`count(*) filter (where ${technicalSnapshots.tradeDate} = (select max(trade_date) from technical_snapshots))`,
+      })
+      .from(technicalSnapshots),
     // Daily Picks: tanggal pick terbaru + kapan dipublikasikan + jumlah pick.
     db
       .select({
@@ -69,6 +82,11 @@ export async function getPipelineStatus(): Promise<PipelineStatus> {
       lastAt: eod[0]?.lastAt ?? null,
       dataDate: eod[0]?.dataDate ?? null,
       count: Number(eod[0]?.count ?? 0),
+    },
+    technical: {
+      lastAt: technical[0]?.lastAt ?? null,
+      dataDate: technical[0]?.dataDate ?? null,
+      count: Number(technical[0]?.count ?? 0),
     },
     picks: {
       lastAt: picks[0]?.lastAt ?? null,

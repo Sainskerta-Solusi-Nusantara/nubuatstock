@@ -8,14 +8,14 @@ import { getActiveSubscription } from "@/lib/billing/subscriptions";
 /**
  * Gate feedback wajib untuk user TRIAL.
  *
- * Aturan bisnis: setelah 3×24 jam sejak mendaftar, user yang masih TRIAL wajib
- * memberi feedback (rating 1–5 + pesan) dulu sebelum bisa melanjutkan trial-nya
- * sampai total 7 hari. Feedback disimpan ke `support_feedback` (ditandai
- * metadata.source = "trial_gate") supaya bisa dievaluasi tim di superadmin.
+ * Aturan bisnis: setelah 1×24 jam sejak mendaftar, user yang masih TRIAL wajib
+ * memberi feedback (rating 1–5 + pesan) dulu sebelum bisa melanjutkan trial-nya.
+ * Feedback disimpan ke `support_feedback` (ditandai metadata.source =
+ * "trial_gate") supaya bisa dievaluasi tim di superadmin.
  */
 
 export const TRIAL_FEEDBACK_SOURCE = "trial_gate";
-const TRIAL_FEEDBACK_AFTER_MS = 3 * 24 * 60 * 60 * 1000; // 72 jam
+const TRIAL_FEEDBACK_AFTER_MS = 1 * 24 * 60 * 60 * 1000; // 24 jam
 
 export interface TrialFeedbackGateStatus {
   required: boolean;
@@ -37,7 +37,7 @@ export async function getTrialFeedbackGate(userId: string): Promise<TrialFeedbac
   // Kalau trial sudah lewat, biarkan mekanisme expiry normal yang menangani.
   if (trialEndsAt && trialEndsAt.getTime() <= Date.now()) return notRequired;
 
-  // 2) Sudah ≥ 72 jam sejak daftar?
+  // 2) Sudah ≥ 24 jam sejak daftar?
   const [u] = await db
     .select({ createdAt: users.createdAt })
     .from(users)

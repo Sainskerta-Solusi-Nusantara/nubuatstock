@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target, Building2 } from "lucide-react";
+import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target, Building2, Activity } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import type { PipelineStatus, PipelineStepStatus } from "@/lib/superadmin/pipeli
  * kosong). Endpoint cron menerima sesi superadmin (lihat lib/cron/helpers.ts).
  */
 
-type StepKey = "news" | "eod" | "picks" | "securities";
+type StepKey = "news" | "eod" | "technical" | "picks" | "securities";
 
 type Step = {
   key: StepKey;
@@ -46,7 +46,7 @@ function statusLine(key: StepKey, s: PipelineStepStatus | undefined): { text: st
   if (key === "news") {
     return { text: `Terakhir ambil ${ago} · ${s.count} berita (24j)`, stale };
   }
-  if (key === "eod") {
+  if (key === "eod" || key === "technical") {
     return { text: `Data ${s.dataDate ?? "—"} · ${s.count} emiten · update ${ago}`, stale };
   }
   if (key === "securities") {
@@ -69,7 +69,14 @@ const STEPS: Step[] = [
     label: "Harga EOD (OHLCV)",
     path: "/api/cron/ingest-eod",
     icon: CandlestickChart,
-    desc: "Ambil harga penutupan semua emiten aktif. Prasyarat Daily Picks.",
+    desc: "Ambil harga penutupan semua emiten aktif. Prasyarat Technical & Picks.",
+  },
+  {
+    key: "technical",
+    label: "Technical Snapshots",
+    path: "/api/cron/technical-snapshots",
+    icon: Activity,
+    desc: "Hitung indikator teknikal (RSI, Stoch, MA, ADX…) dari EOD. Dipakai preset teknikal Screener.",
   },
   {
     key: "picks",
@@ -138,14 +145,16 @@ export function DataPipelineTriggers({ status }: { status: PipelineStatus }) {
 
   async function runAll() {
     setBusy("all");
-    // Jalankan berurutan sesuai dependensi (EOD harus sebelum Picks).
+    // Jalankan berurutan sesuai dependensi. Technical & Picks butuh harga EOD;
+    // News & Securities independen (tetap jalan walau EOD gagal).
+    let eodOk = true;
     for (const step of STEPS) {
-      const ok = await runStep(step);
-      // Picks bergantung EOD — kalau EOD gagal, hentikan rantai harga.
-      if (!ok && step.key === "eod") {
-        toast.warning("EOD gagal — Daily Picks dilewati (tak ada harga baru).");
-        break;
+      if ((step.key === "technical" || step.key === "picks") && !eodOk) {
+        toast.warning(`${step.label} dilewati — EOD gagal (tak ada harga baru).`);
+        continue;
       }
+      const ok = await runStep(step);
+      if (step.key === "eod") eodOk = ok;
     }
     setBusy(null);
   }
