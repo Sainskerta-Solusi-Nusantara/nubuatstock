@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
-// PPR: partial prerendering — static shell pre-rendered, dynamic content loads on-demand
-export const experimental_ppr = true;
+// CATATAN: `experimental_ppr` dihapus — PPR butuh Next.js canary (project pakai
+// stabil 15.1.x). Lihat next.config.ts. Mengaktifkannya membuat build gagal.
 
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";

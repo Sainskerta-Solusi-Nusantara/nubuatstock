@@ -21,11 +21,16 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_COMMIT_SHA: (process.env.VERCEL_GIT_COMMIT_SHA ?? "").slice(0, 7),
   },
   experimental: {
+    // CATATAN: `ppr: true` DIHAPUS — Partial Prerendering hanya bisa di Next.js
+    // canary, sedangkan project ini pakai Next stabil (15.1.x). Mengaktifkannya
+    // membuat `next build` gagal instan ("experimental.ppr can only be enabled
+    // when using the latest canary version") → semua deploy prod patah.
+    // (Ditambahkan tak sengaja lewat merge perf/reduce-vercel-cpu.)
+    //
     // typedRoutes tidak didukung Turbopack (next dev --turbo) di Next 15.1.x,
     // tapi WAJIB untuk type-check `next build`. Jadi: aktif saat build (webpack,
     // TURBOPACK unset), nonaktif saat dev turbo (TURBOPACK=1) supaya dev jalan +
     // Tailwind v4 CSS ter-compile dengan benar di Turbopack.
-    ppr: true,
     typedRoutes: !process.env.TURBOPACK,
     serverActions: {
       bodySizeLimit: "2mb",
