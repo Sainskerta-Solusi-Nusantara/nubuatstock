@@ -8,25 +8,25 @@ import {
 
 /**
  * Unit tests untuk pure logic pemilihan stage drip campaign trial → paid
- * (IMPROVEMENT_PLAN §8.5 #35). Tanpa DB / I/O — mirror perilaku
- * worker trial-drip.
+ * (IMPROVEMENT_PLAN §8.5 #35). Trial 1 hari → tahap berbasis JAM (h6/h14/h20).
+ * Tanpa DB / I/O — mirror perilaku worker trial-drip.
  */
 
-const DAY = 86_400_000;
+const HOUR = 3_600_000;
 
-function at(start: Date, days: number): Date {
-  return new Date(start.getTime() + days * DAY);
+function atH(start: Date, hours: number): Date {
+  return new Date(start.getTime() + hours * HOUR);
 }
 
 describe("selectDripStage", () => {
   const trialStartedAt = new Date("2026-01-01T02:00:00Z"); // 09:00 WIB
-  const trialEndsAt = at(trialStartedAt, 7); // 7 hari trial
+  const trialEndsAt = atH(trialStartedAt, 24); // trial 1 hari
 
-  it("tidak kirim apa pun sebelum hari ke-3", () => {
-    for (const d of [0, 1, 2]) {
+  it("tidak kirim apa pun sebelum jam ke-6", () => {
+    for (const h of [0, 3, 5]) {
       expect(
         selectDripStage({
-          now: at(trialStartedAt, d),
+          now: atH(trialStartedAt, h),
           trialStartedAt,
           trialEndsAt,
           alreadySent: {},
@@ -35,66 +35,66 @@ describe("selectDripStage", () => {
     }
   });
 
-  it("kirim d3 di hari ke-3", () => {
+  it("kirim h6 di jam ke-6", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 3),
+        now: atH(trialStartedAt, 6),
         trialStartedAt,
         trialEndsAt,
         alreadySent: {},
       }),
-    ).toBe("d3");
+    ).toBe("h6");
   });
 
-  it("kirim d5 di hari ke-5 kalau d3 sudah terkirim", () => {
+  it("kirim h14 di jam ke-14 kalau h6 sudah terkirim", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 5),
+        now: atH(trialStartedAt, 14),
         trialStartedAt,
         trialEndsAt,
-        alreadySent: { d3: "2026-01-04T02:00:00Z" },
+        alreadySent: { h6: "2026-01-01T08:00:00Z" },
       }),
-    ).toBe("d5");
+    ).toBe("h14");
   });
 
-  it("kirim d6 di hari ke-6 kalau d3 & d5 sudah terkirim", () => {
+  it("kirim h20 di jam ke-20 kalau h6 & h14 sudah terkirim", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 6),
+        now: atH(trialStartedAt, 20),
         trialStartedAt,
         trialEndsAt,
-        alreadySent: { d3: "x", d5: "y" },
+        alreadySent: { h6: "x", h14: "y" },
       }),
-    ).toBe("d6");
+    ).toBe("h20");
   });
 
-  it("idempotent: tidak kirim ulang stage yang sudah terkirim di hari yang sama", () => {
+  it("idempotent: tidak kirim ulang stage yang sudah terkirim di jam yang sama", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 3),
+        now: atH(trialStartedAt, 6),
         trialStartedAt,
         trialEndsAt,
-        alreadySent: { d3: "already" },
+        alreadySent: { h6: "already" },
       }),
     ).toBeNull();
   });
 
-  it("kalau job skip beberapa hari, kirim stage terbaru yang eligible (bukan menumpuk)", () => {
-    // Sampai hari ke-6 belum ada yang terkirim → langsung d6, bukan d3.
+  it("kalau job skip beberapa jam, kirim stage terbaru yang eligible (bukan menumpuk)", () => {
+    // Sampai jam ke-20 belum ada yang terkirim → langsung h20, bukan h6.
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 6),
+        now: atH(trialStartedAt, 20),
         trialStartedAt,
         trialEndsAt,
         alreadySent: {},
       }),
-    ).toBe("d6");
+    ).toBe("h20");
   });
 
   it("tidak kirim apa pun setelah trial berakhir", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 7),
+        now: atH(trialStartedAt, 24),
         trialStartedAt,
         trialEndsAt,
         alreadySent: {},
@@ -102,19 +102,19 @@ describe("selectDripStage", () => {
     ).toBeNull();
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 10),
+        now: atH(trialStartedAt, 30),
         trialStartedAt,
         trialEndsAt,
-        alreadySent: { d3: "x", d5: "y" },
+        alreadySent: { h6: "x", h14: "y" },
       }),
     ).toBeNull();
   });
 
   it("semua stage terkirim → null", () => {
-    const alreadySent: DripSentMap = { d3: "a", d5: "b", d6: "c" };
+    const alreadySent: DripSentMap = { h6: "a", h14: "b", h20: "c" };
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 6),
+        now: atH(trialStartedAt, 20),
         trialStartedAt,
         trialEndsAt,
         alreadySent,
@@ -125,7 +125,7 @@ describe("selectDripStage", () => {
   it("now sebelum trial start (clock skew) → null", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, -1),
+        now: atH(trialStartedAt, -1),
         trialStartedAt,
         trialEndsAt,
         alreadySent: {},
@@ -133,13 +133,13 @@ describe("selectDripStage", () => {
     ).toBeNull();
   });
 
-  it("hari ke-4 (gap antara d3 dan d5), d3 sudah terkirim → null sampai d5", () => {
+  it("jam ke-8 (gap antara h6 dan h14), h6 sudah terkirim → null sampai h14", () => {
     expect(
       selectDripStage({
-        now: at(trialStartedAt, 4),
+        now: atH(trialStartedAt, 8),
         trialStartedAt,
         trialEndsAt,
-        alreadySent: { d3: "x" },
+        alreadySent: { h6: "x" },
       }),
     ).toBeNull();
   });
@@ -163,7 +163,7 @@ describe("resolveTrialStartedAt", () => {
 
 describe("readDripSent", () => {
   it("baca map dripSent dari metadata", () => {
-    expect(readDripSent({ dripSent: { d3: "x" } })).toEqual({ d3: "x" });
+    expect(readDripSent({ dripSent: { h6: "x" } })).toEqual({ h6: "x" });
   });
 
   it("default empty map kalau tidak ada / bukan object", () => {

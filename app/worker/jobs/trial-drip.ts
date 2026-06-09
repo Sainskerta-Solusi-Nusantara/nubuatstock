@@ -10,37 +10,38 @@ import { logger } from "@/lib/logger";
 /**
  * Trial drip campaign (IMPROVEMENT_PLAN §8.5 #35).
  *
- * Job harian: cari user berstatus `trialing` (tier Pro 7 hari) dan kirim email
- * berjenjang untuk mendorong konversi ke paid sebelum auto-downgrade ke Free
- * (lihat worker/jobs/expire-trial.ts):
+ * Job berkala (tiap 2 jam): cari user berstatus `trialing` (tier Pro 1 hari) dan
+ * kirim email berjenjang untuk mendorong konversi ke paid sebelum auto-downgrade
+ * ke Free (lihat worker/jobs/expire-trial.ts). Trial cuma 1 hari → tahap berbasis
+ * JAM, bukan hari:
  *
- *   - D+3 (>=3 hari sejak trial mulai): perkenalkan fitur Pro yang sering dilewat.
- *   - D+5 (>=5 hari): "trial tinggal 2 hari" + value recap / social proof.
- *   - D+6 (>=6 hari, H-1 sebelum habis): "besok turun ke Free, upgrade sekarang".
+ *   - h6  (>=6 jam sejak trial mulai): perkenalkan fitur Pro yang sering dilewat.
+ *   - h14 (>=14 jam): "trial tinggal beberapa jam" + value recap / social proof.
+ *   - h20 (>=20 jam, ~4 jam sebelum habis): "segera turun ke Free, upgrade sekarang".
  *
  * Idempotency / dedup:
  *   Tidak ada tabel sent-emails khusus, jadi dedup pakai flag di
  *   `user_subscriptions.metadata` jsonb — key `dripSent` berisi map
- *   `{ d3: ISODate, d5: ISODate, d6: ISODate }`. Sebelum kirim, cek apakah
+ *   `{ h6: ISODate, h14: ISODate, h20: ISODate }`. Sebelum kirim, cek apakah
  *   stage sudah ada. Setelah kirim sukses, tandai. Aman dari double-send
- *   walau job dijalankan ulang di hari yang sama.
+ *   walau job dijalankan ulang di jam yang sama.
  *
  * Anti-kirim-ke-yang-sudah-upgrade:
  *   Hanya proses row dengan status `trialing`. Begitu user upgrade (status
  *   jadi `active` berbayar via activatePaidSubscription) atau trial expired,
  *   row tidak lagi `trialing` → otomatis tidak ikut campaign.
  *
- * Cron schedule: `0 9 * * *` (09:00 WIB tiap hari) — di-bootstrap di scheduler,
+ * Cron schedule: `15 * /2 * * *` (tiap 2 jam) — di-bootstrap di scheduler,
  * di-route oleh generatePicksAdapter ke processor ini (job name "trial-drip").
  */
 
-const DRIP_STAGES = ["d3", "d5", "d6"] as const;
+const DRIP_STAGES = ["h6", "h14", "h20"] as const;
 
-/** Map stage → hari trial minimum (inklusif) sejak trial dimulai. */
-const STAGE_DAY_THRESHOLD: Record<TrialDripStage, number> = {
-  d3: 3,
-  d5: 5,
-  d6: 6,
+/** Map stage → jam trial minimum (inklusif) sejak trial dimulai. */
+const STAGE_HOUR_THRESHOLD: Record<TrialDripStage, number> = {
+  h6: 6,
+  h14: 14,
+  h20: 20,
 };
 
 export type DripSentMap = Partial<Record<TrialDripStage, string>>;
@@ -49,9 +50,9 @@ export type DripSentMap = Partial<Record<TrialDripStage, string>>;
  * Pure logic: tentukan stage drip mana yang harus dikirim sekarang.
  *
  * Aturan:
- *  - Hitung umur trial dalam hari penuh = floor((now - trialStartedAt) / 24h).
+ *  - Hitung umur trial dalam jam penuh = floor((now - trialStartedAt) / 1h).
  *  - Pilih stage dengan threshold tertinggi yang <= umur trial DAN belum dikirim.
- *    (Kalau job sempat skip beberapa hari, langsung kirim stage terbaru yang
+ *    (Kalau job sempat skip beberapa jam, langsung kirim stage terbaru yang
  *     relevan — bukan menumpuk semua email sekaligus.)
  *  - Jangan kirim stage apa pun setelah trial berakhir (now >= trialEndsAt):
  *    user akan di-handle expire-trial + email "trial expired".
@@ -72,12 +73,12 @@ export function selectDripStage(args: {
 
   const ageMs = now.getTime() - trialStartedAt.getTime();
   if (ageMs < 0) return null;
-  const ageDays = Math.floor(ageMs / 86_400_000);
+  const ageHours = Math.floor(ageMs / 3_600_000);
 
   // Stage terbaru yang sudah eligible (threshold <= umur) dan belum dikirim.
-  // Iterate dari yang paling lambat (d6) ke paling awal (d3).
+  // Iterate dari yang paling lambat (h20) ke paling awal (h6).
   for (const stage of [...DRIP_STAGES].reverse()) {
-    if (ageDays >= STAGE_DAY_THRESHOLD[stage] && !alreadySent[stage]) {
+    if (ageHours >= STAGE_HOUR_THRESHOLD[stage] && !alreadySent[stage]) {
       return stage;
     }
   }

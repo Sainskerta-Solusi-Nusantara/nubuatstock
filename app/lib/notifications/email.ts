@@ -184,14 +184,14 @@ Informasi & analisis untuk edukasi semata, bukan ajakan jual/beli efek.`;
 /**
  * Trial drip campaign (IMPROVEMENT_PLAN §8.5 #35).
  *
- * Tiga tahap selama trial Pro 1 hari, mendorong konversi ke paid:
- *  - "d3"  (hari ke-3): perkenalkan fitur Pro yang sering dilewatkan.
- *  - "d5"  (hari ke-5): trial tinggal 2 hari + value recap / social proof.
- *  - "d6"  (hari ke-6, H-1): besok turun ke Free → ajakan upgrade.
+ * Tiga tahap selama trial Pro 1 hari (24 jam), mendorong konversi ke paid:
+ *  - "h6"  (jam ke-6): perkenalkan fitur Pro yang sering dilewatkan.
+ *  - "h14" (jam ke-14): value recap / social proof, trial tinggal beberapa jam.
+ *  - "h20" (jam ke-20, ~4 jam sebelum habis): segera turun ke Free → ajakan upgrade.
  *
  * Satu fungsi param-based supaya copy & layout konsisten antar tahap.
  */
-export type TrialDripStage = "d3" | "d5" | "d6";
+export type TrialDripStage = "h6" | "h14" | "h20";
 
 export interface TrialDripEmailParams {
   appName: string;
@@ -213,12 +213,12 @@ function trialDripCopy(p: TrialDripEmailParams): {
   closing: string;
 } {
   switch (p.stage) {
-    case "d3":
+    case "h6":
       return {
         subject: `Sudah coba fitur ini di ${p.appName}?`,
         heading: `Halo ${p.userName}, ini yang sering dilewatkan`,
         intro:
-          "Trial Pro kamu lagi jalan. Banyak yang belum sempat mencoba 3 fitur Pro paling powerful ini — sayang kalau terlewat:",
+          "Trial Pro kamu lagi jalan hari ini. Banyak yang belum sempat mencoba 3 fitur Pro paling powerful ini — sayang kalau terlewat:",
         bullets: [
           "<strong>Bandarmology</strong> — lihat akumulasi/distribusi bandar lewat broker summary & foreign flow per saham.",
           "<strong>Research Aggregator</strong> — rangkuman riset sekuritas (target price, rating) dalam satu tempat.",
@@ -227,12 +227,12 @@ function trialDripCopy(p: TrialDripEmailParams): {
         ctaLabel: "Coba sekarang",
         closing: "Tinggal buka dashboard dan klik salah satu fitur di atas — semua sudah aktif selama trial.",
       };
-    case "d5":
+    case "h14":
       return {
-        subject: `Trial Pro kamu tinggal 2 hari`,
-        heading: `${p.userName}, trial Pro tinggal 2 hari lagi`,
+        subject: `Trial Pro kamu tinggal beberapa jam`,
+        heading: `${p.userName}, trial Pro tinggal beberapa jam lagi`,
         intro:
-          "Sebentar lagi trial kamu habis. Trader yang upgrade bilang ini yang paling kena buat mereka selama pakai Pro:",
+          "Trial kamu sebentar lagi habis. Trader yang upgrade bilang ini yang paling kena buat mereka selama pakai Pro:",
         bullets: [
           "Daily Picks dengan SR/SL/TP konkrit tiap pagi sebelum bursa buka.",
           "Bandarmology + foreign flow buat baca pergerakan bandar lebih awal.",
@@ -241,20 +241,20 @@ function trialDripCopy(p: TrialDripEmailParams): {
         ctaLabel: "Lihat paket Pro",
         closing: "Upgrade sekarang biar akses Pro kamu nggak putus saat trial berakhir.",
       };
-    case "d6":
+    case "h20":
     default:
       return {
-        subject: `Besok akunmu turun ke Free — upgrade sekarang`,
-        heading: `${p.userName}, besok trial Pro kamu berakhir`,
+        subject: `Beberapa jam lagi akunmu turun ke Free — upgrade sekarang`,
+        heading: `${p.userName}, trial Pro kamu hampir berakhir`,
         intro:
-          "Besok akun kamu otomatis turun ke tier Free. Kamu akan kehilangan akses ke fitur Pro yang sudah kamu pakai selama ini:",
+          "Beberapa jam lagi akun kamu otomatis turun ke tier Free. Kamu akan kehilangan akses ke fitur Pro yang sudah kamu pakai:",
         bullets: [
           "Bandarmology penuh & foreign flow per saham.",
           "Research Aggregator (target price & rating sekuritas).",
           "Data real-time + AI Buddy tanpa batas harian.",
         ],
         ctaLabel: "Upgrade ke Pro sekarang",
-        closing: "Upgrade hari ini biar tetap Pro tanpa jeda. Cuma butuh beberapa menit.",
+        closing: "Upgrade sekarang biar tetap Pro tanpa jeda. Cuma butuh beberapa menit.",
       };
   }
 }

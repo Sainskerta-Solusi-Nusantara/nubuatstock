@@ -6,7 +6,7 @@
     { "path": "/api/cron/securities-picks", "schedule": "0 2 * * 1-5" },
     { "path": "/api/cron/evaluate-outcomes", "schedule": "30 10 * * 1-5" },
     { "path": "/api/cron/paper-leaderboard", "schedule": "45 10 * * 1-5" },
-    { "path": "/api/cron/trial-drip", "schedule": "15 2 * * *" },
+    { "path": "/api/cron/trial-drip", "schedule": "15 */2 * * *" },
     { "path": "/api/cron/expire-trial", "schedule": "0 18 * * *" },
     { "path": "/api/cron/renew-subscriptions", "schedule": "0 19 * * *" },
     { "path": "/api/cron/account-deletion-sweep", "schedule": "0 20 * * *" },
