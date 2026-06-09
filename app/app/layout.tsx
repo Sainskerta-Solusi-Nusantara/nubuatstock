@@ -1,4 +1,8 @@
 import type { Metadata, Viewport } from "next";
+
+// PPR: partial prerendering — static shell pre-rendered, dynamic content loads on-demand
+export const experimental_ppr = true;
+
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { getConfig } from "@/lib/config";
