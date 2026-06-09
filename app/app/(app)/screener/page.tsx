@@ -373,6 +373,8 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
         offset={filters.offset ?? 0}
         perPage={perPage}
         baseHref={baseHref}
+        sort={sp.sort}
+        sortDir={sp.sortDir}
       />
 
       {/* Results */}
@@ -384,7 +386,14 @@ export default async function ScreenerPage({ searchParams }: PageProps) {
       />
 
       {/* Pagination bernomor */}
-      <Pagination total={total} offset={filters.offset ?? 0} limit={perPage} baseHref={baseHref} />
+      <Pagination
+        total={total}
+        offset={filters.offset ?? 0}
+        limit={perPage}
+        baseHref={baseHref}
+        sort={sp.sort}
+        sortDir={sp.sortDir}
+      />
 
       <p className="rounded-md border border-border bg-card/40 p-3 text-xs leading-relaxed text-muted-foreground">
         <strong>Catatan:</strong> Data fundamental dari Yahoo Finance snapshot (update periodik).
@@ -419,10 +428,12 @@ function FilterField({ label, children }: { label: string; children: React.React
   );
 }
 
-/** Bangun URL dari baseHref dengan override param tertentu. */
-function withParams(baseHref: string, params: Record<string, string | number>): string {
+/** Bangun URL dari baseHref dengan override param tertentu (skip undefined). */
+function withParams(baseHref: string, params: Record<string, string | number | undefined>): string {
   const url = new URL(baseHref, "http://x");
-  for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== "") url.searchParams.set(k, String(v));
+  }
   return url.pathname + url.search;
 }
 
@@ -433,12 +444,16 @@ function ResultsToolbar({
   offset,
   perPage,
   baseHref,
+  sort,
+  sortDir,
 }: {
   total: number;
   shown: number;
   offset: number;
   perPage: number;
   baseHref: string;
+  sort?: string;
+  sortDir?: string;
 }) {
   const from = total === 0 ? 0 : offset + 1;
   const to = offset + shown;
@@ -453,8 +468,8 @@ function ResultsToolbar({
         {PER_PAGE_OPTIONS.map((n) => (
           <Link
             key={n}
-            // Ganti jumlah baris → kembali ke halaman 1 (offset 0).
-            href={withParams(baseHref, { limit: n, offset: 0 })}
+            // Ganti jumlah baris → kembali ke halaman 1 (offset 0); pertahankan sort.
+            href={withParams(baseHref, { limit: n, offset: 0, sort, sortDir })}
             className={`rounded-md border px-2 py-0.5 font-medium ${
               n === perPage
                 ? "border-primary bg-primary/10 text-primary"
@@ -487,17 +502,21 @@ function Pagination({
   offset,
   limit,
   baseHref,
+  sort,
+  sortDir,
 }: {
   total: number;
   offset: number;
   limit: number;
   baseHref: string;
+  sort?: string;
+  sortDir?: string;
 }) {
   const totalPages = Math.ceil(total / limit);
   if (totalPages <= 1) return null;
   const page = Math.floor(offset / limit) + 1;
 
-  const urlForPage = (p: number) => withParams(baseHref, { limit, offset: (p - 1) * limit });
+  const urlForPage = (p: number) => withParams(baseHref, { limit, offset: (p - 1) * limit, sort, sortDir });
   const items = pageWindow(page, totalPages);
 
   return (

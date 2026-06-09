@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ShieldAlert, AlertTriangle } from "lucide-react";
 import { requireSuperadmin } from "@/lib/auth/roles";
 import { getSession } from "@/lib/auth/server";
+import { getPipelineHealth } from "@/lib/superadmin/pipeline-health";
 import { SuperadminNavLink } from "./_NavLink";
 
 export const dynamic = "force-dynamic";
@@ -21,8 +22,27 @@ export default async function SuperadminLayout({ children }: { children: React.R
     redirect("/login?error=superadmin_required");
   }
 
+  // Alert data basi — soft-fail supaya error health check tak merusak halaman.
+  const stale = await getPipelineHealth()
+    .then((h) => h.stale)
+    .catch(() => []);
+
   return (
     <div className="min-h-screen bg-background">
+      {stale.length > 0 && (
+        <Link
+          href="/superadmin/system"
+          className="block border-b border-bear/40 bg-bear/15 transition hover:bg-bear/25"
+        >
+          <div className="mx-auto flex max-w-7xl items-center gap-2 px-6 py-2 text-xs font-semibold text-bear">
+            <AlertTriangle className="h-4 w-4 shrink-0" />
+            <span>
+              Data basi: {stale.map((s) => s.label).join(", ")} — pipeline mungkin tidak jalan.
+              Klik untuk buka System Health & jalankan ingest manual.
+            </span>
+          </div>
+        </Link>
+      )}
       <div className="border-b border-bear/30 bg-bear-soft/50">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-6 py-2 text-xs font-medium text-bear">
           <Link
