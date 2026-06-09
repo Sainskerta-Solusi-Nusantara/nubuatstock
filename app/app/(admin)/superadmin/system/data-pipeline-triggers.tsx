@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target, Building2, Activity } from "lucide-react";
+import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target, Building2, Activity, Shapes, Waves, Gauge } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,15 @@ import type { PipelineStatus, PipelineStepStatus } from "@/lib/superadmin/pipeli
  * kosong). Endpoint cron menerima sesi superadmin (lihat lib/cron/helpers.ts).
  */
 
-type StepKey = "news" | "eod" | "technical" | "picks" | "securities";
+type StepKey =
+  | "news"
+  | "eod"
+  | "technical"
+  | "patterns"
+  | "elliott"
+  | "analysis"
+  | "picks"
+  | "securities";
 
 type Step = {
   key: StepKey;
@@ -52,6 +60,9 @@ function statusLine(key: StepKey, s: PipelineStepStatus | undefined): { text: st
   if (key === "securities") {
     return { text: `Data ${s.dataDate ?? "—"} · ${s.count} rekomendasi · ${ago}`, stale };
   }
+  if (key === "patterns" || key === "elliott" || key === "analysis") {
+    return { text: `${s.count} di-refresh hari ini · update ${ago}`, stale };
+  }
   return { text: `Data ${s.dataDate ?? "—"} · ${s.count} picks · publish ${ago}`, stale };
 }
 
@@ -77,6 +88,27 @@ const STEPS: Step[] = [
     path: "/api/cron/technical-snapshots",
     icon: Activity,
     desc: "Hitung indikator teknikal (RSI, Stoch, MA, ADX…) dari EOD. Dipakai preset teknikal Screener.",
+  },
+  {
+    key: "patterns",
+    label: "Pattern Detection",
+    path: "/api/cron/detect-patterns",
+    icon: Shapes,
+    desc: "Deteksi pola chart & candlestick dari EOD. Butuh harga EOD.",
+  },
+  {
+    key: "elliott",
+    label: "Elliott Wave",
+    path: "/api/cron/analyze-elliott",
+    icon: Waves,
+    desc: "Analisis hitungan gelombang Elliott per emiten. Butuh harga EOD.",
+  },
+  {
+    key: "analysis",
+    label: "Analysis Snapshots (Verdict)",
+    path: "/api/cron/analysis-snapshots",
+    icon: Gauge,
+    desc: "Gabungkan teknikal + pattern + Elliott + Wyckoff jadi verdict. Jalankan setelah Technical/Pattern/Elliott.",
   },
   {
     key: "picks",
@@ -148,8 +180,10 @@ export function DataPipelineTriggers({ status }: { status: PipelineStatus }) {
     // Jalankan berurutan sesuai dependensi. Technical & Picks butuh harga EOD;
     // News & Securities independen (tetap jalan walau EOD gagal).
     let eodOk = true;
+    // Langkah yang butuh harga EOD (dilewati bila EOD gagal). News & Securities independen.
+    const priceDependent: StepKey[] = ["technical", "patterns", "elliott", "analysis", "picks"];
     for (const step of STEPS) {
-      if ((step.key === "technical" || step.key === "picks") && !eodOk) {
+      if (priceDependent.includes(step.key) && !eodOk) {
         toast.warning(`${step.label} dilewati — EOD gagal (tak ada harga baru).`);
         continue;
       }

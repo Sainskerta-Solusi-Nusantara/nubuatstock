@@ -15,6 +15,9 @@ const THRESHOLD_HOURS: Record<Key, number> = {
   news: 12,
   eod: 72,
   technical: 72,
+  patterns: 72,
+  elliott: 72,
+  analysis: 72,
   picks: 72,
   securities: 72,
 };
@@ -23,6 +26,9 @@ const LABEL: Record<Key, string> = {
   news: "Berita",
   eod: "Harga EOD",
   technical: "Technical Snapshots",
+  patterns: "Pattern Detection",
+  elliott: "Elliott Wave",
+  analysis: "Analysis Snapshots",
   picks: "Daily Picks",
   securities: "Daily Picks Sekuritas",
 };

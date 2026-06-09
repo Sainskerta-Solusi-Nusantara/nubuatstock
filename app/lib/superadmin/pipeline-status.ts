@@ -6,6 +6,9 @@ import { quotesEod } from "@/db/schema/market";
 import { dailyPicks } from "@/db/schema/picks";
 import { securitiesPicks } from "@/db/schema/securities-picks";
 import { technicalSnapshots } from "@/db/schema/technical";
+import { patternDetections } from "@/db/schema/patterns";
+import { elliottWaveSnapshots } from "@/db/schema/elliott";
+import { analysisSnapshots } from "@/db/schema/analysis-snapshots";
 
 /**
  * Status terakhir tiap pipeline data, untuk ditampilkan di panel pemicu manual
@@ -22,12 +25,12 @@ export interface PipelineStepStatus {
 }
 
 export type PipelineStatus = Record<
-  "news" | "eod" | "technical" | "picks" | "securities",
+  "news" | "eod" | "technical" | "patterns" | "elliott" | "analysis" | "picks" | "securities",
   PipelineStepStatus
 >;
 
 export async function getPipelineStatus(): Promise<PipelineStatus> {
-  const [news, eod, technical, picks, securities] = await Promise.all([
+  const [news, eod, technical, patterns, elliott, analysis, picks, securities] = await Promise.all([
     // News: kapan artikel terakhir di-fetch + jumlah 24 jam terakhir.
     db
       .select({
@@ -53,6 +56,30 @@ export async function getPipelineStatus(): Promise<PipelineStatus> {
         count: sql<number>`count(*) filter (where ${technicalSnapshots.tradeDate} = (select max(trade_date) from technical_snapshots))`,
       })
       .from(technicalSnapshots),
+    // Pattern detections: kapan terakhir di-refresh + jumlah yang di-update hari ini.
+    db
+      .select({
+        dataDate: sql<string | null>`null`,
+        lastAt: sql<string | null>`max(${patternDetections.updatedAt})`,
+        count: sql<number>`count(*) filter (where ${patternDetections.updatedAt} >= current_date)`,
+      })
+      .from(patternDetections),
+    // Elliott Wave snapshots.
+    db
+      .select({
+        dataDate: sql<string | null>`null`,
+        lastAt: sql<string | null>`max(${elliottWaveSnapshots.updatedAt})`,
+        count: sql<number>`count(*) filter (where ${elliottWaveSnapshots.updatedAt} >= current_date)`,
+      })
+      .from(elliottWaveSnapshots),
+    // Analysis snapshots (verdict gabungan).
+    db
+      .select({
+        dataDate: sql<string | null>`null`,
+        lastAt: sql<string | null>`max(${analysisSnapshots.updatedAt})`,
+        count: sql<number>`count(*) filter (where ${analysisSnapshots.updatedAt} >= current_date)`,
+      })
+      .from(analysisSnapshots),
     // Daily Picks: tanggal pick terbaru + kapan dipublikasikan + jumlah pick.
     db
       .select({
@@ -87,6 +114,21 @@ export async function getPipelineStatus(): Promise<PipelineStatus> {
       lastAt: technical[0]?.lastAt ?? null,
       dataDate: technical[0]?.dataDate ?? null,
       count: Number(technical[0]?.count ?? 0),
+    },
+    patterns: {
+      lastAt: patterns[0]?.lastAt ?? null,
+      dataDate: null,
+      count: Number(patterns[0]?.count ?? 0),
+    },
+    elliott: {
+      lastAt: elliott[0]?.lastAt ?? null,
+      dataDate: null,
+      count: Number(elliott[0]?.count ?? 0),
+    },
+    analysis: {
+      lastAt: analysis[0]?.lastAt ?? null,
+      dataDate: null,
+      count: Number(analysis[0]?.count ?? 0),
     },
     picks: {
       lastAt: picks[0]?.lastAt ?? null,
