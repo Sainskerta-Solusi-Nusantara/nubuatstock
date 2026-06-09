@@ -3,6 +3,7 @@ import { getSystemHealth, formatIdr } from "@/lib/superadmin/stats";
 import { listFeedback, listAllTickets } from "@/lib/support/service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DataPipelineTriggers } from "./data-pipeline-triggers";
 
 export const dynamic = "force-dynamic";
 
@@ -59,6 +60,9 @@ export default async function SuperadminSystemPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Pemicu manual pipeline data */}
+      <DataPipelineTriggers />
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Feedback dari user */}
