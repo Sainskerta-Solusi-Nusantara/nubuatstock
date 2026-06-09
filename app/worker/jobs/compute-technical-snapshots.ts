@@ -337,20 +337,28 @@ export const computeTechnicalSnapshotsProcessor: Processor = async (job) => {
 
   let processed = 0;
   let failed = 0;
+  const failedKodes: string[] = [];
 
   for (let i = 0; i < allCompanies.length; i += BATCH_SIZE) {
     const batch = allCompanies.slice(i, i + BATCH_SIZE);
     const results = await Promise.allSettled(
       batch.map((c) => computeOneSnapshot(c.kode)),
     );
-    for (const r of results) {
-      if (r.status === "fulfilled" && r.value) processed += 1;
-      else failed += 1;
-    }
+    results.forEach((r, idx) => {
+      if (r.status === "fulfilled" && r.value) {
+        processed += 1;
+      } else {
+        failed += 1;
+        if (failedKodes.length < 50) failedKodes.push(batch[idx]!.kode);
+      }
+    });
     if (i % (BATCH_SIZE * 5) === 0) {
       logger.info({ processed, failed, total: allCompanies.length }, "technical-snapshots progress");
     }
   }
 
-  return { processed, failed, mode: "bulk" };
+  if (failedKodes.length > 0) {
+    logger.warn({ failedKodes, failed }, "technical-snapshots: emiten gagal dihitung");
+  }
+  return { processed, failed, mode: "bulk", failedKodes };
 };

@@ -41,6 +41,8 @@ export interface IngestEodJobResult {
   barsInserted: number;
   vendor: string;
   durationMs: number;
+  /** Kode emiten yang gagal di-fetch (capped 50) — untuk diagnosa coverage. */
+  failedKodes: string[];
 }
 
 const MAX_DAYS_BACK = 30;
@@ -74,6 +76,7 @@ export const ingestEodProcessor: Processor<IngestEodJobData, IngestEodJobResult>
   let processed = 0;
   let failed = 0;
   let barsInserted = 0;
+  const failedKodes: string[] = [];
 
   // Bounded concurrency loop.
   const queue = [...targets];
@@ -122,6 +125,7 @@ export const ingestEodProcessor: Processor<IngestEodJobData, IngestEodJobResult>
         processed += 1;
       } catch (err) {
         failed += 1;
+        if (failedKodes.length < 50) failedKodes.push(c.kode);
         if (err instanceof AdapterNotConfiguredError) {
           logger.error({ err, code: c.kode }, "Adapter not configured; aborting");
           throw err;
@@ -163,6 +167,7 @@ export const ingestEodProcessor: Processor<IngestEodJobData, IngestEodJobResult>
       failed,
       barsInserted,
       durationMs,
+      failedKodes: failedKodes.length > 0 ? failedKodes : undefined,
     },
     "ingest-eod done",
   );
@@ -174,6 +179,7 @@ export const ingestEodProcessor: Processor<IngestEodJobData, IngestEodJobResult>
     barsInserted,
     vendor: adapter.name,
     durationMs,
+    failedKodes,
   };
 };
 
