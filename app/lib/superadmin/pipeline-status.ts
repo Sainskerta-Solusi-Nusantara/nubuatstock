@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { newsArticles } from "@/db/schema/news";
 import { quotesEod } from "@/db/schema/market";
 import { dailyPicks } from "@/db/schema/picks";
+import { securitiesPicks } from "@/db/schema/securities-picks";
 
 /**
  * Status terakhir tiap pipeline data, untuk ditampilkan di panel pemicu manual
@@ -19,10 +20,10 @@ export interface PipelineStepStatus {
   count: number;
 }
 
-export type PipelineStatus = Record<"news" | "eod" | "picks", PipelineStepStatus>;
+export type PipelineStatus = Record<"news" | "eod" | "picks" | "securities", PipelineStepStatus>;
 
 export async function getPipelineStatus(): Promise<PipelineStatus> {
-  const [news, eod, picks] = await Promise.all([
+  const [news, eod, picks, securities] = await Promise.all([
     // News: kapan artikel terakhir di-fetch + jumlah 24 jam terakhir.
     db
       .select({
@@ -47,6 +48,15 @@ export async function getPipelineStatus(): Promise<PipelineStatus> {
         count: sql<number>`count(*) filter (where ${dailyPicks.tradeDate} = (select max(trade_date) from daily_picks))`,
       })
       .from(dailyPicks),
+    // Securities Picks (Rekomendasi Sekuritas): tanggal pick terbaru + kapan
+    // di-ingest + jumlah rekomendasi pada tanggal tsb.
+    db
+      .select({
+        dataDate: sql<string | null>`max(${securitiesPicks.pickDate})`,
+        lastAt: sql<string | null>`max(${securitiesPicks.createdAt})`,
+        count: sql<number>`count(*) filter (where ${securitiesPicks.pickDate} = (select max(pick_date) from securities_picks))`,
+      })
+      .from(securitiesPicks),
   ]);
 
   return {
@@ -64,6 +74,11 @@ export async function getPipelineStatus(): Promise<PipelineStatus> {
       lastAt: picks[0]?.lastAt ?? null,
       dataDate: picks[0]?.dataDate ?? null,
       count: Number(picks[0]?.count ?? 0),
+    },
+    securities: {
+      lastAt: securities[0]?.lastAt ?? null,
+      dataDate: securities[0]?.dataDate ?? null,
+      count: Number(securities[0]?.count ?? 0),
     },
   };
 }

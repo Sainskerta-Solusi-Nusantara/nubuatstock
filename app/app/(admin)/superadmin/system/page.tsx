@@ -37,6 +37,7 @@ export default async function SuperadminSystemPage() {
       news: { lastAt: null, dataDate: null, count: 0 },
       eod: { lastAt: null, dataDate: null, count: 0 },
       picks: { lastAt: null, dataDate: null, count: 0 },
+      securities: { lastAt: null, dataDate: null, count: 0 },
     })),
   ]);
 

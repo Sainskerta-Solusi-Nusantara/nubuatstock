@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target } from "lucide-react";
+import { Play, Loader2, ListChecks, Newspaper, CandlestickChart, Target, Building2 } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import type { PipelineStatus, PipelineStepStatus } from "@/lib/superadmin/pipeli
  * kosong). Endpoint cron menerima sesi superadmin (lihat lib/cron/helpers.ts).
  */
 
-type StepKey = "news" | "eod" | "picks";
+type StepKey = "news" | "eod" | "picks" | "securities";
 
 type Step = {
   key: StepKey;
@@ -49,6 +49,9 @@ function statusLine(key: StepKey, s: PipelineStepStatus | undefined): { text: st
   if (key === "eod") {
     return { text: `Data ${s.dataDate ?? "—"} · ${s.count} emiten · update ${ago}`, stale };
   }
+  if (key === "securities") {
+    return { text: `Data ${s.dataDate ?? "—"} · ${s.count} rekomendasi · ${ago}`, stale };
+  }
   return { text: `Data ${s.dataDate ?? "—"} · ${s.count} picks · publish ${ago}`, stale };
 }
 
@@ -74,6 +77,13 @@ const STEPS: Step[] = [
     path: "/api/cron/picks-generate",
     icon: Target,
     desc: "Generate rekomendasi harian dari EOD terbaru + narasi AI.",
+  },
+  {
+    key: "securities",
+    label: "Daily Picks Sekuritas",
+    path: "/api/cron/securities-picks",
+    icon: Building2,
+    desc: "Fetch rekomendasi sekuritas dari sumber publik + ekstraksi AI. Independen.",
   },
 ];
 

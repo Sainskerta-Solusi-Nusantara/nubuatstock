@@ -77,7 +77,7 @@ async function main() {
     group by source_slug
     order by n desc
   `);
-  for (const r of (counts.rows ?? counts) as Array<Record<string, unknown>>) {
+  for (const r of counts as unknown as Array<Record<string, unknown>>) {
     console.log(`${r.source_slug}: ${r.n} artikel (terbaru ${String(r.latest).slice(0, 16)})`);
   }
   process.exit(0);

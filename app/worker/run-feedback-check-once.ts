@@ -44,9 +44,9 @@ async function main() {
       and u.created_at <= now() - interval '72 hours'
   `);
 
-  const t = (totals.rows ?? totals)[0] as { total: number; trial_gate: number; last_24h: number };
-  const e = (eligible.rows ?? eligible)[0] as { eligible: number };
-  const rows = (recent.rows ?? recent) as Array<Record<string, unknown>>;
+  const t = (totals as unknown as Array<{ total: number; trial_gate: number; last_24h: number }>)[0] ?? { total: 0, trial_gate: 0, last_24h: 0 };
+  const e = (eligible as unknown as Array<{ eligible: number }>)[0] ?? { eligible: 0 };
+  const rows = recent as unknown as Array<Record<string, unknown>>;
 
   console.log("=== RINGKASAN FEEDBACK ===");
   console.log("Total feedback        :", t.total);
