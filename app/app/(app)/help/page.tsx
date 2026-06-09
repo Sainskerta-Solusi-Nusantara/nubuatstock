@@ -7,7 +7,7 @@ import { HelpCenterView } from "./view";
 export const metadata = {
   title: "Help Center & FAQ — Nubuat",
   description:
-    "Pusat bantuan Nubuat: jawaban cepat soal akun & login, langganan & trial 7 hari, paper trading gratis, AI Buddy, alerts, data harga, dan pembayaran.",
+    "Pusat bantuan Nubuat: jawaban cepat soal akun & login, langganan & trial 1 hari, paper trading gratis, AI Buddy, alerts, data harga, dan pembayaran.",
 };
 
 export default function HelpPage() {

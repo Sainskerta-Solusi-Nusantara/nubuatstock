@@ -38,9 +38,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     if (tier === "trial") {
-      // Trial = Pro 7 hari (status trialing). Otomatis kedaluwarsa lewat
-      // trial_ends_at / current_period_end (waktu 7 hari berjalan sendiri).
-      await startTrialSubscription({ userId: id, durationDays: 7, tierKode: "pro" });
+      // Trial = Pro 1 hari (status trialing). Otomatis kedaluwarsa lewat
+      // trial_ends_at / current_period_end (waktu 1 hari berjalan sendiri).
+      await startTrialSubscription({ userId: id, durationDays: 1, tierKode: "pro" });
     } else {
       await setUserTierByAdmin({ userId: id, tierKode: tier, actorUserId: actor.userId, reason });
     }

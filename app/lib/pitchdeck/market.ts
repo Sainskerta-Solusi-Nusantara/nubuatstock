@@ -87,7 +87,7 @@ export const CUSTOMER_PERSONAS = [
     demographics: "27 tahun, software engineer, AUM Rp 50jt, Jakarta",
     behavior: "Beli saham karena rekomendasi grup Telegram, 60% portfolio nyangkut, frustrasi tapi belum mau berhenti trading",
     needs: "Kerangka analisis simple, alert otomatis, daily picks dengan SR/SL/TP eksplisit supaya tidak tebak-tebakan",
-    targetTier: "Starter Rp 99k/bln (setelah 7-day trial)",
+    targetTier: "Starter Rp 99k/bln (setelah 1-day trial)",
     valueAlign: "Daily Picks + AI Buddy menjelaskan setiap entry — feel 'guided' tapi tetap mandiri",
   },
   {

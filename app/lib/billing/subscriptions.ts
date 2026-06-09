@@ -126,7 +126,7 @@ export async function ensureFreeSubscription(opts: EnsureFreeOptions): Promise<U
 }
 
 /**
- * Start trial subscription untuk user — tier "pro" by default, 7 hari (Trial Pro 7 hari).
+ * Start trial subscription untuk user — tier "pro" by default, 1 hari (Trial Pro 1 hari).
  *
  * Idempotent: kalau user sudah punya active/trialing subscription, return existing.
  * Worker `expire-trial` akan auto-downgrade ke Free setelah trial_ends_at.
@@ -150,7 +150,7 @@ export async function startTrialSubscription(opts: {
     .limit(1);
 
   const targetTier = opts.tierKode ?? ("pro" as TierKode);
-  const durationDays = opts.durationDays ?? 7;
+  const durationDays = opts.durationDays ?? 1;
   const now = new Date();
   const trialEndsAt = new Date(now.getTime() + durationDays * 86400000);
 

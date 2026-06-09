@@ -60,7 +60,7 @@ export default async function LandingPage() {
     heroBullish: { key: "landing.hero.headline_bullish", default: "profit" },
     heroTail: { key: "landing.hero.headline_tail", default: "dari data." },
     heroSub: { key: "landing.hero.subheadline", default: "menganalisis setiap entry." },
-    heroCta1: { key: "landing.hero.cta_primary", default: "Coba Gratis 7 Hari" },
+    heroCta1: { key: "landing.hero.cta_primary", default: "Coba Gratis 1 Hari" },
     heroCta2: { key: "landing.hero.cta_secondary", default: "Lihat fitur" },
     heroNote: { key: "landing.hero.cta_note", default: "Tanpa kartu kredit." },
     heroStats: { key: "landing.hero.stats", default: [] as Stat[] },
@@ -89,7 +89,7 @@ export default async function LandingPage() {
     howSubtitle: { key: "landing.how.subtitle", default: "" },
     howSteps: { key: "landing.how.steps", default: [] as Step[] },
 
-    trialHead: { key: "landing.trial.headline", default: "Coba 7 hari, gratis penuh" },
+    trialHead: { key: "landing.trial.headline", default: "Coba 1 hari, gratis penuh" },
     trialDesc: { key: "landing.trial.description", default: "" },
     trialCtaText: { key: "landing.trial.cta", default: "Mulai Trial" },
     trialInclusions: { key: "landing.trial.inclusions", default: [] as string[] },

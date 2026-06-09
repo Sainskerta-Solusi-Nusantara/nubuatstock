@@ -27,7 +27,7 @@ export function Footer(props: FooterProps) {
               <li><Link href="/about" className="hover:text-foreground">About Us</Link></li>
               <li><Link href="/glossary" className="hover:text-foreground">Glossary</Link></li>
               <li><Link href="/subscription" className="hover:text-foreground">Harga</Link></li>
-              <li><Link href="/signup?trial=pro" className="hover:text-foreground">Trial Gratis 7 Hari</Link></li>
+              <li><Link href="/signup?trial=pro" className="hover:text-foreground">Trial Gratis 1 Hari</Link></li>
               <li><Link href="/picks" className="hover:text-foreground">Daily Picks</Link></li>
             </ul>
           </div>

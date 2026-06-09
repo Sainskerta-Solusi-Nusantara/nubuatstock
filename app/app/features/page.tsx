@@ -177,7 +177,7 @@ export default function FeaturesPage() {
               href="/signup?trial=pro"
               className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:brightness-110"
             >
-              Coba Gratis 7 Hari <ArrowRight className="h-4 w-4" />
+              Coba Gratis 1 Hari <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/pricing"
@@ -244,7 +244,7 @@ export default function FeaturesPage() {
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold tracking-tight">Mulai analisis IDX yang lebih cerdas</h2>
           <p className="mt-3 text-muted-foreground">
-            Trial 7 hari gratis untuk semua fitur tier Pro. Tanpa kartu kredit, tanpa komitmen.
+            Trial 1 hari gratis untuk semua fitur tier Pro. Tanpa kartu kredit, tanpa komitmen.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link

@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Pricing — Nubuat",
   description:
-    "Tier transparan: Free, Starter Rp 99rb/bln, Pro Rp 299rb/bln, Elite Rp 899rb/bln. Trial 7 hari Pro gratis.",
+    "Tier transparan: Free, Starter Rp 99rb/bln, Pro Rp 299rb/bln, Elite Rp 899rb/bln. Trial 1 hari Pro gratis.",
 };
 
 /**
@@ -69,7 +69,7 @@ export default async function PricingPage() {
             Pricing Transparan
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-center text-base text-muted-foreground">
-            Trial 7 hari gratis untuk tier Pro. Tanpa kartu kredit. Auto-downgrade ke Free
+            Trial 1 hari gratis untuk tier Pro. Tanpa kartu kredit. Auto-downgrade ke Free
             kalau tidak upgrade. <strong>No hidden fees, no auto-renew tricks.</strong>
           </p>
         </div>
@@ -192,7 +192,7 @@ export default async function PricingPage() {
             {[
               {
                 q: "Apa beda trial dengan free tier?",
-                a: "Trial 7 hari otomatis dapat akses ke semua fitur tier Pro tanpa charge. Setelah 7 hari, akun di-downgrade ke Free secara otomatis (tidak charge kartu kredit, bahkan tidak diminta input). Kalau mau tetap pakai tier berbayar (Starter atau Pro), manual upgrade dari /subscription.",
+                a: "Trial 1 hari otomatis dapat akses ke semua fitur tier Pro tanpa charge. Setelah 1 hari, akun di-downgrade ke Free secara otomatis (tidak charge kartu kredit, bahkan tidak diminta input). Kalau mau tetap pakai tier berbayar (Starter atau Pro), manual upgrade dari /subscription.",
               },
               {
                 q: "Bisa cancel kapan saja?",
@@ -229,7 +229,7 @@ export default async function PricingPage() {
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-2xl font-bold">Tetap ragu?</h2>
           <p className="mt-2 text-muted-foreground">
-            Coba dulu 7 hari gratis (tier Pro). Kalau tidak cocok, biarkan auto-downgrade ke Free.
+            Coba dulu 1 hari gratis (tier Pro). Kalau tidak cocok, biarkan auto-downgrade ke Free.
           </p>
           <Link
             href="/signup?trial=pro"

@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
 
     const [defaultTier, durationDays, fallbackTier] = await Promise.all([
       getConfig<string>("trial.default_tier", { defaultValue: "pro" }),
-      getConfig<number>("trial.duration_days", { defaultValue: 3 }),
+      getConfig<number>("trial.duration_days", { defaultValue: 1 }),
       getConfig<string>("trial.fallback_tier", { defaultValue: "free" }),
     ]);
 

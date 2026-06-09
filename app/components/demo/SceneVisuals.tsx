@@ -340,11 +340,11 @@ function OutroVisual() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-6 bg-gradient-to-br from-primary/20 to-primary/5 p-8">
       <div className="animate-pulse text-7xl">🎯</div>
-      <h2 className="text-3xl font-bold tracking-tight">Trial 7 Hari Gratis</h2>
+      <h2 className="text-3xl font-bold tracking-tight">Trial 1 Hari Gratis</h2>
       <ul className="space-y-2 text-sm text-muted-foreground">
         <li>✅ Semua fitur tier Starter</li>
         <li>✅ Tanpa kartu kredit</li>
-        <li>✅ Auto-downgrade ke Free setelah 7 hari</li>
+        <li>✅ Auto-downgrade ke Free setelah 1 hari</li>
         <li>✅ Cancel kapan saja, no hidden fees</li>
       </ul>
     </div>

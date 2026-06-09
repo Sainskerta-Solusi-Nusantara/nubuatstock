@@ -306,7 +306,7 @@ function buildAuth(input: BuildAuthInput) {
 
             // 1. Auto-create subscription. Default = Free. Kalau cookie
             //    `nubuat_trial_intent=1` ada (di-set oleh signup-form ketika
-            //    user datang via `/signup?trial=1`), start Trial Pro 7 hari
+            //    user datang via `/signup?trial=1`), start Trial Pro 1 hari
             //    via `startTrialSubscription`. Cookie selalu di-clear setelah
             //    dibaca supaya tidak bocor ke flow lain.
             let trialIntent = false;
@@ -341,7 +341,7 @@ function buildAuth(input: BuildAuthInput) {
                     userId: createdUser.id,
                     metadata: { source: "signup_query_trial=1" },
                   });
-                  logger.info({ userId: createdUser.id }, "trial Pro 7d started at signup");
+                  logger.info({ userId: createdUser.id }, "trial Pro 1d started at signup");
                 } else {
                   // fallback safety — kalau export hilang, jangan blokir signup
                   const free = (billing as {

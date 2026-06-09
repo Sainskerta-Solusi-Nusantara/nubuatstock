@@ -176,13 +176,13 @@ export const DEMO_SCENES: DemoScene[] = [
   {
     id: "outro",
     index: 8,
-    title: "Mulai Trial 7 Hari Gratis",
+    title: "Mulai Trial 1 Hari Gratis",
     narration:
-      "Semua fitur tier Pro bisa dicoba gratis 7 hari tanpa kartu kredit. Setelah trial, akun otomatis downgrade ke Free — tidak ada hidden fees, tidak ada auto-renew tricks. Klik tombol di bawah untuk daftar dan mulai analisis IDX yang lebih cerdas.",
+      "Semua fitur tier Pro bisa dicoba gratis 1 hari tanpa kartu kredit. Setelah trial, akun otomatis downgrade ke Free — tidak ada hidden fees, tidak ada auto-renew tricks. Klik tombol di bawah untuk daftar dan mulai analisis IDX yang lebih cerdas.",
     durationMs: 13000,
     visual: "outro",
     keyActions: [
-      "✅ 7 hari fitur tier Pro gratis",
+      "✅ 1 hari fitur tier Pro gratis",
       "✅ Tanpa kartu kredit",
       "✅ Auto-downgrade ke Free (no charge surprise)",
       "✅ 980+ emiten coverage",

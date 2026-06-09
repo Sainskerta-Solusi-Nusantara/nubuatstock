@@ -23,10 +23,10 @@ const PROMPTS = [
 ];
 
 /**
- * Modal feedback WAJIB untuk user trial di hari ke-1. Tidak bisa ditutup
+ * Modal feedback WAJIB untuk user trial di jam ke-3 (trial total 1 hari). Tidak bisa ditutup
  * (hideClose, ESC & klik luar dinonaktifkan) sampai user submit rating 1–5 +
  * pesan. Setelah sukses, server gate akan menilai ulang (router.refresh) dan
- * modal hilang — trial lanjut sampai 7 hari.
+ * modal hilang — trial gratis lanjut sampai habis (1 hari).
  */
 export function TrialFeedbackGate({ trialEndsAt }: { trialEndsAt: string | null }) {
   const router = useRouter();
@@ -35,10 +35,10 @@ export function TrialFeedbackGate({ trialEndsAt }: { trialEndsAt: string | null 
   const [message, setMessage] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
 
-  const daysLeft = React.useMemo(() => {
+  const hoursLeft = React.useMemo(() => {
     if (!trialEndsAt) return null;
     const ms = new Date(trialEndsAt).getTime() - Date.now();
-    return Math.max(0, Math.ceil(ms / (24 * 60 * 60 * 1000)));
+    return Math.max(0, Math.ceil(ms / (60 * 60 * 1000)));
   }, [trialEndsAt]);
 
   const canSubmit = rating >= 1 && rating <= 5 && message.trim().length >= 10 && !submitting;
@@ -90,11 +90,11 @@ export function TrialFeedbackGate({ trialEndsAt }: { trialEndsAt: string | null 
           </div>
           <DialogTitle className="text-center">Bagaimana pengalamanmu sejauh ini?</DialogTitle>
           <DialogDescription className="text-center">
-            Kamu sudah 1 hari mencoba Nubuat.{" "}
-            {daysLeft != null && daysLeft > 0 ? (
+            Kamu sudah 3 jam mencoba Nubuat.{" "}
+            {hoursLeft != null && hoursLeft > 0 ? (
               <>
-                Beri feedback singkat untuk <strong>melanjutkan trial sampai hari ke-7</strong>{" "}
-                (sisa {daysLeft} hari). Masukanmu membantu kami memperbaiki fitur.
+                Beri feedback singkat untuk <strong>melanjutkan trial gratismu</strong>{" "}
+                (sisa ~{hoursLeft} jam). Masukanmu membantu kami memperbaiki fitur.
               </>
             ) : (
               <>Beri feedback singkat untuk melanjutkan. Masukanmu membantu kami memperbaiki fitur.</>

@@ -19,7 +19,7 @@ export default async function SignupPage({
 }) {
   const { callbackUrl, trial } = await searchParams;
   // Terima `trial=1`, `trial=true`, `trial=pro` — semua value non-empty
-  // dianggap niat trial. Tier default Pro 7 hari di server.
+  // dianggap niat trial. Tier default Pro 1 hari di server.
   const trialIntent = typeof trial === "string" && trial.length > 0 && trial !== "0" && trial !== "false";
   const [minLen, google, emailVerificationEnabled] = await Promise.all([
     getPasswordMinLength(),
@@ -30,10 +30,10 @@ export default async function SignupPage({
     <>
       <RefCapture />
       <AuthHeading
-        title={trialIntent ? "Mulai trial Pro 7 hari" : "Buat akun baru"}
+        title={trialIntent ? "Mulai trial Pro 1 hari" : "Buat akun baru"}
         description={
           trialIntent
-            ? "Akses semua fitur Pro selama 7 hari. Tidak perlu kartu kredit."
+            ? "Akses semua fitur Pro selama 1 hari. Tidak perlu kartu kredit."
             : "Gratis untuk fitur dasar. Tidak perlu kartu kredit."
         }
       />

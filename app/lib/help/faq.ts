@@ -63,13 +63,13 @@ export const FAQ_ITEMS: FaqItem[] = [
   // ============================ LANGGANAN & TRIAL ============================
   {
     category: "Langganan & Trial",
-    question: "Apa itu trial 7 hari?",
+    question: "Apa itu trial 1 hari?",
     answer:
-      "Saat pertama daftar, kamu mendapat akses gratis ke fitur premium (setara tier Pro) selama 7 hari — termasuk AI Buddy, Verdict, Wyckoff, Screener, dan lainnya. Tidak ada penarikan biaya selama trial.",
+      "Saat pertama daftar, kamu mendapat akses gratis ke fitur premium (setara tier Pro) selama 1 hari — termasuk AI Buddy, Verdict, Wyckoff, Screener, dan lainnya. Tidak ada penarikan biaya selama trial.",
   },
   {
     category: "Langganan & Trial",
-    question: "Apa yang terjadi setelah trial 7 hari berakhir?",
+    question: "Apa yang terjadi setelah trial 1 hari berakhir?",
     answer:
       "Akun kamu otomatis turun ke tier Free tanpa ada biaya yang ditarik. Kamu tetap bisa pakai fitur dasar (Dashboard, watchlist, news, paper trading). Untuk membuka lagi fitur premium, upgrade kapan saja di halaman Langganan.",
   },
@@ -141,7 +141,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "AI Buddy",
     question: "Apakah AI Buddy tersedia di tier Free?",
     answer:
-      "AI Buddy adalah fitur premium (tier Pro ke atas), tapi kamu bisa mencobanya gratis selama trial 7 hari. Setelah trial, upgrade untuk akses penuh.",
+      "AI Buddy adalah fitur premium (tier Pro ke atas), tapi kamu bisa mencobanya gratis selama trial 1 hari. Setelah trial, upgrade untuk akses penuh.",
   },
 
   // ============================ ALERTS ============================
@@ -207,7 +207,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     category: "Pembayaran",
     question: "Apakah ada kebijakan refund?",
     answer:
-      "Karena ada trial 7 hari gratis untuk mencoba fitur premium sebelum membayar, langganan berbayar umumnya non-refundable. Kalau ada kendala penagihan atau salah charge, hubungi support@nubuat.id dan kami bantu cek.",
+      "Karena ada trial 1 hari gratis untuk mencoba fitur premium sebelum membayar, langganan berbayar umumnya non-refundable. Kalau ada kendala penagihan atau salah charge, hubungi support@nubuat.id dan kami bantu cek.",
   },
   {
     category: "Pembayaran",

@@ -133,7 +133,7 @@ export default function DemoPage() {
               href="/signup?trial=1"
               className="inline-flex h-10 items-center gap-2 rounded-md border border-border bg-background px-5 text-sm font-semibold hover:bg-accent"
             >
-              Trial 7 Hari <ArrowRight className="h-4 w-4" />
+              Trial 1 Hari <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function DemoPage() {
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-2xl font-bold">Siap mulai analisis IDX yang lebih cerdas?</h2>
           <p className="mt-2 text-muted-foreground">
-            Trial 7 hari untuk semua fitur tier Pro. Tanpa kartu kredit, tanpa komitmen.
+            Trial 1 hari untuk semua fitur tier Pro. Tanpa kartu kredit, tanpa komitmen.
           </p>
           <div className="mt-5 flex justify-center gap-3">
             <Link

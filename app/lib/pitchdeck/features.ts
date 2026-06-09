@@ -292,10 +292,10 @@ export const PITCHDECK_FEATURES: PitchdeckFeature[] = [
     category: "Account",
     path: "/subscription",
     pitch:
-      "Kelola subscription, billing, dan tier upgrade. Trial 7 hari tier Pro tanpa kartu kredit. Pembayaran via Midtrans/Xendit (gateway lokal Indonesia).",
+      "Kelola subscription, billing, dan tier upgrade. Trial 1 hari tier Pro tanpa kartu kredit. Pembayaran via Midtrans/Xendit (gateway lokal Indonesia).",
     highlights: [
       "Tier: Free / Starter / Pro / Elite / Institutional",
-      "Trial 7 hari tier Pro tanpa kartu kredit",
+      "Trial 1 hari tier Pro tanpa kartu kredit",
       "Midtrans + Xendit payment gateway",
       "Invoice riwayat + download PDF",
     ],

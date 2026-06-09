@@ -184,7 +184,7 @@ Informasi & analisis untuk edukasi semata, bukan ajakan jual/beli efek.`;
 /**
  * Trial drip campaign (IMPROVEMENT_PLAN §8.5 #35).
  *
- * Tiga tahap selama trial Pro 7 hari, mendorong konversi ke paid:
+ * Tiga tahap selama trial Pro 1 hari, mendorong konversi ke paid:
  *  - "d3"  (hari ke-3): perkenalkan fitur Pro yang sering dilewatkan.
  *  - "d5"  (hari ke-5): trial tinggal 2 hari + value recap / social proof.
  *  - "d6"  (hari ke-6, H-1): besok turun ke Free → ajakan upgrade.

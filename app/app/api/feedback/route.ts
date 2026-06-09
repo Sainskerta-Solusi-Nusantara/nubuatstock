@@ -10,7 +10,7 @@ const bodySchema = z.object({
   rating: z.number().int().min(1).max(5).optional().nullable(),
   contextUrl: z.string().url().optional().nullable(),
   // Penanda asal feedback (mis. "trial_gate") — dipakai untuk mendeteksi apakah
-  // user trial sudah memenuhi syarat feedback wajib hari ke-1.
+  // user trial sudah memenuhi syarat feedback wajib jam ke-3.
   source: z.string().max(40).optional(),
 });
 

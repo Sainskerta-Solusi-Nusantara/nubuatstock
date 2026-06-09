@@ -27,7 +27,7 @@ export function SignupForm({
 }: {
   minPasswordLength: number;
   callbackUrl?: string;
-  /** True kalau user datang via `/signup?trial=1` — server hook pakai cookie ini untuk start trial Pro 7 hari. */
+  /** True kalau user datang via `/signup?trial=1` — server hook pakai cookie ini untuk start trial Pro 1 hari. */
   trial?: boolean;
   /** True kalau email sender (Resend) aktif → instruksi cek email verifikasi ditampilkan. */
   emailVerificationEnabled?: boolean;
