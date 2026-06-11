@@ -16,6 +16,7 @@
     { "path": "/api/cron/analyze-elliott", "schedule": "50 22 * * 0-4" },
     { "path": "/api/cron/analysis-snapshots", "schedule": "5 23 * * 0-4" },
     { "path": "/api/cron/picks-generate", "schedule": "0 23 * * 0-4" },
+    { "path": "/api/cron/picks-generate-retry", "schedule": "30 0 * * 1-5" },
     { "path": "/api/cron/securities-reports", "schedule": "20 2 * * 1-5" },
     { "path": "/api/cron/ownership-1pct", "schedule": "0 1 * * 1" }
   ]
