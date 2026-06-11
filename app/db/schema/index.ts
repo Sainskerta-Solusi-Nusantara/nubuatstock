@@ -44,3 +44,4 @@ export * from "./shareholders"; // Major shareholders + insider trades
 export * from "./support"; // Customer support tickets
 export * from "./technical"; // Technical indicator snapshots
 export * from "./user-data"; // Agent 6
+export * from "./wa-auth"; // WhatsApp (Baileys) auth-state — ingest sinyal internal
