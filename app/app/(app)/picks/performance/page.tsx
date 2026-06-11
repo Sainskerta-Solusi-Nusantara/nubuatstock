@@ -14,7 +14,10 @@ export default async function PicksPerformancePage({
   const windowDays = Math.min(365, Math.max(7, Number(sp.window ?? 90)));
   const evaluation = (sp.eval ?? "T+5") as "T+1" | "T+5" | "T+20";
 
-  const perf = await getPerformanceSnapshot({ windowDays, evaluation });
+  const [perf, allTime] = await Promise.all([
+    getPerformanceSnapshot({ windowDays, evaluation }),
+    getPerformanceSnapshot({ windowDays: 3650, evaluation }),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -24,6 +27,28 @@ export default async function PicksPerformancePage({
           Hit rate, return realized, dan breakdown per setup type — dievaluasi otomatis di T+1, T+5, dan T+20 trading day setelah publish.
         </p>
       </div>
+
+      {/* Hero: winrate total all-time (TP sebelum SL) */}
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 pt-6">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground">
+              Winrate Total ({evaluation}) — all-time
+            </div>
+            <div className="mt-1 font-mono tabular text-5xl font-bold text-primary">
+              {(allTime.winRate * 100).toFixed(1)}%
+            </div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              TP1 tercapai sebelum SL · {allTime.winCount}W / {allTime.lossCount}L
+              {allTime.ambiguousCount > 0 ? ` · ${allTime.ambiguousCount} ambigu (dikecualikan)` : ""}
+            </div>
+          </div>
+          <div className="text-right text-xs text-muted-foreground">
+            <div>{allTime.decidedCount} pick decided</div>
+            <div>{allTime.totalPicks} total published</div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Filter */}
       <form className="flex flex-wrap gap-2 text-sm" method="get">
@@ -47,12 +72,12 @@ export default async function PicksPerformancePage({
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground">TP1 Hit Rate</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground">Winrate ({windowDays}h)</div>
             <div className="mt-2 font-mono tabular text-3xl font-bold">
-              {(perf.tp1HitRate * 100).toFixed(1)}%
+              {(perf.winRate * 100).toFixed(1)}%
             </div>
             <div className="mt-1 text-xs text-muted-foreground">
-              {perf.hitTp1Count} dari {perf.evaluatedPicks} pick evaluated
+              {perf.winCount}W / {perf.lossCount}L · TP1 hit kasar {(perf.tp1HitRate * 100).toFixed(0)}%
             </div>
           </CardContent>
         </Card>
@@ -102,6 +127,7 @@ export default async function PicksPerformancePage({
             <DistRow label="TP2 Hit" count={perf.hitTp2Count} total={perf.evaluatedPicks} color="text-bull" icon={Target} />
             <DistRow label="TP1 Hit" count={perf.hitTp1Count} total={perf.evaluatedPicks} color="text-bull" icon={TrendingUp} />
             <DistRow label="SL Hit" count={perf.hitSlCount} total={perf.evaluatedPicks} color="text-bear" icon={TrendingDown} />
+            <DistRow label="Ambigu (TP & SL, urutan tak tentu)" count={perf.ambiguousCount} total={perf.evaluatedPicks} color="text-amber-500" icon={AlertTriangle} />
             <DistRow label="Expired (no resolution)" count={perf.expiredCount} total={perf.evaluatedPicks} color="text-muted-foreground" icon={AlertTriangle} />
           </div>
         </CardContent>
@@ -147,9 +173,12 @@ export default async function PicksPerformancePage({
       </Card>
 
       <p className="rounded-md border border-border bg-card/40 p-3 text-xs leading-relaxed text-muted-foreground">
-        <strong>Catatan metodologi:</strong> Return dihitung dari entry zone low (asumsi konservatif).
-        Hit TP/SL berdasarkan high/low EoD di window — tidak akurat untuk intraday wick.
-        Untuk MVP: approximation OK; akan migrate ke evaluasi intraday-tick saat data L1 tersedia.
+        <strong>Catatan metodologi:</strong> <strong>Winrate</strong> = TP1 tercapai <em>sebelum</em> SL,
+        dihitung atas pick yang <em>decided</em> (menang + kalah); kasus <em>ambigu</em> (TP1 &amp; SL
+        dua-duanya tersentuh di window) dikecualikan dari winrate. Urutan TP vs SL di-resolve pakai
+        seri intraday 5-menit; jika tak tersedia, pick ditandai ambigu (bukan otomatis menang).
+        &ldquo;TP1 Hit Rate kasar&rdquo; menghitung semua sentuhan TP1 termasuk yang juga kena SL — sengaja
+        ditampilkan agar selisihnya transparan. Return dihitung dari entry zone low (konservatif).
       </p>
 
       <footer className="border-t pt-4">

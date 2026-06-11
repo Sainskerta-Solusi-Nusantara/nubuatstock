@@ -123,6 +123,14 @@ export const pickOutcomes = pgTable(
     hitTp3: boolean("hit_tp3").notNull().default(false),
     hitSl: boolean("hit_sl").notNull().default(false),
     statusAtEvaluation: text("status_at_evaluation").notNull(),
+    /**
+     * Verdict winrate yang jujur: "win" = TP1 tercapai sebelum SL, "loss" = SL
+     * duluan (atau SL kena tanpa TP), "ambiguous" = TP1 & SL dua-duanya tersentuh
+     * di window tapi urutannya tak bisa ditentukan (intraday tak tersedia),
+     * "open" = belum ada yang kena & belum terminal. Null = belum di-resolve
+     * (row lama / backfill pending). Dipakai untuk winrate, bukan hit_tp1 mentah.
+     */
+    verdict: text("verdict"),
     ...withTimestamps,
   },
   (t) => [

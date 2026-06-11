@@ -4,6 +4,7 @@ import { listFeedback, listAllTickets } from "@/lib/support/service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPipelineStatus } from "@/lib/superadmin/pipeline-status";
+import { getPerformanceSnapshot } from "@/lib/picks/performance";
 import { DataPipelineTriggers } from "./data-pipeline-triggers";
 import { SecuritiesPicksSection } from "@/components/picks/SecuritiesPicksSection";
 
@@ -30,10 +31,12 @@ function timeAgo(d: Date | string | null): string {
 }
 
 export default async function SuperadminSystemPage() {
-  const [system, feedback, tickets, pipeline] = await Promise.all([
+  const [system, feedback, tickets, winT5, winT1, pipeline] = await Promise.all([
     getSystemHealth(),
     listFeedback(50).catch(() => []),
     listAllTickets(50).catch(() => []),
+    getPerformanceSnapshot({ windowDays: 3650, evaluation: "T+5" }),
+    getPerformanceSnapshot({ windowDays: 3650, evaluation: "T+1" }),
     getPipelineStatus().catch(() => ({
       news: { lastAt: null, dataDate: null, count: 0 },
       eod: { lastAt: null, dataDate: null, count: 0 },
@@ -69,6 +72,28 @@ export default async function SuperadminSystemPage() {
             <Stat icon={Target} label="Picks (7d)" value={system.picksGeneratedLast7d.toLocaleString("id-ID")} sub="dipublikasikan" />
             <Stat icon={Bell} label="Alerts (24j)" value={system.alertsTriggeredLast24h.toLocaleString("id-ID")} sub="ter-trigger" />
             <Stat icon={AlertCircle} label="Signup belum verif (24j)" value={system.failedSignupsLast24h.toLocaleString("id-ID")} sub="email unverified" tone={system.failedSignupsLast24h > 50 ? "bear" : undefined} />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Winrate Daily Picks (all-time, TP sebelum SL) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-primary" />
+            Winrate Daily Picks (all-time)
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            TP1 tercapai sebelum SL; kasus ambigu (intraday tak menentukan urutan) dikecualikan.
+            Lihat detail di <a href="/picks/performance" className="text-primary underline">Track Record</a>.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Stat icon={Target} label="Winrate T+5" value={`${(winT5.winRate * 100).toFixed(1)}%`} sub={`${winT5.winCount}W / ${winT5.lossCount}L · ${winT5.ambiguousCount} ambigu`} tone={winT5.decidedCount > 0 ? (winT5.winRate >= 0.5 ? "bull" : "bear") : undefined} />
+            <Stat icon={Target} label="Winrate T+1" value={`${(winT1.winRate * 100).toFixed(1)}%`} sub={`${winT1.winCount}W / ${winT1.lossCount}L · ${winT1.ambiguousCount} ambigu`} tone={winT1.decidedCount > 0 ? (winT1.winRate >= 0.5 ? "bull" : "bear") : undefined} />
+            <Stat icon={Sparkles} label="Avg Return T+5" value={`${winT5.avgReturnPct >= 0 ? "+" : ""}${(winT5.avgReturnPct * 100).toFixed(2)}%`} sub={`${winT5.evaluatedPicks} pick evaluated`} tone={winT5.avgReturnPct >= 0 ? "bull" : "bear"} />
+            <Stat icon={Target} label="Total Published" value={winT5.totalPicks.toLocaleString("id-ID")} sub="daily picks (all-time)" />
           </div>
         </CardContent>
       </Card>

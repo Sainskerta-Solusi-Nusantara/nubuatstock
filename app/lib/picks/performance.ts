@@ -21,7 +21,17 @@ export interface PerformanceSnapshot {
   hitTp3Count: number;
   hitSlCount: number;
   expiredCount: number;
-  tp1HitRate: number; // 0..1
+  tp1HitRate: number; // 0..1 — kasar (TP1 tersentuh, termasuk yang juga kena SL)
+  /**
+   * Winrate JUJUR berdasarkan verdict: win / (win + loss). Kasus "ambiguous"
+   * (TP1 & SL dua-duanya tersentuh, urutan tak diketahui) dan "open" dikecualikan
+   * dari pembagi. `expired` dihitung sebagai bukan-menang.
+   */
+  winRate: number; // 0..1
+  winCount: number;
+  lossCount: number;
+  ambiguousCount: number;
+  decidedCount: number; // win + loss (pembagi winRate)
   avgReturnPct: number;
   avgRRRealized: number;
   bySetup: Array<{
@@ -59,6 +69,7 @@ export async function getPerformanceSnapshot(opts: {
         hitTp3: pickOutcomes.hitTp3,
         hitSl: pickOutcomes.hitSl,
         status: pickOutcomes.statusAtEvaluation,
+        verdict: pickOutcomes.verdict,
         setup: dailyPicks.setupType,
         rrRatio: dailyPicks.rewardRiskRatio,
       })
@@ -72,6 +83,7 @@ export async function getPerformanceSnapshot(opts: {
 
     const evaluatedPicks = outRows.length;
     let hitTp1 = 0, hitTp2 = 0, hitTp3 = 0, hitSl = 0, expired = 0;
+    let winCount = 0, lossCount = 0, ambiguousCount = 0;
     let sumReturn = 0;
     let sumRRRealized = 0;
 
@@ -82,7 +94,10 @@ export async function getPerformanceSnapshot(opts: {
       if (r.hitTp2) hitTp2++;
       if (r.hitTp3) hitTp3++;
       if (r.hitSl) hitSl++;
-      if (r.status === "expired") expired++;
+      if (r.verdict === "expired") expired++;
+      else if (r.verdict === "win") winCount++;
+      else if (r.verdict === "loss") lossCount++;
+      else if (r.verdict === "ambiguous") ambiguousCount++;
 
       const ret = Number(r.returnPct ?? 0);
       sumReturn += ret;
@@ -100,6 +115,8 @@ export async function getPerformanceSnapshot(opts: {
     }
 
     const tp1HitRate = evaluatedPicks > 0 ? hitTp1 / evaluatedPicks : 0;
+    const decidedCount = winCount + lossCount;
+    const winRate = decidedCount > 0 ? winCount / decidedCount : 0;
     const avgReturnPct = evaluatedPicks > 0 ? sumReturn / evaluatedPicks : 0;
     const avgRRRealized = evaluatedPicks > 0 ? sumRRRealized / evaluatedPicks : 0;
 
@@ -120,6 +137,11 @@ export async function getPerformanceSnapshot(opts: {
       hitSlCount: hitSl,
       expiredCount: expired,
       tp1HitRate,
+      winRate,
+      winCount,
+      lossCount,
+      ambiguousCount,
+      decidedCount,
       avgReturnPct,
       avgRRRealized,
       bySetup,
@@ -130,7 +152,8 @@ export async function getPerformanceSnapshot(opts: {
       totalPicks: 0,
       evaluatedPicks: 0,
       hitTp1Count: 0, hitTp2Count: 0, hitTp3Count: 0, hitSlCount: 0, expiredCount: 0,
-      tp1HitRate: 0, avgReturnPct: 0, avgRRRealized: 0,
+      tp1HitRate: 0, winRate: 0, winCount: 0, lossCount: 0, ambiguousCount: 0, decidedCount: 0,
+      avgReturnPct: 0, avgRRRealized: 0,
       bySetup: [],
     };
   }

@@ -34,3 +34,4 @@ tsconfig.tsbuildinfo
 
 # Local CMS snapshot & dev artifacts
 db/seed/data/emiten.json
+.vercel

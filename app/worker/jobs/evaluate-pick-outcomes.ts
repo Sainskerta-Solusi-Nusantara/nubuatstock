@@ -8,8 +8,11 @@ import {
   EVAL_DAYS,
   addTradingDays,
   evaluatePickAt as evaluateOutcome,
+  resolveVerdict,
   type Evaluation,
+  type Verdict,
 } from "@/lib/picks/outcome";
+import { resolveSlBeforeTp } from "@/lib/picks/intraday-resolve";
 
 /**
  * Evaluate Daily Picks outcome di T+1, T+5, dan T+20 trading day setelah publish.
@@ -48,6 +51,35 @@ interface EvalResult {
   hitTp3: boolean;
   hitSl: boolean;
   statusAtEval: "open" | "tp1_hit" | "tp2_hit" | "tp3_hit" | "sl_hit" | "expired";
+  verdict: Verdict;
+}
+
+/**
+ * Tentukan verdict winrate jujur. Saat TP1 & SL dua-duanya tersentuh menurut
+ * EOD, resolusi urutan via intraday 5-menit (on-the-fly). Selain itu tak perlu
+ * fetch intraday.
+ */
+async function computeVerdict(
+  pick: typeof dailyPicks.$inferSelect,
+  evalPoint: Evaluation,
+  hitTp1: boolean,
+  hitSl: boolean,
+): Promise<Verdict> {
+  const isTerminal = evalPoint === "T+20";
+  let slBeforeTp: boolean | null = null;
+  if (hitTp1 && hitSl) {
+    const evalDate = addTradingDays(new Date(pick.tradeDate), EVAL_DAYS[evalPoint]);
+    const tp1 = Number(pick.tp1 ?? 0);
+    const sl = Number(pick.stopLoss ?? 0);
+    slBeforeTp = await resolveSlBeforeTp(
+      pick.companyKode,
+      pick.tradeDate,
+      evalDate.toISOString().slice(0, 10),
+      tp1,
+      sl,
+    );
+  }
+  return resolveVerdict({ hitTp1, hitSl, slBeforeTp, isTerminal });
 }
 
 async function evaluatePickAt(pick: typeof dailyPicks.$inferSelect, evalPoint: Evaluation): Promise<EvalResult | null> {
@@ -91,7 +123,9 @@ async function evaluatePickAt(pick: typeof dailyPicks.$inferSelect, evalPoint: E
     evalPoint === "T+20",
   );
 
-  return { pickId: pick.id, evalPoint, ...outcome };
+  const verdict = await computeVerdict(pick, evalPoint, outcome.hitTp1, outcome.hitSl);
+
+  return { pickId: pick.id, evalPoint, ...outcome, verdict };
 }
 
 export const evaluatePickOutcomesProcessor: Processor = async (job) => {
@@ -107,17 +141,34 @@ export const evaluatePickOutcomesProcessor: Processor = async (job) => {
     ));
 
   let evaluated = 0;
+  let backfilled = 0;
   let skipped = 0;
 
   for (const pick of recentPicks) {
     for (const evalPoint of ["T+1", "T+5", "T+20"] as const) {
       // Cek apakah sudah ada outcome row untuk eval point ini
       const existing = await db
-        .select({ id: pickOutcomes.id })
+        .select({
+          id: pickOutcomes.id,
+          verdict: pickOutcomes.verdict,
+          hitTp1: pickOutcomes.hitTp1,
+          hitSl: pickOutcomes.hitSl,
+        })
         .from(pickOutcomes)
         .where(and(eq(pickOutcomes.pickId, pick.id), eq(pickOutcomes.evaluationAt, evalPoint)))
         .limit(1);
-      if (existing.length > 0) { skipped++; continue; }
+
+      if (existing.length > 0) {
+        const row = existing[0]!;
+        // Sudah final (win/loss/expired/open) → skip. Verdict null (row lama) atau
+        // "ambiguous" (resolusi intraday belum berhasil) → (re)resolve. Ambiguous
+        // di-retry tiap run karena intraday bisa baru tersedia / sempat error transien.
+        if (row.verdict != null && row.verdict !== "ambiguous") { skipped++; continue; }
+        const verdict = await computeVerdict(pick, evalPoint, row.hitTp1, row.hitSl);
+        await db.update(pickOutcomes).set({ verdict }).where(eq(pickOutcomes.id, row.id));
+        backfilled++;
+        continue;
+      }
 
       const result = await evaluatePickAt(pick, evalPoint);
       if (!result) { skipped++; continue; }
@@ -135,12 +186,13 @@ export const evaluatePickOutcomesProcessor: Processor = async (job) => {
         hitTp3: result.hitTp3,
         hitSl: result.hitSl,
         statusAtEvaluation: result.statusAtEval,
+        verdict: result.verdict,
       }).onConflictDoNothing({ target: [pickOutcomes.pickId, pickOutcomes.evaluationAt] });
 
       evaluated++;
     }
   }
 
-  logger.info({ evaluated, skipped, totalPicks: recentPicks.length }, "Pick outcomes evaluation done");
-  return { evaluated, skipped, totalPicks: recentPicks.length };
+  logger.info({ evaluated, backfilled, skipped, totalPicks: recentPicks.length }, "Pick outcomes evaluation done");
+  return { evaluated, backfilled, skipped, totalPicks: recentPicks.length };
 };

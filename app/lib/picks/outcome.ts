@@ -76,6 +76,41 @@ export function resolveOutcomeStatus(args: {
   return status;
 }
 
+/**
+ * Verdict winrate yang JUJUR (dipakai untuk hitung winrate, bukan hit_tp1 mentah).
+ *
+ * - `win`       — TP1 tercapai sebelum SL.
+ * - `loss`      — SL tercapai sebelum TP1, atau SL kena tanpa TP.
+ * - `ambiguous` — TP1 & SL dua-duanya tersentuh di window, urutan tak diketahui
+ *                 (intraday tak tersedia). TIDAK dihitung menang maupun kalah.
+ * - `expired`   — tak ada level tersentuh sampai titik evaluasi terminal (T+20).
+ * - `open`      — belum ada level tersentuh & belum terminal.
+ */
+export type Verdict = "win" | "loss" | "ambiguous" | "expired" | "open";
+
+/**
+ * Tentukan verdict dari hit flags + (opsional) urutan dari intraday.
+ *
+ * @param slBeforeTp true=SL duluan, false=TP1 duluan, null=tak diketahui.
+ *                   Hanya relevan saat hitTp1 && hitSl.
+ */
+export function resolveVerdict(args: {
+  hitTp1: boolean;
+  hitSl: boolean;
+  slBeforeTp: boolean | null;
+  isTerminal: boolean;
+}): Verdict {
+  const { hitTp1, hitSl, slBeforeTp, isTerminal } = args;
+  if (hitTp1 && hitSl) {
+    if (slBeforeTp === true) return "loss";
+    if (slBeforeTp === false) return "win";
+    return "ambiguous";
+  }
+  if (hitTp1) return "win";
+  if (hitSl) return "loss";
+  return isTerminal ? "expired" : "open";
+}
+
 export interface PickLevels {
   entry: number;
   sl: number;
