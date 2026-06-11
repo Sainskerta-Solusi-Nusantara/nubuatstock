@@ -10,7 +10,9 @@ import { logger } from "@/lib/logger";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+// 300s (Pro): scoring seluruh universe + narasi AI per pick bisa >60s. Step rantai
+// lain sudah 300; picks-generate sempat ketinggalan di 60 → timeout di hari sibuk.
+export const maxDuration = 300;
 
 /**
  * GET/POST /api/cron/picks-generate — generate Daily Picks untuk tanggal EOD
