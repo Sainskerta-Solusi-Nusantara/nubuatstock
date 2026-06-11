@@ -8,8 +8,8 @@
 
 | Field | Value |
 |---|---|
-| **Version** | v0.3 |
-| **Last updated** | 2 Jun 2026 |
+| **Version** | v0.5 |
+| **Last updated** | 11 Jun 2026 |
 | **Owner** | dobeon.com@gmail.com (Founder/CEO/PM) |
 | **Cadence** | Weekly update (setiap Jumat 17:00 WIB) |
 | **Sumber** | `ANALISIS_APLIKASI_SAHAM.md`, `PLAN_UIUX_WIREFRAME.md` |
@@ -42,7 +42,7 @@
 | Metric | Value |
 |---|---|
 | **Current phase** | M0–M3 — MVP build / pre-closed-beta hardening |
-| **Phase progress** | **MVP build ~93%** · **Closed-beta launch-readiness ~89%** (per 30 Mei 2026) |
+| **Phase progress** | **MVP build ~94%** · **Closed-beta launch-readiness ~90%** (per 11 Jun 2026) |
 | **North Star: Weekly Active Trader (WAT)** | 0 (target M6: 500, M12: 6.000, M24: 32.000) |
 | **MRR** | Rp 0 (target M6: Rp 52 jt, M12: Rp 396 jt, M24: Rp 1,56 Mrd) |
 | **Paid users** | 0 (target M6: 290, M12: 2.180, M24: 7.850) |
@@ -1012,6 +1012,7 @@ Sumber: `ANALISIS_APLIKASI_SAHAM.md` Section 17.2.
 | v0.2 | 29 Mei 2026 | Founder + Claude | Update snapshot: phase → MVP/pre-closed-beta, progress MVP ~88% / launch-readiness ~85% (sebelumnya stale "5%"). Log sesi 29 Mei di Minggu 25–31 Mei: tutup launch-blocker P0/P1 (email-gate, webhook sig, rate-limit, UU PDP, audit immutability, cookie consent, market-auth fix), diferensiator (Elliott P0+P1, pattern, screener Swing Santai), UI/UX (tagline, nada "kamu", kontras teks), About Us + Glossary, pipeline logo Vercel Blob. 121 unit test, tsc 0, build hijau. |
 | v0.3 | 2 Jun 2026 | Founder + Claude | Tab **Perubahan Data** ownership ≥1% live (Saham Baru/Keluar, Top Diborong/Dilepas, Top Gainers/Losers, Top Holders, Investor Baru) dari `ownership_1pct_changelog`. **Sumber riset Telegram publik** (scraper `t.me/s/` tanpa token, 4 channel, live-tested). **Auto-fetch Rekomendasi Sekuritas** via ekstraksi AI DeepSeek (prefilter→JSON→upsert, live-tested 13 kandidat→2 pick). **Daily Picks** confidence Low ikut tampil (diurut setelah High/Medium). tsc 0, lint bersih. |
 | v0.4 | 9 Jun 2026 | Founder + Claude | **Data pipeline pulih + observability.** Akar masalah "News/Picks kosong berhari-hari": tim hapus semua Vercel Cron (niat pindah VPS worker yg belum jalan) → **17 cron dikembalikan**. **Panel pemicu manual** di `/superadmin/system` (News/EOD/Technical/Pattern/Elliott/Analysis/Picks/Securities) + status data terakhir + **banner alert data stale**. **5 sumber news** baru (IDX Channel, Kontan, Katadata-finansial, Bisnis, EmitenNews via Google News RSS; +236 artikel). Technical Snapshots diisi (968 emiten) → **fix bug ★1 "Screener preset tidak berfungsi"**. **Screener** ramah pemula: Filter Lanjutan collapsible, 10 baris default + pagination bernomor + sort persist. **Trial → 1 hari** (config+DB+semua copy), feedback wajib **jam ke-3**, drip email berbasis jam (h6/h14/h20). **Fix build PPR** (experimental.ppr dari merge perf/reduce-vercel-cpu butuh Next canary → semua deploy prod Error). Log emiten gagal EOD/Technical. tsc 0, 14+ test drip lulus, build hijau. |
+| v0.5 | 11 Jun 2026 | Founder + Claude | **Track record & reliability Daily Picks.** **Daily Picks Sekuritas** disembunyikan dari user (sumber stale) → pindah ke `/superadmin/system` (badge internal) sampai sumber kuat. **Winrate jujur**: kolom `verdict` di `pick_outcomes` (win=TP1-sebelum-SL / loss / ambiguous / expired) + **resolusi urutan TP-vs-SL via intraday Yahoo 5m on-the-fly** (range `1mo`); ganti metrik lama `tp1HitRate` yg inflate (both-hit dihitung menang → tampil 90%). Hasil all-time: **T+1 84.1% (37W/7L), T+5 80.0% (16W/4L)**, nol ambigu. Headline winrate di `/picks/performance` + kartu `/superadmin/system`. **Otomasi pipeline picks pagi**: rantai EOD 05:10 → technical/pattern/elliott/analysis → **Daily Picks 06:00 WIB** (dow `0-4` krn 06:00 WIB=23:00 UTC H-1) + **safety-retry 07:30 WIB** (idempoten); fix `picks-generate` `maxDuration` 60→300 (sumber timeout). Diagnosa "picks sering tak jalan": timeout + cron sempat dihapus tim + timing rapuh. **WA Mirae ingest (Baileys, DORMANT)**: userbot baca WA Channel → ekstraksi AI DeepSeek → `securities_picks` label internal (bukan verbatim); auth-state Postgres (`wa_auth_state`), `npm run wa:login`/`wa:listen`, nomor bot +6281284190511 — nyala setelah worker/VPS + pairing. tsc 0. Deploy: 5× CLI manual (Vercel git-link diputus → push tak auto-deploy). |
 
 ---
 
