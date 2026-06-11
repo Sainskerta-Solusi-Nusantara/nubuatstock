@@ -1,10 +1,11 @@
-import { Activity, Sparkles, Target, Bell, AlertCircle, MessageSquare, Ticket, Star } from "lucide-react";
+import { Activity, Sparkles, Target, Bell, AlertCircle, MessageSquare, Ticket, Star, Building2 } from "lucide-react";
 import { getSystemHealth, formatIdr } from "@/lib/superadmin/stats";
 import { listFeedback, listAllTickets } from "@/lib/support/service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPipelineStatus } from "@/lib/superadmin/pipeline-status";
 import { DataPipelineTriggers } from "./data-pipeline-triggers";
+import { SecuritiesPicksSection } from "@/components/picks/SecuritiesPicksSection";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,28 @@ export default async function SuperadminSystemPage() {
 
       {/* Pemicu manual pipeline data */}
       <DataPipelineTriggers status={pipeline} />
+
+      {/* Daily Picks Sekuritas — disembunyikan dari user, dipantau di sini dulu */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-primary" />
+            Daily Picks Sekuritas
+            <Badge variant="secondary" className="ml-auto text-[10px]">internal</Badge>
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Disembunyikan dari user (update sumber masih lama / belum rutin). Dipantau di sini
+            sampai ada sumber data yang kuat. Trigger manual via panel pipeline di atas
+            (&ldquo;Daily Picks Sekuritas&rdquo;); kelola/edit di{" "}
+            <a href="/superadmin/securities-picks" className="text-primary underline">
+              Rekomendasi Sekuritas
+            </a>.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <SecuritiesPicksSection />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Feedback dari user */}

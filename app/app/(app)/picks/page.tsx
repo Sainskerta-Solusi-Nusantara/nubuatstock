@@ -5,7 +5,9 @@ import { PickCard } from "@/components/picks/PickCard";
 import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
 import { getTodayPicks, getLatestRun } from "@/lib/picks/service";
 import { requireSession, resolveDailyVisibleEntitlement } from "@/lib/picks/cross-deps";
-import { SecuritiesPicksSection } from "@/components/picks/SecuritiesPicksSection";
+// SecuritiesPicksSection sengaja TIDAK ditampilkan ke user di sini.
+// Daily picks sekuritas dipindah ke /superadmin/system (System Health) sampai
+// kita punya sumber data yang kuat & rutin (update lama → tidak layak dipublik).
 
 export const dynamic = "force-dynamic";
 
@@ -82,8 +84,6 @@ export default async function PicksPage() {
           ) : null}
         </>
       )}
-
-      <SecuritiesPicksSection />
 
       <footer className="border-t pt-4">
         <PickDisclaimer variant="footer" text={disclaimer} withLink />
