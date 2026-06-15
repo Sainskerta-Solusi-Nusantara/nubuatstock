@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { getConfig } from "@/lib/config";
 import { handleError, ok } from "@/lib/utils/api";
-import { getTodayPicks, getLatestRun } from "@/lib/picks/service";
+import { getTodayPicks, getLatestRun, getEffectivePickDate } from "@/lib/picks/service";
 import { requireSession, resolveDailyVisibleEntitlement } from "@/lib/picks/cross-deps";
 
 /**
@@ -18,10 +18,11 @@ export async function GET(_req: NextRequest) {
     const session = await requireSession();
     const tz = await getConfig<string>("runtime.timezone", { defaultValue: "Asia/Jakarta" });
     const today = formatDateInTz(new Date(), tz);
-    const [picks, dailyVisible, latestRun] = await Promise.all([
+    const [picks, dailyVisible, latestRun, pickDate] = await Promise.all([
       getTodayPicks({ tradeDate: today }),
       resolveDailyVisibleEntitlement(session.userId),
       getLatestRun(),
+      getEffectivePickDate(today),
     ]);
     const visible = picks.slice(0, dailyVisible);
 
@@ -32,15 +33,13 @@ export async function GET(_req: NextRequest) {
           "Belum ada Daily Picks. Worker akan generate setelah ingest EOD pertama.";
       } else if (latestRun.status === "failed") {
         emptyReason = "Run terakhir gagal — admin perlu cek log.";
-      } else if (latestRun.runDate !== today) {
-        emptyReason = `Belum ada pick untuk ${today}. Run terakhir: ${latestRun.runDate}.`;
       } else {
-        emptyReason = "Universe filter menghasilkan nol kandidat untuk hari ini.";
+        emptyReason = `Belum ada pick. Run terakhir: ${latestRun.runDate} (${latestRun.picksGenerated} pick).`;
       }
     }
 
     return ok({
-      tradeDate: today,
+      tradeDate: pickDate ?? today,
       items: visible,
       total: picks.length,
       visibleLimit: dailyVisible,

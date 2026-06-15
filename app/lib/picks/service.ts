@@ -18,8 +18,9 @@ import { setupTypeValues } from "@/lib/types/picks";
  * Service layer untuk read API picks. Pure DB access — no HTTP, no Zod.
  *
  * Visibility:
- *  - "today" = picks dengan `trade_date` >= today, status='published', limit ke
- *    entitlement user. Caller endpoint yang slice.
+ *  - getTodayPicks = picks pada trade_date published terbaru yang <= today
+ *    (lihat getEffectivePickDate), status='published'. Caller yang slice ke
+ *    entitlement user.
  */
 
 function toListItem(row: {
@@ -64,7 +65,26 @@ function toListItem(row: {
   };
 }
 
+/**
+ * Resolusi trade_date pick "aktif": trade_date published terbaru yang <= `onOrBefore`.
+ * Dipakai supaya halaman tetap menampilkan picks terakhir di akhir pekan / pagi
+ * sebelum run hari ini jalan (EOD selalu telat ≥1 hari dari kalender). Null kalau
+ * belum ada pick sama sekali.
+ */
+export async function getEffectivePickDate(onOrBefore: string): Promise<string | null> {
+  const rows = await db
+    .select({ d: sql<string>`max(${dailyPicks.tradeDate})` })
+    .from(dailyPicks)
+    .where(and(lte(dailyPicks.tradeDate, onOrBefore), eq(dailyPicks.status, "published")));
+  return rows[0]?.d ?? null;
+}
+
 export async function getTodayPicks(opts: { tradeDate: string }): Promise<PickListItemDTO[]> {
+  // `tradeDate` di sini = batas atas kalender ("hari ini"), BUKAN match persis.
+  // Picks pakai trade_date = tanggal EOD (selalu lag), jadi resolve ke yang terbaru
+  // <= today, kalau tidak halaman kosong tiap akhir pekan / pagi sebelum run.
+  const effectiveDate = await getEffectivePickDate(opts.tradeDate);
+  if (!effectiveDate) return [];
   const rows = await db
     .select({
       id: dailyPicks.id,
@@ -90,7 +110,7 @@ export async function getTodayPicks(opts: { tradeDate: string }): Promise<PickLi
     .leftJoin(companies, eq(companies.kode, dailyPicks.companyKode))
     .where(
       and(
-        eq(dailyPicks.tradeDate, opts.tradeDate),
+        eq(dailyPicks.tradeDate, effectiveDate),
         eq(dailyPicks.status, "published"),
       ),
     )

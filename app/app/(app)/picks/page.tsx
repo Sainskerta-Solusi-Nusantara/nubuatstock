@@ -3,7 +3,7 @@ import { getConfig } from "@/lib/config";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PickCard } from "@/components/picks/PickCard";
 import { PickDisclaimer } from "@/components/picks/PickDisclaimer";
-import { getTodayPicks, getLatestRun } from "@/lib/picks/service";
+import { getTodayPicks, getLatestRun, getEffectivePickDate } from "@/lib/picks/service";
 import { requireSession, resolveDailyVisibleEntitlement } from "@/lib/picks/cross-deps";
 // SecuritiesPicksSection sengaja TIDAK ditampilkan ke user di sini.
 // Daily picks sekuritas dipindah ke /superadmin/system (System Health) sampai
@@ -25,11 +25,15 @@ export default async function PicksPage() {
   ]);
   const today = formatDateInTz(new Date(), tz);
   const isStaff = session.role === "superadmin" || session.role === "admin";
-  const [picks, entVisible, latestRun] = await Promise.all([
+  const [picks, entVisible, latestRun, pickDate] = await Promise.all([
     getTodayPicks({ tradeDate: today }),
     resolveDailyVisibleEntitlement(session.userId),
     getLatestRun(),
+    getEffectivePickDate(today),
   ]);
+  // Tanggal yang ditampilkan = trade_date pick aktual (EOD basis), bukan kalender
+  // hari ini — picks selalu berbasis penutupan terakhir.
+  const displayDate = pickDate ?? today;
   const dailyVisible = isStaff ? picks.length : entVisible;
   // Urutkan High → Medium → Low (Low tetap ditampilkan, tapi paling bawah).
   // Stable sort menjaga urutan skor desc dari query di dalam tiap tier.
@@ -45,7 +49,12 @@ export default async function PicksPage() {
       <header className="space-y-2">
         <div className="flex items-baseline justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Daily Picks</h1>
-          <span className="text-sm text-muted-foreground">{today}</span>
+          <span className="text-sm text-muted-foreground">
+            {displayDate}
+            {displayDate !== today ? (
+              <span className="ml-1 text-xs">(basis penutupan)</span>
+            ) : null}
+          </span>
         </div>
         <PickDisclaimer variant="banner" text={disclaimer} withLink />
         <details className="rounded-lg border border-border bg-card/50 px-3 py-2 text-xs text-muted-foreground">
