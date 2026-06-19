@@ -59,8 +59,30 @@ export async function POST(req: NextRequest) {
     return handleError(err);
   }
 
+  // Trial users: cap AI Buddy ke kuota kecil (anti-abuse + kontrol biaya DeepSeek).
+  // Tier trial (mis. pro) secara default punya entitlement besar (100/hari); override
+  // di sini supaya user yang masih `trialing` hanya dapat sedikit chat. Nilai dari
+  // config `trial.ai_queries_per_day` (default 3) — bisa di-tune dari /admin/config.
+  let aiLimitOverride: number | undefined;
   try {
-    await consumeQuota(userId, "ai.queries", { amount: 1 });
+    const { getActiveSubscription } = await import("@/lib/billing/subscriptions");
+    const active = await getActiveSubscription(userId);
+    if (active?.subscription.status === "trialing") {
+      const { getConfig } = await import("@/lib/config");
+      aiLimitOverride = await getConfig<number>("trial.ai_queries_per_day", {
+        defaultValue: 3,
+      });
+    }
+  } catch (err) {
+    // Defensive: kalau resolusi status trial gagal, jangan blokir — pakai limit tier normal.
+    logger.warn({ err, userId }, "Gagal resolve cap trial AI; fallback ke limit tier");
+  }
+
+  try {
+    await consumeQuota(userId, "ai.queries", {
+      amount: 1,
+      ...(aiLimitOverride !== undefined ? { limitOverride: aiLimitOverride } : {}),
+    });
   } catch (err) {
     return handleError(err);
   }

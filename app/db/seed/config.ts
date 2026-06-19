@@ -118,14 +118,14 @@ const defaults: ConfigEntry[] = [
     value: "deepseek-v4-flash",
     type: "string",
     category: "ai",
-    description: "Model DeepSeek default untuk AI Buddy.",
+    description: "Model DeepSeek default untuk AI Buddy. Pakai varian flash (murah), BUKAN pro. PENTING: kalau nama model salah/tak dikenali API, DeepSeek balas KOSONG tanpa error — verifikasi ID model persis ke daftar model resmi DeepSeek.",
   },
   {
     key: "ai.deepseek.deep_model",
     value: "deepseek-v4-flash",
     type: "string",
     category: "ai",
-    description: "Model untuk deep research mode (tier Pro+).",
+    description: "Model untuk deep research mode (tier Elite). Default flash (hemat); bisa di-swap ke varian pro kalau mau reasoning lebih kuat.",
   },
   {
     key: "ai.deepseek.max_tokens",
